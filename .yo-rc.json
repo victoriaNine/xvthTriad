@@ -1,0 +1,15 @@
+{
+  "generator-backbone": {
+    "appPath": "app",
+    "appName": "xvthTriad",
+    "testFramework": "mocha",
+    "templateFramework": "lodash",
+    "sassBootstrap": false,
+    "coffee": false,
+    "includeRequireJS": true
+  },
+  "generator-mocha": {
+    "ui": "bdd",
+    "rjs": false
+  }
+}

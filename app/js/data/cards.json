@@ -1,0 +1,1331 @@
+[
+    {
+        "cardId"  : 0,
+        "name"    : "Geezard",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 1,
+            "right"  : 4,
+            "bottom" : 1,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 1,
+        "name"    : "Funguar",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 1,
+            "bottom" : 1,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 2,
+        "name"    : "Bite Bug",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 1,
+            "right"  : 3,
+            "bottom" : 3,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 3,
+        "name"    : "Red Bat",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 1,
+            "bottom" : 1,
+            "left"   : 2
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 4,
+        "name"    : "Blobra",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 3,
+            "bottom" : 1,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 5,
+        "name"    : "Gayla",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 4,
+            "left"   : 4
+        },
+        "element" : "Thunder"
+    },
+    {
+        "cardId"  : 6,
+        "name"    : "Gesper",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 1,
+            "right"  : 5,
+            "bottom" : 4,
+            "left"   : 1
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 7,
+        "name"    : "Fastitocalon-F",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 5,
+            "bottom" : 2,
+            "left"   : 1
+        },
+        "element" : "Earth"
+    },
+    {
+        "cardId"  : 8,
+        "name"    : "Blood Soul",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 1,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 9,
+        "name"    : "Caterchipillar",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 2,
+            "bottom" : 4,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 10,
+        "name"    : "Cockatrice",
+        "level"   : 1,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 2,
+            "left"   : 6
+        },
+        "element" : "Thunder"
+    },
+
+    {
+        "cardId"  : 11,
+        "name"    : "Grat",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 1,
+            "bottom" : 3,
+            "left"   : 1
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 12,
+        "name"    : "Buel",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 2,
+            "bottom" : 2,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 13,
+        "name"    : "Mesmerize",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 3,
+            "bottom" : 3,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 14,
+        "name"    : "Glacial Eye",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 1,
+            "bottom" : 4,
+            "left"   : 3
+        },
+        "element" : "Ice"
+    },
+    {
+        "cardId"  : 15,
+        "name"    : "Belhelmel",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 4,
+            "bottom" : 5,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 16,
+        "name"    : "Thrustaevis",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 3,
+            "bottom" : 2,
+            "left"   : 5
+        },
+        "element" : "Wind"
+    },
+    {
+        "cardId"  : 17,
+        "name"    : "Anacondaur",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 1,
+            "bottom" : 3,
+            "left"   : 5
+        },
+        "element" : "Poison"
+    },
+    {
+        "cardId"  : 18,
+        "name"    : "Creeps",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 2,
+            "bottom" : 5,
+            "left"   : 2
+        },
+        "element" : "Thunder"
+    },
+    {
+        "cardId"  : 19,
+        "name"    : "Grendel",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 4,
+            "bottom" : 5,
+            "left"   : 2
+        },
+        "element" : "Thunder"
+    },
+    {
+        "cardId"  : 20,
+        "name"    : "Jelleye",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 2,
+            "bottom" : 1,
+            "left"   : 7
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 21,
+        "name"    : "Grand Mantis",
+        "level"   : 2,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 2,
+            "bottom" : 5,
+            "left"   : 3
+        },
+        "element" : null
+    },
+
+    {
+        "cardId"  : 22,
+        "name"    : "Forbidden",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 6,
+            "bottom" : 3,
+            "left"   : 2
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 23,
+        "name"    : "Armadodo",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 3,
+            "bottom" : 1,
+            "left"   : 6
+        },
+        "element" : "Earth"
+    },
+    {
+        "cardId"  : 24,
+        "name"    : "Tri-Face",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 5,
+            "bottom" : 5,
+            "left"   : 3
+        },
+        "element" : "Poison"
+    },
+    {
+        "cardId"  : 25,
+        "name"    : "Fastitocalon",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 5,
+            "bottom" : 1,
+            "left"   : 3
+        },
+        "element" : "Earth"
+    },
+    {
+        "cardId"  : 26,
+        "name"    : "Snow Lion",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 1,
+            "bottom" : 5,
+            "left"   : 3
+        },
+        "element" : "Ice"
+    },
+    {
+        "cardId"  : 27,
+        "name"    : "Ochu",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 6,
+            "bottom" : 3,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 28,
+        "name"    : "SAM08G",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 6,
+            "bottom" : 2,
+            "left"   : 4
+        },
+        "element" : "Fire"
+    },
+    {
+        "cardId"  : 29,
+        "name"    : "Death Claw",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 4,
+            "bottom" : 7,
+            "left"   : 2
+        },
+        "element" : "Fire"
+    },
+    {
+        "cardId"  : 30,
+        "name"    : "Cactuar",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 2,
+            "bottom" : 6,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 31,
+        "name"    : "Tonberry",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 6,
+            "bottom" : 4,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 32,
+        "name"    : "Abyss Worm",
+        "level"   : 3,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 2,
+            "bottom" : 3,
+            "left"   : 5
+        },
+        "element" : "Earth"
+    },
+
+    {
+        "cardId"  : 33,
+        "name"    : "Turtapod",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 3,
+            "bottom" : 6,
+            "left"   : 7
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 34,
+        "name"    : "Vysage",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 5,
+            "bottom" : 4,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 35,
+        "name"    : "T-Rexaur",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 6,
+            "bottom" : 2,
+            "left"   : 7
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 36,
+        "name"    : "Bomb",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 7,
+            "bottom" : 6,
+            "left"   : 3
+        },
+        "element" : "Fire"
+    },
+    {
+        "cardId"  : 37,
+        "name"    : "Blitz",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 1,
+            "right"  : 6,
+            "bottom" : 4,
+            "left"   : 7
+        },
+        "element" : "Thunder"
+    },
+    {
+        "cardId"  : 38,
+        "name"    : "Wendigo",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 3,
+            "bottom" : 1,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 39,
+        "name"    : "Torama",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 4,
+            "bottom" : 4,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 40,
+        "name"    : "Imp",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 7,
+            "bottom" : 3,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 41,
+        "name"    : "Blue Dragon",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 2,
+            "bottom" : 7,
+            "left"   : 3
+        },
+        "element" : "Poison"
+    },
+    {
+        "cardId"  : 42,
+        "name"    : "Adamantoise",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 5,
+            "bottom" : 5,
+            "left"   : 6
+        },
+        "element" : "Earth"
+    },
+    {
+        "cardId"  : 43,
+        "name"    : "Hexadragon",
+        "level"   : 4,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 5,
+            "bottom" : 4,
+            "left"   : 3
+        },
+        "element" : "Fire"
+    },
+
+    {
+        "cardId"  : 44,
+        "name"    : "Iron Giant",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 5,
+            "bottom" : 5,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 45,
+        "name"    : "Behemoth",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 6,
+            "bottom" : 5,
+            "left"   : 7
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 46,
+        "name"    : "Chimera",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 6,
+            "bottom" : 5,
+            "left"   : 3
+        },
+        "element" : "Water"
+    },
+    {
+        "cardId"  : 47,
+        "name"    : "PuPu",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 10,
+            "bottom" : 2,
+            "left"   : 1
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 48,
+        "name"    : "Elastoid",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 2,
+            "bottom" : 6,
+            "left"   : 7
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 49,
+        "name"    : "GIM47N",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 5,
+            "bottom" : 7,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 50,
+        "name"    : "Malboro",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 7,
+            "bottom" : 4,
+            "left"   : 2
+        },
+        "element" : "Poison"
+    },
+    {
+        "cardId"  : 51,
+        "name"    : "Ruby Dragon",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 2,
+            "bottom" : 7,
+            "left"   : 4
+        },
+        "element" : "Fire"
+    },
+    {
+        "cardId"  : 52,
+        "name"    : "Elnoyle",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 3,
+            "bottom" : 7,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 53,
+        "name"    : "Tonberry King",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 6,
+            "bottom" : 7,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 54,
+        "name"    : "Biggs / Wedge",
+        "level"   : 5,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 6,
+            "bottom" : 2,
+            "left"   : 7
+        },
+        "element" : null
+    },
+
+    {
+        "cardId"  : 55,
+        "name"    : "Fujin / Raijin",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 8,
+            "bottom" : 8,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 56,
+        "name"    : "Elvoret",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 8,
+            "bottom" : 3,
+            "left"   : 4
+        },
+        "element" : "Wind"
+    },
+    {
+        "cardId"  : 57,
+        "name"    : "X-ATM092",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 8,
+            "bottom" : 7,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 58,
+        "name"    : "Granaldo",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 2,
+            "bottom" : 8,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 59,
+        "name"    : "Gerogero",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 1,
+            "right"  : 8,
+            "bottom" : 8,
+            "left"   : 3
+        },
+        "element" : "Poison"
+    },
+    {
+        "cardId"  : 60,
+        "name"    : "Iguion",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 2,
+            "bottom" : 8,
+            "left"   : 2
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 61,
+        "name"    : "Abadon",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 8,
+            "bottom" : 4,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 62,
+        "name"    : "Trauma",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 8,
+            "bottom" : 5,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 63,
+        "name"    : "Oilboyle",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 1,
+            "right"  : 8,
+            "bottom" : 4,
+            "left"   : 8
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 64,
+        "name"    : "Shumi Tribe",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 5,
+            "bottom" : 8,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 65,
+        "name"    : "Krysta",
+        "level"   : 6,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 5,
+            "bottom" : 8,
+            "left"   : 1
+        },
+        "element" : null
+    },
+
+    {
+        "cardId"  : 66,
+        "name"    : "Propagator",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 4,
+            "bottom" : 4,
+            "left"   : 8
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 67,
+        "name"    : "Jumbo Cactuar",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 8,
+            "bottom" : 4,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 68,
+        "name"    : "Tri-Point",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 5,
+            "bottom" : 2,
+            "left"   : 8
+        },
+        "element" : "Thunder"
+    },
+    {
+        "cardId"  : 69,
+        "name"    : "Gargantua",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 6,
+            "bottom" : 6,
+            "left"   : 8
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 70,
+        "name"    : "Mobile Type 8",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 6,
+            "bottom" : 7,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 71,
+        "name"    : "Sphinxara",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 3,
+            "bottom" : 5,
+            "left"   : 8
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 72,
+        "name"    : "Tiamat",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 8,
+            "bottom" : 5,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 73,
+        "name"    : "BGH251F2",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 7,
+            "bottom" : 8,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 74,
+        "name"    : "Red Giant",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 8,
+            "bottom" : 4,
+            "left"   : 7
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 75,
+        "name"    : "Catoblepas",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 1,
+            "right"  : 8,
+            "bottom" : 7,
+            "left"   : 7
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 76,
+        "name"    : "Ultima Weapon",
+        "level"   : 7,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 7,
+            "bottom" : 2,
+            "left"   : 8
+        },
+        "element" : null
+    },
+
+    {
+        "cardId"  : 77,
+        "name"    : "Chubby Chocobo",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 4,
+            "bottom" : 8,
+            "left"   : 9
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 78,
+        "name"    : "Angelo",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 9,
+            "right"  : 6,
+            "bottom" : 7,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 79,
+        "name"    : "Gilgamesh",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 7,
+            "bottom" : 9,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 80,
+        "name"    : "MiniMog",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 9,
+            "right"  : 3,
+            "bottom" : 9,
+            "left"   : 2
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 81,
+        "name"    : "Chicobo",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 9,
+            "right"  : 4,
+            "bottom" : 8,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 82,
+        "name"    : "Quezacotl",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 9,
+            "bottom" : 9,
+            "left"   : 4
+        },
+        "element" : "Thunder"
+    },
+    {
+        "cardId"  : 83,
+        "name"    : "Shiva",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 7,
+            "bottom" : 4,
+            "left"   : 9
+        },
+        "element" : "Ice"
+    },
+    {
+        "cardId"  : 84,
+        "name"    : "Ifrit",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 9,
+            "right"  : 6,
+            "bottom" : 2,
+            "left"   : 8
+        },
+        "element" : "Fire"
+    },
+    {
+        "cardId"  : 85,
+        "name"    : "Siren",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 9,
+            "bottom" : 6,
+            "left"   : 2
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 86,
+        "name"    : "Sacred",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 1,
+            "bottom" : 9,
+            "left"   : 9
+        },
+        "element" : "Earth"
+    },
+    {
+        "cardId"  : 87,
+        "name"    : "Minotaur",
+        "level"   : 8,
+        "ranks"   : {
+            "top"    : 9,
+            "right"  : 5,
+            "bottom" : 2,
+            "left"   : 9
+        },
+        "element" : "Earth"
+    },
+
+    {
+        "cardId"  : 88,
+        "name"    : "Carbuncle",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 4,
+            "bottom" : 10,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 89,
+        "name"    : "Diablos",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 10,
+            "bottom" : 8,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 90,
+        "name"    : "Leviathan",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 10,
+            "bottom" : 1,
+            "left"   : 7
+        },
+        "element" : "Water"
+    },
+    {
+        "cardId"  : 91,
+        "name"    : "Odin",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 10,
+            "bottom" : 3,
+            "left"   : 5
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 92,
+        "name"    : "Pandemona",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 10,
+            "right"  : 1,
+            "bottom" : 7,
+            "left"   : 7
+        },
+        "element" : "Wind"
+    },
+    {
+        "cardId"  : 93,
+        "name"    : "Cerberus",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 4,
+            "bottom" : 6,
+            "left"   : 10
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 94,
+        "name"    : "Alexander",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 9,
+            "right"  : 10,
+            "bottom" : 4,
+            "left"   : 2
+        },
+        "element" : "Holy"
+    },
+    {
+        "cardId"  : 95,
+        "name"    : "Phoenix",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 7,
+            "right"  : 2,
+            "bottom" : 7,
+            "left"   : 10
+        },
+        "element" : "Fire"
+    },
+    {
+        "cardId"  : 96,
+        "name"    : "Bahamut",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 10,
+            "right"  : 8,
+            "bottom" : 2,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 97,
+        "name"    : "Doomtrain",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 3,
+            "right"  : 1,
+            "bottom" : 10,
+            "left"   : 10
+        },
+        "element" : "Poison"
+    },
+    {
+        "cardId"  : 98,
+        "name"    : "Eden",
+        "level"   : 9,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 4,
+            "bottom" : 9,
+            "left"   : 10
+        },
+        "element" : null
+    },
+
+    {
+        "cardId"  : 99,
+        "name"    : "Ward",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 10,
+            "right"  : 7,
+            "bottom" : 2,
+            "left"   : 8
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 100,
+        "name"    : "Kiros",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 7,
+            "bottom" : 10,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 101,
+        "name"    : "Laguna",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 5,
+            "right"  : 10,
+            "bottom" : 3,
+            "left"   : 9
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 102,
+        "name"    : "Selphie",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 10,
+            "right"  : 8,
+            "bottom" : 6,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 103,
+        "name"    : "Quistis",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 9,
+            "right"  : 6,
+            "bottom" : 10,
+            "left"   : 2
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 104,
+        "name"    : "Irvine",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 2,
+            "right"  : 6,
+            "bottom" : 9,
+            "left"   : 10
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 105,
+        "name"    : "Zell",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 8,
+            "right"  : 5,
+            "bottom" : 10,
+            "left"   : 6
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 106,
+        "name"    : "Rinoa",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 4,
+            "right"  : 10,
+            "bottom" : 2,
+            "left"   : 10
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 107,
+        "name"    : "Edea",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 10,
+            "right"  : 10,
+            "bottom" : 3,
+            "left"   : 3
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 108,
+        "name"    : "Seifer",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 6,
+            "right"  : 9,
+            "bottom" : 10,
+            "left"   : 4
+        },
+        "element" : null
+    },
+    {
+        "cardId"  : 109,
+        "name"    : "Squall",
+        "level"   : 10,
+        "ranks"   : {
+            "top"    : 10,
+            "right"  : 4,
+            "bottom" : 6,
+            "left"   : 9
+        },
+        "element" : null
+    }
+]

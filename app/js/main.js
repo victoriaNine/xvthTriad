@@ -1,0 +1,92 @@
+// Filename: main.js
+
+// Require.js allows us to configure mappings to paths
+// as demonstrated below:
+require.config({
+    baseUrl : "./js/",
+    paths   : {
+        jquery            : "libs/jquery/dist/jquery",
+        backbone          : "libs/backbone/backbone",
+        underscore        : "libs/lodash/dist/lodash",
+        gsap              : "libs/gsap/src/uncompressed/tweenMax",
+        seriously         : "libs/seriouslyjs/seriously",
+
+        storage           : "libs/backbone/backbone.localStorage",
+        text              : "libs/requirejs-plugins/lib/text",
+
+        async             : "libs/requirejs-plugins/src/async",
+        font              : "libs/requirejs-plugins/src/font",
+        goog              : "libs/requirejs-plugins/src/goog",
+        image             : "libs/requirejs-plugins/src/image",
+        json              : "libs/requirejs-plugins/src/json",
+        noext             : "libs/requirejs-plugins/src/noext",
+        mdown             : "libs/requirejs-plugins/src/mdown",
+        propertyParser    : "libs/requirejs-plugins/src/propertyParser",
+        markdownConverter : "libs/requirejs-plugins/lib/Markdown.Converter",
+
+        global            : "global"
+    },
+
+    shim  : {}
+});
+
+require([
+    "jquery",
+    "underscore",
+    "modules/canvasWebGL",
+    "modules/assetLoader",
+    "views/screen_title",
+    "json!data/loader_img.json",
+    "global"
+], function ($, _, canvasWebGL, assetLoader, Screen_Title, loaderImg, _$) {
+    var events  = _$.events;
+    var loaders = [loaderImg];
+
+    events.on("all", function (eventName) {
+        console.log(eventName);
+    });
+
+    events.on("allLoadersComplete", function () {
+        var logo = $(_$.assets.get("svg.ui.logo"));
+        $(".footer_logo").append(logo);
+
+        canvasWebGL.init();
+        _$.state.screen = new Screen_Title({ firstInit: true });
+    });
+
+    TweenMax.set(_$.dom, { opacity : 0 });
+    assetLoader.init(loaders);
+});
+
+(function () {
+    function setupStats () {
+        var stats = new window.Stats();
+        stats.dom.style.left = "auto";
+        stats.dom.style.right = "0px";
+        stats.dom.style.width = "80px";
+        stats.showPanel(0);
+        document.body.appendChild(stats.dom);
+
+        requestAnimationFrame(function loop () {
+            stats.update();
+            requestAnimationFrame(loop);
+        });
+    }
+
+    function pixelRatioAdjust () {
+        var html             = document.querySelector("html");
+        var body             = document.body;
+        var devicePixelRatio = window.devicePixelRatio || 1;
+
+        window.screen       = window.screen || {};
+        screen.actualWidth  = (window.screen.width || document.body.scrollWidth) * devicePixelRatio;
+        screen.actualHeight = (window.screen.height || document.body.scrollHeight) * devicePixelRatio;
+
+        html.style.width     = "calc(100vw * " + devicePixelRatio + ")";
+        html.style.height    = "calc(100vh * " + devicePixelRatio + ")";
+        body.style.transform = "scale(" + 1 / devicePixelRatio + ") translate(-" + devicePixelRatio * 10 + "%, -" + devicePixelRatio * 10 + "%)";
+    }
+
+    setupStats();
+    pixelRatioAdjust();
+})();

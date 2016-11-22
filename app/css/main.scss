@@ -1,0 +1,700 @@
+/*=======================*/
+/* VARIABLES, FUNCTIONS
+/*=======================*/
+$uiAssetsPath   : "../assets/img/ui/";
+$fontAssetsPath : "../assets/fonts/";
+
+$globalPadding  : 50px;
+$btnSize_big    : 60px;
+
+$boardSize      : 500px;
+$cardRatio      : 113 / 138;
+$cardWidth      : 150px;
+$fontSize_UI    : 24px;
+$fontSize_score : 128px;
+$fontSize_btn   : 16px;
+
+
+/*=======================*/
+/* MIXINS
+/*=======================*/
+@mixin keyframes($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+  /*@-moz-keyframes #{$animation-name} {
+    @content;
+  }  */
+  @-ms-keyframes #{$animation-name} {
+    @content;
+  }
+  /*@-o-keyframes #{$animation-name} {
+    @content;
+  }*/ 
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin animation($str) {
+  -webkit-animation: #{$str};
+  //-moz-animation: #{$str};
+  -ms-animation: #{$str};
+  //-o-animation: #{$str};
+  animation: #{$str};      
+}
+
+@mixin transform($str) {
+  -webkit-transform: #{$str};
+  //-moz-transform: #{$str};
+  -ms-transform: #{$str};
+  //-o-transform: #{$str};
+  transform: #{$str};
+}
+
+@mixin transition($str) {
+  -webkit-transition: -webkit-#{$str};
+  //-moz-transition: -moz-#{$str};
+  -ms-transition: -ms-#{$str};
+  //-o-transition: -o-#{$str};
+  transition: #{$str};
+}
+
+@mixin fullSizeAbs ($content: false) {
+    @if $content { content: $content; }
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+
+/*=======================*/
+/* FONT FACES
+/*=======================*/
+@font-face {
+    font-family: "AvantGarde LT";
+    src: url(#{ $fontAssetsPath + "AvantGardeLT-Medium.eot" });
+    src: url(#{ $fontAssetsPath + "AvantGardeLT-Medium.eot?#iefix" }) format("embedded-opentype"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-Medium.woff2" }) format("woff2"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-Medium.woff" }) format("woff"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-Medium.ttf" }) format("truetype");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "AvantGarde LT";
+    src: url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.eot" });
+    src: url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.eot?#iefix" }) format("embedded-opentype"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.woff2" }) format("woff2"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.woff" }) format("woff"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.ttf" }) format("truetype");
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "AvantGarde LT";
+    src: url(#{ $fontAssetsPath + "AvantGardeLT-Bold.eot"});
+    src: url(#{ $fontAssetsPath + "AvantGardeLT-Bold.eot?#iefix"}) format("embedded-opentype"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-Bold.woff2"}) format("woff2"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-Bold.woff"}) format("woff"),
+        url(#{ $fontAssetsPath + "AvantGardeLT-Bold.ttf"}) format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+/*=======================*/
+/* GENERAL RULES
+/*=======================*/
+html, body {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+html {
+    background: #000;
+    font-family: "AvantGarde LT", sans-serif;
+    font-weight: 200;
+    text-transform: uppercase;
+    color:#FFF;
+}
+
+body {
+    transform-origin: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#app {
+    @include fullSizeAbs();
+}
+
+
+/*=======================*/
+/* COMPONENTS
+/*=======================*/
+/* Containers ------------*/
+.screen {
+    @include fullSizeAbs();
+    top:0;
+    left:0;
+}
+
+/* Buttons ------------*/
+%btn {
+    cursor: pointer;
+    font-size: $fontSize_btn;
+}
+
+%btn-rect {
+    @extend %btn;
+
+    border:1px solid #FFF;
+    overflow:hidden;
+    padding: .3em;
+
+    &:after {
+        @include fullSizeAbs("");
+        background: #FFF;
+        left:0;
+        top:-100%;
+
+        @include transition("top .15s ease-in");
+        @include transform("translate3d(0, 0, 0)");
+    }
+
+    &:hover, &.is--active {
+        background: #FFF;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        &:after {
+            top:0;
+            mix-blend-mode: exclusion;
+        }
+    }
+}
+
+%btn-diamond {
+    @extend %btn;
+
+    &-hoverFX {
+        @include fullSizeAbs();
+        @include transform("rotate(45deg)");
+        border: 1px solid #FFF;
+        overflow: hidden;
+
+        &:after {
+            @include fullSizeAbs("");
+            top:200%;
+            left:200%;
+
+            @include transition("all .2s .2s ease-in");
+        }
+    }
+
+    &:hover {
+        & %btn-diamond-hoverFX {
+            &:after {
+                background: #FFF;
+                top:0;
+                left:0;
+
+                @include transition("all .2s ease-out");
+            }
+        }
+    }
+}
+
+%arrow {
+    @include fullSizeAbs();
+    background: url(#{ $uiAssetsPath + "arrow.png"}) no-repeat 50%;
+}
+
+.arrow-up, .arrow-right, .arrow-down, .arrow-left {
+    @extend %arrow;
+}
+
+.arrow-up   { @include transform("rotate(-90deg)"); }
+.arrow-down { @include transform("rotate(90deg)"); }
+.arrow-left { @include transform("rotate(180deg)"); }
+
+%btn-diamond:hover %arrow {
+    mix-blend-mode: exclusion;
+}
+
+/*=======================*/
+/* FOOTER
+/*=======================*/
+#footer {
+    width: 100%;
+    height: 190px;
+    bottom: 0;
+    padding: 0px $globalPadding $globalPadding $globalPadding;
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+
+    &.--showLogo {
+        & .footer_line {
+            -webkit-clip-path: polygon(
+                0px 1px,
+                85px 1px,
+                85px 0px,
+                220px 0px,
+                220px 1px,
+                100% 1px,
+                100% 0px,
+                0px 0px
+            );
+        }
+    }
+}
+
+.footer_line {
+    background: #FFF;
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    left:0;
+    top:50%;
+
+    @include transform("translate3d(0, 0, 0)");
+}
+
+.footer_logo {
+    width: 190px;
+    height: 145px;
+    margin-right: 1em;
+    display: flex;
+    align-items: flex-end;
+
+    & .svg-logo {
+        fill: rgba(255, 255, 255, 1);
+        stroke: rgba(255, 255, 255, 0);
+        cursor:pointer;
+        flex: 1;
+
+        @include transition("fill .15s, stroke .15s");
+    }
+
+    &:not(.tweening):hover .svg-logo {
+        fill: rgba(0, 0, 0, 0.25);
+        stroke: rgba(255, 255, 255, 1);
+    }
+}
+
+.footer_menu {
+    display: flex;
+    align-items: flex-end;
+    margin-right: 1em;
+
+    &-element {
+        @extend %btn-rect;
+
+        position: relative;
+        display: inline-block;
+        margin-right: .5em;
+    }
+}
+
+.footer_social {
+    display: flex;
+    align-items: flex-end;
+    
+    &-element {
+        @extend %btn-diamond;
+
+        position: relative;
+        display: inline-block;
+        margin-right: 1em;
+        vertical-align: super;
+        padding: .15em;
+        bottom: .15em;
+        overflow: visible !important;
+
+        &-hoverFX {
+            @extend %btn-diamond-hoverFX;
+        }
+
+        &:hover {
+            & .footer_social-icon:before {
+                mix-blend-mode: exclusion;
+            }
+        }
+    }
+
+    &-icon {
+        &:after {
+            content: "\n\n";
+            visibility: hidden;
+
+            font-family: "socicon" !important;
+            font-style: normal !important;
+            font-weight: normal !important;
+            font-variant: normal !important;
+            text-transform: none !important;
+            speak: none;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        &:before {
+            position: absolute;
+            left: calc(50% - .75em);
+            top: calc(50% - (.75em / 2));
+            font-size: .75em;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            vertical-align: text-bottom;
+        }
+    }
+}
+
+.footer_text {
+    position: absolute;
+    right: $globalPadding;
+    bottom: $globalPadding;
+    user-select:none;
+    cursor: default;
+
+    &-span {
+        font-size: .75em;
+        margin-right: .5em;
+    }
+}
+
+/*=======================*/
+/* TITLE SCREEN
+/*=======================*/
+.title_logo {
+    width: 630px;
+    height: 485px;
+    position: absolute;
+    left: calc(50% - 630px / 2);
+    top: 12.5%;
+}
+
+.title_startBtn {
+    @extend %btn-diamond;
+
+    width: $btnSize_big;
+    height: $btnSize_big;
+    position: absolute;
+    left:calc(50% - #{ $btnSize_big / 2 });
+    top: 70%;
+
+    &:before {
+        @include fullSizeAbs("");
+        box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0),
+                    0px 0px 10px 0 rgba(0, 0, 0, 0);
+
+        @include transform("scale(0.85) rotate(45deg)");
+        @include transition("box-shadow .2s ease-in");
+    }
+
+    &:after {
+        content:"Start";
+        width:100px;
+        text-align: center;
+        position: absolute;
+        left: calc(50% - 50px);
+        bottom: -3em;
+        height: 1em;
+        transform: translate3d(0,0,0);
+
+        @include transition("letter-spacing .15s .1s, text-indent .15s .1s");
+    }
+
+    &:hover {
+        &:before {
+            box-shadow: -25px 25px 0 0 rgba(0, 0, 0, .25),
+                        25px -25px 0 0 rgba(0, 0, 0, .25);
+
+            @include transition("box-shadow .2s .1s ease-out");
+        }
+
+        &:after {
+            letter-spacing: 0.25em;
+            text-indent: 0.25em;
+        }
+    }
+
+    &-hoverFX {
+        @extend %btn-diamond-hoverFX;
+    }
+}
+
+#mainMenu {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    background: aquamarine;
+    text-align: center;
+}
+
+
+/*=======================*/
+/* GAME SCREEN
+/*=======================*/
+/* BOARD --------------*/
+#board {
+    position: absolute;
+    display:flex;
+    flex-wrap:wrap;
+    width: $boardSize;
+    height: $boardSize / $cardRatio;
+    align-content: space-between;
+    justify-content: space-between;
+    left:calc(50% - #{ $boardSize / 2 });
+    top:calc(50% - #{ ($boardSize / $cardRatio) / 2 });
+}
+
+#board:after {
+    content: "";
+    position: absolute;
+    //background: rgba(0, 0, 0, .8);
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    border-radius: 40%;
+
+    background: -moz-radial-gradient(center, ellipse cover, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#a8000000", endColorstr="#00000000",GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+#board:before {
+    content: "";
+    position: absolute;
+    background: #111;
+    width: 105%;
+    height: 105%;
+    z-index: -1;
+    left: -2.5%;
+    top: -2.5%;
+    border-radius: 5%;
+    box-shadow: 0 0px 2px 2px rgba(0, 0, 0, 0.1) inset,
+                0 0px 8px 10px rgba(255, 255, 255, 0.1) inset,
+                5px 5px 2px 0px rgba(0, 0, 0, .25);
+}
+
+.case {
+    width: 33.15%;
+    height: 33.15%;
+    position: relative;
+    background: #1E2128;
+    border-radius: 2.5%;
+    box-shadow: 0 0px 2px 2px rgba(0, 0, 0, 0.1) inset,
+                0 0px 1px 2px rgba(255, 255, 255, 0.05) inset;
+}
+
+/*.case:after {
+    content:"";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: -moz-linear-gradient(bottom, rgba(0,0,0,0.125) 0%, rgba(0,0,0,0) 100%); // FF3.6-15
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.125) 0%, rgba(0,0,0,0) 100%); // Chrome10-25,Safari5.1-6
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.125) 0%, transparent 100%); // W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#a1000000", endColorstr="#00000000",GradientType=0 ); // IE6-9 fallback on horizontal gradient
+}*/
+
+#case11 { border-radius: 15% 2.5% 2.5% 2.5%; }
+#case13 { border-radius: 2.5% 15% 2.5% 2.5%; }
+#case31 { border-radius: 2.5% 2.5% 2.5% 15%; }
+#case33 { border-radius: 2.5% 2.5% 15% 2.5%; }
+
+#backLogo {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url(#{ $uiAssetsPath + "logoTest.png" }) no-repeat 50%;
+    z-index: 2;
+    background-size: 95%;
+    opacity: .5;
+}
+
+/* CARDS --------------*/
+.card {
+    width: $cardWidth;
+    height: $cardWidth / $cardRatio;
+    position: fixed;
+    left:0;
+    top:0;
+    transform-style: preserve-3d;
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.card-front            { z-index: 2; }
+.card-blue .card-front { background: url(#{ $uiAssetsPath + "card_blueBG.png" }); }
+.card-red .card-front  { background: url(#{ $uiAssetsPath + "card_redBG.png" }); }
+.card-grey .card-front { background: url(#{ $uiAssetsPath + "card_greyBG.png" }); }
+
+.card-back {
+    background: url(#{ $uiAssetsPath + "card_back.png" });
+    z-index: 1;
+
+    @include transform("rotateX(180deg)");
+}
+
+.card-blue:nth-child(1), .card-red:nth-child(6)  { z-index: 9999; }
+.card-blue:nth-child(2), .card-red:nth-child(7)  { z-index: 9998; }
+.card-blue:nth-child(3), .card-red:nth-child(8)  { z-index: 9997; }
+.card-blue:nth-child(4), .card-red:nth-child(9)  { z-index: 9996; }
+.card-blue:nth-child(5), .card-red:nth-child(10) { z-index: 9995; }
+
+
+/* PLAYER HUD --------------*/
+.playerHUD {
+    width:530px;
+    height:380px;
+    top: calc(50% - 380px / 2);
+    position: absolute;
+}
+
+.playerHUD-opponent { right: calc(50% + (#{$boardSize / 2} + 50px)); }
+.playerHUD-user     { left: calc(50% + (#{$boardSize / 2} + 50px)); }
+
+.playerHUD-bar {
+    position: absolute;
+    width: 100%;
+    height: 45px;
+    line-height: 45px;
+    font-size:$fontSize_UI;
+}
+
+.playerHUD-bar:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    filter: blur(2px);
+    border-radius: 15px;
+}
+
+.playerHUD-opponent .playerHUD-bar              { padding-left: 100px; }
+.playerHUD-opponent--active .playerHUD-bar       { text-shadow: 0 0 10px rgba(255, 215, 229, .75); }
+.playerHUD-opponent .playerHUD-bar:after        { background: linear-gradient(to right, rgba(17, 17, 17, 0.7) 0%, rgba(17, 17, 17, 0) 100%); }
+.playerHUD-opponent--active .playerHUD-bar:after { background: linear-gradient(to right, rgba(255, 58, 151, 0.7) 0%, rgba(255, 58, 151, 0) 100%); }
+
+.playerHUD-user .playerHUD-bar              { text-align: right; padding-right: 100px; }
+.playerHUD-user--active .playerHUD-bar       { text-shadow: 0 0 10px rgba(83, 216, 251, .75); }
+.playerHUD-user .playerHUD-bar:after        { background: linear-gradient(to left, rgba(17, 17, 17, 0.7) 0%, rgba(17, 17, 17, 0) 100%); }
+.playerHUD-user--active .playerHUD-bar:after { background: linear-gradient(to left, rgba(58, 179, 255, 0.7) 0%, rgba(58, 179, 255, 0) 100%); }
+
+.playerHUD-score {
+    position: absolute;
+    font-size: $fontSize_score;
+    vertical-align: middle;
+    text-align: center;
+    top: -32px;
+    text-shadow: 6px 6px 0 rgba(130, 57, 17, .75);
+}
+
+.playerHUD-opponent .playerHUD-score { right:0; }
+.playerHUD-user .playerHUD-score     { left:0; }
+
+.playerHUD-avatar {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    top: calc(-80px / 4);
+}
+
+.playerHUD-opponent .playerHUD-avatar { left: 0; }
+.playerHUD-user .playerHUD-avatar     { right: 0; }
+
+.playerHUD-avatar:before {
+    content: "";
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+    z-index: -1;
+    left: -5px;
+    top: -5px;
+    box-shadow: 0 3px 3px 0px rgba(0, 0, 0, .5);
+
+    background: rgb(251,223,147);
+    background: -moz-linear-gradient(top, rgba(251,223,147,1) 0%, rgba(248,181,0,1) 49%, rgba(252,205,77,1) 50%, rgba(252,234,187,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(251,223,147,1) 0%,rgba(248,181,0,1) 49%,rgba(252,205,77,1) 50%,rgba(252,234,187,1) 100%);
+    background: linear-gradient(to bottom, rgba(251,223,147,1) 0%,rgba(248,181,0,1) 49%,rgba(252,205,77,1) 50%,rgba(252,234,187,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#fbdf93", endColorstr="#fceabb",GradientType=0 );
+}
+
+.playerHUD-avatar:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 2px 4px 2px rgba(0, 0, 0, .5) inset;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+.playerHUD-avatar img { border-radius: 10px; }
+
+.playerHUD-opponent--active .playerHUD-avatar        { box-shadow: 0 0 20px 10px rgba(255, 215, 229, 0.75); }
+.playerHUD-opponent--active .playerHUD-avatar:before { box-shadow: 0 3px 3px 0px rgba(255, 170, 200, 0.75); }
+.playerHUD-opponent--active .playerHUD-avatar:after  {
+    box-shadow: 0 0px 4px 3px rgba(255, 170, 200, 0.75) inset,
+                0 2px 4px 2px rgba(0, 0, 0, 0.5) inset,
+                0 0px 4px 6px rgba(255, 255, 255, 0.75),
+                0 0 7px 6px rgba(255, 170, 200, 0.75) inset;
+}
+
+.playerHUD-user--active .playerHUD-avatar        { box-shadow: 0 0 20px 10px rgba(83, 216, 251, 0.75); }
+.playerHUD-user--active .playerHUD-avatar:before { box-shadow: 0 3px 3px 0px rgba(255, 170, 200, 0.75); }
+.playerHUD-user--active .playerHUD-avatar:after  {
+    box-shadow: 0 0px 4px 3px rgba(197, 241, 253, 0.75) inset,
+                0 2px 4px 2px rgba(0, 0, 0, 0.5) inset,
+                0 0px 4px 6px rgba(255, 255, 255, 0.75),
+                0 0 7px 6px rgba(197, 241, 253, 0.75) inset;
+}
+
+/* DECK HOLDERS --------------*/
+.deckHolder {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 195px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+}
+
+/*.playerHUD.opponent .deckHolder { flex-direction: row; }
+.playerHUD.user .deckHolder     { flex-direction: row-reverse; }*/
+
+.cardHolder             { width: calc(160px / 2); background: url(#{ $uiAssetsPath + "cardHolder.png" }) no-repeat left; }
+.cardHolder:first-child { width: 160px; }
+
+/*.playerHUD.opponent .cardHolder { background-position: right; }
+.playerHUD.user .cardHolder     { background-position: left; }*/

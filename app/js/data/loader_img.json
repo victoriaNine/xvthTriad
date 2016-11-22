@@ -1,0 +1,25 @@
+{
+    "name"  : "images",
+    "files" : [
+        {
+            "type" : "img.ui",
+            "name" : "bg.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "bgDepthMap.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "bgPattern.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "bgFlare.png"
+        },
+        {
+            "type" : "svg.ui",
+            "name" : "logo.svg"
+        }
+    ]
+}

@@ -1,0 +1,82 @@
+Utilisateur :
+- Nom
+- Collection
+
+Partie :
+- Type
+- Joueurs
+- Score
+- Joueur actuel
+- Gagnant
+- Perdant
+- Règles
+- Plateau
+- Difficulté
+
+Joueur :
+- Type
+- Nom
+- Deck
+- Points
+
+Carte :
+- Nom
+- Image
+- Rang
+- Côte :
+ - Haut
+ - Bas
+ - Droite
+ - Gauche
+- Element
+- Propriétaire
+- Position sur plateau
+- Bonus
+
+Plateau :
+- Cases
+- Nombre cartes placées
+
+Case :
+- Position
+- Carte contenue
+- Element
+
+Deck :
+- Cartes
+- Nombre cartes restantes
+
+-------------------------
+
+- Place les cartes sur leur élément si possible
+- Place les cartes dans un coin si possible
+- Maintient status quo si avantageux
+- Retourne carte adversaire avec plus faible côte de sa propre carte si possible
+
+Facile :
+ - Evalue toutes les issues possibles jusqu'au tour suivant
+ - Choisit l'issue la plus optimale avec 100% de chances
+
+Normal :
+ - Evalue toutes les issues possibles jusqu'à la fin du jeu
+ - Choisit l'issue la plus optimale avec 60% de chances
+
+ Difficile :
+ - Evalue toutes les issues possibles jusqu'à la fin du jeu
+ - Choisit l'issue la plus optimale avec 100% de chances
+
+- AI
+ - Difficulté (Facile, Normal, Difficile)
+ - Simulateur
+
+----
+
+Simulateur :
+- Phase simulée
+- Simulations
+- Possibilités
+Simulation :
+ - Phase
+ - Action IA
+ - Action joueur
+ - Résultat
