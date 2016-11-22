@@ -1,4 +1,4 @@
-define(["underscore", "backbone", "global", "collections/Coll_Collection"], function User (_, Backbone, _$, Collection) {
+define(["underscore", "backbone", "global", "collections/Coll_Collection"], function Model_User (_, Backbone, _$, Collection) {
     return Backbone.Model.extend({
         defaults : {
             name       : _$.utils.getRandomName(),

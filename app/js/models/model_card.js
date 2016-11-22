@@ -1,4 +1,4 @@
-define(["underscore", "backbone"], function Card (_, Backbone) {
+define(["underscore", "backbone"], function Model_Card (_, Backbone) {
     return Backbone.Model.extend({
         defaults : {
             name       : "",

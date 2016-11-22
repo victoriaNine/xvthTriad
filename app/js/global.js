@@ -42,8 +42,7 @@ define([
         getRandomCards,
         getAbsoluteOffset,
         getDestinationCoord,
-        addDomObserver,
-        toggleFooter
+        addDomObserver
     };
 
     var _$ = window._$ = {
@@ -60,125 +59,6 @@ define([
     /* DESIGN */
     function getAppSizeRatio () {
         return document.body.scrollWidth / window.screen.actualWidth;
-    }
-
-    function toggleFooter (options) {
-        var footerTl = new TimelineMax();
-
-        if (!options || options && options.all) {
-            if (options.all === "show") {
-                footerTl.add(toggleLine("show"));
-                footerTl.add(toggleLogo("show"), "-=1");
-                footerTl.add(toggleMenu("show"), "-=1.5");
-                footerTl.add(toggleSocial("show"), "-=1.5");
-            } else if (options.all === "hide") {
-                footerTl.add(toggleSocial("hide"));
-                footerTl.add(toggleMenu("hide"), "-=1.5");
-                footerTl.add(toggleLogo("hide"), "-=1.5");
-                footerTl.add(toggleLine("hide"), "-=1");
-            }
-        } else {
-            if (options.line) {
-                footerTl.add(toggleLine(options.line));
-            }
-
-            if (options.logo) {
-                footerTl.add(toggleLogo(options.logo));
-            }
-
-            if (options.menu) {
-                footerTl.add(toggleMenu(options.menu));
-            }
-
-            if (options.social) {
-                footerTl.add(toggleSocial(options.social));
-            }
-        }
-
-        return footerTl;
-
-        function toggleLine (state) {
-            var el = $(".footer_line");
-            var tl = new TimelineMax();
-
-            if (state === "show") {
-                tl.set(el, { clearProps:"display" });
-                tl.from(el, 1.5, { opacity:0, width:0, ease: Power3.easeOut, clearProps:"all" });
-            } else if (state === "hide") {
-                tl.to(el, 1.5, { width: 0, opacity: 0 });
-                tl.set(el, { display:"none", clearProps:"width,opacity" }, "+=.1");
-            }
-
-            return tl;
-        }
-
-        function toggleLogo (state) {
-            var el = $(".footer_logo");
-            var tl = new TimelineMax();
-
-            el.addClass("tweening");
-            if (state === "show") {
-                tl.add(showElement(el));
-                tl.call(function () {
-                    $("#footer").addClass("--showLogo");
-                });
-            } else if (state === "hide") {
-                $("#footer").removeClass("--showLogo");
-                tl.add(hideElement(el));
-            }
-
-            tl.call(function () {
-                el.removeClass("tweening");
-            });
-
-            return tl;
-        }
-
-        function toggleMenu (state) {
-            return staggerToggle($(".footer_menu-element"), state);
-        }
-
-        function toggleSocial (state) {
-            return staggerToggle($(".footer_social-element"), state);
-        }
-
-        function staggerToggle (elements, state) {
-            var tl = new TimelineMax();
-            var nbElement = elements.length;
-
-            $(elements).each(function (i) {
-                if (state === "show") {
-                    tl.add(showElement($(this)), i * 0.15);
-                } else if (state === "hide") {
-                    tl.add(hideElement($(this)), (nbElement - i) * 0.15);
-                }
-            });
-
-            return tl;
-        }
-
-        function showElement (element) {
-            var tl = new TimelineMax();
-
-            tl.set(element, { overflow:"hidden", clearProps:"display" });
-            tl.from(element, 1.5, { opacity:0 });
-            tl.from(element, 0.5, { width: 0, borderWidth:0 }, 0);
-            tl.from(element, 1, { height: 0, padding:0, margin:0, ease: Power3.easeOut, clearProps:"all" }, "-=1");
-
-            return tl;
-        }
-
-        function hideElement (element) {
-            var tl = new TimelineMax();
-
-            tl.set(element, { overflow:"hidden" });
-            tl.to(element, 1.5, { opacity:0 });
-            tl.to(element, 1, { height:0, padding:0, margin:0, ease: Power3.easeOut }, 0);
-            tl.to(element, 0.5, { width: 0, borderWidth: 0 }, "-=1");
-            tl.set(element, { display:"none", clearProps:"height,width,overflow,borderWidth,padding,margin,opacity" }, "+=.1");
-
-            return tl;
-        }
     }
 
     /* DOM */

@@ -4,12 +4,13 @@ define([
     "backbone",
     "models/model_user",
     "models/model_game",
+    "views/screen",
     "views/screen_cardSelect",
     "text!templates/templ_title.html",
     "global",
     "gsap"
-], function Screen_Title ($, _, Backbone, User, Game, Screen_CardSelect, Templ_Title, _$) {
-    return Backbone.View.extend({
+], function Screen_Title ($, _, Backbone, Model_User, Model_Game, Screen, Screen_CardSelect, Templ_Title, _$) {
+    return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
         tagName   : "section",
@@ -26,16 +27,14 @@ define([
 
         initialize : initialize,
         render     : render,
+
+        setupApp   : setupApp,
         cardSelect : cardSelect
     });
 
     function initialize (options) {
         if (options.firstInit) {
-            _$.state.user = new User();
-            _$.utils.addDomObserver(this.$el, () => {
-                TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity", delay: 0 });
-                this.render();
-            }, true);
+            this.setupApp();
         }
 
         this.ui      = {};
@@ -43,7 +42,7 @@ define([
 
         this.$el.append(this.template());
         this.$(".title_logo").append(this.ui.logo);
-        $(_$.dom).append(this.$el);
+        this.add();
     }
 
     function render () {
@@ -78,12 +77,12 @@ define([
         });
         
         mainTl.addLabel("enterFooter", "-=6");
-        mainTl.add(_$.utils.toggleFooter({menu: "show"}), "enterFooter");
-        mainTl.add(_$.utils.toggleFooter({social: "show"}), "enterFooter+=1");
-        mainTl.set($(".footer_text"), { display:"" }, "enterFooter+=2.5");
-        mainTl.from($(".footer_text"), 1, { opacity:0, x:20, clearProps:"all" }, "enterFooter+=2.5");
+        mainTl.add(_$.state.footer.toggleMenu("show"), "enterFooter");
+        mainTl.add(_$.state.footer.toggleSocial("show"), "enterFooter+=1");
+        mainTl.set(_$.state.footer.text, { display:"" }, "enterFooter+=2.5");
+        mainTl.from(_$.state.footer.text, 1, { opacity:0, x:20, clearProps:"all" }, "enterFooter+=2.5");
         mainTl.call(function () {
-            $(".footer_menu-homeBtn").addClass("is--active");
+            _$.state.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
         mainTl.call(function () {
             _$.events.trigger("addFX");
@@ -92,13 +91,21 @@ define([
         return this;
     }
 
+    function setupApp () {
+        _$.state.user = new Model_User();
+        _$.utils.addDomObserver(this.$el, () => {
+            TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity", delay: 0 });
+            this.render();
+        }, true);
+    }
+
     function cardSelect () {
-        $(".footer_menu-homeBtn").removeClass("is--active");
+        _$.state.footer.menu.find(".footer_menu-homeBtn").removeClass("is--active");
 
         var tl = new TimelineMax();
-        tl.add(_$.utils.toggleFooter({social: "hide"}));
-        tl.add(_$.utils.toggleFooter({menu: "hide"}), "-=1.5");
-        tl.add(_$.utils.toggleFooter({logo: "show"}), "-=1.5");
+        tl.add(_$.state.footer.toggleSocial("hide"));
+        tl.add(_$.state.footer.toggleMenu("hide"), "-=1.5");
+        tl.add(_$.state.footer.toggleLogo("show"), "-=1.5");
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {

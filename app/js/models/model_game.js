@@ -5,7 +5,7 @@ define([
     "models/model_player",
     "models/model_board",
     "collections/coll_deck"
-], function Game (_, Backbone, _$, Player, Board, Deck) {
+], function Model_Game (_, Backbone, _$, Player, Board, Deck) {
     return Backbone.Model.extend({
         defaults : {
             type    : "solo",

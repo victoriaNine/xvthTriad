@@ -36,9 +36,10 @@ require([
     "modules/canvasWebGL",
     "modules/assetLoader",
     "views/screen_title",
+    "views/elem_footer",
     "json!data/loader_img.json",
     "global"
-], function ($, _, canvasWebGL, assetLoader, Screen_Title, loaderImg, _$) {
+], function ($, _, canvasWebGL, assetLoader, Screen_Title, Elem_Footer, loaderImg, _$) {
     var events  = _$.events;
     var loaders = [loaderImg];
 
@@ -51,6 +52,7 @@ require([
         $(".footer_logo").append(logo);
 
         canvasWebGL.init();
+        _$.state.footer = new Elem_Footer();
         _$.state.screen = new Screen_Title({ firstInit: true });
     });
 

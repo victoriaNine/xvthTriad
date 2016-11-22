@@ -4,12 +4,13 @@ define([
     "backbone",
     "models/model_user",
     "models/model_game",
+    "views/screen",
     "views/screen_game",
     "text!templates/templ_cardSelect.html",
     "global",
     "gsap"
-], function Screen_CardSelect ($, _, Backbone, User, Game, Screen_Game, Templ_CardSelect, _$) {
-    return Backbone.View.extend({
+], function Screen_CardSelect ($, _, Backbone, Model_User, Model_Game, Screen, Screen_Game, Templ_CardSelect, _$) {
+    return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
         tagName   : "section",
@@ -37,7 +38,7 @@ define([
         this.ui = {};
 
         this.$el.append(this.template({ ownedCardsString: ownedCardsString }));
-        $(_$.dom).append(this.$el);
+        this.add();
     }
 
     function render () {
@@ -45,7 +46,7 @@ define([
     }
 
     function newGame () {
-        _$.state.game   = new Game();
+        _$.state.game   = new Model_Game();
         _$.state.screen = new Screen_Game();
         this.remove();
     }

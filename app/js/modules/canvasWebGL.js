@@ -18,7 +18,7 @@ define([
     var events           = _$.events;
     var WIDTH            = document.body.scrollWidth;
     var HEIGHT           = document.body.scrollHeight;
-    var canvas3d         = document.querySelector("#canvasWebGL");
+    var canvas3d         = document.querySelector("#canvas");
     var canvas2d         = createCanvas(WIDTH, HEIGHT);
     var ctx2d            = canvas2d.getContext("2d");
     var canvas2dDepthMap = createCanvas(WIDTH, HEIGHT);

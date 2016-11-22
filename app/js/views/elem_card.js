@@ -5,12 +5,12 @@ define([
     "gsap",
     "global",
     "text!templates/templ_card.html"
-], function View_Card ($, _, Backbone, GSAP, _$, Templ_Card) {
+], function Elem_Card ($, _, Backbone, GSAP, _$, Templ_Card) {
     return Backbone.View.extend({
         tagName               : "div",
         className             : "card",
 
-        cardTemplate : _.template(Templ_Card),
+        template : _.template(Templ_Card),
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
@@ -24,7 +24,7 @@ define([
     function initialize (options) {
         this.deckIndex = options.deckIndex;
         this.played    = false;
-        this.$el.append(this.cardTemplate(this.model.attributes));
+        this.$el.append(this.template(this.model.attributes));
 
         if (_$.state.inGame) {
             if (this.model.get("currentOwner") === options.user) {

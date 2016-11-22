@@ -4,8 +4,8 @@ define(["underscore"], function Firefly (_) {
             this.ctx            = canvas.getContext("2d");
             this.options        = _.defaults(options, {
                 FPS             : 60,
-                maxLifeTime     : 120,
-                minLifeTime     : 10,
+                maxLifeTime     : 200,
+                minLifeTime     : 20,
                 maxSize         : 100,
                 minSize         : 40,
                 maxSpeed        : 15,
