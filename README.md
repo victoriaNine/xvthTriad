@@ -1,4 +1,4 @@
-# xvthTriad
+# The Fifteenth Triad
 
 A browser game based on Final Fantasy VIII's "Triple Triad" card game and set in the universe of the franchise's 15th installment.
 
