@@ -82,9 +82,11 @@ require([
         screen.actualWidth  = (window.screen.width || document.body.scrollWidth) * devicePixelRatio;
         screen.actualHeight = (window.screen.height || document.body.scrollHeight) * devicePixelRatio;
 
+        var scalar           = 1 / devicePixelRatio;
+        var offset           = (devicePixelRatio * 100 - 100) / 2;
         html.style.width     = "calc(100vw * " + devicePixelRatio + ")";
         html.style.height    = "calc(100vh * " + devicePixelRatio + ")";
-        body.style.transform = "scale(" + 1 / devicePixelRatio + ") translate(-" + devicePixelRatio * 10 + "%, -" + devicePixelRatio * 10 + "%)";
+        body.style.transform = "scale(" + scalar + ") translate(-" + offset + "%, -" + offset + "%)";
     }
 
     setupStats();
