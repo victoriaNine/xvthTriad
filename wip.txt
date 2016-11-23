@@ -1,6 +1,7 @@
 Utilisateur :
 - Nom
 - Collection
+- Avatar
 
 Partie :
 - Type

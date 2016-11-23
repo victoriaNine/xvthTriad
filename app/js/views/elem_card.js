@@ -27,7 +27,7 @@ define([
         this.$el.append(this.template(this.model.attributes));
 
         if (_$.state.inGame) {
-            if (this.model.get("currentOwner") === options.user) {
+            if (this.model.get("currentOwner") === _$.state.user) {
                 this.$el.addClass("blue");
                 this._placeOnHolder = function () { return this.placeCard("user", "holder"); };
             } else {

@@ -75,7 +75,7 @@ define([
     }
 
     function renderCard (card, index) {
-        var cardElem = new Elem_Card({ model: card, inGame: true, user: this.model.user, deckIndex: index });
+        var cardElem = new Elem_Card({ model: card, deckIndex: index });
         this.ui.cardsWrapper.append(cardElem.el);
         this.subviews.cards.push(cardElem);
     }

@@ -31,27 +31,39 @@ define([
         }
     }
 
-    var dom    = $("#app");
-    var assets = new AssetStore();
-    var events = _.clone(Backbone.Events);
-    var state  = {};
-    var utils  = {
+    var appName = "xvthTriad";
+    var dom     = $("#app");
+    var assets  = new AssetStore();
+    var events  = _.clone(Backbone.Events);
+    var state   = {};
+    var utils   = {
         getAppSizeRatio,
         getCardList,
         getRandomName,
         getRandomCards,
         getAbsoluteOffset,
         getDestinationCoord,
-        addDomObserver
+        addDomObserver,
+        saveData,
+        loadData,
+        importSave,
+        exportSave
     };
 
     var _$ = window._$ = {
-        appName : "xvthTriad",
+        appName,
         dom,
         state,
         assets,
         events,
         utils
+    };
+
+    var saveSettings   = {
+        prefix        : appName + ":save//",
+        extension     : "xvtsave",
+        charOffset    : 1,
+        charSeparator : "x"
     };
 
     return _$;
@@ -132,11 +144,6 @@ define([
             card = matches[_.random(matches.length - 1)];
 
             if (!options.unique || (options.unique && !_.find(cards, card))) {
-                if (options.owner !== undefined) {
-                    card.owner        = options.owner;
-                    card.currentOwner = options.owner;
-                }
-
                 cards.push(card);
                 i++;
             }
@@ -190,4 +197,105 @@ define([
             top  : destY
         };
     }
+
+    //===============================
+    // SAVE/LOAD MANAGEMENT
+    //===============================
+    function saveData () {
+        var data        = _.omit(_$.state.user.attributes, "collection");
+        data.collection = _.map(_$.state.user.attributes.collection.models, "attributes");
+
+        _setLocalStorage(_$.appName, _encodeSaveData(data));
+    }
+
+    function loadData (data) {
+        data = data || _getLocalStorage(_$.appName);
+
+        if (!data) {
+            console.error("LoadData: No data");
+            return;
+        }
+
+        var JSONdata = _decodeSaveData(data);
+        _.each(_.omit(JSONdata, "collection"), function (value, key) {
+            _$.state.user.set(key, value);
+        });
+
+        _$.state.user.get("collection").reset(JSONdata.collection);
+    }
+
+    function importSave (saveFile) {
+        var blob = URL.createObjectURL(saveFile);
+
+        fetch(blob).then(function (response) {
+            return response.text();
+        }).then(function (data) {
+            _$.loadData(data);
+            return data;
+        });
+    }
+
+    function exportSave (fileName) {
+        var data = _getLocalStorage(_$.appName);
+
+        if (!data) {
+            console.error("ExportSave: No data");
+            return;
+        }
+
+        var timeStamp = new Date();
+        var saveTime  = (
+            timeStamp.toLocaleDateString() + "-" +
+            ((timeStamp.getHours() < 10) ? "0" + timeStamp.toLocaleTimeString() : timeStamp.toLocaleTimeString())
+        ).replace(/[^\d+-]/g, "");
+
+        if (!fileName) {
+            fileName = _$.appName + "_" + saveTime + "." + saveSettings.extension;
+        }
+
+        if (typeof data === "object") {
+            data = JSON.stringify(data, undefined, 4)
+        }
+
+        var blob = new Blob([data], { type: "text/plain" });
+        var e    = document.createEvent("MouseEvents");
+        var a    = document.createElement("a");
+
+        a.download            = fileName;
+        a.href                = window.URL.createObjectURL(blob);
+        a.dataset.downloadurl = ["text/plain", a.download, a.href].join(":");
+        e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        a.dispatchEvent(e);
+    }
+
+    function _encodeSaveData (JSONdata) {
+        var encodedData = saveSettings.prefix;
+        JSONdata = JSON.stringify(JSONdata);
+
+        JSONdata.split("").forEach(function (char) {
+            encodedData += saveSettings.charSeparator + (char.codePointAt(0) + saveSettings.charOffset);
+        });
+
+        return encodedData;
+    }
+
+    function _decodeSaveData (encodedData) {
+        if (encodedData.indexOf(saveSettings.prefix) !== 0) {
+            console.error("DecodeSave: Invalid save file");
+            return "";
+        }
+
+        var JSONdata = "";
+        encodedData.replace(saveSettings.prefix, "").match(new RegExp(saveSettings.charSeparator + "\\d+", "g")).forEach(function (chunk) {
+            JSONdata += String.fromCodePoint(chunk.match(/\d+/) - saveSettings.charOffset);
+        });
+
+        return JSON.parse(JSONdata);
+    }
+
+    //===============================
+    // LOCAL STORAGE
+    //===============================
+    function _setLocalStorage (key, value) { window.localStorage.setItem(key, JSON.stringify(value)); }
+    function _getLocalStorage (key)        { return JSON.parse(window.localStorage.getItem(key)); }
 });
