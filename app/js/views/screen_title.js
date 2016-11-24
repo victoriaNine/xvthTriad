@@ -114,8 +114,7 @@ define([
         function onTransitionComplete () {
             _$.state.screen = new Screen_CardSelect();
             _$.events.trigger("startUserEvents");
-
-            //this.remove();
+            this.remove();
         }
     }
 });

@@ -47,7 +47,10 @@ define([
         saveData,
         loadData,
         importSave,
-        exportSave
+        exportSave,
+
+        fadeIn,
+        fadeOut
     };
 
     var _$ = window._$ = {
@@ -71,6 +74,25 @@ define([
     /* DESIGN */
     function getAppSizeRatio () {
         return document.body.scrollWidth / window.screen.actualWidth;
+    }
+
+    function fadeIn (elements, callback, duration = 0.5, delay = 0) {
+        console.log(elements);
+        var tl = new TimelineMax({ delay: delay });
+        if (_.isFunction(callback)) { tl.eventCallback("onComplete", callback, ["{self}"]); }
+        tl.set(elements, { clearProps: "display" });
+        tl.from(elements, duration, { opacity: 0 });
+        
+        return tl;
+    }
+
+    function fadeOut (elements, callback, duration = 0.5, delay = 0) {
+        var tl = new TimelineMax({ delay: delay });
+        if (_.isFunction(callback)) { tl.eventCallback("onComplete", callback, ["{self}"]); }
+        tl.set(elements, { display: "none", clearProps: "opacity" });
+        tl.to(elements, duration, { opacity: 0, clearProps: "opacity" });
+
+        return tl;
     }
 
     /* DOM */
@@ -118,7 +140,7 @@ define([
     }
 
     function getRandomName () {
-        var names = ["Squall", "Rinoa", "Quistis", "Zell", "Selphie", "Irvine"];
+        var names = ["Noctis", "Luna", "Ignis", "Prompto", "Iris", "Gladiolus", "Cor"];
         return names[_.random(names.length - 1)] + "_" + _.random(9999);
     }
 

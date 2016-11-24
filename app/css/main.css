@@ -140,6 +140,12 @@ h1 {
 .weight-bold {
   font-weight: 700; }
 
+.flex-justify-sb {
+  justify-content: space-between; }
+
+.flex-justify-start {
+  justify-content: flex-start; }
+
 /*=======================*/
 /* COMPONENTS
 /*=======================*/
@@ -410,13 +416,13 @@ h1 {
 
 .cardSelect_header:before {
   content: "";
-  position: absolute;
   width: 100%;
   height: 100%;
+  position: absolute;
   top: 0;
   left: 0;
   background: url(../assets/img/ui/headerPattern.jpg);
-  opacity: .4;
+  opacity: .25;
   z-index: -1; }
 
 .cardSelect_header-leftCol {
@@ -532,7 +538,6 @@ h1 {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-between;
   position: relative; }
 
 .cardSelect_content-album-card {
@@ -542,6 +547,8 @@ h1 {
   display: flex;
   flex-direction: column;
   cursor: pointer; }
+  .cardSelect_content-album.flex-justify-start .cardSelect_content-album-card {
+    margin-right: 1.5em; }
 
 .cardSelect_content-album-card-visual {
   flex: 1;
