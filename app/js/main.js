@@ -48,9 +48,6 @@ require([
     });
 
     events.on("allLoadersComplete", function () {
-        var logo = $(_$.assets.get("svg.ui.logo"));
-        $(".footer_logo").append(logo);
-
         canvasWebGL.init();
         _$.state.footer = new Elem_Footer();
         _$.state.screen = new Screen_Title({ firstInit: true });

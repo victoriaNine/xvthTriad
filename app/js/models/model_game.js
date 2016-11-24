@@ -74,7 +74,7 @@ define([
     function buildRandomDeck (user) {
         return new Deck(_$.utils.getRandomCards({
             amount     : 5,
-            collection : user.get("collection")
+            album : user.get("album")
         }));
     }
 

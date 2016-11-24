@@ -20,6 +20,10 @@
         {
             "type" : "svg.ui",
             "name" : "logo.svg"
+        },
+        {
+            "type" : "svg.ui",
+            "name" : "cardBG.svg"
         }
     ]
 }

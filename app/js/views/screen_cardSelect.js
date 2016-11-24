@@ -2,19 +2,15 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "models/model_user",
     "models/model_game",
     "views/screen",
     "views/screen_game",
+    "views/elem_albumCard",
     "text!templates/templ_cardSelect.html",
     "global",
     "gsap"
-], function Screen_CardSelect ($, _, Backbone, Model_User, Model_Game, Screen, Screen_Game, Templ_CardSelect, _$) {
+], function Screen_CardSelect ($, _, Backbone, Model_Game, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
     return Screen.extend({
-        // Instead of generating a new element, bind to the existing skeleton of
-        // the App already present in the HTML.
-        tagName   : "section",
-        className : "screen",
         id        : "screen_cardSelect",
 
         // Our template for the line of statistics at the bottom of the app.
@@ -22,7 +18,7 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "click .title_startBtn" : "newGame"
+            "click .cardSelect_content-confirm-choice-yesBtn" : "newGame"
         },
 
         initialize : initialize,
@@ -31,17 +27,39 @@ define([
     });
 
     function initialize (options) {
-        var collection       = _$.state.user.get("collection");
-        var totalCards       = _$.utils.getCardList();
-        var ownedCardsString = collection.length + "/" + totalCards.length;
+        var cardList         = _$.utils.getCardList();
+        this.userAlbum       = _$.state.user.get("album");
+        this.uniqueCopies    = _.uniqBy(this.userAlbum.models, "attributes.cardId");
+        this.albumCardViews  = [];
+        this.maxVisibleCards = 6;
 
-        this.ui = {};
+        this.$el.append(this.template({
+            ownedCardsCount: this.userAlbum.length,
+            totalCardsCount: cardList.length,
+            uniqueCopiesCount: this.uniqueCopies.length
+        }));
 
-        this.$el.append(this.template({ ownedCardsString: ownedCardsString }));
+        var cardBG = $(_$.assets.get("svg.ui.cardBG"));
+        this.$(".cardSelect_header-deck-card").append(cardBG);
+
+        this.render();
         this.add();
     }
 
     function render () {
+        var card;
+        var copiesCount;
+        var albumCardView;
+
+        for (var i = 0, ii = this.uniqueCopies.length; i < ii; i++) {
+            card          = this.uniqueCopies[i];
+            copiesCount   = this.userAlbum.where({ cardId: card.get("cardId") }).length;
+            albumCardView = new Elem_AlbumCard({ card, copiesCount });
+
+            this.albumCardViews.push(albumCardView);
+            this.$(".cardSelect_content-album").append(albumCardView.el);
+        }
+
         return this;
     }
 

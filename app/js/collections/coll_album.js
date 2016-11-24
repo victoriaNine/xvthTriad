@@ -3,9 +3,9 @@ define([
   "backbone",
   "storage", 
   "models/model_card"
-], function Collection (_, Backbone, Store, Card) {
+], function Coll_Album (_, Backbone, Store, Model_Card) {
   return Backbone.Collection.extend({
-    model        : Card,
+    model        : Model_Card,
     //localStorage : new Store("todos")
   });
 });

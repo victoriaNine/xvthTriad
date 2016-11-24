@@ -10,9 +10,15 @@ $btnSize_big    : 60px;
 $boardSize      : 500px;
 $cardRatio      : 113 / 138;
 $cardWidth      : 150px;
+
+$color_darkGrey : #3d4043;
+$color_red      : rgba(235, 53, 71, 1);
+$color_blue     : rgba(40, 51, 120, 1);
+
 $fontSize_UI    : 24px;
 $fontSize_score : 128px;
 $fontSize_btn   : 16px;
+$fontSize_h1    : 60px;
 
 
 /*=======================*/
@@ -67,6 +73,11 @@ $fontSize_btn   : 16px;
     position: absolute;
 }
 
+@mixin remainingSpace () {
+    flex:1;
+    position: relative;
+}
+
 
 /*=======================*/
 /* FONT FACES
@@ -106,8 +117,34 @@ $fontSize_btn   : 16px;
 
 
 /*=======================*/
+/* 12 COLUMNS RESPONSIVE GRID
+/*=======================*/
+.row { display:flex; }
+.col_1 { flex-basis: 8.33333333%; }
+.col_2 { flex-basis: 16.66666667%; }
+.col_3 { flex-basis: 25%; }
+.col_4 { flex-basis: 33.33333333%; }
+.col_5 { flex-basis: 41.66666667%; }
+.col_6 { flex-basis: 50%; }
+.col_7 { flex-basis: 58.33333333%; }
+.col_8 { flex-basis: 66.66666667%; }
+.col_9 { flex-basis: 75%; }
+.col_10 { flex-basis: 83.33333333%; }
+.col_11 { flex-basis: 91.66666667%; }
+.col_12 { flex-basis: 100%; }
+
+
+
+/*=======================*/
 /* GENERAL RULES
 /*=======================*/
+* {
+    -webkit-user-select:none;
+    user-select:none;
+    cursor: inherit;
+}
+
+
 html, body {
     overflow: hidden;
     position: absolute;
@@ -127,6 +164,30 @@ body {
     transform-origin: 50%;
     width: 100%;
     height: 100%;
+    cursor:default;
+}
+
+hr {
+    position: relative;
+    width: calc(100% - 17.5px);
+    margin-left: 7.5px;
+}
+
+hr:after, hr:before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border: 1px #FFF solid;
+    transform: rotate(45deg);
+    top: -2.5px;
+}
+
+hr:after { left: -7.5px; }
+hr:before { right: -8.5px; }
+
+h1 {
+    font-size: $fontSize_h1;
 }
 
 #canvas {
@@ -138,6 +199,10 @@ body {
 #app {
     @include fullSizeAbs();
 }
+
+.color-darkGrey { color: $color_darkGrey; }
+.weight-medium { font-weight: 500; }
+.weight-bold { font-weight: 700; }
 
 
 /*=======================*/
@@ -177,6 +242,7 @@ body {
         background: #FFF;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        mix-blend-mode: hard-light;
 
         &:after {
             top:0;
@@ -233,6 +299,7 @@ body {
     mix-blend-mode: exclusion;
 }
 
+
 /*=======================*/
 /* FOOTER
 /*=======================*/
@@ -283,7 +350,7 @@ body {
         fill: rgba(255, 255, 255, 1);
         stroke: rgba(255, 255, 255, 0);
         cursor:pointer;
-        flex: 1;
+        @include remainingSpace();
 
         @include transition("fill .15s, stroke .15s");
     }
@@ -367,7 +434,6 @@ body {
     position: absolute;
     right: $globalPadding;
     bottom: $globalPadding;
-    user-select:none;
     cursor: default;
 
     &-span {
@@ -375,6 +441,7 @@ body {
         margin-right: .5em;
     }
 }
+
 
 /*=======================*/
 /* TITLE SCREEN
@@ -437,12 +504,222 @@ body {
     }
 }
 
-#mainMenu {
+
+/*=======================*/
+/* MENU SCREEN
+/*=======================*/
+/* BOARD --------------*/
+#menu {
     width: 100px;
     height: 100px;
     position: absolute;
     background: aquamarine;
     text-align: center;
+}
+
+
+/*=======================*/
+/* CARD SELECTION SCREEN
+/*=======================*/
+/* BOARD --------------*/
+#screen_cardSelect {
+    display: flex;
+    flex-direction: column;
+}
+
+.cardSelect_header {
+    height: 300px;
+    width: 100%;
+    padding: $globalPadding;
+    background: rgba(0, 0, 0, 0.95);
+    position: relative;
+    z-index: 0;
+    display: flex;
+}
+
+.cardSelect_header:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
+    opacity: .4;
+    z-index: -1;
+}
+
+.cardSelect_header-leftCol {
+    width: 370px;
+}
+
+.cardSelect_header-ownedCards,
+.cardSelect_header-uniqueCopies {
+    @extend .row;
+    margin-top: 1em;
+}
+
+.cardSelect_header-ownedCards-label,
+.cardSelect_header-uniqueCopies-label {
+    @extend .col_9;
+    text-transform: none;
+}
+
+.cardSelect_header-ownedCards-count,
+.cardSelect_header-uniqueCopies-count {
+    @extend .col_3, .weight-medium;
+    text-align: right;
+}
+
+.cardSelect_header-rightCol {
+    @include remainingSpace();
+}
+
+.cardSelect_header-deck {
+    height: $cardWidth / $cardRatio;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.cardSelect_header-deck-card {
+    width: $cardWidth;
+    height: 100%;
+    margin-left: 1em;
+    position:relative;
+}
+
+.cardSelect_header-deck-card .svg-cardBG {
+    fill: url(#gradient);
+}
+
+.cardSelect_content {
+    width: 100%;
+    height: calc(100% - 490px);
+    position: relative;
+    padding: $globalPadding;
+}
+
+.cardSelect_content-confirm {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: transparentize($color_blue, 0.5);
+    height: $globalPadding;
+    padding: 0 $globalPadding;
+}
+
+.cardSelect_content-confirm-choice {
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+    height: 100%;
+
+    &-element {
+        @extend %btn-rect;
+
+        position: relative;
+        display: inline-block;
+        margin-right: .5em;
+    }
+}
+
+.cardSelect_content-scroll {
+    height: 270px;
+    top: calc(50% - 270px / 2);
+    position: absolute;
+    width: 100%;
+    left: 0;
+    overflow: hidden;
+    padding: 0 $globalPadding;
+}
+
+.cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+    @extend %btn-diamond;
+
+    width: $btnSize_big;
+    height: $btnSize_big;
+    position: absolute;
+    top: calc(50% - #{ $btnSize_big / 2 });
+    z-index: 1;
+
+    &-hoverFX {
+        @include fullSizeAbs();
+        @include transform("rotate(45deg)");
+        @include transition("all .2s .2s ease-in");
+        border: 1px solid rgba(255, 255, 255, .25);
+        overflow: hidden;
+
+        &:after {
+            @include fullSizeAbs("");
+            background: rgba(0, 0, 0, .85);
+
+            @include transition("all .2s .2s ease-in");
+        }
+    }
+
+    &:hover {
+        & .cardSelect_content-nav-prevBtn-hoverFX,
+        & .cardSelect_content-nav-nextBtn-hoverFX {
+            border: 1px solid #FFF;
+
+            &:after {
+                background: #FFF;
+
+                @include transition("all .2s ease-out");
+            }
+        }
+    }
+}
+
+.cardSelect_content-nav-prevBtn { left: #{ $globalPadding / 2 - 4px }; }
+.cardSelect_content-nav-nextBtn { right: #{ $globalPadding / 2 - 4px }; }
+
+.cardSelect_content-album {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.cardSelect_content-album-card {
+    width: 180px;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, .25);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.cardSelect_content-album-card-visual {
+    @include remainingSpace();
+}
+
+.cardSelect_content-album-card-label {
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5);
+    line-height: 50px;
+    padding: 0 15px;
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.cardSelect_content-album-card-name {
+    @extend .col_9;
+    text-transform: none;
+}
+
+.cardSelect_content-album-card-copiesCount {
+    @extend .col_3, .weight-medium;
+    text-align: right;
+}
+
+.cardSelect_content-album-card-visual .card {
+    position: relative;
+    left: calc(50% - #{ $cardWidth / 2 + 2px});
+    top: calc(50% - #{ ($cardWidth / $cardRatio) / 2 + 4px });
 }
 
 
@@ -538,6 +815,11 @@ body {
     left:0;
     top:0;
     transform-style: preserve-3d;
+    @include transition("transform .2s");
+
+    &:hover {
+        @include transform("scale(1.1)");
+    }
 }
 
 .card-face {
@@ -547,10 +829,20 @@ body {
     backface-visibility: hidden;
 }
 
-.card-front            { z-index: 2; }
-.card-blue .card-front { background: url(#{ $uiAssetsPath + "card_blueBG.png" }); }
-.card-red .card-front  { background: url(#{ $uiAssetsPath + "card_redBG.png" }); }
-.card-grey .card-front { background: url(#{ $uiAssetsPath + "card_greyBG.png" }); }
+.card-front { z-index: 2; }
+
+.card .svg-cardBG {
+    margin-left: 2px;
+    margin-top: 2px;
+    position: absolute;
+    @include transition("fill .2s");
+}
+
+.card-blue .svg-cardBG, .card:hover .svg-cardBG  { fill: transparentize($color_blue, 0.5); }
+.card-red .svg-cardBG   { fill: transparentize($color_red, 0.5); }
+.card-black .svg-cardBG { fill: rgba(0, 0, 0, 0.5); }
+
+.card img { position: relative; }
 
 .card-back {
     background: url(#{ $uiAssetsPath + "card_back.png" });

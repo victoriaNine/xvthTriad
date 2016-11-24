@@ -11,8 +11,6 @@ define([
     var events = _$.events;
 
     return Screen.extend({
-        tagName   : "section",
-        className : "screen",
         id        : "screen_game",
 
         template : _.template(Templ_Game),

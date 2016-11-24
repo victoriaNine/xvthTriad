@@ -22,20 +22,23 @@ define([
     });
 
     function initialize (options) {
-        this.deckIndex = options.deckIndex;
-        this.played    = false;
+        var cardBG = $(_$.assets.get("svg.ui.cardBG"));
         this.$el.append(this.template(this.model.attributes));
+        this.$(".card-front").prepend(cardBG);
 
         if (_$.state.inGame) {
+            this.deckIndex = options.deckIndex;
+            this.played    = false;
+
             if (this.model.get("currentOwner") === _$.state.user) {
-                this.$el.addClass("blue");
+                this.$el.addClass("card-blue");
                 this._placeOnHolder = function () { return this.placeCard("user", "holder"); };
             } else {
-                this.$el.addClass("red");
+                this.$el.addClass("card-red");
                 this._placeOnHolder = function () { return this.placeCard("opponent", "holder"); };
             }
         } else {
-            this.$el.addClass("grey");
+            this.$el.addClass("card-black");
         }
     }
 

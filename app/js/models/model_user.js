@@ -1,9 +1,14 @@
-define(["underscore", "backbone", "global", "collections/Coll_Collection"], function Model_User (_, Backbone, _$, Collection) {
+define(["underscore", "backbone", "global", "collections/coll_album"], function Model_User (_, Backbone, _$, Coll_Album) {
     return Backbone.Model.extend({
         defaults : {
-            name       : _$.utils.getRandomName(),
-            avatar     : null,
-            collection : null,
+            name      : _$.utils.getRandomName(),
+            avatar    : null,
+            album     : null,
+            gameStats : {
+                win  : 0,
+                lost : 0,
+                draw : 0
+            }
         },
 
         initialize    : initialize,
@@ -11,13 +16,14 @@ define(["underscore", "backbone", "global", "collections/Coll_Collection"], func
     });
 
     function initialize (attributes, options) {
-        var initialCollection = new Collection(_$.utils.getRandomCards({
+        var initialAlbum = new Coll_Album(_$.utils.getRandomCards({
             amount : 7,
             level  : 1,
-            owner  : this
+            owner  : this,
+            unique : true
         }));
 
-        this.set({ collection : initialCollection });
+        this.set({ album : initialAlbum });
         this.setAvatarPath();
     }
 

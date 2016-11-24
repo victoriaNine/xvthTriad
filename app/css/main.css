@@ -26,8 +26,58 @@
   font-weight: 700;
   font-style: normal; }
 /*=======================*/
+/* 12 COLUMNS RESPONSIVE GRID
+/*=======================*/
+.row, .cardSelect_header-ownedCards,
+.cardSelect_header-uniqueCopies {
+  display: flex; }
+
+.col_1 {
+  flex-basis: 8.33333333%; }
+
+.col_2 {
+  flex-basis: 16.66666667%; }
+
+.col_3, .cardSelect_header-ownedCards-count,
+.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount {
+  flex-basis: 25%; }
+
+.col_4 {
+  flex-basis: 33.33333333%; }
+
+.col_5 {
+  flex-basis: 41.66666667%; }
+
+.col_6 {
+  flex-basis: 50%; }
+
+.col_7 {
+  flex-basis: 58.33333333%; }
+
+.col_8 {
+  flex-basis: 66.66666667%; }
+
+.col_9, .cardSelect_header-ownedCards-label,
+.cardSelect_header-uniqueCopies-label, .cardSelect_content-album-card-name {
+  flex-basis: 75%; }
+
+.col_10 {
+  flex-basis: 83.33333333%; }
+
+.col_11 {
+  flex-basis: 91.66666667%; }
+
+.col_12 {
+  flex-basis: 100%; }
+
+/*=======================*/
 /* GENERAL RULES
 /*=======================*/
+* {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: inherit; }
+
 html, body {
   overflow: hidden;
   position: absolute;
@@ -44,7 +94,31 @@ html {
 body {
   transform-origin: 50%;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  cursor: default; }
+
+hr {
+  position: relative;
+  width: calc(100% - 17.5px);
+  margin-left: 7.5px; }
+
+hr:after, hr:before {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px #FFF solid;
+  transform: rotate(45deg);
+  top: -2.5px; }
+
+hr:after {
+  left: -7.5px; }
+
+hr:before {
+  right: -8.5px; }
+
+h1 {
+  font-size: 60px; }
 
 #canvas {
   position: absolute;
@@ -55,6 +129,16 @@ body {
   width: 100%;
   height: 100%;
   position: absolute; }
+
+.color-darkGrey {
+  color: #3d4043; }
+
+.weight-medium, .cardSelect_header-ownedCards-count,
+.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount {
+  font-weight: 500; }
+
+.weight-bold {
+  font-weight: 700; }
 
 /*=======================*/
 /* COMPONENTS
@@ -68,15 +152,15 @@ body {
   left: 0; }
 
 /* Buttons ------------*/
-.footer_menu-element, .footer_social-element, .title_startBtn {
+.footer_menu-element, .cardSelect_content-confirm-choice-element, .footer_social-element, .title_startBtn, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
   cursor: pointer;
   font-size: 16px; }
 
-.footer_menu-element {
+.footer_menu-element, .cardSelect_content-confirm-choice-element {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .footer_menu-element:after {
+  .footer_menu-element:after, .cardSelect_content-confirm-choice-element:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -90,11 +174,12 @@ body {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .footer_menu-element:hover, .is--active.footer_menu-element {
+  .footer_menu-element:hover, .cardSelect_content-confirm-choice-element:hover, .is--active.footer_menu-element, .is--active.cardSelect_content-confirm-choice-element {
     background: #FFF;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; }
-    .footer_menu-element:hover:after, .is--active.footer_menu-element:after {
+    -webkit-text-fill-color: transparent;
+    mix-blend-mode: hard-light; }
+    .footer_menu-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .is--active.footer_menu-element:after, .is--active.cardSelect_content-confirm-choice-element:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -117,7 +202,7 @@ body {
     -webkit-transition: -webkit-all .2s .2s ease-in;
     -ms-transition: -ms-all .2s .2s ease-in;
     transition: all .2s .2s ease-in; }
-.footer_social-element:hover .footer_social-element-hoverFX:after, .title_startBtn:hover .footer_social-element-hoverFX:after, .footer_social-element:hover .title_startBtn-hoverFX:after, .title_startBtn:hover .title_startBtn-hoverFX:after {
+.footer_social-element:hover .footer_social-element-hoverFX:after, .title_startBtn:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .footer_social-element-hoverFX:after, .footer_social-element:hover .title_startBtn-hoverFX:after, .title_startBtn:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .title_startBtn-hoverFX:after {
   background: #FFF;
   top: 0;
   left: 0;
@@ -146,7 +231,7 @@ body {
   -ms-transform: rotate(180deg);
   transform: rotate(180deg); }
 
-.footer_social-element:hover .arrow-up, .title_startBtn:hover .arrow-up, .footer_social-element:hover .arrow-right, .title_startBtn:hover .arrow-right, .footer_social-element:hover .arrow-down, .title_startBtn:hover .arrow-down, .footer_social-element:hover .arrow-left, .title_startBtn:hover .arrow-left {
+.footer_social-element:hover .arrow-up, .title_startBtn:hover .arrow-up, .cardSelect_content-nav-prevBtn:hover .arrow-up, .cardSelect_content-nav-nextBtn:hover .arrow-up, .footer_social-element:hover .arrow-right, .title_startBtn:hover .arrow-right, .cardSelect_content-nav-prevBtn:hover .arrow-right, .cardSelect_content-nav-nextBtn:hover .arrow-right, .footer_social-element:hover .arrow-down, .title_startBtn:hover .arrow-down, .cardSelect_content-nav-prevBtn:hover .arrow-down, .cardSelect_content-nav-nextBtn:hover .arrow-down, .footer_social-element:hover .arrow-left, .title_startBtn:hover .arrow-left, .cardSelect_content-nav-prevBtn:hover .arrow-left, .cardSelect_content-nav-nextBtn:hover .arrow-left {
   mix-blend-mode: exclusion; }
 
 /*=======================*/
@@ -185,6 +270,7 @@ body {
     stroke: rgba(255, 255, 255, 0);
     cursor: pointer;
     flex: 1;
+    position: relative;
     -webkit-transition: -webkit-fill .15s, stroke .15s;
     -ms-transition: -ms-fill .15s, stroke .15s;
     transition: fill .15s, stroke .15s; }
@@ -240,7 +326,6 @@ body {
   position: absolute;
   right: 50px;
   bottom: 50px;
-  user-select: none;
   cursor: default; }
   .footer_text-span {
     font-size: .75em;
@@ -295,12 +380,191 @@ body {
     letter-spacing: 0.25em;
     text-indent: 0.25em; }
 
-#mainMenu {
+/*=======================*/
+/* MENU SCREEN
+/*=======================*/
+/* BOARD --------------*/
+#menu {
   width: 100px;
   height: 100px;
   position: absolute;
   background: aquamarine;
   text-align: center; }
+
+/*=======================*/
+/* CARD SELECTION SCREEN
+/*=======================*/
+/* BOARD --------------*/
+#screen_cardSelect {
+  display: flex;
+  flex-direction: column; }
+
+.cardSelect_header {
+  height: 300px;
+  width: 100%;
+  padding: 50px;
+  background: rgba(0, 0, 0, 0.95);
+  position: relative;
+  z-index: 0;
+  display: flex; }
+
+.cardSelect_header:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: url(../assets/img/ui/headerPattern.jpg);
+  opacity: .4;
+  z-index: -1; }
+
+.cardSelect_header-leftCol {
+  width: 370px; }
+
+.cardSelect_header-ownedCards,
+.cardSelect_header-uniqueCopies {
+  margin-top: 1em; }
+
+.cardSelect_header-ownedCards-label,
+.cardSelect_header-uniqueCopies-label {
+  text-transform: none; }
+
+.cardSelect_header-ownedCards-count,
+.cardSelect_header-uniqueCopies-count {
+  text-align: right; }
+
+.cardSelect_header-rightCol {
+  flex: 1;
+  position: relative; }
+
+.cardSelect_header-deck {
+  height: 183.18584px;
+  display: flex;
+  justify-content: flex-end;
+  position: relative; }
+
+.cardSelect_header-deck-card {
+  width: 150px;
+  height: 100%;
+  margin-left: 1em;
+  position: relative; }
+
+.cardSelect_header-deck-card .svg-cardBG {
+  fill: url(#gradient); }
+
+.cardSelect_content {
+  width: 100%;
+  height: calc(100% - 490px);
+  position: relative;
+  padding: 50px; }
+
+.cardSelect_content-confirm {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(40, 51, 120, 0.5);
+  height: 50px;
+  padding: 0 50px; }
+
+.cardSelect_content-confirm-choice {
+  display: flex;
+  align-items: center;
+  margin-right: 1em;
+  height: 100%; }
+  .cardSelect_content-confirm-choice-element {
+    position: relative;
+    display: inline-block;
+    margin-right: .5em; }
+
+.cardSelect_content-scroll {
+  height: 270px;
+  top: calc(50% - 270px / 2);
+  position: absolute;
+  width: 100%;
+  left: 0;
+  overflow: hidden;
+  padding: 0 50px; }
+
+.cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: calc(50% - 30px);
+  z-index: 1; }
+  .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn-hoverFX {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    -webkit-transition: -webkit-all .2s .2s ease-in;
+    -ms-transition: -ms-all .2s .2s ease-in;
+    transition: all .2s .2s ease-in;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    overflow: hidden; }
+    .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn-hoverFX:after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background: rgba(0, 0, 0, 0.85);
+      -webkit-transition: -webkit-all .2s .2s ease-in;
+      -ms-transition: -ms-all .2s .2s ease-in;
+      transition: all .2s .2s ease-in; }
+  .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX {
+    border: 1px solid #FFF; }
+    .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after {
+      background: #FFF;
+      -webkit-transition: -webkit-all .2s ease-out;
+      -ms-transition: -ms-all .2s ease-out;
+      transition: all .2s ease-out; }
+
+.cardSelect_content-nav-prevBtn {
+  left: 21px; }
+
+.cardSelect_content-nav-nextBtn {
+  right: 21px; }
+
+.cardSelect_content-album {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: relative; }
+
+.cardSelect_content-album-card {
+  width: 180px;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer; }
+
+.cardSelect_content-album-card-visual {
+  flex: 1;
+  position: relative; }
+
+.cardSelect_content-album-card-label {
+  height: 50px;
+  background: rgba(0, 0, 0, 0.5);
+  line-height: 50px;
+  padding: 0 15px;
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.25); }
+
+.cardSelect_content-album-card-name {
+  text-transform: none; }
+
+.cardSelect_content-album-card-copiesCount {
+  text-align: right; }
+
+.cardSelect_content-album-card-visual .card {
+  position: relative;
+  left: calc(50% - 77px);
+  top: calc(50% - 95.59292px); }
 
 /*=======================*/
 /* GAME SCREEN
@@ -393,7 +657,14 @@ body {
   position: fixed;
   left: 0;
   top: 0;
-  transform-style: preserve-3d; }
+  transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform .2s;
+  -ms-transition: -ms-transform .2s;
+  transition: transform .2s; }
+  .card:hover {
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1); }
 
 .card-face {
   position: absolute;
@@ -404,14 +675,25 @@ body {
 .card-front {
   z-index: 2; }
 
-.card-blue .card-front {
-  background: url(../assets/img/ui/card_blueBG.png); }
+.card .svg-cardBG {
+  margin-left: 2px;
+  margin-top: 2px;
+  position: absolute;
+  -webkit-transition: -webkit-fill .2s;
+  -ms-transition: -ms-fill .2s;
+  transition: fill .2s; }
 
-.card-red .card-front {
-  background: url(../assets/img/ui/card_redBG.png); }
+.card-blue .svg-cardBG, .card:hover .svg-cardBG {
+  fill: rgba(40, 51, 120, 0.5); }
 
-.card-grey .card-front {
-  background: url(../assets/img/ui/card_greyBG.png); }
+.card-red .svg-cardBG {
+  fill: rgba(235, 53, 71, 0.5); }
+
+.card-black .svg-cardBG {
+  fill: rgba(0, 0, 0, 0.5); }
+
+.card img {
+  position: relative; }
 
 .card-back {
   background: url(../assets/img/ui/card_back.png);

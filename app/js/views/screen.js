@@ -12,6 +12,9 @@ define([
     });
 
     function add () {
+        _$.events.on("stopUserEvents", () => { this.undelegateEvents(); });
+        _$.events.on("startUserEvents", () => { this.delegateEvents(); });
+        
         $(_$.dom).find("#screen").append(this.$el);
     }
 });

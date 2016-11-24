@@ -13,8 +13,6 @@ define([
     return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
-        tagName   : "section",
-        className : "screen",
         id        : "screen_title",
 
         // Our template for the line of statistics at the bottom of the app.
@@ -37,18 +35,17 @@ define([
             this.setupApp();
         }
 
-        this.ui      = {};
-        this.ui.logo = $(_$.assets.get("svg.ui.logo"));
+        var logo = $(_$.assets.get("svg.ui.logo"));
 
         this.$el.append(this.template());
-        this.$(".title_logo").append(this.ui.logo);
+        this.$(".title_logo").append(logo);
         this.add();
     }
 
     function render () {
         var logoPaths = [];
 
-        this.ui.logo.find("path[fill!=none]").each(function () {
+        this.$(".svg-logo").find("path[fill!=none]").each(function () {
             logoPaths.push({
                 path: this,
                 pathLength: this.getTotalLength()
@@ -84,7 +81,8 @@ define([
         mainTl.call(function () {
             _$.state.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
-        mainTl.call(function () {
+        mainTl.call(() => {
+            _$.events.trigger("startUserEvents");
             _$.events.trigger("addFX");
         });
 
@@ -92,6 +90,8 @@ define([
     }
 
     function setupApp () {
+        _$.events.trigger("stopUserEvents");
+
         _$.state.user = new Model_User();
         _$.utils.addDomObserver(this.$el, () => {
             TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity", delay: 0 });
@@ -100,17 +100,22 @@ define([
     }
 
     function cardSelect () {
+        _$.events.trigger("stopUserEvents");
         _$.state.footer.menu.find(".footer_menu-homeBtn").removeClass("is--active");
 
         var tl = new TimelineMax();
         tl.add(_$.state.footer.toggleSocial("hide"));
         tl.add(_$.state.footer.toggleMenu("hide"), "-=1.5");
         tl.add(_$.state.footer.toggleLogo("show"), "-=1.5");
+        tl.to(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25 }, 0);
+        tl.to(this.$(".title_logo"), 1, { opacity : 0, scale: 1.25 }, 0.5);
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {
             _$.state.screen = new Screen_CardSelect();
-            this.remove();
+            _$.events.trigger("startUserEvents");
+
+            //this.remove();
         }
     }
 });

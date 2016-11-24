@@ -2,7 +2,7 @@ define([
     "underscore",
     "backbone",
     "jquery",
-    "json!data/cards.json"
+    "json!data/cardList.json"
 ], function global (_, Backbone, $, cardList) {
     class AssetStore {
         constructor () {
@@ -131,14 +131,14 @@ define([
 
         while (i < options.amount) {
             if (_.isNil(options.level) && _.isNil(options.minLevel) && _.isNil(options.maxLevel)) {
-                if (_.isNil(options.collection)) {
+                if (_.isNil(options.album)) {
                     matches = cardList;
                 } else {
-                    matches = options.collection.toJSON();
+                    matches = options.album.toJSON();
                 }
             } else {
                 level   = options.level ? options.level : (_.random(options.minLevel - 1, options.maxLevel - 1) + 1);
-                matches = options.collection ? options.collection.where({level: level}) : _.filter(cardList, {level: level});
+                matches = options.album ? options.album.where({level: level}) : _.filter(cardList, {level: level});
             }
 
             card = matches[_.random(matches.length - 1)];
@@ -202,8 +202,8 @@ define([
     // SAVE/LOAD MANAGEMENT
     //===============================
     function saveData () {
-        var data        = _.omit(_$.state.user.attributes, "collection");
-        data.collection = _.map(_$.state.user.attributes.collection.models, "attributes");
+        var data   = _.omit(_$.state.user.attributes, "album");
+        data.album = _.map(_$.state.user.attributes.album.models, "attributes");
 
         _setLocalStorage(_$.appName, _encodeSaveData(data));
     }
@@ -217,11 +217,11 @@ define([
         }
 
         var JSONdata = _decodeSaveData(data);
-        _.each(_.omit(JSONdata, "collection"), function (value, key) {
+        _.each(_.omit(JSONdata, "album"), function (value, key) {
             _$.state.user.set(key, value);
         });
 
-        _$.state.user.get("collection").reset(JSONdata.collection);
+        _$.state.user.get("album").reset(JSONdata.album);
     }
 
     function importSave (saveFile) {
@@ -254,7 +254,7 @@ define([
         }
 
         if (typeof data === "object") {
-            data = JSON.stringify(data, undefined, 4)
+            data = JSON.stringify(data, undefined, 4);
         }
 
         var blob = new Blob([data], { type: "text/plain" });
