@@ -1,7 +1,6 @@
 define([
     "jquery",
     "underscore",
-    "gsap",
     "seriously",
     "global",
     "modules/firefly",
@@ -9,13 +8,12 @@ define([
     "libs/seriouslyjs/effects/seriously.vignette",
     "libs/seriouslyjs/sources/seriously.depth",
     "libs/seriouslyjs/sources/seriously.imagedata",
-    "libs/seriouslyjs/effects/seriously.displacement"
-], function canvasWebGL ($, _, GSAP, Seriously, _$, Firefly) {
+    "libs/seriouslyjs/effects/seriously.displacement",
+    "tweenMax"
+], function canvasWebGL ($, _, Seriously, _$, Firefly) {
     var FX_LEVEL         = 5;
     var ADD_FX           = false;
 
-    var assets           = _$.assets;
-    var events           = _$.events;
     var WIDTH            = document.body.scrollWidth;
     var HEIGHT           = document.body.scrollHeight;
     var canvas3d         = document.querySelector("#canvas");
@@ -54,10 +52,10 @@ define([
     };
 
     function init () {
-        bgImg        = assets.get("img.ui.bg");
-        bgDepthMap   = assets.get("img.ui.bgDepthMap");
-        bgFlare      = assets.get("img.ui.bgFlare");
-        bgPattern    = ctx2d.createPattern(assets.get("img.ui.bgPattern"), "repeat");
+        bgImg        = _$.assets.get("img.ui.bg");
+        bgDepthMap   = _$.assets.get("img.ui.bgDepthMap");
+        bgFlare      = _$.assets.get("img.ui.bgFlare");
+        bgPattern    = ctx2d.createPattern(_$.assets.get("img.ui.bgPattern"), "repeat");
         bgSettings   = {
             INITIAL_X1: 161,
             INITIAL_X2: 2321,
@@ -110,12 +108,12 @@ define([
 
         scaleNode             = seriously.transform("2d");
         scaleNode.source      = displaceNode;
-        scaleNode.scale(1.01);
+        scaleNode.scale(1.02);
 
         targetNode          = seriously.target(canvas3d);
         targetNode.source   = scaleNode;
 
-        events.once("addFX", function () {
+        _$.events.once("addFX", function () {
             ADD_FX = true;
 
             flareSettings.tween.play();
@@ -126,12 +124,12 @@ define([
                     var x = e.pageX;
                     var y = e.pageY;
 
-                    displaceNode.mapScale = [0.005 * x / WIDTH, -1 * (0.005 * y / HEIGHT)];
+                    displaceNode.mapScale = [0.01 * x / WIDTH, -1 * (0.01 * y / HEIGHT)];
                 }
             });
         });
 
-        $(window).on("resize", onResize);
+        _$.events.on("resize", onResize);
         onResize();
 
         seriously.go();

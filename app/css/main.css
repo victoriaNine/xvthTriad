@@ -457,7 +457,9 @@ h1 {
   position: relative; }
 
 .cardSelect_header-deck-card .svg-cardBG {
-  fill: url(#gradient); }
+  fill: url(#gradient);
+  stroke-width: 1;
+  stroke: rgba(255, 255, 255, 0.05); }
 
 .cardSelect_content {
   width: 100%;

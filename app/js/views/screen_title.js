@@ -8,7 +8,7 @@ define([
     "views/screen_cardSelect",
     "text!templates/templ_title.html",
     "global",
-    "gsap"
+    "tweenMax"
 ], function Screen_Title ($, _, Backbone, Model_User, Model_Game, Screen, Screen_CardSelect, Templ_Title, _$) {
     return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
@@ -112,8 +112,10 @@ define([
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {
-            _$.state.screen = new Screen_CardSelect();
-            _$.events.trigger("startUserEvents");
+            _$.utils.addDomObserver(this.$el, () => {
+                _$.state.screen = new Screen_CardSelect();
+                _$.events.trigger("startUserEvents");
+            }, true, "remove");
             this.remove();
         }
     }

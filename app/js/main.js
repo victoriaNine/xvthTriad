@@ -8,7 +8,8 @@ require.config({
         jquery            : "libs/jquery/dist/jquery",
         backbone          : "libs/backbone/backbone",
         underscore        : "libs/lodash/dist/lodash",
-        gsap              : "libs/gsap/src/uncompressed/tweenMax",
+        tweenMax          : "libs/gsap/src/uncompressed/TweenMax",
+        draggable         : "libs/gsap/src/uncompressed/utils/Draggable",
         seriously         : "libs/seriouslyjs/seriously",
 
         storage           : "libs/backbone/backbone.localStorage",
@@ -27,7 +28,9 @@ require.config({
         global            : "global"
     },
 
-    shim  : {}
+    shim  : {
+
+    }
 });
 
 require([
@@ -44,7 +47,7 @@ require([
     var loaders = [loaderImg];
 
     events.on("all", function (eventName) {
-        console.log(eventName);
+        console.log("event triggered:", eventName);
     });
 
     events.on("allLoadersComplete", function () {
@@ -78,8 +81,8 @@ require([
         var devicePixelRatio = window.devicePixelRatio || 1;
 
         window.screen       = window.screen || {};
-        screen.actualWidth  = (window.screen.width || document.body.scrollWidth) * devicePixelRatio;
-        screen.actualHeight = (window.screen.height || document.body.scrollHeight) * devicePixelRatio;
+        screen.actualWidth  = window.screen.width * devicePixelRatio;
+        screen.actualHeight = window.screen.height * devicePixelRatio;
 
         var scalar           = 1 / devicePixelRatio;
         var offset           = (devicePixelRatio * 100 - 100) / 2;

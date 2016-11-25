@@ -2,10 +2,10 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "gsap",
     "global",
-    "text!templates/templ_footer.html"
-], function Elem_Footer ($, _, Backbone, GSAP, _$, Templ_Footer) {
+    "text!templates/templ_footer.html",
+    "tweenMax"
+], function Elem_Footer ($, _, Backbone, _$, Templ_Footer) {
     return Backbone.View.extend({
         tagName : "footer",
         id      : "footer",

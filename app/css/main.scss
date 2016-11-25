@@ -590,6 +590,8 @@ h1 {
 
 .cardSelect_header-deck-card .svg-cardBG {
     fill: url(#gradient);
+    stroke-width: 1;
+    stroke: rgba(255, 255, 255, .05);
 }
 
 .cardSelect_content {

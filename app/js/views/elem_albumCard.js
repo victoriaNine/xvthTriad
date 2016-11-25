@@ -2,11 +2,11 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "gsap",
     "global",
     "text!templates/templ_albumCard.html",
-    "views/elem_card"
-], function Elem_AlbumCard ($, _, Backbone, GSAP, _$, Templ_AlbumCard, Elem_Card) {
+    "views/elem_card",
+    "tweenMax"
+], function Elem_AlbumCard ($, _, Backbone, _$, Templ_AlbumCard, Elem_Card) {
     return Backbone.View.extend({
         tagName               : "li",
         className             : "cardSelect_content-album-card",

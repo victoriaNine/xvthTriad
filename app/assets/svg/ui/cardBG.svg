@@ -7,8 +7,8 @@
     </style>
     <defs>
         <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="rgba(0, 0, 0, 0.25)" />
-            <stop offset="100%" stop-color="rgba(0, 0, 0, 0.75)" />
+            <stop offset="0" stop-color="rgba(0, 0, 0, 0.95)" />
+            <stop offset="100%" stop-color="rgba(0, 0, 0, 0.25)" />
         </linearGradient>
     </defs>
     <path fill-rule="evenodd" clip-rule="evenodd" d="M78.006,186.847c-18.49,0-36.98,0.04-55.47-0.019

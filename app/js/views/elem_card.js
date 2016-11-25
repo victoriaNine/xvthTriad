@@ -2,10 +2,10 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "gsap",
     "global",
-    "text!templates/templ_card.html"
-], function Elem_Card ($, _, Backbone, GSAP, _$, Templ_Card) {
+    "text!templates/templ_card.html",
+    "tweenMax"
+], function Elem_Card ($, _, Backbone, _$, Templ_Card) {
     return Backbone.View.extend({
         tagName               : "div",
         className             : "card",

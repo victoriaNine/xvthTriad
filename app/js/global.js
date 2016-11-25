@@ -69,6 +69,18 @@ define([
         charSeparator : "x"
     };
 
+    $(window).resize(function() {
+        if (_.isNil(window.resizedFinished)) {
+            _$.events.trigger("resizeStart");
+        }
+
+        clearTimeout(window.resizedFinished);
+        window.resizedFinished = setTimeout(function () {
+            window.resizedFinished = null;
+            _$.events.trigger("resize");
+        }, 500);
+    });
+
     return _$;
 
     /* DESIGN */
@@ -77,26 +89,41 @@ define([
     }
 
     function fadeIn (elements, callback, duration = 0.5, delay = 0) {
-        console.log(elements);
-        var tl = new TimelineMax({ delay: delay });
-        if (_.isFunction(callback)) { tl.eventCallback("onComplete", callback, ["{self}"]); }
-        tl.set(elements, { clearProps: "display" });
+        var tl = new TimelineMax({
+            delay: delay,
+            onCompleteParams: ["{self}"],
+            onComplete: function (tween) {
+                if (_.isFunction(callback)) {
+                    callback(tween);
+                }
+            }
+        });
+
+        tl.set(elements, { display: "" });
         tl.from(elements, duration, { opacity: 0 });
         
         return tl;
     }
 
     function fadeOut (elements, callback, duration = 0.5, delay = 0) {
-        var tl = new TimelineMax({ delay: delay });
-        if (_.isFunction(callback)) { tl.eventCallback("onComplete", callback, ["{self}"]); }
+        var tl = new TimelineMax({
+            delay: delay,
+            onCompleteParams: ["{self}"],
+            onComplete: function (tween) {
+                if (_.isFunction(callback)) {
+                    callback(tween);
+                }
+            }
+        });
+
+        tl.to(elements, duration, { opacity: 0 });
         tl.set(elements, { display: "none", clearProps: "opacity" });
-        tl.to(elements, duration, { opacity: 0, clearProps: "opacity" });
 
         return tl;
     }
 
     /* DOM */
-    function addDomObserver (elements, eventName, once) {
+    function addDomObserver (elements, eventName, once = true, mutationType = "add") {
         if (!_.isArray(elements)) {
             elements = [elements];
         }
@@ -104,14 +131,9 @@ define([
         var domObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 elements.forEach((element) => {
-                    if (mutation.addedNodes[0] === $(element)[0]) {
-                        if (_.isString(eventName)) {
-                            // Event
-                            events.trigger(eventName, element);
-                        } else {
-                            // Callback
-                            eventName(element);
-                        }
+                    if ((mutationType === "add" && mutation.addedNodes[0] === $(element)[0]) ||
+                        (mutationType === "remove" && mutation.removedNodes[0] === $(element)[0])) {
+                        resolve(element);
                     }
                 });
 
@@ -121,6 +143,16 @@ define([
                 domObserver.disconnect();
             }
         });
+
+        function resolve (element) {
+            if (_.isString(eventName)) {
+                // Event
+                events.trigger(eventName, element);
+            } else {
+                // Callback
+                eventName(element);
+            }
+        }
          
         domObserver.observe(dom[0], {
             attributes: true,

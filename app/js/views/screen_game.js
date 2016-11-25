@@ -2,12 +2,12 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "gsap",
     "global",
     "views/screen",
     "text!templates/templ_game.html",
-    "views/elem_card"
-], function Screen_Game ($, _, Backbone, GSAP, _$, Screen, Templ_Game, Elem_Card) {
+    "views/elem_card",
+    "tweenMax"
+], function Screen_Game ($, _, Backbone, _$, Screen, Templ_Game, Elem_Card) {
     var events = _$.events;
 
     return Screen.extend({
