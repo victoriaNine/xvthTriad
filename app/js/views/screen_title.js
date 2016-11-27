@@ -37,7 +37,7 @@ define([
 
         var logo = $(_$.assets.get("svg.ui.logo"));
 
-        this.$el.append(this.template());
+        this.$el.html(this.template());
         this.$(".title_logo").append(logo);
         this.add();
     }

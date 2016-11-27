@@ -23,7 +23,7 @@ define([
 
     function initialize (options) {
         var cardBG = $(_$.assets.get("svg.ui.cardBG"));
-        this.$el.append(this.template(this.model.attributes));
+        this.$el.html(this.template(this.model.attributes));
         this.$(".card-front").prepend(cardBG);
 
         if (_$.state.inGame) {

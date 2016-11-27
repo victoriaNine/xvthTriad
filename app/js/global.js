@@ -211,9 +211,9 @@ define([
         var left = 0;
 
         do {
-            top     += element.offsetTop  || 0;
-            left    += element.offsetLeft || 0;
-            element  = element.offsetParent;
+            top     += $(element)[0].offsetTop  || 0;
+            left    += $(element)[0].offsetLeft || 0;
+            element  = $(element)[0].offsetParent;
         } while (element);
 
         return {

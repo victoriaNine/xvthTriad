@@ -1,0 +1,28 @@
+{
+  "name": "jquery-nearest",
+  "version": "1.4.0",
+  "main": "src/jquery.nearest.js",
+  "ignore": [
+    "**/.*",
+    "demo",
+    "inc",
+    "test",
+    "Makefile",
+    "index.html",
+    "package.json"
+  ],
+  "dependencies": {
+    "jquery": ">=1.4"
+  },
+  "homepage": "https://github.com/gilmoreorless/jquery-nearest",
+  "_release": "1.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.4.0",
+    "commit": "e47d857a9e74acc9b504f5cb2a5b32a5d2a37043"
+  },
+  "_source": "https://github.com/gilmoreorless/jquery-nearest.git",
+  "_target": "^1.4.0",
+  "_originalSource": "jquery-nearest",
+  "_direct": true
+}

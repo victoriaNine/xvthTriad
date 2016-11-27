@@ -26,7 +26,7 @@ define([
     });
 
     function initialize (options) {
-        this.$el.append(this.template());
+        this.$el.html(this.template());
         $(_$.dom).append(this.$el);
 
         this.line   = this.$(".footer_line");

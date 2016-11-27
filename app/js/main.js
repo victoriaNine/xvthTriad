@@ -13,8 +13,8 @@ require.config({
         seriously         : "libs/seriouslyjs/seriously",
 
         storage           : "libs/backbone/backbone.localStorage",
-        text              : "libs/requirejs-plugins/lib/text",
 
+        text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
         font              : "libs/requirejs-plugins/src/font",
         goog              : "libs/requirejs-plugins/src/goog",
@@ -25,11 +25,13 @@ require.config({
         propertyParser    : "libs/requirejs-plugins/src/propertyParser",
         markdownConverter : "libs/requirejs-plugins/lib/Markdown.Converter",
 
+        jqueryNearest     : "libs/jquery-nearest/src/jquery.nearest",
+
         global            : "global"
     },
 
-    shim  : {
-
+    shim: {
+        jqueryNearest  : ["jquery"]
     }
 });
 
@@ -41,7 +43,8 @@ require([
     "views/screen_title",
     "views/elem_footer",
     "json!data/loader_img.json",
-    "global"
+    "global",
+    "jqueryNearest"
 ], function ($, _, canvasWebGL, assetLoader, Screen_Title, Elem_Footer, loaderImg, _$) {
     var events  = _$.events;
     var loaders = [loaderImg];
@@ -78,7 +81,7 @@ require([
     function pixelRatioAdjust () {
         var html             = document.querySelector("html");
         var body             = document.body;
-        var devicePixelRatio = window.devicePixelRatio || 1;
+        var devicePixelRatio = window.devicePixelRatio = window.devicePixelRatio || 1;
 
         window.screen       = window.screen || {};
         screen.actualWidth  = window.screen.width * devicePixelRatio;

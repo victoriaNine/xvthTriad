@@ -22,6 +22,7 @@ define([
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
             "click .cardSelect_content-confirm-choice-yesBtn" : "newGame",
+            "click .cardSelect_content-confirm-choice-noBtn"  : function () { this.$(".cardSelect_content-confirm").slideUp(); },
             "click .cardSelect_content-nav-prevBtn"           : function () { this.pageChange(-1); },
             "click .cardSelect_content-nav-nextBtn"           : function () { this.pageChange(1); }
         },
@@ -35,7 +36,8 @@ define([
         onResize,
         pageChange,
         navUpdate,
-        emptyAlbumCardViews
+        emptyAlbumCardViews,
+        updateDeck
     });
 
     function initialize (options) {
@@ -44,15 +46,16 @@ define([
         this.uniqueCopies    = _.uniqBy(this.userAlbum.models, "attributes.cardId");
         this.albumCardViews  = [];
         this.currentPage     = 1;
+        this.selectedCards   = 0;
 
-        this.$el.append(this.template({
+        this.$el.html(this.template({
             ownedCardsCount: this.userAlbum.length,
             totalCardsCount: cardList.length,
             uniqueCopiesCount: this.uniqueCopies.length
         }));
 
         var cardBG = $(_$.assets.get("svg.ui.cardBG"));
-        this.$(".cardSelect_header-deck-card").append(cardBG);
+        this.$(".cardSelect_header-deck-holder").append(cardBG);
 
         this.createAlbumCardViews();
 
@@ -64,6 +67,7 @@ define([
 
         _$.events.on("resize", this.onResize.bind(this));
         _$.events.on("resizeStart", this.emptyAlbumCardViews.bind(this));
+        _$.events.on("updateDeck", this.updateDeck.bind(this));
         this.add();
     }
 
@@ -165,6 +169,37 @@ define([
             _$.utils.fadeOut(this.$(".cardSelect_content-nav-nextBtn"));
         } else {
             _$.utils.fadeIn(this.$(".cardSelect_content-nav-nextBtn"));
+        }
+    }
+
+    function updateDeck (options) {
+        if (options.action === "remove") {
+            if (options.moveFrom) {
+                this.selectedCards--;
+            }
+        } else {
+            if (!options.moveFrom) {
+                this.selectedCards++;
+            }
+
+            _.each(_.without(this.albumCardViews, options.cardView), (albumCardView) => {
+                if (albumCardView.holder === options.moveTo) {
+                    if (options.moveFrom) {
+                        albumCardView.moveInDeck(options.moveFrom, true);
+                    } else {
+                        albumCardView.moveToOrigin(true);
+                        this.selectedCards--;
+                    }
+                }
+            });
+        }
+
+        if (this.selectedCards === 5) {
+            if (!$(".cardSelect_content-confirm").is(":visible")) {
+                this.$(".cardSelect_content-confirm").slideDown();
+            }
+        } else if ($(".cardSelect_content-confirm").is(":visible")) {
+            this.$(".cardSelect_content-confirm").slideUp();
         }
     }
 });

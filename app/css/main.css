@@ -442,21 +442,22 @@ h1 {
 
 .cardSelect_header-rightCol {
   flex: 1;
-  position: relative; }
+  position: relative;
+  display: flex;
+  justify-content: flex-end; }
 
 .cardSelect_header-deck {
   height: 183.18584px;
   display: flex;
-  justify-content: flex-end;
   position: relative; }
 
-.cardSelect_header-deck-card {
+.cardSelect_header-deck-holder {
   width: 150px;
   height: 100%;
   margin-left: 1em;
   position: relative; }
 
-.cardSelect_header-deck-card .svg-cardBG {
+.cardSelect_header-deck-holder .svg-cardBG {
   fill: url(#gradient);
   stroke-width: 1;
   stroke: rgba(255, 255, 255, 0.05); }
@@ -492,7 +493,6 @@ h1 {
   position: absolute;
   width: 100%;
   left: 0;
-  overflow: hidden;
   padding: 0 50px; }
 
 .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
@@ -666,10 +666,7 @@ h1 {
   position: fixed;
   left: 0;
   top: 0;
-  transform-style: preserve-3d;
-  -webkit-transition: -webkit-transform .2s;
-  -ms-transition: -ms-transform .2s;
-  transition: transform .2s; }
+  transform-style: preserve-3d; }
   .card:hover {
     -webkit-transform: scale(1.1);
     -ms-transform: scale(1.1);
