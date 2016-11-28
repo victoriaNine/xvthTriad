@@ -1,4 +1,4 @@
-define(["underscore", "backbone", "global", "collections/Coll_deck"], function Model_Player (_, Backbone, _$, Coll_Deck) {
+define(["underscore", "backbone", "global", "collections/coll_deck"], function Model_Player (_, Backbone, _$, Coll_Deck) {
     return Backbone.Model.extend({
         defaults : {
             type   : "computer",

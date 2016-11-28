@@ -411,7 +411,7 @@ h1 {
   padding: 50px;
   background: rgba(0, 0, 0, 0.95);
   position: relative;
-  z-index: 0;
+  z-index: 1;
   display: flex; }
 
 .cardSelect_header:before {
@@ -458,7 +458,6 @@ h1 {
   position: relative; }
 
 .cardSelect_header-deck-holder .svg-cardBG {
-  fill: url(#gradient);
   stroke-width: 1;
   stroke: rgba(255, 255, 255, 0.05); }
 
@@ -551,6 +550,12 @@ h1 {
   cursor: pointer; }
   .cardSelect_content-album.flex-justify-start .cardSelect_content-album-card {
     margin-right: 1.5em; }
+  .cardSelect_content-album-card.is--disabled {
+    cursor: default; }
+    .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual {
+      filter: saturate(0); }
+    .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-label {
+      color: #3d4043; }
 
 .cardSelect_content-album-card-visual {
   flex: 1;
@@ -562,9 +567,7 @@ h1 {
   line-height: 50px;
   padding: 0 15px;
   display: flex;
-  border-top: 1px solid rgba(255, 255, 255, 0.25); }
-
-.cardSelect_content-album-card-name {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
   text-transform: none; }
 
 .cardSelect_content-album-card-copiesCount {

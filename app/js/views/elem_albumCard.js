@@ -15,21 +15,26 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "mousedown .card"  : dragCardStart
+            "mousedown .card"  : function (e) { dragCardStart.call(this, e, this.activeCopy); }
         },
 
         initialize,
+        remove,
         render,
         moveInDeck,
-        moveToOrigin
+        moveToOrigin,
+        onResize
     });
 
     function initialize (options) {
         this.cardView         = new Elem_Card({ model: options.card });
-        this.copiesCount      = options.copiesCount;
+        this.totalCopies      = options.copiesCount;
+        this.copiesCount      = this.totalCopies;
         this.card             = null;
         this.holder           = null;
         this.originalPosition = null;
+        this.deckHolders      = null;
+        this.cardCopies       = [];
 
         this.$el.html(this.template({
             name: this.cardView.model.get("name"),
@@ -37,33 +42,69 @@ define([
         }));
 
         this.$(".cardSelect_content-album-card-visual").append(this.cardView.$el);
+
+        for (let i = 0; i < this.copiesCount; i++) {
+            this.cardCopies.push({
+                card   : this.cardView.$el.clone().addClass("cardCopy"),
+                holder : null
+            });
+        }
+
+        _$.events.on("resize", this.onResize.bind(this));
+        this.render();
+    }
+
+    function remove () {
+        _$.events.off("resize", this.onResize.bind(this));
+        Backbone.View.prototype.remove.call(this);
     }
 
     function render () {
-        this.$(".cardSelect_content-album-card-copiesCount").text((this.copiesCount < 10) ? "0" + this.copiesCount : this.copiesCount);
+        this.activeCopy = _.find(this.cardCopies, { holder: null }) || null;
+        this.$(".cardSelect_content-album-card-copiesCount").text("x" + ((this.copiesCount < 10) ? "0" + this.copiesCount : this.copiesCount));
+
+        if (!this.copiesCount && !this.$el.hasClass("is--disabled")) {
+            this.$el.addClass("is--disabled");
+        } else if (this.copiesCount && this.$el.hasClass("is--disabled")) {
+            this.$el.removeClass("is--disabled");
+        }
+
         return this;
     }
 
-    function dragCardStart (e) {
+    function dragCardStart (e, cardCopy) {
         var that  = this;
         var prevX = e.pageX;
         var prevY = e.pageY;
 
-        if (!that.card) {
-            that.card             = that.cardView.$el[0];
-            that.originalPosition = _$.utils.getAbsoluteOffset(that.card);
+        if (e.delegateTarget === this.el) {
+            if (this.$el.hasClass("is--disabled")) {
+                return;
+            } else {
+                if (!this.card) {
+                    this.card        = this.cardView.$el;
+                    this.deckHolders = $(".cardSelect_header-rightCol");
+                }
+
+                this.deckHolders.append(cardCopy.card);
+                cardCopy.card.on("mousedown", (e) => {
+                    dragCardStart.call(this, e, cardCopy);
+                });
+            }
         }
 
-        if (this.holder) {
-            TweenMax.set(that.card, { zIndex: 1000 });
+        this.originalPosition = _$.utils.getAbsoluteOffset(this.card);
+
+        if (cardCopy.holder) {
+            TweenMax.set(cardCopy.card, { zIndex: 1000 });
         } else {
-            TweenMax.set(that.card, {
-                position:"fixed",
-                left:0,
-                top:0,
-                x: that.originalPosition.left,
-                y: that.originalPosition.top,
-                zIndex: 1000
+            TweenMax.set(cardCopy.card, {
+                position : "fixed",
+                left    : 0,
+                top     : 0,
+                x       : this.originalPosition.left,
+                y       : this.originalPosition.top,
+                zIndex  : 1000
             });
         }
 
@@ -74,9 +115,9 @@ define([
             var deltaX = e.pageX - prevX;
             var deltaY = e.pageY - prevY;
 
-            TweenMax.set(that.card, {
-                x: that.card._gsTransform.x + deltaX * 1.5,
-                y: that.card._gsTransform.y + deltaY * 1.5
+            TweenMax.set(cardCopy.card, {
+                x: cardCopy.card[0]._gsTransform.x + deltaX * 1.5,
+                y: cardCopy.card[0]._gsTransform.y + deltaY * 1.5
             });
 
             prevX = e.pageX;
@@ -103,56 +144,72 @@ define([
 
             var tl = new TimelineMax();
             if (scaledPageX >= deckPosition.x1 && scaledPageX <= deckPosition.x2 && scaledPageY >= deckPosition.y1 && scaledPageY <= deckPosition.y2) {
-                that.moveInDeck(nearestHolder);
+                that.moveInDeck(nearestHolder, cardCopy);
             } else {
-                that.moveToOrigin();
+                that.moveToOrigin(cardCopy);
             }
         }
     }
 
-    function moveInDeck (holder, reorderingDeck) {
+    function moveInDeck (holder, cardCopy, reorderingDeck) {
         var holderOffset  = _$.utils.getAbsoluteOffset(holder);
 
         var tl = new TimelineMax();
-        tl.to(this.card, 0.2, { x: holderOffset.left, y: holderOffset.top });
-        tl.set(this.card, { scale: "1", zIndex:999 }, "+=.1");
+        tl.to(cardCopy.card, 0.2, { x: holderOffset.left, y: holderOffset.top });
+        tl.set(cardCopy.card, { scale: "1", zIndex:999 }, "+=.1");
 
         if (!reorderingDeck) {
             _$.events.trigger("updateDeck", {
-                action   : "add",
-                cardView : this,
-                moveFrom : this.holder,
-                moveTo   : holder
+                action        : "add",
+                albumCardView : this,
+                moveFrom      : cardCopy.holder,
+                moveTo        : holder
             });
         }
 
-        if (!this.holder) {
+        if (!cardCopy.holder) {
             this.copiesCount--;
         }
 
-        this.holder = holder;
+        cardCopy.holder = holder;
         this.render();
     }
 
-    function moveToOrigin (reorderingDeck) {
+    function moveToOrigin (cardCopy, reorderingDeck) {
         var tl = new TimelineMax();
-        tl.to(this.card, 0.2, { x: this.originalPosition.left, y: this.originalPosition.top });
-        tl.set(this.card, { clearProps: "all" }, "+=.1");
+        if (_$.dom[0].contains(this.card[0])) {
+            tl.to(cardCopy.card, 0.2, { x: this.originalPosition.left, y: this.originalPosition.top });
+        } else {
+            tl.to(cardCopy.card, 0.2, { opacity: 0 });
+        }
+        tl.call(() => { cardCopy.card.remove(); });
+        tl.set(cardCopy.card, { clearProps: "all" }, "+=.1");
 
         if (!reorderingDeck) {
             _$.events.trigger("updateDeck", {
-                action   : "remove",
-                cardView : this,
-                moveFrom : this.holder,
-                moveTo   : null
+                action        : "remove",
+                albumCardView : this,
+                moveFrom      : cardCopy.holder,
+                moveTo        : null
             });
         }
 
-        if (this.holder) {
+        if (cardCopy.holder) {
             this.copiesCount++;
         }
 
-        this.holder = null;
+        cardCopy.holder = null;
         this.render();
+    }
+
+    function onResize () {
+        var holderOffset;
+
+        _.each(this.cardCopies, function (cardCopy) {
+            if (cardCopy.holder) {
+                holderOffset = _$.utils.getAbsoluteOffset(cardCopy.holder);
+                TweenMax.to(cardCopy.card, 0.2, { x: holderOffset.left, y: holderOffset.top });
+            }
+        });
     }
 });

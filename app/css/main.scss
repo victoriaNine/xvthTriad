@@ -535,7 +535,7 @@ h1 {
     padding: $globalPadding;
     background: rgba(0, 0, 0, 0.95);
     position: relative;
-    z-index: 0;
+    z-index: 1;
     display: flex;
 }
 
@@ -590,7 +590,6 @@ h1 {
 }
 
 .cardSelect_header-deck-holder .svg-cardBG {
-    fill: url(#gradient);
     stroke-width: 1;
     stroke: rgba(255, 255, 255, .05);
 }
@@ -695,6 +694,18 @@ h1 {
     .cardSelect_content-album.flex-justify-start & {
         margin-right: 1.5em;
     }
+
+    &.is--disabled {
+        cursor: default;
+
+        & .cardSelect_content-album-card-visual {
+            filter: saturate(0);
+        }
+
+        & .cardSelect_content-album-card-label {
+            color: $color_darkGrey;
+        }
+    }
 }
 
 .cardSelect_content-album-card-visual {
@@ -708,11 +719,11 @@ h1 {
     padding: 0 15px;
     display: flex;
     border-top: 1px solid rgba(255, 255, 255, 0.25);
+    text-transform: none;
 }
 
 .cardSelect_content-album-card-name {
     @extend .col_9;
-    text-transform: none;
 }
 
 .cardSelect_content-album-card-copiesCount {

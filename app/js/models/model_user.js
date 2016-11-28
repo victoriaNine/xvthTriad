@@ -19,7 +19,6 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
         var initialAlbum = new Coll_Album(_$.utils.getRandomCards({
             amount : 7,
             level  : 1,
-            owner  : this,
             unique : true
         }));
 

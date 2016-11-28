@@ -154,7 +154,7 @@ define([
             }
         }
          
-        domObserver.observe(dom[0], {
+        domObserver.observe(_$.dom[0], {
             attributes: true,
             childList: true,
             characterData: true,

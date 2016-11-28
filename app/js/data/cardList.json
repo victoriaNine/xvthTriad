@@ -1,7 +1,7 @@
 [
     {
         "cardId"  : 103,
-        "name"    : "luna1",
+        "name"    : "Luna1",
         "level"   : 1,
         "ranks"   : {
             "top"    : 9,
@@ -13,7 +13,7 @@
     },
     {
         "cardId"  : 104,
-        "name"    : "luna2",
+        "name"    : "Luna2",
         "level"   : 1,
         "ranks"   : {
             "top"    : 2,
@@ -25,7 +25,7 @@
     },
     {
         "cardId"  : 105,
-        "name"    : "luna3",
+        "name"    : "Luna3",
         "level"   : 1,
         "ranks"   : {
             "top"    : 8,
@@ -37,7 +37,7 @@
     },
     {
         "cardId"  : 106,
-        "name"    : "noctis1",
+        "name"    : "Noctis1",
         "level"   : 1,
         "ranks"   : {
             "top"    : 4,
@@ -49,7 +49,7 @@
     },
     {
         "cardId"  : 107,
-        "name"    : "noctis2",
+        "name"    : "Noctis2",
         "level"   : 1,
         "ranks"   : {
             "top"    : 10,
@@ -61,7 +61,7 @@
     },
     {
         "cardId"  : 108,
-        "name"    : "noctis3",
+        "name"    : "Noctis3",
         "level"   : 1,
         "ranks"   : {
             "top"    : 6,
@@ -73,7 +73,7 @@
     },
     {
         "cardId"  : 109,
-        "name"    : "noctis4",
+        "name"    : "Noctis4",
         "level"   : 1,
         "ranks"   : {
             "top"    : 10,

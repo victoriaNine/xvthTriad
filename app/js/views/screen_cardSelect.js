@@ -2,7 +2,6 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "models/model_game",
     "views/screen",
     "views/screen_game",
     "views/elem_albumCard",
@@ -10,7 +9,7 @@ define([
     "global",
     "tweenMax",
     "draggable"
-], function Screen_CardSelect ($, _, Backbone, Model_Game, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
+], function Screen_CardSelect ($, _, Backbone, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
     var CARD_WIDTH = 180;
 
     return Screen.extend({
@@ -46,7 +45,7 @@ define([
         this.uniqueCopies    = _.uniqBy(this.userAlbum.models, "attributes.cardId");
         this.albumCardViews  = [];
         this.currentPage     = 1;
-        this.selectedCards   = 0;
+        this.userDeck        = [];
 
         this.$el.html(this.template({
             ownedCardsCount: this.userAlbum.length,
@@ -60,9 +59,16 @@ define([
         this.createAlbumCardViews();
 
         _$.utils.addDomObserver(this.$el, () => {
-            this.onResize(null, true);
-            this.render();
-            this.navUpdate();
+            var tl = new TimelineMax();
+            tl.call(() => {
+                this.$(".cardSelect_header").slideDown(500);
+            });
+            tl.call(() => {
+                this.onResize(null, true);
+                this.render();
+                this.navUpdate();
+            }, null, [], 0.5);
+            
         }, true);
 
         _$.events.on("resize", this.onResize.bind(this));
@@ -73,6 +79,8 @@ define([
 
     function remove () {
         _$.events.off("resize", this.onResize.bind(this));
+        _$.events.off("resizeStart", this.emptyAlbumCardViews.bind(this));
+        _$.events.off("updateDeck", this.updateDeck.bind(this));
         Backbone.View.prototype.remove.call(this);
     }
 
@@ -109,7 +117,7 @@ define([
                 this.$(".cardSelect_content-album").removeClass("flex-justify-start").addClass("flex-justify-sb");
             }
 
-            albumCardView = this.albumCardViews[currentId];
+            albumCardView = this.albumCardViews[currentId].delegateEvents();
             this.$(".cardSelect_content-album").append(albumCardView.$el);
             _$.utils.fadeIn(albumCardView.$el, null, 0.5, 0.15 * i);
         }
@@ -118,9 +126,8 @@ define([
     }
 
     function newGame () {
-        _$.state.game   = new Model_Game();
-        _$.state.screen = new Screen_Game();
-        this.remove();
+        /*_$.state.screen = new Screen_Game();
+        this.remove();*/
     }
 
     function createAlbumCardViews () {
@@ -173,28 +180,34 @@ define([
     }
 
     function updateDeck (options) {
+        var holderIndex;
+
         if (options.action === "remove") {
             if (options.moveFrom) {
-                this.selectedCards--;
+                holderIndex = Array.from(options.moveFrom.parentNode.children).indexOf(options.moveFrom);
+                this.userDeck[holderIndex] = null;
             }
-        } else {
-            if (!options.moveFrom) {
-                this.selectedCards++;
-            }
+        } else if (options.action === "add") {
+            holderIndex = Array.from(options.moveTo.parentNode.children).indexOf(options.moveTo);
+            this.userDeck[holderIndex] = options.albumCardView.cardView.model;
 
-            _.each(_.without(this.albumCardViews, options.cardView), (albumCardView) => {
-                if (albumCardView.holder === options.moveTo) {
-                    if (options.moveFrom) {
-                        albumCardView.moveInDeck(options.moveFrom, true);
-                    } else {
-                        albumCardView.moveToOrigin(true);
-                        this.selectedCards--;
+            _.each(_.without(this.albumCardViews, options.albumCardView), (albumCardView) => {
+                _.each(albumCardView.cardCopies, (cardCopy) => {
+                    if (cardCopy.holder === options.moveTo) {
+                        if (options.moveFrom) {
+                            albumCardView.moveInDeck(options.moveFrom, cardCopy, true);
+
+                            holderIndex = Array.from(options.moveFrom.parentNode.children).indexOf(options.moveFrom);
+                            this.userDeck[holderIndex] = albumCardView.cardView.model;
+                        } else {
+                            albumCardView.moveToOrigin(cardCopy, true);
+                        }
                     }
-                }
+                });
             });
         }
 
-        if (this.selectedCards === 5) {
+        if (_.compact(this.userDeck).length === 5) {
             if (!$(".cardSelect_content-confirm").is(":visible")) {
                 this.$(".cardSelect_content-confirm").slideDown();
             }
