@@ -78,7 +78,7 @@ define([
         var prevY = e.pageY;
 
         if (e.delegateTarget === this.el) {
-            if (this.$el.hasClass("is--disabled")) {
+            if (!this.copiesCount) {
                 return;
             } else {
                 if (!this.card) {

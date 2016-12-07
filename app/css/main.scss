@@ -134,16 +134,27 @@ $fontSize_h1    : 60px;
 .col_12 { flex-basis: 100%; }
 
 
-
 /*=======================*/
 /* GENERAL RULES
 /*=======================*/
+/*::-webkit-scrollbar-track {
+    background-color: transparent;
+}*/
+
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.75);;  
+}
+
 * {
     -webkit-user-select:none;
     user-select:none;
     cursor: inherit;
 }
-
 
 html, body {
     overflow: hidden;
@@ -519,17 +530,7 @@ h1 {
     text-align: center;
 }
 
-
-/*=======================*/
-/* CARD SELECTION SCREEN
-/*=======================*/
-/* BOARD --------------*/
-#screen_cardSelect {
-    display: flex;
-    flex-direction: column;
-}
-
-.cardSelect_header {
+%header {
     height: 300px;
     width: 100%;
     padding: $globalPadding;
@@ -537,19 +538,219 @@ h1 {
     position: relative;
     z-index: 1;
     display: flex;
+
+    &:before {
+        @include fullSizeAbs("");
+        top: 0;
+        left: 0;
+        background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
+        opacity: .25;
+        z-index: -1;
+    }
+
+    &-leftCol {
+        width: 370px;
+    }
+
+    &-rightCol {
+        @include remainingSpace();
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 
-.cardSelect_header:before {
-    @include fullSizeAbs("");
+%content {
+    width: 100%;
+    height: calc(100% - 490px);
+    position: relative;
+    padding: $globalPadding;
+}
+
+%content-prompt {
+    position: absolute;
+    width: 100%;
     top: 0;
     left: 0;
-    background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
-    opacity: .25;
-    z-index: -1;
+    height: $globalPadding;
+    padding: 0 $globalPadding;
 }
 
-.cardSelect_header-leftCol {
-    width: 370px;
+%content-screenNav {
+    @extend %content-prompt;
+
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+
+    &-element {
+        @extend %btn-rect;
+
+        position: relative;
+        display: inline-block;
+        margin-right: .5em;
+    }
+}
+
+
+/*=======================*/
+/* RULES SCREEN
+/*=======================*/
+#screen_rulesSelect {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.rulesSelect_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+}
+
+/* CONTENT --------------*/
+.rulesSelect_content {
+    @extend %content
+}
+
+.rulesSelect_content-screenNav {
+    @extend %content-screenNav;
+
+    &-choice {
+        display: flex;
+        align-items: center;
+        margin-right: 1em;
+        height: 100%;
+
+        &-element {
+            @extend %content-screenNav-element;
+        }
+    }
+}
+
+.rulesSelect_content-rules {
+    height: 270px;
+    top: calc(50% - 270px / 2);
+    position: absolute;
+    width: 100%;
+    left: 0;
+    display: flex;
+    padding: 0 $globalPadding;
+
+    & .col {
+        width: 50%;
+        margin-right: 1em;
+    }
+}
+
+.rulesSelect_content-rules-rule {
+    display: flex;
+    height: $globalPadding;
+    line-height: $globalPadding;
+    margin-bottom: 1em;
+
+    &.is--on, &.is--off, &.rule-trade {
+        cursor:pointer;
+    }
+}
+
+.rulesSelect_content-rules-rule-label {
+    text-transform: none;
+    flex: 1;
+    padding-left: 1em;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.rulesSelect_content-rules-rule-toggle {
+    position: relative;
+    width: $globalPadding;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    @include transition("background .2s");
+
+    .rulesSelect_content-rules-rule.is--on & {
+        background: transparentize($color_blue, 0.5);
+    }
+
+    .rulesSelect_content-rules-rule.is--off & {
+        background: transparentize($color_red, 0.5);
+    }
+}
+
+.rulesSelect_content-rules-rule-select {
+    text-transform: none;
+    flex: 1;
+    padding-left: 1em;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+
+    @include transition("height .2s .2s");
+}
+
+.rule-trade {
+    & .rulesSelect_content-rules-rule-toggle {
+        @include transition("width .2s, opacity .2s");
+
+        &:after {
+            content: "";
+            position: absolute;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #FFF;
+            left:calc(50% - 4.5px);
+            top:calc(50% - 4.5px);
+
+            @include transition("transform .2s .2s");
+        }
+    }
+
+    &.is--active {
+        & .rulesSelect_content-rules-rule-toggle {
+            width: 0;
+            opacity: 0;
+            @include transition("width .2s .2s, opacity .2s .2s");
+
+            &:after {
+                @include transform("rotate(90deg)");
+                @include transition("transform .2s");
+            }
+        }
+
+        & .rulesSelect_content-rules-rule-select {
+            overflow-y: scroll;
+            height: 100px;
+        }
+    }
+}
+
+
+/*=======================*/
+/* CARD SELECTION SCREEN
+/*=======================*/
+#screen_cardSelect {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.cardSelect_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
 }
 
 .cardSelect_header-ownedCards,
@@ -570,12 +771,6 @@ h1 {
     text-align: right;
 }
 
-.cardSelect_header-rightCol {
-    @include remainingSpace();
-    display: flex;
-    justify-content: flex-end;
-}
-
 .cardSelect_header-deck {
     height: $cardWidth / $cardRatio;
     display: flex;
@@ -594,35 +789,46 @@ h1 {
     stroke: rgba(255, 255, 255, .05);
 }
 
+/* CONTENT --------------*/
 .cardSelect_content {
-    width: 100%;
-    height: calc(100% - 490px);
-    position: relative;
-    padding: $globalPadding;
+    @extend %content
+}
+
+.cardSelect_content-confirm, .cardSelect_content-screenNav {
+    @extend %content-prompt;
 }
 
 .cardSelect_content-confirm {
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
     background: transparentize($color_blue, 0.5);
-    height: $globalPadding;
-    padding: 0 $globalPadding;
+
+    &-choice {
+        display: flex;
+        align-items: center;
+        margin-right: 1em;
+        height: 100%;
+
+        &-element {
+            @extend %btn-rect;
+
+            position: relative;
+            display: inline-block;
+            margin-right: .5em;
+        }
+    }
 }
 
-.cardSelect_content-confirm-choice {
-    display: flex;
-    align-items: center;
-    margin-right: 1em;
-    height: 100%;
+.cardSelect_content-screenNav {
+    @extend %content-screenNav;
 
-    &-element {
-        @extend %btn-rect;
+    &-choice {
+        display: flex;
+        align-items: center;
+        margin-right: 1em;
+        height: 100%;
 
-        position: relative;
-        display: inline-block;
-        margin-right: .5em;
+        &-element {
+            @extend %content-screenNav-element;
+        }
     }
 }
 
@@ -689,17 +895,18 @@ h1 {
     border: 1px solid rgba(255, 255, 255, .25);
     display: flex;
     flex-direction: column;
-    cursor: pointer;
 
     .cardSelect_content-album.flex-justify-start & {
         margin-right: 1.5em;
     }
 
     &.is--disabled {
-        cursor: default;
-
         & .cardSelect_content-album-card-visual {
             filter: saturate(0);
+
+            & .card {
+                cursor: default;
+            }
         }
 
         & .cardSelect_content-album-card-label {
@@ -710,6 +917,12 @@ h1 {
 
 .cardSelect_content-album-card-visual {
     @include remainingSpace();
+
+    & .card {
+        position: relative;
+        left: calc(50% - #{ $cardWidth / 2 + 2px});
+        top: calc(50% - #{ ($cardWidth / $cardRatio) / 2 + 4px });
+    }
 }
 
 .cardSelect_content-album-card-label {
@@ -729,12 +942,6 @@ h1 {
 .cardSelect_content-album-card-copiesCount {
     @extend .col_3, .weight-medium;
     text-align: right;
-}
-
-.cardSelect_content-album-card-visual .card {
-    position: relative;
-    left: calc(50% - #{ $cardWidth / 2 + 2px});
-    top: calc(50% - #{ ($cardWidth / $cardRatio) / 2 + 4px });
 }
 
 
@@ -824,13 +1031,13 @@ h1 {
 
 /* CARDS --------------*/
 .card {
+    cursor: pointer;
     width: $cardWidth;
     height: $cardWidth / $cardRatio;
     position: fixed;
     left:0;
     top:0;
     transform-style: preserve-3d;
-    //@include transition("transform .2s");
 
     &:hover {
         @include transform("scale(1.1)");
@@ -904,14 +1111,14 @@ h1 {
     border-radius: 15px;
 }
 
-.playerHUD-opponent .playerHUD-bar              { padding-left: 100px; }
+.playerHUD-opponent .playerHUD-bar               { padding-left: 100px; }
 .playerHUD-opponent--active .playerHUD-bar       { text-shadow: 0 0 10px rgba(255, 215, 229, .75); }
-.playerHUD-opponent .playerHUD-bar:after        { background: linear-gradient(to right, rgba(17, 17, 17, 0.7) 0%, rgba(17, 17, 17, 0) 100%); }
+.playerHUD-opponent .playerHUD-bar:after         { background: linear-gradient(to right, rgba(17, 17, 17, 0.7) 0%, rgba(17, 17, 17, 0) 100%); }
 .playerHUD-opponent--active .playerHUD-bar:after { background: linear-gradient(to right, rgba(255, 58, 151, 0.7) 0%, rgba(255, 58, 151, 0) 100%); }
 
-.playerHUD-user .playerHUD-bar              { text-align: right; padding-right: 100px; }
+.playerHUD-user .playerHUD-bar               { text-align: right; padding-right: 100px; }
 .playerHUD-user--active .playerHUD-bar       { text-shadow: 0 0 10px rgba(83, 216, 251, .75); }
-.playerHUD-user .playerHUD-bar:after        { background: linear-gradient(to left, rgba(17, 17, 17, 0.7) 0%, rgba(17, 17, 17, 0) 100%); }
+.playerHUD-user .playerHUD-bar:after         { background: linear-gradient(to left, rgba(17, 17, 17, 0.7) 0%, rgba(17, 17, 17, 0) 100%); }
 .playerHUD-user--active .playerHUD-bar:after { background: linear-gradient(to left, rgba(58, 179, 255, 0.7) 0%, rgba(58, 179, 255, 0) 100%); }
 
 .playerHUD-score {

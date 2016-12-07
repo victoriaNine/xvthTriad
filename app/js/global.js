@@ -50,7 +50,10 @@ define([
         exportSave,
 
         fadeIn,
-        fadeOut
+        fadeOut,
+        showElement,
+        hideElement,
+        getNodeIndex
     };
 
     var _$ = window._$ = {
@@ -122,6 +125,29 @@ define([
         return tl;
     }
 
+    function showElement (element) {
+        var tl = new TimelineMax();
+
+        tl.set(element, { overflow:"hidden", clearProps:"display" });
+        tl.from(element, 0.5, { width: 0, borderWidth:0 }, 0);
+        tl.from(element, 1.5, { opacity:0 });
+        tl.from(element, 1, { height: 0, padding:0, margin:0, ease: Power3.easeOut, clearProps:"all" }, 0.5);
+
+        return tl;
+    }
+
+    function hideElement (element) {
+        var tl = new TimelineMax();
+
+        tl.set(element, { overflow:"hidden" });
+        tl.to(element, 1.5, { opacity:0 });
+        tl.to(element, 1, { height:0, padding:0, margin:0, ease: Power3.easeOut }, 0);
+        tl.to(element, 0.5, { width: 0, borderWidth: 0 }, 0.5);
+        tl.set(element, { display:"none", clearProps:"height,width,overflow,borderWidth,padding,margin,opacity" }, "+=.1");
+
+        return tl;
+    }
+
     /* DOM */
     function addDomObserver (elements, eventName, once = true, mutationType = "add") {
         if (!_.isArray(elements)) {
@@ -164,6 +190,10 @@ define([
         });
 
         return domObserver;
+    }
+
+    function getNodeIndex (element) {
+        return Array.from($(element)[0].parentNode.children).indexOf($(element)[0]);
     }
 
     /* GAME */

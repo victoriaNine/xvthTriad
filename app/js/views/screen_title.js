@@ -5,11 +5,11 @@ define([
     "models/model_user",
     "models/model_game",
     "views/screen",
-    "views/screen_cardSelect",
+    "views/screen_rulesSelect",
     "text!templates/templ_title.html",
     "global",
     "tweenMax"
-], function Screen_Title ($, _, Backbone, Model_User, Model_Game, Screen, Screen_CardSelect, Templ_Title, _$) {
+], function Screen_Title ($, _, Backbone, Model_User, Model_Game, Screen, Screen_RulesSelect, Templ_Title, _$) {
     return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
@@ -113,7 +113,7 @@ define([
 
         function onTransitionComplete () {
             _$.utils.addDomObserver(this.$el, () => {
-                _$.state.screen = new Screen_CardSelect();
+                _$.state.screen = new Screen_RulesSelect();
                 _$.events.trigger("startUserEvents");
             }, true, "remove");
             this.remove();

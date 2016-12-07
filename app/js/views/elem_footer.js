@@ -82,13 +82,13 @@ define([
 
         el.addClass("tweening");
         if (state === "show") {
-            tl.add(_showElement(el));
+            tl.add(_$.utils.showElement(el));
             tl.call(() => {
                 this.$el.addClass("--showLogo");
             });
         } else if (state === "hide") {
             this.$el.removeClass("--showLogo");
-            tl.add(_hideElement(el));
+            tl.add(_$.utils.hideElement(el));
         }
 
         tl.call(function () {
@@ -112,34 +112,11 @@ define([
 
         $(elements).each(function (i) {
             if (state === "show") {
-                tl.add(_showElement($(this)), i * 0.15);
+                tl.add(_$.utils.showElement($(this)), i * 0.15);
             } else if (state === "hide") {
-                tl.add(_hideElement($(this)), (nbElement - i) * 0.15);
+                tl.add(_$.utils.hideElement($(this)), (nbElement - i) * 0.15);
             }
         });
-
-        return tl;
-    }
-
-    function _showElement (element) {
-        var tl = new TimelineMax();
-
-        tl.set(element, { overflow:"hidden", clearProps:"display" });
-        tl.from(element, 0.5, { width: 0, borderWidth:0 }, 0);
-        tl.from(element, 1.5, { opacity:0 });
-        tl.from(element, 1, { height: 0, padding:0, margin:0, ease: Power3.easeOut, clearProps:"all" }, 0.5);
-
-        return tl;
-    }
-
-    function _hideElement (element) {
-        var tl = new TimelineMax();
-
-        tl.set(element, { overflow:"hidden" });
-        tl.to(element, 1.5, { opacity:0 });
-        tl.to(element, 1, { height:0, padding:0, margin:0, ease: Power3.easeOut }, 0);
-        tl.to(element, 0.5, { width: 0, borderWidth: 0 }, 0.5);
-        tl.set(element, { display:"none", clearProps:"height,width,overflow,borderWidth,padding,margin,opacity" }, "+=.1");
 
         return tl;
     }

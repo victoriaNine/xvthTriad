@@ -3,86 +3,137 @@ define([
     "underscore", 
     "backbone",
     "views/screen",
-    "views/screen_game",
-    "views/elem_albumCard",
-    "text!templates/templ_cardSelect.html",
+    "views/screen_cardSelect",
+    "text!templates/templ_rulesSelect.html",
     "global",
-    "tweenMax",
-], function Screen_CardSelect ($, _, Backbone, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
-    var CARD_WIDTH = 180;
-
+    "tweenMax"
+], function Screen_RulesSelect ($, _, Backbone, Screen, Screen_CardSelect, Templ_RulesSelect, _$) {
     return Screen.extend({
-        id        : "screen_cardSelect",
+        id        : "screen_rulesSelect",
 
         // Our template for the line of statistics at the bottom of the app.
-        template  : _.template(Templ_CardSelect),
+        template  : _.template(Templ_RulesSelect),
 
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
-            "click .cardSelect_content-confirm-choice-yesBtn" : "newGame",
-            "click .cardSelect_content-confirm-choice-noBtn"  : function () { toggleConfirm.call(this, "hide"); },
-            "click .cardSelect_content-nav-prevBtn"           : function () { this.pageChange(-1); },
-            "click .cardSelect_content-nav-nextBtn"           : function () { this.pageChange(1); }
+            "click .rulesSelect_content-rules-rule" : function (e) {
+                var temp     = e.currentTarget.className.slice(e.currentTarget.className.indexOf("rule-"));
+                var ruleName = e.currentTarget.className.slice(e.currentTarget.className.indexOf("rule-"), e.currentTarget.className.indexOf(temp.slice(temp.indexOf(" "))));
+                ruleName     = ruleName.replace("rule-", "");
+
+                if (ruleName !== "trade") {
+                    this.toggleRule(ruleName, "toggle");
+                }
+            },
+            "click .rule-trade" : "toggleTrade",
+            "click .rulesSelect_content-screenNav-choice-nextBtn" : "toCardSelection"
         },
 
         initialize,
         remove,
-        render,
 
-        createAlbumCardViews,
-        newGame,
-        onResize,
-        pageChange,
-        navUpdate,
-        emptyAlbumCardViews,
-        updateDeck
+        toggleRule,
+        toggleTrade,
+
+        toCardSelection
     });
 
     function initialize (options) {
-        var cardList         = _$.utils.getCardList();
-        this.userAlbum       = _$.state.user.get("album");
-        this.uniqueCopies    = _.uniqBy(this.userAlbum.models, "attributes.cardId");
-        this.albumCardViews  = [];
-        this.currentPage     = 1;
-        this.userDeck        = [];
-
-        this.$el.html(this.template({
-            ownedCardsCount: this.userAlbum.length,
-            totalCardsCount: cardList.length,
-            uniqueCopiesCount: this.uniqueCopies.length
-        }));
-
-        var cardBG = $(_$.assets.get("svg.ui.cardBG"));
-        this.$(".cardSelect_header-deck-holder").append(cardBG);
-
-        this.createAlbumCardViews();
+        this.$el.html(this.template());
+        this.toggleRule("open", true);
+        this.toggleRule("random", false);
+        this.toggleRule("elemental", false);
 
         _$.utils.addDomObserver(this.$el, () => {
             var tl = new TimelineMax();
             tl.call(() => {
-                this.$(".cardSelect_header").slideDown(500);
+                this.$(".rulesSelect_header").slideDown(500);
             });
             tl.call(() => {
-                this.onResize(null, true);
+                /*this.onResize(null, true);
                 this.render();
-                this.navUpdate();
+                this.navUpdate();*/
             }, null, [], 0.5);
         }, true);
 
-        _$.events.on("resize", this.onResize.bind(this));
-        _$.events.on("resizeStart", this.emptyAlbumCardViews.bind(this));
-        _$.events.on("updateDeck", this.updateDeck.bind(this));
+        //_$.events.on("resize", this.onResize.bind(this));
         this.add();
     }
 
     function remove () {
-        _$.events.off("resize", this.onResize.bind(this));
-        _$.events.off("resizeStart", this.emptyAlbumCardViews.bind(this));
-        _$.events.off("updateDeck", this.updateDeck.bind(this));
+        //_$.events.off("resize", this.onResize.bind(this));
         Backbone.View.prototype.remove.call(this);
     }
 
-    function emptyAlbumCardViews () {
+    function toggleRule (rule, state) {
+        var ruleDOM = this.$(".rule-" + rule);
+        
+        if (state === "toggle") {
+            state = ruleDOM.hasClass("is--on") ? false : true;
+        }
+
+        if (state) {
+            ruleDOM.removeClass("is--off").addClass("is--on");
+            ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("ON");
+        } else {
+            ruleDOM.removeClass("is--on").addClass("is--off");
+            ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("OFF");
+        }
+    }
+
+    function toggleTrade (e) {
+        var index        = _$.utils.getNodeIndex(e.target);
+        var selectHeight = $(".rule-trade").height();
+        var toggle       = this.$(".rule-trade .rulesSelect_content-rules-rule-toggle");
+        var dropdown     = this.$(".rulesSelect_content-rules-rule-select");
+
+        if (this.$(".rule-trade").hasClass("is--active")) {
+            this.$(".rule-trade").removeClass("is--active");
+            TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight });
+        } else {
+            this.$(".rule-trade").addClass("is--active");
+        }
+
+        $(window).on("click.toggleTrade", (clickEvent) => {
+            if (!$(clickEvent.target).parents(".rule-trade").length) {
+                var scrollPosition = Math.round(dropdown.scrollTop() / selectHeight) * selectHeight;
+                TweenMax.to(dropdown[0], 0.4, { scrollTop: scrollPosition });
+                this.$(".rule-trade").removeClass("is--active");
+                $(window).off("click.toggleTrade");
+            }
+        });
+    }
+
+    function toCardSelection () {
+        var selectHeight = $(".rule-trade").height();
+        var rules        = {};
+        var ruleName;
+        var tradeRule;
+        var tradeRuleIndex;
+        var temp;
+
+        this.$(".rulesSelect_content-rules-rule.is--on").each(function () {
+            temp     = this.className.slice(this.className.indexOf("rule-"));
+            ruleName = this.className.slice(this.className.indexOf("rule-"), this.className.indexOf(temp.slice(temp.indexOf(" "))));
+
+            rules[ruleName.replace("rule-", "")] = true;
+        });
+
+        this.$(".rulesSelect_content-rules-rule.is--off").each(function () {
+            temp     = this.className.slice(this.className.indexOf("rule-"));
+            ruleName = this.className.slice(this.className.indexOf("rule-"), this.className.indexOf(temp.slice(temp.indexOf(" "))));
+
+            rules[ruleName.replace("rule-", "")] = false;
+        });
+
+        tradeRuleIndex = Math.ceil(this.$(".rulesSelect_content-rules-rule-select").scrollTop() / selectHeight);
+        tradeRule      = this.$(".rulesSelect_content-rules-rule-select").children().eq(tradeRuleIndex)[0].className.replace("tradeRule-", "");
+        rules.trade    = tradeRule;
+
+        console.log(rules);
+    }
+
+    /*function emptyAlbumCardViews () {
         var that = this;
         if (this.$(".cardSelect_content-album").children().length) {
             _$.utils.fadeOut(this.$(".cardSelect_content-album"), empty.bind(that, true), 0.5);
@@ -121,11 +172,6 @@ define([
         }
 
         return this;
-    }
-
-    function newGame () {
-        /*_$.state.screen = new Screen_Game();
-        this.remove();*/
     }
 
     function createAlbumCardViews () {
@@ -182,11 +228,11 @@ define([
 
         if (options.action === "remove") {
             if (options.moveFrom) {
-                holderIndex = _$.utils.getNodeIndex(options.moveFrom);
+                holderIndex = Array.from(options.moveFrom.parentNode.children).indexOf(options.moveFrom);
                 this.userDeck[holderIndex] = null;
             }
         } else if (options.action === "add") {
-            holderIndex = _$.utils.getNodeIndex(options.moveTo);
+            holderIndex = Array.from(options.moveTo.parentNode.children).indexOf(options.moveTo);
             this.userDeck[holderIndex] = options.albumCardView.cardView.model;
 
             _.each(_.without(this.albumCardViews, options.albumCardView), (albumCardView) => {
@@ -195,7 +241,7 @@ define([
                         if (options.moveFrom) {
                             albumCardView.moveInDeck(options.moveFrom, cardCopy, true);
 
-                            holderIndex = _$.utils.getNodeIndex(options.moveFrom);
+                            holderIndex = Array.from(options.moveFrom.parentNode.children).indexOf(options.moveFrom);
                             this.userDeck[holderIndex] = albumCardView.cardView.model;
                         } else {
                             albumCardView.moveToOrigin(cardCopy, true);
@@ -222,5 +268,5 @@ define([
             this.$(".cardSelect_content-confirm").slideUp();
             this.$(".cardSelect_content-back").slideDown();
         }
-    }
+    }*/
 });

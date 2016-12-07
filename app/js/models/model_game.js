@@ -79,11 +79,11 @@ define([
     }
 
     function getRules (rules) {
-        if (rules && !rules.trade.match("none|one|diff|direct|all")) {
+        if (rules && !rules.trade.match("none|one|difference|direct|all")) {
             throw new Error("Invalid trade rule: " + rules.trade);
         }
 
-        return _.extend({
+        return _.defaults({
             open        : true,
             random      : false,
             same        : false,
@@ -91,7 +91,6 @@ define([
             plus        : false,
             elemental   : false,
             suddenDeath : false,
-            domination  : false,
             trade       : "none"
         }, rules);
     }
