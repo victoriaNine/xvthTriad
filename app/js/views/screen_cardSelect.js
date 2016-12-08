@@ -2,13 +2,14 @@ define([
     "jquery",
     "underscore", 
     "backbone",
+    "models/model_game",
     "views/screen",
     "views/screen_game",
     "views/elem_albumCard",
     "text!templates/templ_cardSelect.html",
     "global",
     "tweenMax",
-], function Screen_CardSelect ($, _, Backbone, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
+], function Screen_CardSelect ($, _, Backbone, Model_Game, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
     var CARD_WIDTH = 180;
 
     return Screen.extend({
@@ -39,6 +40,9 @@ define([
     });
 
     function initialize (options) {
+        _$.events.trigger("stopUserEvents");
+        _$.state.cardSelectScreen = this;
+
         var cardList         = _$.utils.getCardList();
         this.userAlbum       = _$.state.user.get("album");
         this.uniqueCopies    = _.uniqBy(this.userAlbum.models, "attributes.cardId");
@@ -66,6 +70,7 @@ define([
                 this.onResize(null, true);
                 this.render();
                 this.navUpdate();
+                _$.events.trigger("startUserEvents");
             }, null, [], 0.5);
         }, true);
 
@@ -80,6 +85,7 @@ define([
         _$.events.off("resizeStart", this.emptyAlbumCardViews.bind(this));
         _$.events.off("updateDeck", this.updateDeck.bind(this));
         Backbone.View.prototype.remove.call(this);
+        delete _$.state.cardSelectScreen;
     }
 
     function emptyAlbumCardViews () {
@@ -124,8 +130,10 @@ define([
     }
 
     function newGame () {
-        /*_$.state.screen = new Screen_Game();
-        this.remove();*/
+        _$.state.game   = new Model_Game({ deck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
+        _$.state.screen = new Screen_Game({ model: _$.state.game });
+        _$.state.rulesSelectScreen.remove();
+        this.remove();
     }
 
     function createAlbumCardViews () {
@@ -217,10 +225,10 @@ define([
     function toggleConfirm (state) {
         if (state === "show") {
             this.$(".cardSelect_content-confirm").slideDown();
-            this.$(".cardSelect_content-back").slideUp();
+            this.$(".cardSelect_content-screenNav").slideUp();
         } else if (state === "hide") {
             this.$(".cardSelect_content-confirm").slideUp();
-            this.$(".cardSelect_content-back").slideDown();
+            this.$(".cardSelect_content-screenNav").slideDown();
         }
     }
 });

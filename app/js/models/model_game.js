@@ -21,8 +21,7 @@ define([
     });
 
     function initialize (attributes, options) {
-        this.user     = attributes.user;
-        var userDeck  = this.buildRandomDeck(this.user); // move logic to view
+        var userDeck  = attributes.deck;
         var gameLevel = this.get("level");
 
         if (!attributes.type || attributes.type === "solo") {
@@ -30,7 +29,7 @@ define([
 
             this.set({ players :
                 {
-                    user     : new Player({ type: "human", user: this.user, name: this.user.get("name"), avatar: this.user.get("avatar"), deck: userDeck }),
+                    user     : new Player({ type: "human", user: _$.state.user, name: _$.state.user.get("name"), avatar: _$.state.user.get("avatar"), deck: userDeck }),
                     opponent : new Player({ type: "computer", user: null, name: computerInfo.name, avatar: computerInfo.avatar, deck: computerInfo.deck })
                 }
             });
@@ -45,7 +44,7 @@ define([
 
         switch (this.get("level")) {
             case "easy":
-                info.name    = "Moomba Computer";
+                info.name    = "Carbuncle";
                 info.avatar  = "./assets/img/avatars/computer_moomba.jpg";
                 cardMaxLevel = 3;
                 break;

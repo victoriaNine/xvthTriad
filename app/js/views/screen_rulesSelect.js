@@ -8,6 +8,8 @@ define([
     "global",
     "tweenMax"
 ], function Screen_RulesSelect ($, _, Backbone, Screen, Screen_CardSelect, Templ_RulesSelect, _$) {
+    var RULES = "open|random|elemental|same|sameWall|suddenDeath|plus|trade";
+
     return Screen.extend({
         id        : "screen_rulesSelect",
 
@@ -17,15 +19,14 @@ define([
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
             "click .rulesSelect_content-rules-rule" : function (e) {
-                var temp     = e.currentTarget.className.slice(e.currentTarget.className.indexOf("rule-"));
-                var ruleName = e.currentTarget.className.slice(e.currentTarget.className.indexOf("rule-"), e.currentTarget.className.indexOf(temp.slice(temp.indexOf(" "))));
-                ruleName     = ruleName.replace("rule-", "");
+                var ruleName = e.currentTarget.className.match(RULES)[0];
 
                 if (ruleName !== "trade") {
                     this.toggleRule(ruleName, "toggle");
                 }
             },
-            "click .rule-trade" : "toggleTrade",
+            "click .rule-trade"                                   : "toggleTrade",
+            "click .rulesSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("title"); },
             "click .rulesSelect_content-screenNav-choice-nextBtn" : "toCardSelection"
         },
 
@@ -35,34 +36,38 @@ define([
         toggleRule,
         toggleTrade,
 
-        toCardSelection
+        toCardSelection,
+        transitionOut
     });
 
     function initialize (options) {
+        _$.events.trigger("stopUserEvents");
+        _$.state.rulesSelectScreen = this;
+
         this.$el.html(this.template());
         this.toggleRule("open", true);
         this.toggleRule("random", false);
         this.toggleRule("elemental", false);
+        TweenMax.set(this.$(".rulesSelect_content-rules-rule"), { opacity: 0 });
 
         _$.utils.addDomObserver(this.$el, () => {
             var tl = new TimelineMax();
             tl.call(() => {
                 this.$(".rulesSelect_header").slideDown(500);
             });
+            tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, 0.5);
             tl.call(() => {
-                /*this.onResize(null, true);
-                this.render();
-                this.navUpdate();*/
-            }, null, [], 0.5);
+                this.$(".rulesSelect_content-screenNav").slideDown(500);
+                _$.events.trigger("startUserEvents");
+            });
         }, true);
 
-        //_$.events.on("resize", this.onResize.bind(this));
         this.add();
     }
 
     function remove () {
-        //_$.events.off("resize", this.onResize.bind(this));
         Backbone.View.prototype.remove.call(this);
+        delete _$.state.rulesScreen;
     }
 
     function toggleRule (rule, state) {
@@ -105,168 +110,58 @@ define([
     }
 
     function toCardSelection () {
+        _$.events.trigger("stopUserEvents");
+
         var selectHeight = $(".rule-trade").height();
         var rules        = {};
         var ruleName;
         var tradeRule;
         var tradeRuleIndex;
-        var temp;
 
         this.$(".rulesSelect_content-rules-rule.is--on").each(function () {
-            temp     = this.className.slice(this.className.indexOf("rule-"));
-            ruleName = this.className.slice(this.className.indexOf("rule-"), this.className.indexOf(temp.slice(temp.indexOf(" "))));
-
-            rules[ruleName.replace("rule-", "")] = true;
+            ruleName = this.className.match(RULES)[0];
+            rules[ruleName] = true;
         });
 
         this.$(".rulesSelect_content-rules-rule.is--off").each(function () {
-            temp     = this.className.slice(this.className.indexOf("rule-"));
-            ruleName = this.className.slice(this.className.indexOf("rule-"), this.className.indexOf(temp.slice(temp.indexOf(" "))));
-
-            rules[ruleName.replace("rule-", "")] = false;
+            ruleName = this.className.match(RULES)[0];
+            rules[ruleName] = false;
         });
 
         tradeRuleIndex = Math.ceil(this.$(".rulesSelect_content-rules-rule-select").scrollTop() / selectHeight);
         tradeRule      = this.$(".rulesSelect_content-rules-rule-select").children().eq(tradeRuleIndex)[0].className.replace("tradeRule-", "");
         rules.trade    = tradeRule;
 
-        console.log(rules);
+        this.rules = rules;
+        this.transitionOut("cardSelect");
     }
 
-    /*function emptyAlbumCardViews () {
-        var that = this;
-        if (this.$(".cardSelect_content-album").children().length) {
-            _$.utils.fadeOut(this.$(".cardSelect_content-album"), empty.bind(that, true), 0.5);
-        }
-
-        function empty () {
-            this.$(".cardSelect_content-album").empty();
-            TweenMax.set(this.$(".cardSelect_content-album"), { clearProps: "all" });
-            _$.events.trigger("albumCardViewEmpty");
-        }
-    }
-
-    function render () {
-        if (this.$(".cardSelect_content-album").children().length) {
-            _$.events.once("albumCardViewEmpty", () => {
-                this.render();
-            });
-
-            return this;
-        }
-
-        var albumCardView;
-        var currentId;
-        for (var i = 0, ii = this.maxVisibleCards; i < ii; i++) {
-            currentId = i + (this.currentPage - 1) * this.maxVisibleCards;
-            if (currentId === this.albumCardViews.length) {
-                this.$(".cardSelect_content-album").removeClass("flex-justify-sb").addClass("flex-justify-start");
-                break;
-            } else if (i === ii - 1) {
-                this.$(".cardSelect_content-album").removeClass("flex-justify-start").addClass("flex-justify-sb");
-            }
-
-            albumCardView = this.albumCardViews[currentId].delegateEvents();
-            this.$(".cardSelect_content-album").append(albumCardView.$el);
-            _$.utils.fadeIn(albumCardView.$el, null, 0.5, 0.15 * i);
-        }
-
-        return this;
-    }
-
-    function createAlbumCardViews () {
-        var copiesCount;
-        var albumCardView;
-
-        _.each(this.uniqueCopies, (card) => {
-            copiesCount   = this.userAlbum.where({ cardId: card.get("cardId") }).length;
-            albumCardView = new Elem_AlbumCard({ card, copiesCount });
-
-            this.albumCardViews.push(albumCardView);
+    function transitionOut (newScreen) {
+        var tl = new TimelineMax();
+        tl.call(() => {
+            this.$(".rulesSelect_content-screenNav").slideUp(500);
         });
-    }
+        tl.to(this.$(".rulesSelect_content-rules"), 0.5, { opacity: 0 }, 0.5);
+        tl.call(() => {
+            this.$(".rulesSelect_header").slideUp(500);
+        });
+        tl.call(() => {
+            this.$el.hide();
+            onTransitionComplete.call(this);
+        }, [], null, "+=0.5");
 
-    function pageChange (direction) {
-        var oldPage = this.currentPage;
-        this.currentPage += direction;
-        _.clamp(this.currentPage, 1, this.maxPages);
-
-        if (this.currentPage !== oldPage) {
-            this.render();
-            this.emptyAlbumCardViews();
-            this.navUpdate();
-        }
-    }
-
-    function onResize (event, noUpdate) {
-        this.maxVisibleCards = (Math.floor(this.$(".cardSelect_content-album").width() / CARD_WIDTH) - 1) || 1;
-        this.maxPages        = Math.ceil(this.uniqueCopies.length / this.maxVisibleCards);
-        this.currentPage     = Math.ceil(this.currentPage / this.maxVisibleCards);
-        
-        if (!noUpdate) {
-            this.navUpdate();
-            this.render();
-        }
-    }
-
-    function navUpdate () {
-        if (this.currentPage === 1) {
-            _$.utils.fadeOut(this.$(".cardSelect_content-nav-prevBtn"));
-        } else {
-            _$.utils.fadeIn(this.$(".cardSelect_content-nav-prevBtn"));
-        }
-
-        if (this.currentPage === this.maxPages) {
-            _$.utils.fadeOut(this.$(".cardSelect_content-nav-nextBtn"));
-        } else {
-            _$.utils.fadeIn(this.$(".cardSelect_content-nav-nextBtn"));
-        }
-    }
-
-    function updateDeck (options) {
-        var holderIndex;
-
-        if (options.action === "remove") {
-            if (options.moveFrom) {
-                holderIndex = Array.from(options.moveFrom.parentNode.children).indexOf(options.moveFrom);
-                this.userDeck[holderIndex] = null;
+        function onTransitionComplete () {
+            if (newScreen === "cardSelect") {
+                _$.state.screen = _$.state.cardSelectScreen || new Screen_CardSelect();
+                _$.events.trigger("startUserEvents");
+            } else if (newScreen === "title") {
+                _$.utils.addDomObserver(this.$el, () => {
+                    var Screen_Title = require("views/screen_title");
+                    _$.state.screen = new Screen_Title();
+                    _$.events.trigger("startUserEvents");
+                }, true, "remove");
+                this.remove();
             }
-        } else if (options.action === "add") {
-            holderIndex = Array.from(options.moveTo.parentNode.children).indexOf(options.moveTo);
-            this.userDeck[holderIndex] = options.albumCardView.cardView.model;
-
-            _.each(_.without(this.albumCardViews, options.albumCardView), (albumCardView) => {
-                _.each(albumCardView.cardCopies, (cardCopy) => {
-                    if (cardCopy.holder === options.moveTo) {
-                        if (options.moveFrom) {
-                            albumCardView.moveInDeck(options.moveFrom, cardCopy, true);
-
-                            holderIndex = Array.from(options.moveFrom.parentNode.children).indexOf(options.moveFrom);
-                            this.userDeck[holderIndex] = albumCardView.cardView.model;
-                        } else {
-                            albumCardView.moveToOrigin(cardCopy, true);
-                        }
-                    }
-                });
-            });
-        }
-
-        if (_.compact(this.userDeck).length === 5) {
-            if (!$(".cardSelect_content-confirm").is(":visible")) {
-                toggleConfirm.call(this, "show");
-            }
-        } else if ($(".cardSelect_content-confirm").is(":visible")) {
-            toggleConfirm.call(this, "hide");
         }
     }
-
-    function toggleConfirm (state) {
-        if (state === "show") {
-            this.$(".cardSelect_content-confirm").slideDown();
-            this.$(".cardSelect_content-back").slideUp();
-        } else if (state === "hide") {
-            this.$(".cardSelect_content-confirm").slideUp();
-            this.$(".cardSelect_content-back").slideDown();
-        }
-    }*/
 });

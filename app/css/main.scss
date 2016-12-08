@@ -465,6 +465,10 @@ h1 {
     position: absolute;
     left: calc(50% - 630px / 2);
     top: 12.5%;
+
+    & .svg-logo {
+        fill: rgba(255, 255, 255, 1);
+    }
 }
 
 .title_startBtn {

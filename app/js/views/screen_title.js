@@ -3,13 +3,12 @@ define([
     "underscore", 
     "backbone",
     "models/model_user",
-    "models/model_game",
     "views/screen",
     "views/screen_rulesSelect",
     "text!templates/templ_title.html",
     "global",
     "tweenMax"
-], function Screen_Title ($, _, Backbone, Model_User, Model_Game, Screen, Screen_RulesSelect, Templ_Title, _$) {
+], function Screen_Title ($, _, Backbone, Model_User, Screen, Screen_RulesSelect, Templ_Title, _$) {
     return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
@@ -20,18 +19,18 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "click .title_startBtn" : "cardSelect"
+            "click .title_startBtn" : "toRulesSelect"
         },
 
-        initialize : initialize,
-        render     : render,
+        initialize    : initialize,
+        render        : render,
 
-        setupApp   : setupApp,
-        cardSelect : cardSelect
+        setupApp      : setupApp,
+        toRulesSelect : toRulesSelect
     });
 
     function initialize (options) {
-        if (options.firstInit) {
+        if (options && options.firstInit) {
             this.setupApp();
         }
 
@@ -99,7 +98,7 @@ define([
         }, true);
     }
 
-    function cardSelect () {
+    function toRulesSelect () {
         _$.events.trigger("stopUserEvents");
         _$.state.footer.menu.find(".footer_menu-homeBtn").removeClass("is--active");
 
