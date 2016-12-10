@@ -183,7 +183,7 @@ define([
                 that.winner = that.get("players").user;
                 _$.state.user.get("gameStats").won++;
             } else if (that.get("players").opponent.attributes.points > that.get("players").user.attributes.points) {
-                that.winner = that.get("players").user;
+                that.winner = that.get("players").opponent;
                 _$.state.user.get("gameStats").lost++;
             } else if (that.get("players").user.attributes.points === that.get("players").opponent.attributes.points) {
                 that.winner = "draw";
