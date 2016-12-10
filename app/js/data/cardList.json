@@ -4,10 +4,10 @@
         "name"    : "Luna1",
         "level"   : 1,
         "ranks"   : {
-            "top"    : 9,
-            "right"  : 6,
-            "bottom" : 10,
-            "left"   : 2
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 2,
+            "left"   : 6
         },
         "element" : null
     },
@@ -17,9 +17,9 @@
         "level"   : 1,
         "ranks"   : {
             "top"    : 2,
-            "right"  : 6,
-            "bottom" : 9,
-            "left"   : 10
+            "right"  : 1,
+            "bottom" : 2,
+            "left"   : 6
         },
         "element" : null
     },
@@ -28,9 +28,9 @@
         "name"    : "Luna3",
         "level"   : 1,
         "ranks"   : {
-            "top"    : 8,
-            "right"  : 5,
-            "bottom" : 10,
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 2,
             "left"   : 6
         },
         "element" : null
@@ -40,10 +40,10 @@
         "name"    : "Noctis1",
         "level"   : 1,
         "ranks"   : {
-            "top"    : 4,
-            "right"  : 10,
+            "top"    : 2,
+            "right"  : 1,
             "bottom" : 2,
-            "left"   : 10
+            "left"   : 6
         },
         "element" : null
     },
@@ -52,10 +52,10 @@
         "name"    : "Noctis2",
         "level"   : 1,
         "ranks"   : {
-            "top"    : 10,
-            "right"  : 10,
-            "bottom" : 3,
-            "left"   : 3
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 2,
+            "left"   : 6
         },
         "element" : null
     },
@@ -64,10 +64,10 @@
         "name"    : "Noctis3",
         "level"   : 1,
         "ranks"   : {
-            "top"    : 6,
-            "right"  : 9,
-            "bottom" : 10,
-            "left"   : 4
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 2,
+            "left"   : 6
         },
         "element" : null
     },
@@ -76,10 +76,10 @@
         "name"    : "Noctis4",
         "level"   : 1,
         "ranks"   : {
-            "top"    : 10,
-            "right"  : 4,
-            "bottom" : 6,
-            "left"   : 9
+            "top"    : 2,
+            "right"  : 1,
+            "bottom" : 2,
+            "left"   : 6
         },
         "element" : null
     }

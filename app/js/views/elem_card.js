@@ -13,57 +13,26 @@ define([
         template : _.template(Templ_Card),
 
         // Delegated events for creating new items, and clearing completed ones.
-        events           : {
-        },
+        events           : {},
 
-        initialize       : initialize,
-        render           : render,
-        placeCard        : placeCard
+        initialize
     });
 
-    function initialize (options) {
+    function initialize (attributes, options) {
         var cardBG = $(_$.assets.get("svg.ui.cardBG"));
         this.$el.html(this.template(this.model.attributes));
         this.$(".card-front").prepend(cardBG);
 
         if (_$.state.inGame) {
-            this.deckIndex = options.deckIndex;
-            this.played    = false;
+            this.deckIndex = attributes.deckIndex;
 
-            if (this.model.get("currentOwner") === _$.state.user) {
+            if (this.model.currentOwner === _$.state.game.get("players").user) {
                 this.$el.addClass("card-blue");
-                this._placeOnHolder = function () { return this.placeCard("user", "holder"); };
             } else {
                 this.$el.addClass("card-red");
-                this._placeOnHolder = function () { return this.placeCard("opponent", "holder"); };
             }
         } else {
             this.$el.addClass("card-black");
         }
-    }
-
-    function render () {
-        if (_$.state.inGame) {
-            if (this.played) {
-                // replace on board
-            } else {
-                this._placeOnHolder();
-            }
-        }
-        
-        return this;
-    }
-
-    function placeCard (player, where) {
-        var destination;
-
-        if (where === "holder") {
-            destination = $(".playerHUD." + player).find(".cardHolder").eq(this.deckIndex);
-        } else if (where === "board") {
-            // place on board logic
-        }
-
-        var coords = _$.utils.getDestinationCoord(this.$el, destination, { player: player, halfWidth: (this.deckIndex > 0) });
-        TweenMax.set(this.$el, {x: coords.left, y: coords.top});
     }
 });

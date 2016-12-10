@@ -1,34 +1,42 @@
-<div class="playerHUD playerHUD-opponent">
-    <div class="playerHUD-bar"></div>
-    <div class="playerHUD-avatar">
-        <img src="">
+<div class="game_playerHUD-opponent">
+    <div class="game_playerHUD-bar">
+        <%= opponentName %>
+        <% if (opponentType === "computer") { %>
+        <div class="game_playerHUD-bar-type">Computer</div>
+        <% } %>
+        <div class="game_playerHUD-bar-state">is playing...</div>
     </div>
-    <div class="playerHUD-score"></div>
-    <ul class="deckHolder">
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
+    <div class="game_playerHUD-avatar">
+        <img src="<%= opponentAvatar %>">
+    </div>
+    <div class="game_playerHUD-score"><%= opponentPoints %></div>
+    <ul class="game_deck">
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
     </ul>
 </div>
-<div class="playerHUD user">
-    <div class="playerHUD-bar"></div>
-    <div class="playerHUD-avatar">
-        <img src="">
+<div class="game_playerHUD-user">
+    <div class="game_playerHUD-bar">
+        <%= userName %>
+        <div class="game_playerHUD-bar-state">Your turn!</div>
     </div>
-    <div class="playerHUD-score"></div>
-    <ul class="deckHolder">
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
-        <li class="cardHolder"></li>
+    <div class="game_playerHUD-avatar">
+        <img src="<%= userAvatar %>">
+    </div>
+    <div class="game_playerHUD-score"><%= userPoints %></div>
+    <ul class="game_deck">
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
+        <li class="game_deck-holder"></li>
     </ul>
 </div>
 <div id="cardsWrapper"></div>
 <div id="board">
-    <div id="backLogo"></div>
     <div id="case11" class="case"></div>
     <div id="case12" class="case"></div>
     <div id="case13" class="case"></div>
@@ -38,4 +46,10 @@
     <div id="case31" class="case"></div>
     <div id="case32" class="case"></div>
     <div id="case33" class="case"></div>
+</div>
+<div class="game_overlay-playerTurn screen overlay">
+    <h1><span class="weight-bold"></span> turn</h1>
+</div>
+<div class="game_overlay-endGame screen overlay">
+    <h1><span class="weight-bold">You</span></h1>
 </div>

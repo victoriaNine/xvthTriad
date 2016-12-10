@@ -3,11 +3,11 @@
 /* socicon */
 @font-face {
   font-family: "socicon";
-  src:url("https://file.myfontastic.com/n6vo44Re5QaWo8oCKShBs7/fonts/1477598082.eot");
-  src:url("https://file.myfontastic.com/n6vo44Re5QaWo8oCKShBs7/fonts/1477598082.eot?#iefix") format("embedded-opentype"),
-    url("https://file.myfontastic.com/n6vo44Re5QaWo8oCKShBs7/fonts/1477598082.woff") format("woff"),
-    url("https://file.myfontastic.com/n6vo44Re5QaWo8oCKShBs7/fonts/1477598082.ttf") format("truetype"),
-    url("https://file.myfontastic.com/n6vo44Re5QaWo8oCKShBs7/fonts/1477598082.svg#1477598082") format("svg");
+  src:url("../assets/fonts/socicon.eot");
+  src:url("../assets/fonts/socicon.eot?#iefix") format("embedded-opentype"),
+    url("../assets/fonts/socicon.woff") format("woff"),
+    url("../assets/fonts/socicon.ttf") format("truetype"),
+    url("../assets/fonts/socicon.svg#socicon") format("svg");
   font-weight: normal;
   font-style: normal;
 }

@@ -4,10 +4,12 @@ define([
     "backbone",
     "views/screen",
     "views/screen_cardSelect",
+    "views/screen_game",
+    "collections/coll_deck",
     "text!templates/templ_rulesSelect.html",
     "global",
     "tweenMax"
-], function Screen_RulesSelect ($, _, Backbone, Screen, Screen_CardSelect, Templ_RulesSelect, _$) {
+], function Screen_RulesSelect ($, _, Backbone, Screen, Screen_CardSelect, Screen_Game, Coll_Deck, Templ_RulesSelect, _$) {
     var RULES = "open|random|elemental|same|sameWall|suddenDeath|plus|trade";
 
     return Screen.extend({
@@ -27,7 +29,9 @@ define([
             },
             "click .rule-trade"                                   : "toggleTrade",
             "click .rulesSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("title"); },
-            "click .rulesSelect_content-screenNav-choice-nextBtn" : "toCardSelection"
+            "click .rulesSelect_content-screenNav-choice-nextBtn" : "toNextStep",
+            "click .rulesSelect_content-confirm-choice-yesBtn"    : "toNextStep",
+            "click .rulesSelect_content-confirm-choice-noBtn"     : function () { toggleConfirm.call(this, "hide"); },
         },
 
         initialize,
@@ -36,7 +40,7 @@ define([
         toggleRule,
         toggleTrade,
 
-        toCardSelection,
+        toNextStep,
         transitionOut
     });
 
@@ -66,6 +70,10 @@ define([
     }
 
     function remove () {
+        if (_$.state.cardSelectScreen) {
+             _$.state.cardSelectScreen.remove();
+        }
+        
         Backbone.View.prototype.remove.call(this);
         delete _$.state.rulesScreen;
     }
@@ -83,6 +91,12 @@ define([
         } else {
             ruleDOM.removeClass("is--on").addClass("is--off");
             ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("OFF");
+        }
+
+        if (rule === "random" && state) {
+            toggleConfirm.call(this, "show");
+        } else {
+            toggleConfirm.call(this, "hide");
         }
     }
 
@@ -109,7 +123,7 @@ define([
         });
     }
 
-    function toCardSelection () {
+    function toNextStep () {
         _$.events.trigger("stopUserEvents");
 
         var selectHeight = $(".rule-trade").height();
@@ -133,13 +147,18 @@ define([
         rules.trade    = tradeRule;
 
         this.rules = rules;
-        this.transitionOut("cardSelect");
+
+        if (this.rules.random) {
+            this.transitionOut("game");
+        } else {
+            this.transitionOut("cardSelect");
+        }
     }
 
     function transitionOut (newScreen) {
         var tl = new TimelineMax();
         tl.call(() => {
-            this.$(".rulesSelect_content-screenNav").slideUp(500);
+            this.$(".rulesSelect_content-screenNav, .rulesSelect_content-confirm").slideUp(500);
         });
         tl.to(this.$(".rulesSelect_content-rules"), 0.5, { opacity: 0 }, 0.5);
         tl.call(() => {
@@ -148,20 +167,45 @@ define([
         tl.call(() => {
             this.$el.hide();
             onTransitionComplete.call(this);
-        }, [], null, "+=0.5");
+        }, null, [], "+=0.5");
 
         function onTransitionComplete () {
-            if (newScreen === "cardSelect") {
-                _$.state.screen = _$.state.cardSelectScreen || new Screen_CardSelect();
+            if (newScreen === "game") {
+                _$.utils.addDomObserver(this.$el, () => {
+                    var randomDeck = new Coll_Deck(_$.utils.getRandomCards({
+                        amount : 5,
+                        album  : _$.state.user.get("album"),
+                        unique : true
+                    }));
+
+                    _$.events.trigger("startUserEvents");
+                    _$.state.screen = new Screen_Game({ deck: randomDeck, rules: this.rules });
+                }, true, "remove");
+
+                this.remove();
+            } else if (newScreen === "cardSelect") {
                 _$.events.trigger("startUserEvents");
+                _$.state.screen = _$.state.cardSelectScreen || new Screen_CardSelect();
             } else if (newScreen === "title") {
                 _$.utils.addDomObserver(this.$el, () => {
                     var Screen_Title = require("views/screen_title");
-                    _$.state.screen = new Screen_Title();
+
                     _$.events.trigger("startUserEvents");
+                    _$.state.screen = new Screen_Title();
                 }, true, "remove");
+
                 this.remove();
             }
+        }
+    }
+
+    function toggleConfirm (state) {
+        if (state === "show") {
+            this.$(".rulesSelect_content-confirm").slideDown();
+            this.$(".rulesSelect_content-screenNav").slideUp();
+        } else if (state === "hide") {
+            this.$(".rulesSelect_content-confirm").slideUp();
+            this.$(".rulesSelect_content-screenNav").slideDown();
         }
     }
 });

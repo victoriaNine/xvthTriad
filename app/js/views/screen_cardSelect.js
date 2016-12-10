@@ -2,14 +2,13 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "models/model_game",
     "views/screen",
     "views/screen_game",
     "views/elem_albumCard",
     "text!templates/templ_cardSelect.html",
     "global",
     "tweenMax",
-], function Screen_CardSelect ($, _, Backbone, Model_Game, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
+], function Screen_CardSelect ($, _, Backbone, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
     var CARD_WIDTH = 180;
 
     return Screen.extend({
@@ -70,8 +69,11 @@ define([
                 this.onResize(null, true);
                 this.render();
                 this.navUpdate();
-                _$.events.trigger("startUserEvents");
             }, null, [], 0.5);
+            tl.call(() => {
+                this.$(".cardSelect_content-screenNav").slideDown(500);
+                _$.events.trigger("startUserEvents");
+            }, null, [], 1);
         }, true);
 
         _$.events.on("resize", this.onResize.bind(this));
@@ -130,8 +132,7 @@ define([
     }
 
     function newGame () {
-        _$.state.game   = new Model_Game({ deck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
-        _$.state.screen = new Screen_Game({ model: _$.state.game });
+        _$.state.screen = new Screen_Game({ deck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
         _$.state.rulesSelectScreen.remove();
         this.remove();
     }

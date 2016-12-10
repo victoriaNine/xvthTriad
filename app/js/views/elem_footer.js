@@ -84,10 +84,10 @@ define([
         if (state === "show") {
             tl.add(_$.utils.showElement(el));
             tl.call(() => {
-                this.$el.addClass("--showLogo");
+                this.$el.addClass("is--showingLogo");
             });
         } else if (state === "hide") {
-            this.$el.removeClass("--showLogo");
+            this.$el.removeClass("is--showingLogo");
             tl.add(_$.utils.hideElement(el));
         }
 

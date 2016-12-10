@@ -5,7 +5,7 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
             avatar    : null,
             album     : null,
             gameStats : {
-                win  : 0,
+                won  : 0,
                 lost : 0,
                 draw : 0
             }

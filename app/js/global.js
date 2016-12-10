@@ -155,28 +155,27 @@ define([
         }
 
         var domObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                elements.forEach((element) => {
+            _.each(mutations, (mutation) => {
+                _.each(elements, (element) => {
                     if ((mutationType === "add" && mutation.addedNodes[0] === $(element)[0]) ||
                         (mutationType === "remove" && mutation.removedNodes[0] === $(element)[0])) {
                         resolve(element);
                     }
                 });
-
             });
-
-            if (once) {
-                domObserver.disconnect();
-            }
         });
 
         function resolve (element) {
             if (_.isString(eventName)) {
                 // Event
-                events.trigger(eventName, element);
+                _$.events.trigger(eventName, element);
             } else {
                 // Callback
                 eventName(element);
+            }
+
+            if (once) {
+                domObserver.disconnect();
             }
         }
          
@@ -202,7 +201,7 @@ define([
     }
 
     function getRandomName () {
-        var names = ["Noctis", "Luna", "Ignis", "Prompto", "Iris", "Gladiolus", "Cor"];
+        var names = ["Noctis", "Luna", "Ignis", "Prompto", "Gladiolus", "Regis", "Ardyn", "Iedolas"];
         return names[_.random(names.length - 1)] + "_" + _.random(9999);
     }
 
@@ -252,9 +251,7 @@ define([
         };
     }
 
-    function getDestinationCoord (card, destination, options) {
-        options = options || {};
-
+    function getDestinationCoord (card, destination) {
         // Offset the card slightly to compensate for drop shadow
         var cardOffsetX = -2;
         var cardOffsetY = -4;
@@ -264,10 +261,6 @@ define([
         var destOffsetY = destOffsets.top;
         var destWidth   = $(destination).width();
         var destHeight  = $(destination).height();
-
-        // If half of the destination is already showing, adjust the center anchor point
-        if (options.halfWidth)  { destWidth  = destWidth * 2;/*(options.player === "user") ? destWidth * 2 : 0;*/ }
-        if (options.halfHeight) { destHeight = destHeight * 2;/*(options.player === "user") ? destHeight * 2 : 0;*/ }
 
         // Difference in size to center the card on its destination
         var deltaWidth  = destWidth - $(card).width();

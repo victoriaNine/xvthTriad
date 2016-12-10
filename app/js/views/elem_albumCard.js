@@ -116,8 +116,8 @@ define([
             var deltaY = e.pageY - prevY;
 
             TweenMax.set(cardCopy.card, {
-                x: cardCopy.card[0]._gsTransform.x + deltaX * 1.5,
-                y: cardCopy.card[0]._gsTransform.y + deltaY * 1.5
+                x: cardCopy.card[0]._gsTransform.x + deltaX * 1.25,
+                y: cardCopy.card[0]._gsTransform.y + deltaY * 1.25
             });
 
             prevX = e.pageX;
@@ -139,10 +139,9 @@ define([
                 y2: deckOffset.top + $(".cardSelect_header-deck").height()
             };
 
-            var nearestHolder = $.nearest({x: e.pageX, y: e.pageY}, $(".cardSelect_header-deck-holder"))[0];
+            var nearestHolder = $.nearest({ x: e.pageX, y: e.pageY }, $(".cardSelect_header-deck-holder"))[0];
             var holderOffset  = _$.utils.getAbsoluteOffset(nearestHolder);
 
-            var tl = new TimelineMax();
             if (scaledPageX >= deckPosition.x1 && scaledPageX <= deckPosition.x2 && scaledPageY >= deckPosition.y1 && scaledPageY <= deckPosition.y2) {
                 that.moveInDeck(nearestHolder, cardCopy);
             } else {

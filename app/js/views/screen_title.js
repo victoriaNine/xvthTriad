@@ -112,8 +112,8 @@ define([
 
         function onTransitionComplete () {
             _$.utils.addDomObserver(this.$el, () => {
-                _$.state.screen = new Screen_RulesSelect();
                 _$.events.trigger("startUserEvents");
+                _$.state.screen = new Screen_RulesSelect();
             }, true, "remove");
             this.remove();
         }
