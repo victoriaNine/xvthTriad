@@ -2,14 +2,14 @@ define([
     "jquery",
     "underscore", 
     "backbone",
+    "models/model_card",
     "views/screen",
     "views/screen_cardSelect",
     "views/screen_game",
-    "collections/coll_deck",
     "text!templates/templ_rulesSelect.html",
     "global",
     "tweenMax"
-], function Screen_RulesSelect ($, _, Backbone, Screen, Screen_CardSelect, Screen_Game, Coll_Deck, Templ_RulesSelect, _$) {
+], function Screen_RulesSelect ($, _, Backbone, Model_Card, Screen, Screen_CardSelect, Screen_Game, Templ_RulesSelect, _$) {
     var RULES = "open|random|elemental|same|sameWall|suddenDeath|plus|trade";
 
     return Screen.extend({
@@ -52,6 +52,7 @@ define([
         this.toggleRule("open", true);
         this.toggleRule("random", false);
         this.toggleRule("elemental", false);
+        this.toggleRule("suddenDeath", false);
         TweenMax.set(this.$(".rulesSelect_content-rules-rule"), { opacity: 0 });
 
         _$.utils.addDomObserver(this.$el, () => {
@@ -74,8 +75,8 @@ define([
              _$.state.cardSelectScreen.remove();
         }
         
+        delete _$.state.rulesSelectScreen;
         Backbone.View.prototype.remove.call(this);
-        delete _$.state.rulesScreen;
     }
 
     function toggleRule (rule, state) {
@@ -93,10 +94,12 @@ define([
             ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("OFF");
         }
 
-        if (rule === "random" && state) {
-            toggleConfirm.call(this, "show");
-        } else {
-            toggleConfirm.call(this, "hide");
+        if (rule === "random") {
+            if (state && !$(".rulesSelect_content-confirm").is(":visible")) {
+                toggleConfirm.call(this, "show");
+            } else if ($(".rulesSelect_content-confirm").is(":visible")) {
+                toggleConfirm.call(this, "hide");
+            }
         }
     }
 
@@ -172,14 +175,18 @@ define([
         function onTransitionComplete () {
             if (newScreen === "game") {
                 _$.utils.addDomObserver(this.$el, () => {
-                    var randomDeck = new Coll_Deck(_$.utils.getRandomCards({
+                    var randomCards = _$.utils.getRandomCards({
                         amount : 5,
                         album  : _$.state.user.get("album"),
                         unique : true
-                    }));
+                    });
+
+                    var randomDeck = _.map(randomCards, function (attributes) {
+                        return new Model_Card(attributes);
+                    });
 
                     _$.events.trigger("startUserEvents");
-                    _$.state.screen = new Screen_Game({ deck: randomDeck, rules: this.rules });
+                    _$.state.screen = new Screen_Game({ userDeck: randomDeck, rules: this.rules });
                 }, true, "remove");
 
                 this.remove();

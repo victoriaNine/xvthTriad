@@ -86,8 +86,9 @@ define([
         _$.events.off("resize", this.onResize.bind(this));
         _$.events.off("resizeStart", this.emptyAlbumCardViews.bind(this));
         _$.events.off("updateDeck", this.updateDeck.bind(this));
-        Backbone.View.prototype.remove.call(this);
+
         delete _$.state.cardSelectScreen;
+        Backbone.View.prototype.remove.call(this);
     }
 
     function emptyAlbumCardViews () {
@@ -132,7 +133,7 @@ define([
     }
 
     function newGame () {
-        _$.state.screen = new Screen_Game({ deck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
+        _$.state.screen = new Screen_Game({ userDeck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
         _$.state.rulesSelectScreen.remove();
         this.remove();
     }

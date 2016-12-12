@@ -9,8 +9,8 @@ $btnSize_big    : 60px;
 
 $boardWidth     : 540px;
 $boardHeight    : 675px;
-$cardRatio      : 113 / 138;
 $cardWidth      : 150px;
+$cardHeight     : 190px;
 
 $color_darkGrey : #3d4043;
 $color_red      : rgba(235, 53, 71, 1);
@@ -314,7 +314,7 @@ h1 {
 .card {
     cursor: pointer;
     width: $cardWidth;
-    height: $cardWidth / $cardRatio;
+    height: $cardHeight;
     position: fixed;
     left:0;
     top:0;
@@ -368,6 +368,7 @@ h1 {
     justify-content: center;
     pointer-events:none;
     opacity: 0;
+    flex-direction: column;
 
     @include transform("scale(1.2)");
     @include transition("all .2s .2s ease-out");
@@ -882,7 +883,7 @@ h1 {
 }
 
 .cardSelect_header-deck {
-    height: $cardWidth / $cardRatio;
+    height: $cardHeight;
     display: flex;
     position: relative;
 }
@@ -892,6 +893,7 @@ h1 {
     height: 100%;
     margin-left: 1em;
     position:relative;
+    padding-top: 2px;
 }
 
 .cardSelect_header-deck-holder .svg-cardBG {
@@ -1030,8 +1032,8 @@ h1 {
 
     & .card {
         position: relative;
-        left: calc(50% - #{ $cardWidth / 2 + 2px});
-        top: calc(50% - #{ ($cardWidth / $cardRatio) / 2 + 4px });
+        left: calc(50% - #{ $cardWidth / 2 + 2px });
+        top: calc(50% - #{ $cardHeight / 2 - 0px });
     }
 }
 
@@ -1146,6 +1148,46 @@ h1 {
                 url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
                 url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
 }
+
+.element-fire, .element-ice, .element-wind, .element-earth,
+.element-water, .element-thunder, .element-poison, .element-holy {
+    &:before {
+        @include fullSizeAbs("");
+    }
+
+    &:after {
+        position: absolute;
+        width: 100%;
+        height: 1em;
+        text-align: center;
+        top: calc(50% - .5em);
+        z-index: 999;
+        font-size: 36px;
+        font-weight: 500;
+        text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+        opacity: 0;
+        @include transform("scale(1.2)");
+        @include transition("all .4s ease-out");
+    }
+
+    &.has--bonus:after, &.has--penalty:after {
+        opacity: 1;
+        @include transform("scale(1)");
+    }
+
+    &.has--bonus:after   { content: "+1"; }
+    &.has--penalty:after { content: "-1"; }
+}
+
+.element-fire:before    { background: url(#{ $uiAssetsPath + "elem_fire.png"}) no-repeat 50%; }
+.element-ice:before     { background: url(#{ $uiAssetsPath + "elem_ice.png"}) no-repeat 50%; }
+.element-wind:before    { background: url(#{ $uiAssetsPath + "elem_wind.png"}) no-repeat 50%; }
+.element-earth:before   { background: url(#{ $uiAssetsPath + "elem_earth.png"}) no-repeat 50%; }
+.element-water:before   { background: url(#{ $uiAssetsPath + "elem_water.png"}) no-repeat 50%; }
+.element-thunder:before { background: url(#{ $uiAssetsPath + "elem_thunder.png"}) no-repeat 50%; }
+.element-poison:before  { background: url(#{ $uiAssetsPath + "elem_poison.png"}) no-repeat 50%; }
+.element-holy:before    { background: url(#{ $uiAssetsPath + "elem_holy.png"}) no-repeat 50%; }
+
 
 /* PLAYER HUD --------------*/
 %playerHUD {
@@ -1317,8 +1359,9 @@ h1 {
 
 .game_deck-holder {
     width: $cardWidth;
-    height: $cardWidth / $cardRatio;
+    height: $cardHeight;
     position:relative;
+    padding-top:2px;
 }
 
 .game_deck-holder:nth-child(1),
@@ -1337,4 +1380,11 @@ h1 {
     stroke-width: 1;
     stroke: rgba(255, 255, 255, .05);
     fill: rgba(0, 0, 0, 0.5);
+}
+
+.game_overlay-endGame-confirmBtn {
+    @extend %btn-rect;
+
+    position: relative;
+    margin-top: 50px;
 }

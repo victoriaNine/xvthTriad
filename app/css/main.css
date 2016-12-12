@@ -165,15 +165,15 @@ h1 {
   left: 0; }
 
 /* BUTTONS ------------*/
-.footer_menu-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .cardSelect_content-confirm-choice-element, .footer_social-element, .title_startBtn, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+.footer_menu-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .cardSelect_content-confirm-choice-element, .game_overlay-endGame-confirmBtn, .footer_social-element, .title_startBtn, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
   cursor: pointer;
   font-size: 16px; }
 
-.footer_menu-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .cardSelect_content-confirm-choice-element {
+.footer_menu-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .cardSelect_content-confirm-choice-element, .game_overlay-endGame-confirmBtn {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .footer_menu-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .cardSelect_content-confirm-choice-element:after {
+  .footer_menu-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .cardSelect_content-confirm-choice-element:after, .game_overlay-endGame-confirmBtn:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -187,12 +187,12 @@ h1 {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .footer_menu-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .is--active.footer_menu-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.cardSelect_content-confirm-choice-element {
+  .footer_menu-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.footer_menu-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.game_overlay-endGame-confirmBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .footer_menu-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .is--active.footer_menu-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after {
+    .footer_menu-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.footer_menu-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.game_overlay-endGame-confirmBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -251,7 +251,7 @@ h1 {
 .card {
   cursor: pointer;
   width: 150px;
-  height: 183.18584px;
+  height: 190px;
   position: fixed;
   left: 0;
   top: 0;
@@ -310,6 +310,7 @@ h1 {
   justify-content: center;
   pointer-events: none;
   opacity: 0;
+  flex-direction: column;
   -webkit-transform: scale(1.2);
   -ms-transform: scale(1.2);
   transform: scale(1.2);
@@ -680,7 +681,7 @@ h1 {
   text-align: right; }
 
 .cardSelect_header-deck {
-  height: 183.18584px;
+  height: 190px;
   display: flex;
   position: relative; }
 
@@ -688,7 +689,8 @@ h1 {
   width: 150px;
   height: 100%;
   margin-left: 1em;
-  position: relative; }
+  position: relative;
+  padding-top: 2px; }
 
 .cardSelect_header-deck-holder .svg-cardBG {
   stroke-width: 1;
@@ -789,7 +791,7 @@ h1 {
   .cardSelect_content-album-card-visual .card {
     position: relative;
     left: calc(50% - 77px);
-    top: calc(50% - 95.59292px); }
+    top: calc(50% - 95px); }
 
 .cardSelect_content-album-card-label {
   height: 50px;
@@ -862,6 +864,68 @@ h1 {
 
 #case33 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
+
+.element-fire:before, .element-ice:before, .element-wind:before, .element-earth:before,
+.element-water:before, .element-thunder:before, .element-poison:before, .element-holy:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute; }
+.element-fire:after, .element-ice:after, .element-wind:after, .element-earth:after,
+.element-water:after, .element-thunder:after, .element-poison:after, .element-holy:after {
+  position: absolute;
+  width: 100%;
+  height: 1em;
+  text-align: center;
+  top: calc(50% - .5em);
+  z-index: 999;
+  font-size: 36px;
+  font-weight: 500;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  opacity: 0;
+  -webkit-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  transform: scale(1.2);
+  -webkit-transition: -webkit-all .4s ease-out;
+  -ms-transition: -ms-all .4s ease-out;
+  transition: all .4s ease-out; }
+.element-fire.has--bonus:after, .element-fire.has--penalty:after, .element-ice.has--bonus:after, .element-ice.has--penalty:after, .element-wind.has--bonus:after, .element-wind.has--penalty:after, .element-earth.has--bonus:after, .element-earth.has--penalty:after,
+.element-water.has--bonus:after,
+.element-water.has--penalty:after, .element-thunder.has--bonus:after, .element-thunder.has--penalty:after, .element-poison.has--bonus:after, .element-poison.has--penalty:after, .element-holy.has--bonus:after, .element-holy.has--penalty:after {
+  opacity: 1;
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1); }
+.element-fire.has--bonus:after, .element-ice.has--bonus:after, .element-wind.has--bonus:after, .element-earth.has--bonus:after,
+.element-water.has--bonus:after, .element-thunder.has--bonus:after, .element-poison.has--bonus:after, .element-holy.has--bonus:after {
+  content: "+1"; }
+.element-fire.has--penalty:after, .element-ice.has--penalty:after, .element-wind.has--penalty:after, .element-earth.has--penalty:after,
+.element-water.has--penalty:after, .element-thunder.has--penalty:after, .element-poison.has--penalty:after, .element-holy.has--penalty:after {
+  content: "-1"; }
+
+.element-fire:before {
+  background: url(../assets/img/ui/elem_fire.png) no-repeat 50%; }
+
+.element-ice:before {
+  background: url(../assets/img/ui/elem_ice.png) no-repeat 50%; }
+
+.element-wind:before {
+  background: url(../assets/img/ui/elem_wind.png) no-repeat 50%; }
+
+.element-earth:before {
+  background: url(../assets/img/ui/elem_earth.png) no-repeat 50%; }
+
+.element-water:before {
+  background: url(../assets/img/ui/elem_water.png) no-repeat 50%; }
+
+.element-thunder:before {
+  background: url(../assets/img/ui/elem_thunder.png) no-repeat 50%; }
+
+.element-poison:before {
+  background: url(../assets/img/ui/elem_poison.png) no-repeat 50%; }
+
+.element-holy:before {
+  background: url(../assets/img/ui/elem_holy.png) no-repeat 50%; }
 
 /* PLAYER HUD --------------*/
 .game_playerHUD-opponent, .game_playerHUD-user {
@@ -1062,8 +1126,9 @@ h1 {
 
 .game_deck-holder {
   width: 150px;
-  height: 183.18584px;
-  position: relative; }
+  height: 190px;
+  position: relative;
+  padding-top: 2px; }
 
 .game_deck-holder:nth-child(1),
 .game_deck-holder:nth-child(2),
@@ -1079,5 +1144,9 @@ h1 {
   stroke-width: 1;
   stroke: rgba(255, 255, 255, 0.05);
   fill: rgba(0, 0, 0, 0.5); }
+
+.game_overlay-endGame-confirmBtn {
+  position: relative;
+  margin-top: 50px; }
 
 /*# sourceMappingURL=main.css.map */

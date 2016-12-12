@@ -251,10 +251,10 @@ define([
         };
     }
 
-    function getDestinationCoord (card, destination) {
+    function getDestinationCoord (card, destination, options = {}) {
         // Offset the card slightly to compensate for drop shadow
         var cardOffsetX = -2;
-        var cardOffsetY = -4;
+        var cardOffsetY = 0;//options.hidden ? -2 : 2;
 
         var destOffsets = getAbsoluteOffset($(destination)[0]);
         var destOffsetX = destOffsets.left;

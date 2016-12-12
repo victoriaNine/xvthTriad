@@ -1,4 +1,4 @@
-define(["underscore", "backbone", "global", "collections/coll_deck"], function Model_Player (_, Backbone, _$, Coll_Deck) {
+define(["underscore", "backbone", "global"], function Model_Player (_, Backbone, _$) {
     return Backbone.Model.extend({
         defaults : {
             type   : "computer",
@@ -7,11 +7,6 @@ define(["underscore", "backbone", "global", "collections/coll_deck"], function M
             avatar : null,
             deck   : null,
             points : 5
-        },
-
-        initialize: initialize
+        }
     });
-
-    function initialize () {
-    }
 });
