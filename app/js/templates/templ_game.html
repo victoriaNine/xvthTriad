@@ -2,7 +2,7 @@
     <div class="game_playerHUD-bar">
         <%= opponentName %>
         <% if (opponentType === "computer") { %>
-        <div class="game_playerHUD-bar-type">Computer</div>
+        <div class="game_playerHUD-bar-type">Computer - <%= difficultyLevel %> </div>
         <% } %>
         <div class="game_playerHUD-bar-state">is playing...</div>
     </div>
@@ -52,6 +52,7 @@
 </div>
 <div class="game_overlay-endGame screen overlay">
     <h1><span class="weight-bold">You</span></h1>
-    <div class="game_overlay-endGame-confirmBtn">Go back to title screen</div>
-    <div class="game_overlay-endGame-album"></div>
+    <ul class="game_overlay-endGame-album-opponent"></ul>
+    <ul class="game_overlay-endGame-album-user"></ul>
+    <div class="game_overlay-endGame-confirmBtn"></div>
 </div>

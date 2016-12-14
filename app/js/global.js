@@ -43,6 +43,7 @@ define([
         getRandomCards,
         getAbsoluteOffset,
         getDestinationCoord,
+        getUID,
         addDomObserver,
         saveData,
         loadData,
@@ -196,6 +197,17 @@ define([
     }
 
     /* GAME */
+    function getUID (length = 8, usedList = {}) {
+        var hex    = "0123456789ABCDEF";
+        var string = "";
+
+        for (let i = 0; i < length; i++) {
+            string += hex[parseInt(Math.random() * 16)];
+        }
+
+        return usedList[string] ? getUID(length, usedList) : string;
+    }
+
     function getCardList () {
         return cardList;
     }

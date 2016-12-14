@@ -21,7 +21,7 @@ define([
         initialize,
         remove,
         render,
-        moveInDeck,
+        moveToDeck,
         moveToOrigin,
         onResize
     });
@@ -30,7 +30,7 @@ define([
         this.cardView         = new Elem_Card({ model: options.card });
         this.totalCopies      = options.copiesCount;
         this.copiesCount      = this.totalCopies;
-        this.card             = null;
+        this.cardDOM          = null;
         this.holder           = null;
         this.originalPosition = null;
         this.deckHolders      = null;
@@ -81,8 +81,8 @@ define([
             if (!this.copiesCount) {
                 return;
             } else {
-                if (!this.card) {
-                    this.card        = this.cardView.$el;
+                if (!this.cardDOM) {
+                    this.cardDOM     = this.cardView.$el;
                     this.deckHolders = $(".cardSelect_header-rightCol");
                 }
 
@@ -93,7 +93,7 @@ define([
             }
         }
 
-        this.originalPosition = _$.utils.getAbsoluteOffset(this.card);
+        this.originalPosition = _$.utils.getAbsoluteOffset(this.cardDOM);
 
         if (cardCopy.holder) {
             TweenMax.set(cardCopy.card, { zIndex: 1000 });
@@ -143,14 +143,14 @@ define([
             var holderOffset  = _$.utils.getAbsoluteOffset(nearestHolder);
 
             if (scaledPageX >= deckPosition.x1 && scaledPageX <= deckPosition.x2 && scaledPageY >= deckPosition.y1 && scaledPageY <= deckPosition.y2) {
-                that.moveInDeck(nearestHolder, cardCopy);
+                that.moveToDeck(nearestHolder, cardCopy);
             } else {
                 that.moveToOrigin(cardCopy);
             }
         }
     }
 
-    function moveInDeck (holder, cardCopy, reorderingDeck) {
+    function moveToDeck (holder, cardCopy, reorderingDeck) {
         var holderOffset  = _$.utils.getAbsoluteOffset(holder);
 
         var tl = new TimelineMax();
@@ -176,7 +176,7 @@ define([
 
     function moveToOrigin (cardCopy, reorderingDeck) {
         var tl = new TimelineMax();
-        if (_$.dom[0].contains(this.card[0])) {
+        if (_$.dom[0].contains(this.cardDOM[0])) {
             tl.to(cardCopy.card, 0.2, { x: this.originalPosition.left, y: this.originalPosition.top });
         } else {
             tl.to(cardCopy.card, 0.2, { opacity: 0 });

@@ -29,8 +29,8 @@ define([
         toRulesSelect : toRulesSelect
     });
 
-    function initialize (options) {
-        if (options && options.firstInit) {
+    function initialize (options = {}) {
+        if (options.firstInit) {
             this.setupApp();
         }
 

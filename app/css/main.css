@@ -300,9 +300,34 @@ h1 {
   -ms-transform: rotateX(180deg);
   transform: rotateX(180deg); }
 
+/* ALBUMS --------------*/
+.cardSelect_content-album-card, .game_overlay-endGame-album-card {
+  width: 180px;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-direction: column; }
+
+.cardSelect_content-album-card-visual, .game_overlay-endGame-album-card-visual {
+  flex: 1;
+  position: relative; }
+  .cardSelect_content-album-card-visual .card, .game_overlay-endGame-album-card-visual .card {
+    position: relative;
+    left: calc(50% - 77px);
+    top: calc(50% - 95px); }
+
+.cardSelect_content-album-card-label, .game_overlay-endGame-album-card-label {
+  height: 50px;
+  background: rgba(0, 0, 0, 0.5);
+  line-height: 50px;
+  padding: 0 15px;
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  text-transform: none; }
+
 /* OVERLAYS --------------*/
 .overlay {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -770,38 +795,14 @@ h1 {
   display: flex;
   position: relative; }
 
-.cardSelect_content-album-card {
-  width: 180px;
-  height: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  display: flex;
-  flex-direction: column; }
-  .cardSelect_content-album.flex-justify-start .cardSelect_content-album-card {
-    margin-right: 1.5em; }
-  .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual {
-    filter: saturate(0); }
-    .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual .card {
-      cursor: default; }
-  .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-label {
-    color: #3d4043; }
-
-.cardSelect_content-album-card-visual {
-  flex: 1;
-  position: relative; }
-  .cardSelect_content-album-card-visual .card {
-    position: relative;
-    left: calc(50% - 77px);
-    top: calc(50% - 95px); }
-
-.cardSelect_content-album-card-label {
-  height: 50px;
-  background: rgba(0, 0, 0, 0.5);
-  line-height: 50px;
-  padding: 0 15px;
-  display: flex;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  text-transform: none; }
-
+.cardSelect_content-album.flex-justify-start .cardSelect_content-album-card {
+  margin-right: 1.5em; }
+.cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual {
+  filter: saturate(0); }
+  .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual .card {
+    cursor: default; }
+.cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-label {
+  color: #3d4043; }
 .cardSelect_content-album-card-copiesCount {
   text-align: right; }
 
@@ -1148,5 +1149,20 @@ h1 {
 .game_overlay-endGame-confirmBtn {
   position: relative;
   margin-top: 50px; }
+
+.game_overlay-endGame-album-user,
+.game_overlay-endGame-album-opponent {
+  height: 270px;
+  display: flex;
+  position: relative; }
+
+.game_overlay-endGame-album-opponent {
+  margin-top: 50px;
+  margin-bottom: 1.5em; }
+
+.game_overlay-endGame-album-card {
+  height: 270px;
+  margin-right: 1.5em;
+  border: none; }
 
 /*# sourceMappingURL=main.css.map */

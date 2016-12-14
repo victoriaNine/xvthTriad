@@ -358,9 +358,38 @@ h1 {
     @include transform("rotateX(180deg)");
 }
 
+/* ALBUMS --------------*/
+%album-card {
+    width: 180px;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, .25);
+    display: flex;
+    flex-direction: column;
+}
+
+%album-card-visual {
+    @include remainingSpace();
+
+    & .card {
+        position: relative;
+        left: calc(50% - #{ $cardWidth / 2 + 2px });
+        top: calc(50% - #{ $cardHeight / 2 - 0px });
+    }
+}
+
+%album-card-label {
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5);
+    line-height: 50px;
+    padding: 0 15px;
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    text-transform: none;
+}
+
 /* OVERLAYS --------------*/
 .overlay {
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -1002,11 +1031,7 @@ h1 {
 }
 
 .cardSelect_content-album-card {
-    width: 180px;
-    height: 100%;
-    border: 1px solid rgba(255, 255, 255, .25);
-    display: flex;
-    flex-direction: column;
+    @extend %album-card;
 
     .cardSelect_content-album.flex-justify-start & {
         margin-right: 1.5em;
@@ -1025,35 +1050,23 @@ h1 {
             color: $color_darkGrey;
         }
     }
-}
 
-.cardSelect_content-album-card-visual {
-    @include remainingSpace();
-
-    & .card {
-        position: relative;
-        left: calc(50% - #{ $cardWidth / 2 + 2px });
-        top: calc(50% - #{ $cardHeight / 2 - 0px });
+    &-visual {
+        @extend %album-card-visual
     }
-}
 
-.cardSelect_content-album-card-label {
-    height: 50px;
-    background: rgba(0, 0, 0, 0.5);
-    line-height: 50px;
-    padding: 0 15px;
-    display: flex;
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-    text-transform: none;
-}
+    &-label {
+        @extend %album-card-label
+    }
 
-.cardSelect_content-album-card-name {
-    @extend .col_9;
-}
+    &-name {
+        @extend .col_9;
+    }
 
-.cardSelect_content-album-card-copiesCount {
-    @extend .col_3, .weight-medium;
-    text-align: right;
+    &-copiesCount {
+        @extend .col_3, .weight-medium;
+        text-align: right;
+    }
 }
 
 
@@ -1387,4 +1400,31 @@ h1 {
 
     position: relative;
     margin-top: 50px;
+}
+
+.game_overlay-endGame-album-user,
+.game_overlay-endGame-album-opponent {
+    height: 270px;
+    display: flex;
+    position: relative;
+}
+
+.game_overlay-endGame-album-opponent {
+    margin-top: 50px;
+    margin-bottom: 1.5em;
+}
+
+.game_overlay-endGame-album-card {
+    @extend %album-card;
+    height: 270px;
+    margin-right: 1.5em;
+    border: none;
+
+    &-visual {
+        @extend %album-card-visual
+    }
+
+    &-label {
+        @extend %album-card-label
+    }
 }

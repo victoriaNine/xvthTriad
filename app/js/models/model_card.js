@@ -13,15 +13,12 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
             element      : null
         },
 
-        initialize   : initialize,
-        validate     : validate,
+        initialize,
+        validate,
 
-        setImagePath : setImagePath
+        setImagePath,
+        getRanksSum
     });
-
-    function setImagePath () {
-        this.set({ image: "./assets/img/cards/" + _.camelCase(this.get("name")) + ".png" });
-    }
 
     function initialize (attributes, options) {
         this.owner        = null;
@@ -37,5 +34,13 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
         if (_.isNil(attributes.name) || !_.isString(attributes.name) || attributes.name === "") {
             return "The card's name needs to be defined.";
         }
+    }
+
+    function setImagePath () {
+        this.set({ image: "./assets/img/cards/" + _.camelCase(this.get("name")) + ".png" });
+    }
+
+    function getRanksSum () {
+        return (this.get("ranks").top + this.get("ranks").right + this.get("ranks").bottom + this.get("ranks").left);
     }
 });

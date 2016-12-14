@@ -19,13 +19,18 @@ define([
         initialize,
         setupComputerInfo,
         updateBoard,
-        getAdjacentCards
+        getAdjacentCards,
+        selectCardsToTrade,
+        setupNextTurn,
+        setupEndGame,
+        updateUserAlbum
     });
 
     function initialize (attributes, options = {}) {
         var players   = options.players;
         var userDeck  = options.userDeck;
 
+        this.computerInfo = null;
         this.set("rules", setRules(options.rules));
 
         // In case of a new round for a game with the sudden death rule,
@@ -34,12 +39,12 @@ define([
             this.set("players", players);
         } else {
             if (!attributes.type || attributes.type === "solo") {
-                var computerInfo = this.setupComputerInfo();
+                this.computerInfo = this.setupComputerInfo();
 
                 this.set({ players :
                     {
                         user     : new Model_Player({ type: "human", user: _$.state.user, name: _$.state.user.get("name"), avatar: _$.state.user.get("avatar"), deck: userDeck }),
-                        opponent : new Model_Player({ type: "computer", user: null, name: computerInfo.name, avatar: computerInfo.avatar, deck: computerInfo.deck })
+                        opponent : new Model_Player({ type: "computer", user: null, name: this.computerInfo.name, avatar: this.computerInfo.avatar, deck: this.computerInfo.deck })
                     }
                 });
             }
@@ -72,8 +77,38 @@ define([
             }
         }
 
+        this.originalDecks   = {
+            user     : [],
+            opponent : []
+        };
+
+        _.each(this.get("players").user.get("deck"), (card) => {
+            if (!card.owner) {
+                this.originalDecks.user.push(card);
+            } else {
+                if (card.owner === this.get("players").user) {
+                    this.originalDecks.user.push(card);
+                } else if (card.owner === this.get("players").opponent) {
+                    this.originalDecks.opponent.push(card);
+                }
+            }
+        });
+
+        _.each(this.get("players").opponent.get("deck"), (card) => {
+            if (!card.owner) {
+                this.originalDecks.opponent.push(card);
+            } else {
+                if (card.owner === this.get("players").user) {
+                    this.originalDecks.user.push(card);
+                } else if (card.owner === this.get("players").opponent) {
+                    this.originalDecks.opponent.push(card);
+                }
+            }
+        });
+
         this.playing         = (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent;
         this.playedCards     = [];
+        this.cardsToTrade    = null;
     }
 
     function setupComputerInfo () {
@@ -150,7 +185,7 @@ define([
         }
 
         if (_.isEmpty(adjacentCards)) {
-            setNextTurn();
+            this.setupNextTurn();
             _$.events.trigger("toNextTurn");
             return;
         }
@@ -183,14 +218,14 @@ define([
                     if (flipped) {
                         updateScore(card, { endGame: true });
                     } else {
-                        setEndGame();
+                        that.setupEndGame();
                         _$.events.trigger("toEndGame");
                     }
                 } else {
                     if (flipped) {
                         updateScore(card, { nextTurn: true });
                     } else {
-                        setNextTurn();
+                        that.setupNextTurn();
                         _$.events.trigger("toNextTurn");
                     }
                 }
@@ -211,60 +246,110 @@ define([
             }
 
             if (options.nextTurn) {
-                setNextTurn();
+                that.setupNextTurn();
             } else if (options.endGame) {
-                setEndGame();
+                that.setupEndGame();
             }
 
             _$.events.trigger("updateScore", options);
         }
+    }
 
-        function setNextTurn () {
-            if (that.playing === that.get("players").user) {
-                that.playing = that.get("players").opponent;
-            } else {
-                that.playing = that.get("players").user;
-            }
+    function setupNextTurn () {
+        if (this.playing === this.get("players").user) {
+            this.playing = this.get("players").opponent;
+        } else {
+            this.playing = this.get("players").user;
+        }
+    }
+
+    function setupEndGame () {
+        _.each(this.playedCards, (card) => {
+            card.bonus    = 0;
+            card.position = null;
+        });
+
+        if (this.get("players").user.attributes.points > this.get("players").opponent.attributes.points) {
+            this.winner = this.get("players").user;
+            _$.state.user.get("gameStats").won++;
+        } else if (this.get("players").opponent.attributes.points > this.get("players").user.attributes.points) {
+            this.winner = this.get("players").opponent;
+            _$.state.user.get("gameStats").lost++;
+        } else if (this.get("players").user.attributes.points === this.get("players").opponent.attributes.points) {
+            this.winner = "draw";
+            _$.state.user.get("gameStats").draw++;
         }
 
-        function setEndGame () {
-            _.each(that.playedCards, (card) => {
-                card.bonus = 0;
+        if (this.winner === "draw" && this.get("rules").suddenDeath) {
+            var newUserDeck     = [];
+            var newOpponentDeck = [];
+
+            _.each(this.get("players").user.get("deck"), (card) => {
+                if (card.currentOwner === this.get("players").user) {
+                    newUserDeck.push(card);
+                } else if (card.currentOwner === this.get("players").opponent) {
+                    newOpponentDeck.push(card);
+                }
             });
 
-            if (that.get("players").user.attributes.points > that.get("players").opponent.attributes.points) {
-                that.winner = that.get("players").user;
-                _$.state.user.get("gameStats").won++;
-            } else if (that.get("players").opponent.attributes.points > that.get("players").user.attributes.points) {
-                that.winner = that.get("players").opponent;
-                _$.state.user.get("gameStats").lost++;
-            } else if (that.get("players").user.attributes.points === that.get("players").opponent.attributes.points) {
-                that.winner = "draw";
-                _$.state.user.get("gameStats").draw++;
-
-                if (that.get("rules").suddenDeath) {
-                    var newUserDeck     = [];
-                    var newOpponentDeck = [];
-                    _.each(that.get("players").user.get("deck"), (card) => {
-                        if (card.currentOwner === that.get("players").user) {
-                            newUserDeck.push(card);
-                        } else if (card.currentOwner === that.get("players").opponent) {
-                            newOpponentDeck.push(card);
-                        }
-                    });
-
-                    _.each(that.get("players").opponent.get("deck"), (card) => {
-                        if (card.currentOwner === that.get("players").user) {
-                            newUserDeck.push(card);
-                        } else if (card.currentOwner === that.get("players").opponent) {
-                            newOpponentDeck.push(card);
-                        }
-                    });
-
-                    that.get("players").user.set("deck", newUserDeck);
-                    that.get("players").opponent.set("deck", newOpponentDeck);
+            _.each(this.get("players").opponent.get("deck"), (card) => {
+                if (card.currentOwner === this.get("players").user) {
+                    newUserDeck.push(card);
+                } else if (card.currentOwner === this.get("players").opponent) {
+                    newOpponentDeck.push(card);
                 }
+            });
+
+            this.get("players").user.set("deck", newUserDeck);
+            this.get("players").opponent.set("deck", newOpponentDeck);
+        } else if (this.get("rules").trade === "none") {
+            _.each(this.originalDecks.user, (card) => {
+                card.owner        = null;
+                card.currentOwner = null;
+            });
+
+            _.each(this.originalDecks.opponent, (card) => {
+                card.owner        = null;
+                card.currentOwner = null;
+            });
+        }
+
+        if (this.get("rules").trade === "one") {
+            this.cardsToTrade = 1;
+        } else if (this.get("rules").trade === "difference") {
+            this.cardsToTrade = Math.abs(this.get("players").user.attributes.points - this.get("players").opponent.attributes.points);
+        }
+
+        if (this.cardsToTrade && this.winner === this.get("players").opponent) {
+            if (this.get("players").opponent.get("type") === "computer") {
+                this.selectCardsToTrade.call(this);
             }
+        }
+    }
+
+    function selectCardsToTrade () {
+        var orderedDeck = _.sortBy(this.originalDecks.user, [function (card) { return card.getRanksSum(); }]);
+        this.computerInfo.selectedCards = orderedDeck.slice(0, this.cardsToTrade);
+    }
+
+    function updateUserAlbum (gainedLost) {
+        _.each(this.originalDecks.user, (card) => {
+            card.owner        = null;
+            card.currentOwner = null;
+        });
+
+        _.each(this.originalDecks.opponent, (card) => {
+            card.owner        = null;
+            card.currentOwner = null;
+        });
+
+        console.log(gainedLost);
+        if (gainedLost.gained.length) {
+            _$.state.user.get("album").add(gainedLost.gained);
+        }
+
+        if (gainedLost.lost.length) {
+            _$.state.user.get("album").remove(gainedLost.lost);
         }
     }
 

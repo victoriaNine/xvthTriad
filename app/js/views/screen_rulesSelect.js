@@ -167,23 +167,12 @@ define([
         tl.call(() => {
             this.$(".rulesSelect_header").slideUp(500);
         });
-        tl.call(() => {
-            this.$el.hide();
-            onTransitionComplete.call(this);
-        }, null, [], "+=0.5");
+        tl.call(onTransitionComplete.bind(this), null, [], "+=0.5");
 
         function onTransitionComplete () {
             if (newScreen === "game") {
                 _$.utils.addDomObserver(this.$el, () => {
-                    var randomCards = _$.utils.getRandomCards({
-                        amount : 5,
-                        album  : _$.state.user.get("album"),
-                        unique : true
-                    });
-
-                    var randomDeck = _.map(randomCards, function (attributes) {
-                        return new Model_Card(attributes);
-                    });
+                    var randomDeck = _.sampleSize(_$.state.user.get("album").models, 5);
 
                     _$.events.trigger("startUserEvents");
                     _$.state.screen = new Screen_Game({ userDeck: randomDeck, rules: this.rules });
