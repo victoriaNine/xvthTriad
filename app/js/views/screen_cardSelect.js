@@ -19,10 +19,11 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
-            "click .cardSelect_content-confirm-choice-yesBtn" : "newGame",
-            "click .cardSelect_content-confirm-choice-noBtn"  : function () { toggleConfirm.call(this, "hide"); },
-            "click .cardSelect_content-nav-prevBtn"           : function () { this.pageChange(-1); },
-            "click .cardSelect_content-nav-nextBtn"           : function () { this.pageChange(1); }
+            "click .cardSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("rulesSelect"); },
+            "click .cardSelect_content-confirm-choice-yesBtn"    : function () { this.transitionOut("game"); },
+            "click .cardSelect_content-confirm-choice-noBtn"     : function () { toggleConfirm.call(this, "hide"); },
+            "click .cardSelect_content-nav-prevBtn"              : function () { this.pageChange(-1); },
+            "click .cardSelect_content-nav-nextBtn"              : function () { this.pageChange(1); }
         },
 
         initialize,
@@ -30,16 +31,17 @@ define([
         render,
 
         createAlbumCardViews,
-        newGame,
         onResize,
         pageChange,
         navUpdate,
         emptyAlbumCardViews,
-        updateDeck
+        updateDeck,
+
+        transitionIn,
+        transitionOut
     });
 
     function initialize (options) {
-        _$.events.trigger("stopUserEvents");
         _$.state.cardSelectScreen = this;
 
         var cardList         = _$.utils.getCardList();
@@ -60,21 +62,7 @@ define([
 
         this.createAlbumCardViews();
 
-        _$.utils.addDomObserver(this.$el, () => {
-            var tl = new TimelineMax();
-            tl.call(() => {
-                this.$(".cardSelect_header").slideDown(500);
-            });
-            tl.call(() => {
-                this.onResize(null, true);
-                this.render();
-                this.navUpdate();
-            }, null, [], 0.5);
-            tl.call(() => {
-                this.$(".cardSelect_content-screenNav").slideDown(500);
-                _$.events.trigger("startUserEvents");
-            }, null, [], 1);
-        }, true);
+        _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
 
         _$.events.on("resize", this.onResize.bind(this));
         _$.events.on("resizeStart", this.emptyAlbumCardViews.bind(this));
@@ -89,6 +77,79 @@ define([
 
         delete _$.state.cardSelectScreen;
         Backbone.View.prototype.remove.call(this);
+
+        if (_$.state.rulesSelectScreen) {
+            _$.state.rulesSelectScreen.remove();
+        }
+    }
+
+    function transitionIn () {
+        _$.events.trigger("stopUserEvents");
+
+        var tl = new TimelineMax();
+        tl.set(this.$el, { clearProps: "display" });
+        tl.call(() => {
+            this.$(".cardSelect_header").slideDown(500);
+            TweenMax.to(this.$(".cardCopy"), 0.4, { opacity: 1, clearProps: "opacity", delay: 0.5 });
+        });
+        tl.call(() => {
+            this.onResize(null, true);
+            this.render();
+            this.navUpdate();
+        }, null, [], tl.recent().endTime() + 0.5);
+        tl.call(() => {
+            this.$(".cardSelect_content-screenNav").slideDown(500);
+            TweenMax.to(this.$(".cardSelect_content-scroll"), 0.4, { opacity: 1, clearProps: "opacity" });
+            _$.events.trigger("startUserEvents");
+        }, null, [], "+=0.5");
+
+        return this;
+    }
+
+    function transitionOut (nextScreen) {
+        _$.events.trigger("stopUserEvents");
+
+        var tl = new TimelineMax();
+        if (_$.ui.footer.isOpen) {
+            tl.add(_$.ui.footer.toggleFooter(), 0);
+        }
+        tl.call(() => {
+            this.$(".cardSelect_content-screenNav, .cardSelect_content-confirm").slideUp(500);
+        }, null, [], "-=1.5");
+        tl.to(this.$(".cardSelect_content-scroll"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        tl.call(() => {
+            TweenMax.to(this.$(".cardCopy"), 0.4, { opacity: 0 });
+            this.$(".cardSelect_header").slideUp(500);
+        });
+        tl.call(() => {
+            TweenMax.set(this.$el, { display: "none" });
+            onTransitionComplete.call(this);
+        }, null, [], tl.recent().endTime() + 0.5);
+
+        function onTransitionComplete () {
+            if (nextScreen === "game") {
+                _$.utils.addDomObserver(this.$el, () => {
+                    _$.events.trigger("startUserEvents");
+                    _$.ui.screen = new Screen_Game({ userDeck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
+                }, true, "remove");
+
+                this.remove();
+            } else if (nextScreen === "rulesSelect") {
+                _$.events.trigger("startUserEvents");
+                _$.ui.screen = _$.state.rulesSelectScreen.transitionIn();
+            } else if (nextScreen === "title") {
+                _$.utils.addDomObserver(this.$el, () => {
+                    var Screen_Title = require("views/screen_title");
+
+                    _$.events.trigger("startUserEvents");
+                    _$.ui.screen = new Screen_Title();
+                }, true, "remove");
+
+                this.remove();
+            }
+        }
+
+        return this;
     }
 
     function emptyAlbumCardViews () {
@@ -130,12 +191,6 @@ define([
         }
 
         return this;
-    }
-
-    function newGame () {
-        _$.state.screen = new Screen_Game({ userDeck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
-        _$.state.rulesSelectScreen.remove();
-        this.remove();
     }
 
     function createAlbumCardViews () {

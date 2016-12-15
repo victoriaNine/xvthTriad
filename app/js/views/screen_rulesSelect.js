@@ -41,11 +41,11 @@ define([
         toggleTrade,
 
         toNextStep,
+        transitionIn,
         transitionOut
     });
 
     function initialize (options) {
-        _$.events.trigger("stopUserEvents");
         _$.state.rulesSelectScreen = this;
 
         this.$el.html(this.template());
@@ -53,30 +53,19 @@ define([
         this.toggleRule("random", false);
         this.toggleRule("elemental", false);
         this.toggleRule("suddenDeath", false);
-        TweenMax.set(this.$(".rulesSelect_content-rules-rule"), { opacity: 0 });
 
-        _$.utils.addDomObserver(this.$el, () => {
-            var tl = new TimelineMax();
-            tl.call(() => {
-                this.$(".rulesSelect_header").slideDown(500);
-            });
-            tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, 0.5);
-            tl.call(() => {
-                this.$(".rulesSelect_content-screenNav").slideDown(500);
-                _$.events.trigger("startUserEvents");
-            });
-        }, true);
+        _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
 
         this.add();
     }
 
     function remove () {
-        if (_$.state.cardSelectScreen) {
-             _$.state.cardSelectScreen.remove();
-        }
-        
         delete _$.state.rulesSelectScreen;
         Backbone.View.prototype.remove.call(this);
+        
+        if (_$.state.cardSelectScreen) {
+            _$.state.cardSelectScreen.remove();
+        }
     }
 
     function toggleRule (rule, state) {
@@ -127,8 +116,6 @@ define([
     }
 
     function toNextStep () {
-        _$.events.trigger("stopUserEvents");
-
         var selectHeight = $(".rule-trade").height();
         var rules        = {};
         var ruleName;
@@ -158,41 +145,70 @@ define([
         }
     }
 
-    function transitionOut (newScreen) {
+    function transitionIn () {
+        _$.events.trigger("stopUserEvents");
+
         var tl = new TimelineMax();
+        tl.set(this.$el, { clearProps: "display" });
+        tl.set(this.$(".rulesSelect_content-rules"), { clearProps: "opacity" });
+        tl.set(this.$(".rulesSelect_content-rules-rule"), { opacity: 0 });
+        tl.call(() => {
+            this.$(".rulesSelect_header").slideDown(500);
+        });
+        tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
+        tl.call(() => {
+            this.$(".rulesSelect_content-screenNav").slideDown(500);
+            _$.events.trigger("startUserEvents");
+        });
+
+        return this;
+    }
+
+    function transitionOut (nextScreen) {
+        _$.events.trigger("stopUserEvents");
+
+        var tl = new TimelineMax();
+        if (_$.ui.footer.isOpen) {
+            tl.add(_$.ui.footer.toggleFooter(), 0);
+        }
         tl.call(() => {
             this.$(".rulesSelect_content-screenNav, .rulesSelect_content-confirm").slideUp(500);
-        });
-        tl.to(this.$(".rulesSelect_content-rules"), 0.5, { opacity: 0 }, 0.5);
+        }, null, [], "-=1.5");
+        tl.to(this.$(".rulesSelect_content-rules"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
         tl.call(() => {
             this.$(".rulesSelect_header").slideUp(500);
         });
-        tl.call(onTransitionComplete.bind(this), null, [], "+=0.5");
+        tl.call(() => {
+            TweenMax.set(this.$el, { display: "none" });
+            onTransitionComplete.call(this);
+        }, null, [], tl.recent().endTime() + 0.5);
 
         function onTransitionComplete () {
-            if (newScreen === "game") {
+            if (nextScreen === "game") {
                 _$.utils.addDomObserver(this.$el, () => {
                     var randomDeck = _.sampleSize(_$.state.user.get("album").models, 5);
 
                     _$.events.trigger("startUserEvents");
-                    _$.state.screen = new Screen_Game({ userDeck: randomDeck, rules: this.rules });
+                    _$.ui.screen = new Screen_Game({ userDeck: randomDeck, rules: this.rules });
                 }, true, "remove");
 
                 this.remove();
-            } else if (newScreen === "cardSelect") {
+            } else if (nextScreen === "cardSelect") {
                 _$.events.trigger("startUserEvents");
-                _$.state.screen = _$.state.cardSelectScreen || new Screen_CardSelect();
-            } else if (newScreen === "title") {
+                _$.ui.screen = _$.state.cardSelectScreen ? _$.state.cardSelectScreen.transitionIn() : new Screen_CardSelect();
+            } else if (nextScreen === "title") {
                 _$.utils.addDomObserver(this.$el, () => {
                     var Screen_Title = require("views/screen_title");
 
                     _$.events.trigger("startUserEvents");
-                    _$.state.screen = new Screen_Title();
+                    _$.ui.screen = new Screen_Title();
                 }, true, "remove");
 
                 this.remove();
             }
         }
+
+        return this;
     }
 
     function toggleConfirm (state) {

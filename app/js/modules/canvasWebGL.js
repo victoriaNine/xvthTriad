@@ -25,6 +25,7 @@ define([
     var flareSettings    = { opacity: 0 };
     var noiseSettings    = { time: 1 };
     var vignetteSettings = { amount: 1 };
+    var displaceSettings = { x: 0, y: 0 };
 
     var bgImg;
     var bgDepthMap;
@@ -104,7 +105,7 @@ define([
         displaceNode          = seriously.effect("displacement");
         displaceNode.source   = vignetteNode;
         displaceNode.offset   = 0;
-        displaceNode.mapScale = [0, 0];
+        displaceNode.mapScale = [displaceSettings.x, displaceSettings.y];
 
         scaleNode             = seriously.transform("2d");
         scaleNode.source      = displaceNode;
@@ -121,10 +122,18 @@ define([
 
             $(window).on("mousemove", function (e) {
                 if (FX_LEVEL >= 3) {
-                    var x = e.pageX;
-                    var y = e.pageY;
+                    var newMapScale = {
+                        x: 0.01 * e.pageX / WIDTH,
+                        y: -1 * (0.01 * e.pageY / HEIGHT)
+                    };
 
-                    displaceNode.mapScale = [0.01 * x / WIDTH, -1 * (0.01 * y / HEIGHT)];
+                    TweenMax.to(displaceSettings, 0.3, {
+                        x        : newMapScale.x,
+                        y        : newMapScale.y,
+                        onUpdate : function () {
+                            displaceNode.mapScale = [displaceSettings.x, displaceSettings.y];
+                        }
+                    });
                 }
             });
         });

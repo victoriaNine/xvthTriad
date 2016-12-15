@@ -8,7 +8,9 @@ define([
         tagName   : "section",
         className : "screen",
 
-        add       : add
+        add,
+        show,
+        hide
     });
 
     function add () {
@@ -16,5 +18,13 @@ define([
         _$.events.on("startUserEvents", () => { this.delegateEvents(); });
         
         $(_$.dom).find("#screen").append(this.$el);
+    }
+
+    function show () {
+        TweenMax.set(this.$el, { clearProps:"display" });
+    }
+
+    function hide () {
+        TweenMax.set(this.$el, { display:"none" });
     }
 });

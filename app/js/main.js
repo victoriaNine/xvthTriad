@@ -55,8 +55,8 @@ require([
 
     events.on("allLoadersComplete", function () {
         canvasWebGL.init();
-        _$.state.footer = new Elem_Footer();
-        _$.state.screen = new Screen_Title({ firstInit: true });
+        _$.ui.footer = new Elem_Footer();
+        _$.ui.screen = new Screen_Title({ setup: true });
     });
 
     TweenMax.set(_$.dom, { opacity : 0 });

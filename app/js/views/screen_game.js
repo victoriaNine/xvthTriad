@@ -39,7 +39,9 @@ define([
         toTitleScreen,
         toNextRound,
         confirmCardSelection,
-        endGameCardSelected
+        endGameCardSelected,
+
+        transitionIn
     });
 
     function initialize (options) {
@@ -99,14 +101,6 @@ define([
 
         this.postGameAction = null;
 
-        _$.utils.addDomObserver(this.$el, () => {
-            _.each(this.cardViews, (cardView) => {
-                placeCardOnHolder.call(this, cardView);
-            });
-
-            this.showTurnOverlay();
-        }, true);
-
         _.each(this.players.user.get("deck"), (cardModel, index) => {
             if (!cardModel.owner) {
                 cardModel.owner        = this.players.user;
@@ -132,6 +126,8 @@ define([
         _$.events.on("flipCard", this.flipCard.bind(this));
         _$.events.on("showElementalBonus", this.showElementalBonus.bind(this));
         _$.events.on("endGameCardSelected", this.endGameCardSelected.bind(this));
+
+        _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
     }
 
@@ -148,6 +144,33 @@ define([
         delete _$.state.game;
 
         Backbone.View.prototype.remove.call(this);
+    }
+
+    function transitionIn () {
+        _$.events.trigger("stopUserEvents");
+
+        _.each(this.cardViews, (cardView) => {
+            placeCardOnHolder.call(this, cardView);
+        });
+
+        var blueCards = this.ui.cardsContainer.children().slice(0, 5);
+        var redCards  = this.ui.cardsContainer.children().slice(5, 10);
+
+        var tl = new TimelineMax();
+        tl.from(this.ui.board, 0.4, { opacity: 0, scale: "1.2", clearProps: "all" });
+        tl.from([this.ui.HUDuser, this.ui.HUDopponent], 0.4, { width: 0, opacity: 0, clearProps: "all" });
+        tl.staggerFrom([this.$(".game_playerHUD-avatar"), this.$(".game_playerHUD-bar-type"), this.$(".game_playerHUD-bar-state")], 0.4, { opacity: 0, clearProps: "all" }, 0.2);
+        tl.from(this.$(".game_playerHUD-score"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, "-=.2");
+        tl.from(this.$(".game_deck"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, "-=.2");
+        tl.addLabel("enterCards");
+        tl.staggerFrom(blueCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop" }, 0.1, "enterCards");
+        tl.staggerFrom(redCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop" }, 0.1, "enterCards");
+        tl.call(() => {
+            _$.events.trigger("startUserEvents");
+            this.showTurnOverlay();
+        }, [], null, "+=.2");
+
+        return this;
     }
 
     function renderCard (cardModel, index) {
@@ -463,6 +486,9 @@ define([
         var tl = new TimelineMax();
         tl.call(() => { this.$(".game_overlay-endGame").removeClass("is--active"); });
         tl.to(this.$(".game_wrapper"), 0.4, { opacity: 0 });
+        if (_$.ui.footer.isOpen) {
+            tl.add(_$.ui.footer.toggleFooter(), 0);
+        }
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {
@@ -470,7 +496,7 @@ define([
                 var Screen_Title = require("views/screen_title");
 
                 _$.events.trigger("startUserEvents");
-                _$.state.screen = new Screen_Title();
+                _$.ui.screen = new Screen_Title();
             }, true, "remove");
             this.remove();
         }
@@ -504,9 +530,9 @@ define([
         var gainedLost = { gained: [], lost: [] };
 
         var tl = new TimelineMax();
-        tl.call(() => { this.$(".game_overlay-endGame-confirmBtn").slideUp(400); });
         tl.set(this.$(".game_overlay-endGame h1"), { transition: "none" });
-        tl.to(this.$(".game_overlay-endGame h1"), 0.4, { opacity: 0 }, "+=.4");
+        tl.call(() => { this.$(".game_overlay-endGame-confirmBtn").slideUp(400); });
+        tl.to(this.$(".game_overlay-endGame h1"), 0.4, { opacity: 0 }, tl.recent().endTime() + 0.4);
         tl.staggerTo([this.$(".game_overlay-endGame-album-opponent"), this.$(".game_overlay-endGame-album-user")], 0.4, { opacity: 0 }, 0.2);
         tl.staggerTo([this.$(".game_overlay-endGame-album-opponent"), this.$(".game_overlay-endGame-album-user")], 0.4, { height: 0, marginTop: 0, marginBottom: 0 }, 0.2);
         tl.call(() => {
