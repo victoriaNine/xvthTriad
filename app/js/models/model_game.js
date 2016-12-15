@@ -318,6 +318,10 @@ define([
             this.cardsToTrade = 1;
         } else if (this.get("rules").trade === "difference") {
             this.cardsToTrade = Math.abs(this.get("players").user.attributes.points - this.get("players").opponent.attributes.points);
+
+            if (this.cardsToTrade > 5) {
+                this.cardsToTrade = 5;
+            }
         }
 
         if (this.cardsToTrade && this.winner === this.get("players").opponent) {
@@ -328,6 +332,7 @@ define([
     }
 
     function selectCardsToTrade () {
+        // Select the best cards from the player's deck
         var orderedDeck = _.sortBy(this.originalDecks.user, [function (card) { return card.getRanksSum(); }]);
         this.computerInfo.selectedCards = orderedDeck.slice(0, this.cardsToTrade);
     }

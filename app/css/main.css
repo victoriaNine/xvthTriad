@@ -255,8 +255,7 @@ h1 {
   position: fixed;
   left: 0;
   top: 0;
-  transform-style: preserve-3d;
-  /*&.card-red,*/ }
+  transform-style: preserve-3d; }
   .card:hover {
     -webkit-transform: scale(1.1);
     -ms-transform: scale(1.1);
@@ -1164,5 +1163,9 @@ h1 {
   height: 270px;
   margin-right: 1.5em;
   border: none; }
+  .game_overlay-endGame-album-card .card-blue:hover {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1); }
 
 /*# sourceMappingURL=main.css.map */

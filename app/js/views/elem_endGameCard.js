@@ -15,13 +15,17 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "click .card"  : function (e) {}
+            "mouseenter .card-red" : function (e) { TweenMax.set(e.currentTarget, { scale: "1.1" }); },
+            "mouseleave .card-red" : function (e) { TweenMax.set(e.currentTarget, { scale: "1" }); },
+            "click .card"  : "selectCard"
         },
 
-        initialize
+        initialize,
+        selectCard
     });
 
     function initialize (options) {
+        this.selected = false;
         this.cardView = new Elem_Card({ model: options.card }, { checkOwner: true });
 
         this.$el.html(this.template({
@@ -29,5 +33,18 @@ define([
         }));
 
         this.$(".game_overlay-endGame-album-card-visual").append(this.cardView.$el);
+
+        _$.utils.addDomObserver(this.$el, () => {
+            if (!_$.state.game.cardsToTrade || _$.state.game.winner !== _$.state.game.get("players").user || this.cardView.model.owner !== _$.state.game.get("players").opponent) {
+                this.undelegateEvents();
+            }
+        }, true);
+    }
+
+    function selectCard () {
+        this.selected = !this.selected;
+        TweenMax.set(this.$(".card"), { scale: "1" });
+        this.cardView.flip();
+        _$.events.trigger("endGameCardSelected", { endGameCardView: this, selected: this.selected });
     }
 });

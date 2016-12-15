@@ -216,10 +216,10 @@ define([
         }
 
         if (_.compact(this.userDeck).length === 5) {
-            if (!$(".cardSelect_content-confirm").is(":visible")) {
+            if (!this.$(".cardSelect_content-confirm").is(":visible")) {
                 toggleConfirm.call(this, "show");
             }
-        } else if ($(".cardSelect_content-confirm").is(":visible")) {
+        } else if (this.$(".cardSelect_content-confirm").is(":visible")) {
             toggleConfirm.call(this, "hide");
         }
     }

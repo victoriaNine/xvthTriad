@@ -324,7 +324,7 @@ h1 {
         @include transform("scale(1.1)");
     }
 
-    /*&.card-red,*/ &.is--played {
+    &.is--played {
         pointer-events: none;
     }
 }
@@ -1426,5 +1426,9 @@ h1 {
 
     &-label {
         @extend %album-card-label
+    }
+
+    & .card-blue:hover {
+        @include transform("scale(1)");
     }
 }
