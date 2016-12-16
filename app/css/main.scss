@@ -19,7 +19,7 @@ $color_blue     : rgba(40, 51, 120, 1);
 $fontSize_UI      : 24px;
 $fontSize_score   : 96px;
 $fontSize_btn     : 16px;
-$fontSize_h1      : 60px;
+$fontSize_title   : 60px;
 $fontSize_overlay : 72px;
 
 
@@ -196,7 +196,7 @@ hr:after { left: -7.5px; }
 hr:before { right: -8.5px; }
 
 h1 {
-    font-size: $fontSize_h1;
+    font-size: $fontSize_title;
 }
 
 #canvas {
@@ -224,6 +224,67 @@ h1 {
     @include fullSizeAbs();
     top:0;
     left:0;
+}
+
+%header {
+    height: 300px;
+    width: 100%;
+    padding: $globalPadding;
+    background: rgba(0, 0, 0, 0.95);
+    position: relative;
+    z-index: 1;
+    display: flex;
+
+    &:before {
+        @include fullSizeAbs("");
+        top: 0;
+        left: 0;
+        background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
+        opacity: .25;
+        z-index: -1;
+    }
+
+    &-leftCol {
+        width: 370px;
+    }
+
+    &-rightCol {
+        @include remainingSpace();
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+%content {
+    width: 100%;
+    height: calc(100% - 490px);
+    position: relative;
+    padding: $globalPadding;
+}
+
+%content-prompt {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: $globalPadding;
+    padding: 0 $globalPadding;
+}
+
+%content-screenNav {
+    @extend %content-prompt;
+
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+
+    &-element {
+        @extend %btn-rect;
+
+        position: relative;
+        display: inline-block;
+        margin-right: .5em;
+    }
 }
 
 /* BUTTONS ------------*/
@@ -437,6 +498,7 @@ h1 {
     position: absolute;
     display: flex;
     align-items: flex-end;
+    z-index: 2;
 
     &.is--showingLogo {
         & .footer_line {
@@ -570,6 +632,76 @@ h1 {
 
 
 /*=======================*/
+/* MENU SCREEN
+/*=======================*/
+#screen_overlayMenu {
+    @include fullSizeAbs();
+    display: flex;
+    z-index: 1;
+}
+
+.menu_element {
+    flex-basis: 20%;
+    filter: saturate(0) brightness(0.075);
+    padding: $globalPadding;
+    position: relative;
+    background: #000;
+    @include transition("filter .2s");
+
+    &:after {
+        @include fullSizeAbs("");
+        left:0;
+        top:0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 90%);
+    }
+
+    &:not(.is--disabled):hover, &.is--active {
+        filter: saturate(1) brightness(1);
+        cursor: pointer;
+    }
+
+    &-bg {
+        @include fullSizeAbs();
+        top:0;
+        left:0;
+    }
+
+    &-title {
+        color: rgba(0, 0, 0, .75);
+        font-size: $fontSize_title;
+    }
+
+    &-title span {
+        position: absolute;
+        opacity: 0;
+    }
+
+    &-title span:nth-of-type(1) {
+        font-weight: 700;
+        @include transform("translateY(-0.5em)");
+        @include transition("opacity .4s .2s, transform .4s .2s");
+    }
+
+    &-title span:nth-of-type(2) {
+        @include transform("translateX(-0.5em)");
+        @include transition("opacity .4s, transform .4s");
+    }
+
+    &:hover &-title, &.is--active &-title {
+        span { opacity: 1; }
+        span:nth-of-type(1) { @include transform("translateY(0)"); @include transition("opacity .4s, transform .4s"); }
+        span:nth-of-type(2) { @include transform("translateX(0)"); @include transition("opacity .4s .2s, transform .4s .2s"); }
+    }
+}
+
+.menu_soloMode     .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_noctis.jpg"}) 50% 100%; }
+.menu_versusMode   .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_gladiolus.jpg"}) 50% 100%; }
+.menu_networkMode  .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_prompto.jpg"}) 50% 100%; }
+.menu_cardAlbum    .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_ignis.jpg"}) 50% 100%; }
+.menu_userSettings .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_luna.jpg"}) 50% 100%; }
+
+
+/*=======================*/
 /* TITLE SCREEN
 /*=======================*/
 .title_logo {
@@ -631,80 +763,6 @@ h1 {
 
     &-hoverFX {
         @extend %btn-diamond-hoverFX;
-    }
-}
-
-
-/*=======================*/
-/* MENU SCREEN
-/*=======================*/
-/* BOARD --------------*/
-#menu {
-    width: 100px;
-    height: 100px;
-    position: absolute;
-    background: aquamarine;
-    text-align: center;
-}
-
-%header {
-    height: 300px;
-    width: 100%;
-    padding: $globalPadding;
-    background: rgba(0, 0, 0, 0.95);
-    position: relative;
-    z-index: 1;
-    display: flex;
-
-    &:before {
-        @include fullSizeAbs("");
-        top: 0;
-        left: 0;
-        background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
-        opacity: .25;
-        z-index: -1;
-    }
-
-    &-leftCol {
-        width: 370px;
-    }
-
-    &-rightCol {
-        @include remainingSpace();
-        display: flex;
-        justify-content: flex-end;
-    }
-}
-
-%content {
-    width: 100%;
-    height: calc(100% - 490px);
-    position: relative;
-    padding: $globalPadding;
-}
-
-%content-prompt {
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
-    height: $globalPadding;
-    padding: 0 $globalPadding;
-}
-
-%content-screenNav {
-    @extend %content-prompt;
-
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-
-    &-element {
-        @extend %btn-rect;
-
-        position: relative;
-        display: inline-block;
-        margin-right: .5em;
     }
 }
 

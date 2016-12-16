@@ -32,6 +32,8 @@ define([
     function initialize (options = {}) {
         var logo = $(_$.assets.get("svg.ui.logo"));
 
+        this.introTL = null;
+
         this.$el.html(this.template());
         this.$(".title_logo").append(logo);
 
@@ -58,15 +60,15 @@ define([
             });
         });
 
-        var mainTl = new TimelineMax();
-        var logoTl = new TimelineMax();
+        this.introTL = new TimelineMax();
+        var logoTl   = new TimelineMax();
 
-        mainTl.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });
-        mainTl.set(_.map(logoPaths, "path"), { attr: { fill: "rgba(255, 255, 255, 0)", stroke: "rgba(255, 255, 255, 0)", strokeWidth: 0 } }, 0);
-        mainTl.to(_.map(logoPaths, "path"), 2, { attr: { stroke: "rgba(255, 255, 255, 1)" } }, 1);
-        mainTl.add(logoTl, 1);
-        mainTl.to(_.map(logoPaths, "path"), 2, { attr: { fill: "rgba(255, 255, 255, 1)" } }, 4);
-        mainTl.from(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" }, "-=2");
+        this.introTL.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });
+        this.introTL.set(_.map(logoPaths, "path"), { attr: { fill: "rgba(255, 255, 255, 0)", stroke: "rgba(255, 255, 255, 0)", strokeWidth: 0 } }, 0);
+        this.introTL.to(_.map(logoPaths, "path"), 2, { attr: { stroke: "rgba(255, 255, 255, 1)" } }, 1);
+        this.introTL.add(logoTl, 1);
+        this.introTL.to(_.map(logoPaths, "path"), 2, { attr: { fill: "rgba(255, 255, 255, 1)" } }, 4);
+        this.introTL.from(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" }, "-=2");
 
         _.each(logoPaths, function (logoPath) {
             let dummyObject = { value: 0 };
@@ -79,15 +81,15 @@ define([
             }, 0);
         });
         
-        mainTl.addLabel("enterFooter", "-=6");
-        mainTl.add(_$.ui.footer.toggleMenu("show"), "enterFooter");
-        mainTl.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=1");
-        mainTl.set(_$.ui.footer.text, { clearProps:"display" }, "enterFooter+=2.5");
-        mainTl.from(_$.ui.footer.text, 1, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
-        mainTl.call(function () {
+        this.introTL.addLabel("enterFooter", "-=6");
+        this.introTL.add(_$.ui.footer.toggleMenu("show"), "enterFooter");
+        this.introTL.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=1");
+        this.introTL.set(_$.ui.footer.text, { clearProps:"display" }, "enterFooter+=2.5");
+        this.introTL.from(_$.ui.footer.text, 1, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
+        this.introTL.call(function () {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
-        mainTl.call(() => {
+        this.introTL.call(() => {
             _$.events.trigger("startUserEvents");
             _$.events.trigger("addFX");
         }, [], null, "enterFooter");
@@ -113,13 +115,19 @@ define([
         tl.call(() => {
             _$.events.trigger("startUserEvents");
         }, [], null, "enterFooter");
+
+        return this;
     }
 
     function transitionOut (nextScreen) {
         _$.events.trigger("stopUserEvents");
+        
+        if (this.introTL.time() !== this.introTL.duration()) {
+            this.introTL.progress(1);
+        }
 
         var tl = new TimelineMax();
-        tl.call(() => { _$.ui.footer.menu.find(".footer_menu-homeBtn").removeClass("is--active"); });
+        tl.call(() => { _$.ui.footer.menu.find(".footer_menu-element").removeClass("is--active"); });
         tl.add(_$.ui.footer.toggleSocial("hide"));
         tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
         tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");

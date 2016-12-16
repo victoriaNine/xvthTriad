@@ -53,7 +53,7 @@ require([
         console.log("event triggered:", eventName);
     });
 
-    events.on("allLoadersComplete", function () {
+    events.once("allLoadersComplete", function () {
         canvasWebGL.init();
         _$.ui.footer = new Elem_Footer();
         _$.ui.screen = new Screen_Title({ setup: true });

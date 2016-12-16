@@ -3,9 +3,10 @@ define([
     "underscore", 
     "backbone",
     "global",
+    "views/screen_overlayMenu",
     "text!templates/templ_footer.html",
     "tweenMax"
-], function Elem_Footer ($, _, Backbone, _$, Templ_Footer) {
+], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Templ_Footer) {
     return Backbone.View.extend({
         tagName : "footer",
         id      : "footer",
@@ -15,7 +16,8 @@ define([
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
             "click .footer_logo"         : "toggleFooter",
-            "click .footer_menu-homeBtn" : "toTitleScreen"
+            "click .footer_menu-homeBtn" : "toTitleScreen",
+            "click .footer_menu-menuBtn" : "toggleMainMenu"
         },
 
         initialize,
@@ -26,16 +28,15 @@ define([
         toggleSocial,
 
         toggleFooter,
-        toTitleScreen
+        toTitleScreen,
+        toggleMainMenu
     });
 
     function initialize (options) {
         this.$el.html(this.template());
         $(_$.dom).append(this.$el);
 
-        this.isTweening = false;
-        this.isOpen     = false;
-
+        this.isOpen = false;
         this.line   = this.$(".footer_line");
         this.logo   = this.$(".footer_logo");
         this.menu   = this.$(".footer_menu");
@@ -46,9 +47,42 @@ define([
         this.logo.append(logo);
     }
 
+    function toggleMainMenu (nextScreen) {
+        if (_$.ui.menu) {
+            if (_$.ui.screen.id === "screen_title") {
+                this.toggleLogo("hide");
+                this.isOpen = false;
+            }
+            _$.ui.menu.transitionOut(nextScreen);
+            _$.events.once("mainMenuClosed", () => {
+                delete _$.ui.menu;
+                this.$(".footer_menu-menuBtn").removeClass("is--active");
+                if (_$.ui.screen.id === "screen_title") {
+                    this.$(".footer_menu-homeBtn").addClass("is--active");
+                }
+            });
+        } else {
+            this.$(".footer_menu-element").removeClass("is--active");
+            _$.ui.menu = new Screen_OverlayMenu();
+            _$.events.once("mainMenuOpen", () => {
+                if (_$.ui.screen.id === "screen_title") {
+                    this.toggleLogo("show");
+                    this.isOpen = true;
+                }
+                this.$(".footer_menu-menuBtn").addClass("is--active");
+            });
+        }
+    }
+
     function toTitleScreen () {
-        if (_$.ui.screen.id !== "screen_title") {
-            _$.ui.screen.transitionOut("title");
+        if (_$.ui.menu) {
+            this.toggleMainMenu("title");
+        } else if (_$.ui.about) {
+            this.toggleAboutPage("title");
+        } else {
+            if (_$.ui.screen.id !== "screen_title") {
+                _$.ui.screen.transitionOut("title");
+            }
         }
     }
 

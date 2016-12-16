@@ -17,7 +17,7 @@ define([
         events           : {
             "mouseenter .card-red" : function (e) { TweenMax.set(e.currentTarget, { scale: "1.1" }); },
             "mouseleave .card-red" : function (e) { TweenMax.set(e.currentTarget, { scale: "1" }); },
-            "click .card"  : "selectCard"
+            "click .card"          : "selectCard"
         },
 
         initialize,
