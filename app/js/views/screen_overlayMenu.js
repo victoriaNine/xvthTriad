@@ -4,14 +4,14 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_menu.html",
+    "text!templates/templ_overlayMenu.html",
     "tweenMax"
-], function Screen_OverlayMenu ($, _, Backbone, _$, Screen, Templ_Menu) {
+], function Screen_OverlayMenu ($, _, Backbone, _$, Screen, Templ_OverlayMenu) {
     return Screen.extend({
         tagName : "section",
         id      : "screen_overlayMenu",
 
-        template : _.template(Templ_Menu),
+        template : _.template(Templ_OverlayMenu),
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
@@ -30,7 +30,6 @@ define([
 
     function initialize (options) {
         this.$el.html(this.template());
-
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
     }

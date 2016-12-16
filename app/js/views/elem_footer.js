@@ -4,9 +4,10 @@ define([
     "backbone",
     "global",
     "views/screen_overlayMenu",
+    "views/screen_overlayAbout",
     "text!templates/templ_footer.html",
     "tweenMax"
-], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Templ_Footer) {
+], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Screen_OverlayAbout, Templ_Footer) {
     return Backbone.View.extend({
         tagName : "footer",
         id      : "footer",
@@ -15,21 +16,22 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "click .footer_logo"         : "toggleFooter",
-            "click .footer_menu-homeBtn" : "toTitleScreen",
-            "click .footer_menu-menuBtn" : "toggleMainMenu"
+            "click .footer_logo"          : "toggleFooter",
+            "click .footer_menu-homeBtn"  : "toTitleScreen",
+            "click .footer_menu-menuBtn"  : function (e) { this.toggleMainMenu(); },
+            "click .footer_menu-aboutBtn" : function (e) { this.toggleAboutPage(); }
         },
 
         initialize,
         toggleAll,
-        toggleLine,
         toggleLogo,
         toggleMenu,
         toggleSocial,
 
         toggleFooter,
         toTitleScreen,
-        toggleMainMenu
+        toggleMainMenu,
+        toggleAboutPage
     });
 
     function initialize (options) {
@@ -37,7 +39,6 @@ define([
         $(_$.dom).append(this.$el);
 
         this.isOpen = false;
-        this.line   = this.$(".footer_line");
         this.logo   = this.$(".footer_logo");
         this.menu   = this.$(".footer_menu");
         this.social = this.$(".footer_social");
@@ -70,6 +71,36 @@ define([
                     this.isOpen = true;
                 }
                 this.$(".footer_menu-menuBtn").addClass("is--active");
+            });
+        }
+    }
+
+    function toggleAboutPage (nextScreen) {
+        if (_$.ui.about) {
+            if (_$.ui.screen.id === "screen_title") {
+                this.toggleLogo("hide");
+                this.isOpen = false;
+            }
+            _$.ui.about.transitionOut(nextScreen);
+            _$.events.once("aboutPageClosed", () => {
+                delete _$.ui.about;
+                this.$(".footer_menu-aboutBtn").removeClass("is--active");
+
+                if (_$.ui.menu) {
+                    this.$(".footer_menu-menuBtn").addClass("is--active");
+                } else if (_$.ui.screen.id === "screen_title") {
+                    this.$(".footer_menu-homeBtn").addClass("is--active");
+                }
+            });
+        } else {
+            this.$(".footer_menu-element").removeClass("is--active");
+            _$.ui.about = new Screen_OverlayAbout();
+            _$.events.once("aboutPageOpen", () => {
+                if (_$.ui.screen.id === "screen_title") {
+                    this.toggleLogo("show");
+                    this.isOpen = true;
+                }
+                this.$(".footer_menu-aboutBtn").addClass("is--active");
             });
         }
     }
@@ -116,30 +147,13 @@ define([
         var tl = new TimelineMax();
 
         if (state === "show") {
-            tl.add(this.toggleLine("show"));
-            tl.add(this.toggleLogo("show"), "-=1");
+            tl.add(this.toggleLogo("show"));
             tl.add(this.toggleMenu("show"), "-=1.5");
             tl.add(this.toggleSocial("show"), "-=1.5");
         } else if (state === "hide") {
             tl.add(this.toggleSocial("hide"));
             tl.add(this.toggleMenu("hide"), "-=1.5");
             tl.add(this.toggleLogo("hide"), "-=1.5");
-            tl.add(this.toggleLine("hide"), "-=1");
-        }
-
-        return tl;
-    }
-
-    function toggleLine (state) {
-        var el = this.line;
-        var tl = new TimelineMax();
-
-        if (state === "show") {
-            tl.set(el, { clearProps:"display" });
-            tl.from(el, 1.5, { opacity:0, width:0, ease: Power3.easeOut, clearProps:"all" });
-        } else if (state === "hide") {
-            tl.to(el, 1.5, { width: 0, opacity: 0 });
-            tl.set(el, { display:"none", clearProps:"width,opacity" }, "+=.1");
         }
 
         return tl;
@@ -149,19 +163,15 @@ define([
         var el = this.logo;
         var tl = new TimelineMax();
 
-        el.addClass("tweening");
+        el.addClass("is--tweening");
         if (state === "show") {
             tl.add(_showElement(el));
-            tl.call(() => {
-                this.$el.addClass("is--showingLogo");
-            });
         } else if (state === "hide") {
-            this.$el.removeClass("is--showingLogo");
             tl.add(_hideElement(el));
         }
 
         tl.call(function () {
-            el.removeClass("tweening");
+            el.removeClass("is--tweening");
         });
 
         return tl;

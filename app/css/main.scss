@@ -12,9 +12,10 @@ $boardHeight    : 675px;
 $cardWidth      : 150px;
 $cardHeight     : 190px;
 
-$color_darkGrey : #3d4043;
-$color_red      : rgba(235, 53, 71, 1);
-$color_blue     : rgba(40, 51, 120, 1);
+$color_darkGrey  : #3d4043;
+$color_red       : rgba(235, 53, 71, 1);
+$color_blue      : rgba(40, 51, 120, 1);
+$color_lightBlue : #6d87fa;
 
 $fontSize_UI      : 24px;
 $fontSize_score   : 96px;
@@ -176,6 +177,12 @@ body {
     cursor:default;
 }
 
+a {
+    color:inherit;
+    text-decoration: none;
+    cursor:pointer;
+}
+
 hr {
     position: relative;
     width: calc(100% - 17.5px);
@@ -209,10 +216,11 @@ h1 {
     @include fullSizeAbs();
 }
 
-.color-darkGrey { color: $color_darkGrey; }
-.weight-medium { font-weight: 500; }
-.weight-bold { font-weight: 700; }
-.flex-justify-sb { justify-content: space-between; }
+.color-darkGrey     { color: $color_darkGrey; }
+.color-lightBlue    { color: $color_lightBlue; }
+.weight-medium      { font-weight: 500; }
+.weight-bold        { font-weight: 700; }
+.flex-justify-sb    { justify-content: space-between; }
 .flex-justify-start { justify-content: flex-start; }
 
 
@@ -354,6 +362,52 @@ h1 {
     }
 }
 
+%btn-diamond-text {
+    @extend %btn-diamond;
+    width: $btnSize_big;
+    height: $btnSize_big;
+
+    &:before {
+        @include fullSizeAbs("");
+        box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0),
+                    0px 0px 10px 0 rgba(0, 0, 0, 0);
+
+        @include transform("scale(0.85) rotate(45deg)");
+        @include transition("box-shadow .2s ease-in");
+    }
+
+    &:after {
+        content:"";
+        width:100px;
+        text-align: center;
+        position: absolute;
+        left: calc(50% - 50px);
+        bottom: -3em;
+        height: 1em;
+        transform: translate3d(0,0,0);
+
+        @include transition("letter-spacing .15s .1s, text-indent .15s .1s");
+    }
+
+    &:hover {
+        &:before {
+            box-shadow: -25px 25px 0 0 rgba(0, 0, 0, .25),
+                        25px -25px 0 0 rgba(0, 0, 0, .25);
+
+            @include transition("box-shadow .2s .1s ease-out");
+        }
+
+        &:after {
+            letter-spacing: 0.25em;
+            text-indent: 0.25em;
+        }
+    }
+
+    &-hoverFX {
+        @extend %btn-diamond-hoverFX;
+    }
+}
+
 %arrow {
     @include fullSizeAbs();
     background: url(#{ $uiAssetsPath + "arrow.png"}) no-repeat 50%;
@@ -486,51 +540,10 @@ h1 {
     }
 }
 
-
-/*=======================*/
-/* FOOTER
-/*=======================*/
-#footer {
-    width: 100%;
-    height: 190px;
-    bottom: 0;
-    padding: 0px $globalPadding $globalPadding $globalPadding;
-    position: absolute;
-    display: flex;
-    align-items: flex-end;
-    z-index: 2;
-
-    &.is--showingLogo {
-        & .footer_line {
-            -webkit-clip-path: polygon(
-                0px 1px,
-                85px 1px,
-                85px 0px,
-                220px 0px,
-                220px 1px,
-                100% 1px,
-                100% 0px,
-                0px 0px
-            );
-        }
-    }
-}
-
-.footer_line {
-    background: #FFF;
-    width: 100%;
-    height: 1px;
-    position: absolute;
-    left:0;
-    top:50%;
-
-    @include transform("translate3d(0, 0, 0)");
-}
-
-.footer_logo {
+/* SMALL LOGO, SOCIAL ICONS & CREDITS TEXT --------------*/
+%smallLogo {
     width: 190px;
     height: 145px;
-    margin-right: 1em;
     display: flex;
     align-items: flex-end;
 
@@ -539,31 +552,16 @@ h1 {
         stroke: rgba(255, 255, 255, 0);
         cursor:pointer;
         @include remainingSpace();
-
         @include transition("fill .15s, stroke .15s");
     }
 
-    &:not(.tweening):hover .svg-logo {
+    &:not(.is--tweening):hover .svg-logo {
         fill: rgba(0, 0, 0, 0.25);
         stroke: rgba(255, 255, 255, 1);
     }
 }
 
-.footer_menu {
-    display: flex;
-    align-items: flex-end;
-    margin-right: 1em;
-
-    &-element {
-        @extend %btn-rect;
-
-        position: relative;
-        display: inline-block;
-        margin-right: .5em;
-    }
-}
-
-.footer_social {
+%socialIcons {
     display: flex;
     align-items: flex-end;
     
@@ -577,16 +575,21 @@ h1 {
         padding: .15em;
         bottom: .15em;
         overflow: visible !important;
+        font-size: inherit;
 
         &-hoverFX {
             @extend %btn-diamond-hoverFX;
         }
 
         &:hover {
-            & .footer_social-icon:before {
+            & %socialIcons-icon:before {
                 mix-blend-mode: exclusion;
             }
         }
+    }
+
+    &-element:last-child {
+        margin-right:0;
     }
 
     &-icon {
@@ -618,13 +621,10 @@ h1 {
     }
 }
 
-.footer_text {
-    position: absolute;
-    right: $globalPadding;
-    bottom: $globalPadding;
+%creditsText {
     cursor: default;
 
-    &-span {
+    & span {
         font-size: .75em;
         margin-right: .5em;
     }
@@ -632,10 +632,66 @@ h1 {
 
 
 /*=======================*/
+/* FOOTER
+/*=======================*/
+#footer {
+    width: 100%;
+    height: 190px;
+    bottom: 0;
+    padding: 0px $globalPadding $globalPadding $globalPadding;
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+    z-index: 2;
+}
+
+.footer_logo {
+    @extend %smallLogo;
+    margin-right: 1em;
+}
+
+.footer_menu {
+    display: flex;
+    align-items: flex-end;
+    margin-right: 1em;
+
+    &-element {
+        @extend %btn-rect;
+
+        position: relative;
+        display: inline-block;
+        margin-right: .5em;
+    }
+}
+
+.footer_social {
+    @extend %socialIcons;
+
+    &-element {
+        @extend %socialIcons-element;
+
+        &-hoverFX {
+            @extend %socialIcons-element-hoverFX;
+        }
+    }
+
+    &-icon {
+        @extend %socialIcons-icon;
+    }
+}
+
+.footer_text {
+    @extend %creditsText;
+    position: absolute;
+    right: $globalPadding;
+    bottom: $globalPadding;
+}
+
+
+/*=======================*/
 /* MENU SCREEN
 /*=======================*/
 #screen_overlayMenu {
-    @include fullSizeAbs();
     display: flex;
     z-index: 1;
 }
@@ -701,6 +757,154 @@ h1 {
 .menu_userSettings .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_luna.jpg"}) 50% 100%; }
 
 
+
+/*=======================*/
+/* ABOUT SCREEN
+/*=======================*/
+#screen_overlayAbout {
+    z-index: 3;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &.is--showingLogo {
+        & .about_line {
+            -webkit-clip-path: polygon(
+                0px 1px,
+                calc(50% - 220px / 2) 1px,
+                calc(50% - 220px / 2) 0px,
+                calc(50% + 260px / 2) 0px,
+                calc(50% + 260px / 2) 1px,
+                100% 1px,
+                100% 0px,
+                0px 0px
+            );
+        }
+    }
+}
+
+.about_bg {
+    @include fullSizeAbs();
+    background: url(#{ $uiAssetsPath + "about_bg.jpg"}) 50% 100%;
+    background-size: cover;
+
+    &:after {
+        @include fullSizeAbs("");
+        background: rgba(0, 0, 0, 0.9);
+    }
+}
+
+.about_header {
+    height: 33.3333%;
+    display: flex;
+    position: relative;
+    align-items: flex-start;
+    padding-top: $globalPadding * 2;
+    justify-content: center;
+}
+
+.about_line {
+    background: #FFF;
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    left:0;
+    top:calc(50% + 82px);
+
+    @include transform("translate3d(0, 0, 0)");
+}
+
+.about_logo {
+    @extend %smallLogo;
+    width: 285px;
+    height: 220px;
+}
+
+.about_content {
+    @include remainingSpace();
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: $globalPadding;
+    text-align: center;
+}
+
+.about_text {
+    @extend %creditsText;
+}
+
+.about_credits {
+    @extend %btn-rect;
+    position: relative;
+    display: inline-block;
+    margin-top:1em;
+}
+
+.about_legal {
+    margin:2em 0;
+    line-height: 1.25em;
+
+    & a {
+        position: relative;
+        color: $color_lightBlue;
+        z-index: 0;
+        @include transition("color .4s");
+
+        &:before {
+            content    : "";
+            position   : absolute;
+            width      : 0;
+            height     : 1px;
+            background : currentColor;
+            top        : 50%;
+            z-index    : -1;
+            opacity    : 0.5;
+
+            @include transition("width .2s .2s");
+        }
+
+        &:hover {
+            color: $color_red;
+
+            &:before { width: 100%; }
+        }
+    }
+}
+
+.about_social {
+    @extend %socialIcons;
+    font-size: 1.5em;
+
+    &-element {
+        @extend %socialIcons-element;
+        margin-right: 1.5em;
+
+        &-hoverFX {
+            @extend %socialIcons-element-hoverFX;
+        }
+    }
+
+    &-icon {
+        @extend %socialIcons-icon;
+    }
+}
+
+.about_prevBtn {
+    @extend %btn-diamond-text;
+    position: relative;
+    margin-top: $globalPadding;
+
+    &:after {
+        content:"Back";
+    }
+
+    &-hoverFX {
+        @extend %btn-diamond-text-hoverFX;
+    }
+}
+
+
 /*=======================*/
 /* TITLE SCREEN
 /*=======================*/
@@ -717,52 +921,17 @@ h1 {
 }
 
 .title_startBtn {
-    @extend %btn-diamond;
-
-    width: $btnSize_big;
-    height: $btnSize_big;
+    @extend %btn-diamond-text;
     position: absolute;
     left:calc(50% - #{ $btnSize_big / 2 });
     top: 70%;
 
-    &:before {
-        @include fullSizeAbs("");
-        box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0),
-                    0px 0px 10px 0 rgba(0, 0, 0, 0);
-
-        @include transform("scale(0.85) rotate(45deg)");
-        @include transition("box-shadow .2s ease-in");
-    }
-
     &:after {
         content:"Start";
-        width:100px;
-        text-align: center;
-        position: absolute;
-        left: calc(50% - 50px);
-        bottom: -3em;
-        height: 1em;
-        transform: translate3d(0,0,0);
-
-        @include transition("letter-spacing .15s .1s, text-indent .15s .1s");
-    }
-
-    &:hover {
-        &:before {
-            box-shadow: -25px 25px 0 0 rgba(0, 0, 0, .25),
-                        25px -25px 0 0 rgba(0, 0, 0, .25);
-
-            @include transition("box-shadow .2s .1s ease-out");
-        }
-
-        &:after {
-            letter-spacing: 0.25em;
-            text-indent: 0.25em;
-        }
     }
 
     &-hoverFX {
-        @extend %btn-diamond-hoverFX;
+        @extend %btn-diamond-text-hoverFX;
     }
 }
 
