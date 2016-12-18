@@ -9,11 +9,11 @@ define([
 
     return Backbone.Model.extend({
         defaults : {
-            type    : "solo",
-            level   : "easy",
-            rules   : setRules(),
-            players : {},
-            winner  : null
+            type       : "solo",
+            difficulty : "medium",
+            rules      : setRules(),
+            players    : {},
+            winner     : null
         },
 
         initialize,
@@ -116,7 +116,7 @@ define([
         var cardMaxLevel;
         var randomCards;
 
-        switch (this.get("level")) {
+        switch (this.get("difficulty")) {
             case "easy":
                 info.name    = "Carbuncle";
                 info.avatar  = "./assets/img/avatars/computer_carbuncle.jpg";

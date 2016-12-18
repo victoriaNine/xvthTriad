@@ -29,7 +29,9 @@
 /* 12 COLUMNS RESPONSIVE GRID
 /*=======================*/
 .row, .cardSelect_header-ownedCards,
-.cardSelect_header-uniqueCopies {
+.cardSelect_header-uniqueCopies, .userSettings_header-countWon,
+.userSettings_header-countLost,
+.userSettings_header-countDraw {
   display: flex; }
 
 .col_1 {
@@ -39,7 +41,9 @@
   flex-basis: 16.66666667%; }
 
 .col_3, .cardSelect_header-ownedCards-count,
-.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount {
+.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount, .userSettings_header-countWon-count,
+.userSettings_header-countLost-count,
+.userSettings_header-countDraw-count {
   flex-basis: 25%; }
 
 .col_4 {
@@ -58,7 +62,9 @@
   flex-basis: 66.66666667%; }
 
 .col_9, .cardSelect_header-ownedCards-label,
-.cardSelect_header-uniqueCopies-label, .cardSelect_content-album-card-name {
+.cardSelect_header-uniqueCopies-label, .cardSelect_content-album-card-name, .userSettings_header-countWon-label,
+.userSettings_header-countLost-label,
+.userSettings_header-countDraw-label {
   flex-basis: 75%; }
 
 .col_10 {
@@ -107,7 +113,7 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-  cursor: pointer; }
+  cursor: auto; }
 
 hr {
   position: relative;
@@ -149,7 +155,9 @@ h1 {
   color: #6d87fa; }
 
 .weight-medium, .cardSelect_header-ownedCards-count,
-.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount {
+.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount, .userSettings_header-countWon-count,
+.userSettings_header-countLost-count,
+.userSettings_header-countDraw-count {
   font-weight: 500; }
 
 .weight-bold {
@@ -172,7 +180,7 @@ h1 {
   top: 0;
   left: 0; }
 
-.rulesSelect_header, .cardSelect_header {
+.rulesSelect_header, .cardSelect_header, .userSettings_header {
   height: 300px;
   width: 100%;
   padding: 50px;
@@ -180,7 +188,7 @@ h1 {
   position: relative;
   z-index: 1;
   display: flex; }
-  .rulesSelect_header:before, .cardSelect_header:before {
+  .rulesSelect_header:before, .cardSelect_header:before, .userSettings_header:before {
     content: "";
     width: 100%;
     height: 100%;
@@ -190,47 +198,52 @@ h1 {
     background: url(../assets/img/ui/headerPattern.jpg);
     opacity: .25;
     z-index: -1; }
-  .rulesSelect_header-leftCol, .cardSelect_header-leftCol {
-    width: 370px; }
-  .rulesSelect_header-rightCol, .cardSelect_header-rightCol {
+  .rulesSelect_header-leftCol, .cardSelect_header-leftCol, .userSettings_header-leftCol {
+    width: auto; }
+  .rulesSelect_header-rightCol, .cardSelect_header-rightCol, .userSettings_header-rightCol {
     flex: 1;
     position: relative;
     display: flex;
     justify-content: flex-end; }
 
-.rulesSelect_content, .cardSelect_content {
+.rulesSelect_content, .cardSelect_content, .userSettings_content {
   width: 100%;
   height: calc(100% - 490px);
   position: relative;
   padding: 50px; }
 
-.rulesSelect_content-screenNav, .cardSelect_content-screenNav, .rulesSelect_content-confirm, .cardSelect_content-confirm {
+.rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load {
   position: absolute;
   width: 100%;
   top: 0;
   left: 0;
   height: 50px;
-  padding: 0 50px; }
+  padding: 0 50px;
+  background: rgba(0, 0, 0, 0.5); }
 
-.rulesSelect_content-screenNav, .cardSelect_content-screenNav {
-  background: rgba(0, 0, 0, 0.5);
+.rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load {
   display: flex;
   align-items: center; }
-  .rulesSelect_content-screenNav-choice-element, .cardSelect_content-screenNav-choice-element {
-    position: relative;
-    display: inline-block;
-    margin-right: .5em; }
+  .rulesSelect_content-confirm-choice, .rulesSelect_content-screenNav-choice, .cardSelect_content-confirm-choice, .cardSelect_content-screenNav-choice, .userSettings_content-save-choice, .userSettings_content-load-choice {
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+    height: 100%; }
+    .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element {
+      position: relative;
+      display: inline-block;
+      margin-right: .5em; }
 
 /* BUTTONS ------------*/
-.rulesSelect_content-screenNav-choice-element, .cardSelect_content-screenNav-choice-element, .footer_menu-element, .about_credits, .rulesSelect_content-confirm-choice-element, .cardSelect_content-confirm-choice-element, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
   cursor: pointer;
   font-size: 16px; }
 
-.rulesSelect_content-screenNav-choice-element, .cardSelect_content-screenNav-choice-element, .footer_menu-element, .about_credits, .rulesSelect_content-confirm-choice-element, .cardSelect_content-confirm-choice-element, .game_overlay-endGame-confirmBtn {
+.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .footer_menu-element:after, .about_credits:after, .rulesSelect_content-confirm-choice-element:after, .cardSelect_content-confirm-choice-element:after, .game_overlay-endGame-confirmBtn:after {
+  .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .footer_menu-element:after, .about_credits:after, .game_overlay-endGame-confirmBtn:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -244,12 +257,12 @@ h1 {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .footer_menu-element:hover, .about_credits:hover, .rulesSelect_content-confirm-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.about_credits, .is--active.rulesSelect_content-confirm-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.game_overlay-endGame-confirmBtn {
+  .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .footer_menu-element:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.footer_menu-element, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .about_credits:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.about_credits:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.game_overlay-endGame-confirmBtn:after {
+    .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .footer_menu-element:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.footer_menu-element:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -521,6 +534,163 @@ h1 {
     font-size: .75em;
     margin-right: .5em; }
 
+/* OPTIONS PANEL --------------*/
+.rulesSelect_content-rules, .userSettings_content-settings {
+  height: 270px;
+  top: calc(50% - 270px / 2);
+  position: absolute;
+  width: 100%;
+  left: 0;
+  display: flex;
+  padding: 0 50px; }
+  .rulesSelect_content-rules .col, .userSettings_content-settings .col {
+    width: 50%;
+    margin-right: 1em; }
+  .rulesSelect_content-rules .col:last-child, .userSettings_content-settings .col:last-child {
+    margin-right: 0; }
+
+.rulesSelect_content-rules-rule, .userSettings_content-settings-setting {
+  display: flex;
+  height: 50px;
+  line-height: 50px;
+  margin-bottom: 1em; }
+  .is--on.rulesSelect_content-rules-rule, .is--on.userSettings_content-settings-setting, .is--off.rulesSelect_content-rules-rule, .is--off.userSettings_content-settings-setting {
+    cursor: pointer; }
+
+.rulesSelect_content-rules-rule-label, .userSettings_content-settings-setting-label {
+  text-transform: none;
+  flex: 1;
+  padding-left: 1em;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative; }
+
+.rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting-toggle {
+  position: relative;
+  width: 50px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-transition: -webkit-background .2s;
+  -ms-transition: -ms-background .2s;
+  transition: background .2s; }
+  .is--on.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--on.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle {
+    background: rgba(40, 51, 120, 0.5); }
+  .is--off.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--off.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle {
+    background: rgba(235, 53, 71, 0.5); }
+
+.rulesSelect_content-rules-rule-select, .userSettings_content-settings-setting-select {
+  text-transform: none;
+  flex: 1;
+  padding-left: 1em;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  -webkit-transition: -webkit-height .2s .2s;
+  -ms-transition: -ms-height .2s .2s;
+  transition: height .2s .2s; }
+  .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled {
+    color: #000; }
+
+.rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty {
+  cursor: pointer; }
+  .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle {
+    -webkit-transition: -webkit-width .2s, opacity .2s;
+    -ms-transition: -ms-width .2s, opacity .2s;
+    transition: width .2s, opacity .2s; }
+    .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after {
+      content: "";
+      position: absolute;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #FFF;
+      left: calc(50% - 4.5px);
+      top: calc(50% - 4.5px);
+      -webkit-transition: -webkit-transform .2s .2s;
+      -ms-transition: -ms-transform .2s .2s;
+      transition: transform .2s .2s; }
+  .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle {
+    width: 0;
+    opacity: 0;
+    -webkit-transition: -webkit-width .2s .2s, opacity .2s .2s;
+    -ms-transition: -ms-width .2s .2s, opacity .2s .2s;
+    transition: width .2s .2s, opacity .2s .2s; }
+    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after {
+      -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      transform: rotate(90deg);
+      -webkit-transition: -webkit-transform .2s;
+      -ms-transition: -ms-transform .2s;
+      transition: transform .2s; }
+  .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select {
+    overflow-y: scroll;
+    height: 100px; }
+
+.userSettings_content-settings-setting-input {
+  border: none;
+  outline: none;
+  padding: 1em;
+  color: #FFF;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: auto;
+  width: 75%;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-transition: -webkit-background .2s;
+  -ms-transition: -ms-background .2s;
+  transition: background .2s; }
+  .userSettings_content-settings-setting-input:focus {
+    background: rgba(40, 51, 120, 0.5); }
+  .is--invalid.userSettings_content-settings-setting-input {
+    background: rgba(235, 53, 71, 0.5); }
+
+/* AVATAR */
+.game_playerHUD-avatar, .userSettings_header-avatar {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+  padding: 5px;
+  z-index: 0;
+  -webkit-transition: -webkit-background .2s .2s, box-shadow .2s;
+  -ms-transition: -ms-background .2s .2s, box-shadow .2s;
+  transition: background .2s .2s, box-shadow .2s; }
+  .game_playerHUD-avatar:before, .userSettings_header-avatar:before {
+    content: "";
+    position: absolute;
+    background: rgba(0, 0, 0, 0.75);
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    left: 5px;
+    top: 5px;
+    z-index: -1;
+    -webkit-transition: -webkit-box-shadow .2s;
+    -ms-transition: -ms-box-shadow .2s;
+    transition: box-shadow .2s; }
+  .game_playerHUD-avatar:after, .userSettings_header-avatar:after {
+    content: "";
+    position: absolute;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    left: 5px;
+    top: 5px;
+    box-shadow: 2.5px 2.5px 2.5px 0px rgba(0, 0, 0, 0.5) inset; }
+  .game_playerHUD-avatar-img, .userSettings_header-avatar-img {
+    width: auto;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat; }
+
+.game_playerHUD-user.is--active .game_playerHUD-avatar, .userSettings_header-avatar:hover {
+  background: rgba(71, 53, 235, 0.25);
+  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset, 0 0 18px 4px rgba(40, 0, 255, 0.25); }
+  .game_playerHUD-user.is--active .game_playerHUD-avatar:before, .userSettings_header-avatar:hover:before {
+    box-shadow: 0 0 18px 8px rgba(33, 150, 243, 0.25); }
+
+.game_playerHUD-opponent.is--active .game_playerHUD-avatar {
+  background: rgba(235, 53, 71, 0.25);
+  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset, 0 0 18px 4px rgba(255, 0, 40, 0.25); }
+  .game_playerHUD-opponent.is--active .game_playerHUD-avatar:before {
+    box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25); }
+
 /*=======================*/
 /* FOOTER
 /*=======================*/
@@ -560,7 +730,7 @@ h1 {
 
 .menu_element {
   flex-basis: 20%;
-  filter: saturate(0) brightness(0.075);
+  filter: saturate(0) brightness(0.1);
   padding: 50px;
   position: relative;
   background: #000;
@@ -764,108 +934,17 @@ h1 {
   flex-direction: column; }
 
 /* HEADER --------------*/
+.rulesSelect_header-help {
+  text-transform: none;
+  position: absolute;
+  left: 0;
+  padding: 0 50px;
+  margin-top: 1em;
+  line-height: 1.25em; }
+
 /* CONTENT --------------*/
 .rulesSelect_content-confirm {
   background: rgba(40, 51, 120, 0.5); }
-  .rulesSelect_content-confirm-choice {
-    display: flex;
-    align-items: center;
-    margin-right: 1em;
-    height: 100%; }
-    .rulesSelect_content-confirm-choice-element {
-      position: relative;
-      display: inline-block;
-      margin-right: .5em; }
-
-.rulesSelect_content-screenNav-choice {
-  display: flex;
-  align-items: center;
-  margin-right: 1em;
-  height: 100%; }
-
-.rulesSelect_content-rules {
-  height: 270px;
-  top: calc(50% - 270px / 2);
-  position: absolute;
-  width: 100%;
-  left: 0;
-  display: flex;
-  padding: 0 50px; }
-  .rulesSelect_content-rules .col {
-    width: 50%;
-    margin-right: 1em; }
-
-.rulesSelect_content-rules-rule {
-  display: flex;
-  height: 50px;
-  line-height: 50px;
-  margin-bottom: 1em; }
-  .rulesSelect_content-rules-rule.is--on, .rulesSelect_content-rules-rule.is--off, .rulesSelect_content-rules-rule.rule-trade {
-    cursor: pointer; }
-
-.rulesSelect_content-rules-rule-label {
-  text-transform: none;
-  flex: 1;
-  padding-left: 1em;
-  background: rgba(255, 255, 255, 0.1);
-  position: relative; }
-
-.rulesSelect_content-rules-rule-toggle {
-  position: relative;
-  width: 50px;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.5);
-  -webkit-transition: -webkit-background .2s;
-  -ms-transition: -ms-background .2s;
-  transition: background .2s; }
-  .rulesSelect_content-rules-rule.is--on .rulesSelect_content-rules-rule-toggle {
-    background: rgba(40, 51, 120, 0.5); }
-  .rulesSelect_content-rules-rule.is--off .rulesSelect_content-rules-rule-toggle {
-    background: rgba(235, 53, 71, 0.5); }
-
-.rulesSelect_content-rules-rule-select {
-  text-transform: none;
-  flex: 1;
-  padding-left: 1em;
-  background: rgba(255, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  -webkit-transition: -webkit-height .2s .2s;
-  -ms-transition: -ms-height .2s .2s;
-  transition: height .2s .2s; }
-
-.rule-trade .rulesSelect_content-rules-rule-toggle {
-  -webkit-transition: -webkit-width .2s, opacity .2s;
-  -ms-transition: -ms-width .2s, opacity .2s;
-  transition: width .2s, opacity .2s; }
-  .rule-trade .rulesSelect_content-rules-rule-toggle:after {
-    content: "";
-    position: absolute;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid #FFF;
-    left: calc(50% - 4.5px);
-    top: calc(50% - 4.5px);
-    -webkit-transition: -webkit-transform .2s .2s;
-    -ms-transition: -ms-transform .2s .2s;
-    transition: transform .2s .2s; }
-.rule-trade.is--active .rulesSelect_content-rules-rule-toggle {
-  width: 0;
-  opacity: 0;
-  -webkit-transition: -webkit-width .2s .2s, opacity .2s .2s;
-  -ms-transition: -ms-width .2s .2s, opacity .2s .2s;
-  transition: width .2s .2s, opacity .2s .2s; }
-  .rule-trade.is--active .rulesSelect_content-rules-rule-toggle:after {
-    -webkit-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    transform: rotate(90deg);
-    -webkit-transition: -webkit-transform .2s;
-    -ms-transition: -ms-transform .2s;
-    transition: transform .2s; }
-.rule-trade.is--active .rulesSelect_content-rules-rule-select {
-  overflow-y: scroll;
-  height: 100px; }
 
 /*=======================*/
 /* CARD SELECTION SCREEN
@@ -906,21 +985,6 @@ h1 {
 /* CONTENT --------------*/
 .cardSelect_content-confirm {
   background: rgba(40, 51, 120, 0.5); }
-  .cardSelect_content-confirm-choice {
-    display: flex;
-    align-items: center;
-    margin-right: 1em;
-    height: 100%; }
-    .cardSelect_content-confirm-choice-element {
-      position: relative;
-      display: inline-block;
-      margin-right: .5em; }
-
-.cardSelect_content-screenNav-choice {
-  display: flex;
-  align-items: center;
-  margin-right: 1em;
-  height: 100%; }
 
 .cardSelect_content-scroll {
   height: 270px;
@@ -1246,58 +1310,13 @@ h1 {
   position: absolute;
   width: 100px;
   height: 100px;
-  top: calc(-100px / 4);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
-  padding: 5px;
-  z-index: 0;
-  -webkit-transition: -webkit-background .2s .2s, box-shadow .2s;
-  -ms-transition: -ms-background .2s .2s, box-shadow .2s;
-  transition: background .2s .2s, box-shadow .2s; }
+  top: calc(-100px / 4); }
 
 .game_playerHUD-opponent .game_playerHUD-avatar {
   left: 0; }
 
 .game_playerHUD-user .game_playerHUD-avatar {
   right: 0; }
-
-.game_playerHUD-avatar:before {
-  content: "";
-  position: absolute;
-  background: rgba(0, 0, 0, 0.75);
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
-  left: 5px;
-  top: 5px;
-  z-index: -1;
-  -webkit-transition: -webkit-box-shadow .2s;
-  -ms-transition: -ms-box-shadow .2s;
-  transition: box-shadow .2s; }
-
-.game_playerHUD-user.is--active .game_playerHUD-avatar {
-  background: rgba(71, 53, 235, 0.25);
-  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset, 0 0 18px 4px rgba(40, 0, 255, 0.25); }
-  .game_playerHUD-user.is--active .game_playerHUD-avatar:before {
-    box-shadow: 0 0 18px 8px rgba(33, 150, 243, 0.25); }
-
-.game_playerHUD-opponent.is--active .game_playerHUD-avatar {
-  background: rgba(235, 53, 71, 0.25);
-  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset, 0 0 18px 4px rgba(255, 0, 40, 0.25); }
-  .game_playerHUD-opponent.is--active .game_playerHUD-avatar:before {
-    box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25); }
-
-.game_playerHUD-avatar:after {
-  content: "";
-  position: absolute;
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
-  left: 5px;
-  top: 5px;
-  box-shadow: 2.5px 2.5px 2.5px 0px rgba(0, 0, 0, 0.5) inset; }
-
-.game_playerHUD-avatar img {
-  width: 100%;
-  height: 100%; }
 
 /* DECK HOLDERS --------------*/
 .game_deck {
@@ -1350,5 +1369,37 @@ h1 {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1); }
+
+/*=======================*/
+/* USER SETTINGS SCREEN
+/*=======================*/
+#screen_userSettings {
+  display: flex;
+  flex-direction: column; }
+
+/* HEADER --------------*/
+.userSettings_header-countWon,
+.userSettings_header-countLost,
+.userSettings_header-countDraw {
+  margin-top: 1em; }
+
+.userSettings_header-countWon-label,
+.userSettings_header-countLost-label,
+.userSettings_header-countDraw-label {
+  text-transform: none; }
+
+.userSettings_header-countWon-count,
+.userSettings_header-countLost-count,
+.userSettings_header-countDraw-count {
+  text-align: right; }
+
+.userSettings_header-avatar {
+  position: relative;
+  height: 200px;
+  width: 200px; }
+
+/* CONTENT --------------*/
+.userSettings_content-load {
+  background: rgba(40, 51, 120, 0.5); }
 
 /*# sourceMappingURL=main.css.map */

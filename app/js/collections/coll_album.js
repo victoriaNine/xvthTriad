@@ -1,9 +1,9 @@
 define([
   "underscore", 
   "backbone",
-  "models/model_card",
-  "global"
-], function Coll_Album (_, Backbone, Model_Card, _$) {
+  "global",
+  "models/model_card"
+], function Coll_Album (_, Backbone, _$, Model_Card) {
     return Backbone.Collection.extend({
         model: Model_Card
     });

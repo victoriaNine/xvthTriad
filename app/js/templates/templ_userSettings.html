@@ -1,0 +1,67 @@
+<div class="userSettings_header" style="display:none;">
+    <div class="userSettings_header-leftCol">
+        <h1 class="userSettings_header-title">
+            <span class="weight-bold">User</span> settings
+        </h1>
+        <hr>
+        <div class="userSettings_header-countWon">
+            <div class="userSettings_header-countWon-label">Won games</div>
+            <div class="userSettings_header-countWon-count"><%= wonCount %></div>
+        </div>
+        <div class="userSettings_header-countLost">
+            <div class="userSettings_header-countLost-label">Lost games</div>
+            <div class="userSettings_header-countLost-count"><%= lostCount %></div>
+        </div>
+        <div class="userSettings_header-countDraw">
+            <div class="userSettings_header-countDraw-label">Draws</div>
+            <div class="userSettings_header-countDraw-count"><%= drawCount %></div>
+        </div>
+    </div>
+    <div class="userSettings_header-rightCol">
+        <div class="userSettings_header-avatar">
+            <div class="userSettings_header-avatar-img" style="background-image: url(<%= avatarSrc %>);"></div>
+        </div>
+    </div>
+</div>
+<div class="userSettings_content">
+    <div class="userSettings_content-save" style="display:none;">
+        <ul class="userSettings_content-save-choice">
+            <li class="userSettings_content-save-choice-saveBtn userSettings_content-save-choice-element is--active">Save changes</li>
+            <li class="userSettings_content-save-choice-cancelBtn userSettings_content-save-choice-element">Cancel changes</li>
+            <li class="userSettings_content-save-choice-exportBtn userSettings_content-save-choice-element">Export save file</li>
+            <li class="userSettings_content-save-choice-resetBtn userSettings_content-save-choice-element">Reset account</li>
+        </ul>
+    </div>
+    <div class="userSettings_content-load" style="display:none;">
+        <ul class="userSettings_content-load-choice">
+            <li class="userSettings_content-load-choice-loadBtn userSettings_content-load-choice-element is--active">Load file</li>
+            <li class="userSettings_content-load-choice-cancelBtn userSettings_content-load-choice-element">Cancel</li>
+        </ul>
+    </div>
+    <div class="userSettings_content-settings">
+        <div class="col">
+            <div class="userSettings_content-settings-setting setting-name">
+                <div class="userSettings_content-settings-setting-label">Name</div>
+                <input class="userSettings_content-settings-setting-input"></input>
+            </div>
+            <div class="userSettings_content-settings-setting setting-difficulty">
+                <ul class="userSettings_content-settings-setting-select">
+                    <li class="difficultySetting-easy">Difficulty level -- Easy</li>
+                    <li class="difficultySetting-medium is--disabled">Difficulty level -- Medium</li>
+                    <li class="difficultySetting-hard is--disabled">Difficulty level -- Hard</li>
+                </ul>
+                <div class="userSettings_content-settings-setting-toggle"></div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="userSettings_content-settings-setting setting-avatar">
+                <div class="userSettings_content-settings-setting-label">Upload an avatar</div>
+                <input class="userSettings_content-settings-setting-input" type="file"></input>
+            </div>
+            <div class="userSettings_content-settings-setting setting-import">
+                <div class="userSettings_content-settings-setting-label">Import a save file</div>
+                <input class="userSettings_content-settings-setting-input" type="file"></input>
+            </div>
+        </div>
+    </div>
+</div>

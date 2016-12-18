@@ -3,12 +3,11 @@ define([
     "underscore", 
     "backbone",
     "views/screen",
-    "views/screen_game",
     "views/elem_albumCard",
     "text!templates/templ_cardSelect.html",
     "global",
     "tweenMax",
-], function Screen_CardSelect ($, _, Backbone, Screen, Screen_Game, Elem_AlbumCard, Templ_CardSelect, _$) {
+], function Screen_CardSelect ($, _, Backbone, Screen, Elem_AlbumCard, Templ_CardSelect, _$) {
     var CARD_WIDTH = 180;
 
     return Screen.extend({
@@ -21,7 +20,7 @@ define([
         events    : {
             "click .cardSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("rulesSelect"); },
             "click .cardSelect_content-confirm-choice-yesBtn"    : function () { this.transitionOut("game"); },
-            "click .cardSelect_content-confirm-choice-noBtn"     : function () { toggleConfirm.call(this, "hide"); },
+            "click .cardSelect_content-confirm-choice-noBtn"     : function () { this.toggleConfirm("hide"); },
             "click .cardSelect_content-nav-prevBtn"              : function () { this.pageChange(-1); },
             "click .cardSelect_content-nav-nextBtn"              : function () { this.pageChange(1); }
         },
@@ -29,6 +28,8 @@ define([
         initialize,
         remove,
         render,
+
+        toggleConfirm,
 
         createAlbumCardViews,
         onResize,
@@ -127,22 +128,23 @@ define([
         }, null, [], tl.recent().endTime() + 0.5);
 
         function onTransitionComplete () {
-            if (nextScreen === "game") {
-                _$.utils.addDomObserver(this.$el, () => {
-                    _$.events.trigger("startUserEvents");
-                    _$.ui.screen = new Screen_Game({ userDeck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
-                }, true, "remove");
-
-                this.remove();
-            } else if (nextScreen === "rulesSelect") {
+            if (nextScreen === "rulesSelect") {
                 _$.events.trigger("startUserEvents");
                 _$.ui.screen = _$.state.rulesSelectScreen.transitionIn();
-            } else if (nextScreen === "title") {
+            } else {
                 _$.utils.addDomObserver(this.$el, () => {
-                    var Screen_Title = require("views/screen_title");
-
                     _$.events.trigger("startUserEvents");
-                    _$.ui.screen = new Screen_Title();
+
+                    if (nextScreen === "game") {
+                        var Screen_Game = require("views/screen_game");
+                        _$.ui.screen = new Screen_Game({ userDeck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
+                    } else if (nextScreen === "title") {
+                        var Screen_Title = require("views/screen_title");
+                        _$.ui.screen     = new Screen_Title();
+                    } else if (nextScreen === "userSettings") {
+                        var Screen_UserSettings = require("views/screen_userSettings");
+                        _$.ui.screen            = new Screen_UserSettings();
+                    }
                 }, true, "remove");
 
                 this.remove();
@@ -272,20 +274,20 @@ define([
 
         if (_.compact(this.userDeck).length === 5) {
             if (!this.$(".cardSelect_content-confirm").is(":visible")) {
-                toggleConfirm.call(this, "show");
+                this.toggleConfirm("show");
             }
         } else if (this.$(".cardSelect_content-confirm").is(":visible")) {
-            toggleConfirm.call(this, "hide");
+            this.toggleConfirm("hide");
         }
     }
 
     function toggleConfirm (state) {
         if (state === "show") {
-            this.$(".cardSelect_content-confirm").slideDown();
-            this.$(".cardSelect_content-screenNav").slideUp();
+            this.$(".cardSelect_content-confirm").css({pointerEvents: ""}).slideDown();
+            this.$(".cardSelect_content-screenNav").css({pointerEvents: "none"}).slideUp();
         } else if (state === "hide") {
-            this.$(".cardSelect_content-confirm").slideUp();
-            this.$(".cardSelect_content-screenNav").slideDown();
+            this.$(".cardSelect_content-screenNav").css({pointerEvents: ""}).slideDown();
+            this.$(".cardSelect_content-confirm").css({pointerEvents: "none"}).slideUp();
         }
     }
 });

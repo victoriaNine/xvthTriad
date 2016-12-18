@@ -77,7 +77,7 @@ define([
     }
 
     function toUserSettings () {
-        /*this.$(".menu_userSettings").css({ pointerEvents: "none" });
-        _$.ui.footer.toggleMainMenu("userSettings");*/
+        this.$(".menu_userSettings").css({ pointerEvents: "none" });
+        _$.ui.footer.toggleMainMenu("userSettings");
     }
 });

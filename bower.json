@@ -9,7 +9,9 @@
     "lodash": "^4.17.2",
     "requirejs-plugins": "^1.0.3",
     "gsap": "^1.19.0",
-    "jquery-nearest": "^1.4.0"
+    "jquery-nearest": "^1.4.0",
+    "es6-promise": "^4.0.5",
+    "fetch": "^2.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

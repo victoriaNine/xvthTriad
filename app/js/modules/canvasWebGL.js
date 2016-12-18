@@ -8,8 +8,7 @@ define([
     "libs/seriouslyjs/effects/seriously.vignette",
     "libs/seriouslyjs/sources/seriously.depth",
     "libs/seriouslyjs/sources/seriously.imagedata",
-    "libs/seriouslyjs/effects/seriously.displacement",
-    "tweenMax"
+    "libs/seriouslyjs/effects/seriously.displacement"
 ], function canvasWebGL ($, _, Seriously, _$, Firefly) {
     var FX_LEVEL         = 5;
     var ADD_FX           = false;

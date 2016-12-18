@@ -25,13 +25,15 @@ require.config({
         propertyParser    : "libs/requirejs-plugins/src/propertyParser",
         markdownConverter : "libs/requirejs-plugins/lib/Markdown.Converter",
 
-        jqueryNearest     : "libs/jquery-nearest/src/jquery.nearest",
+        jqueryNearest      : "libs/jquery-nearest/src/jquery.nearest",
+        "es6-promise"      : "libs/es6-promise/es6-promise",
+        "fetch"            : "libs/fetch/fetch",
 
         global            : "global"
     },
 
     shim: {
-        jqueryNearest  : ["jquery"]
+        jqueryNearest : ["jquery"]
     }
 });
 
@@ -40,23 +42,36 @@ require([
     "underscore",
     "modules/canvasWebGL",
     "modules/assetLoader",
-    "views/screen_title",
-    "views/elem_footer",
     "json!data/loader_img.json",
     "global",
+    "views/elem_footer",
+    "views/screen",
+    "views/screen_cardSelect",
+    "views/screen_game",
+    "views/screen_rulesSelect",
+    "views/screen_title",
+    "views/screen_userSettings",
+    "views/screen_overlayAbout",
+    "views/screen_overlayMenu",
     "jqueryNearest"
-], function ($, _, canvasWebGL, assetLoader, Screen_Title, Elem_Footer, loaderImg, _$) {
-    var events  = _$.events;
-    var loaders = [loaderImg];
+], function ($, _, canvasWebGL, assetLoader, loaderImg, _$, Elem_Footer) {
+    var Screen_Title = require("views/screen_title");
+    var loaders      = [loaderImg];
 
-    events.on("all", function (eventName) {
+    _$.events.on("all", function (eventName) {
         console.log("event triggered:", eventName);
     });
 
-    events.once("allLoadersComplete", function () {
+    _$.events.once("allLoadersComplete", function () {
         canvasWebGL.init();
         _$.ui.footer = new Elem_Footer();
-        _$.ui.screen = new Screen_Title({ setup: true });
+        _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
+
+        $(window).on("beforeunload", function (e) {
+            var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
+            (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
+            return confirmationMessage;                                // Gecko and WebKit
+        });
     });
 
     TweenMax.set(_$.dom, { opacity : 0 });

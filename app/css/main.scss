@@ -180,7 +180,7 @@ body {
 a {
     color:inherit;
     text-decoration: none;
-    cursor:pointer;
+    cursor:auto;
 }
 
 hr {
@@ -253,7 +253,7 @@ h1 {
     }
 
     &-leftCol {
-        width: 370px;
+        width: auto;
     }
 
     &-rightCol {
@@ -277,21 +277,26 @@ h1 {
     left: 0;
     height: $globalPadding;
     padding: 0 $globalPadding;
+    background: rgba(0, 0, 0, 0.5);
 }
 
-%content-screenNav {
+%content-promptChoice {
     @extend %content-prompt;
-
-    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
 
-    &-element {
-        @extend %btn-rect;
+    &-choice {
+        display: flex;
+        align-items: center;
+        margin-right: 1em;
+        height: 100%;
 
-        position: relative;
-        display: inline-block;
-        margin-right: .5em;
+        &-element {
+            @extend %btn-rect;
+            position: relative;
+            display: inline-block;
+            margin-right: .5em;
+        }
     }
 }
 
@@ -630,6 +635,199 @@ h1 {
     }
 }
 
+/* OPTIONS PANEL --------------*/
+%options {
+    height: 270px;
+    top: calc(50% - 270px / 2);
+    position: absolute;
+    width: 100%;
+    left: 0;
+    display: flex;
+    padding: 0 $globalPadding;
+
+    & .col {
+        width: 50%;
+        margin-right: 1em;
+    }
+
+    & .col:last-child {
+        margin-right: 0;
+    }
+}
+
+%options-option {
+    display: flex;
+    height: $globalPadding;
+    line-height: $globalPadding;
+    margin-bottom: 1em;
+
+    &.is--on, &.is--off {
+        cursor:pointer;
+    }
+}
+
+%options-option-label {
+    text-transform: none;
+    flex: 1;
+    padding-left: 1em;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+%options-option-toggle {
+    position: relative;
+    width: $globalPadding;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    @include transition("background .2s");
+
+    %options-option.is--on & {
+        background: transparentize($color_blue, 0.5);
+    }
+
+    %options-option.is--off & {
+        background: transparentize($color_red, 0.5);
+    }
+}
+
+%options-option-select {
+    text-transform: none;
+    flex: 1;
+    padding-left: 1em;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+
+    @include transition("height .2s .2s");
+
+    & li.is--disabled {
+        color: #000;
+    }
+}
+
+%options-option-list {
+    cursor: pointer;
+
+    & %options-option-toggle {
+        @include transition("width .2s, opacity .2s");
+
+        &:after {
+            content: "";
+            position: absolute;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #FFF;
+            left:calc(50% - 4.5px);
+            top:calc(50% - 4.5px);
+
+            @include transition("transform .2s .2s");
+        }
+    }
+
+    &.is--active {
+        & %options-option-toggle {
+            width: 0;
+            opacity: 0;
+            @include transition("width .2s .2s, opacity .2s .2s");
+
+            &:after {
+                @include transform("rotate(90deg)");
+                @include transition("transform .2s");
+            }
+        }
+
+        & %options-option-select {
+            overflow-y: scroll;
+            height: 100px;
+        }
+    }
+}
+
+%options-option-input {
+    border:none;
+    outline:none;
+    padding: 1em;
+    color:#FFF;
+    font-family:inherit;
+    font-size:inherit;
+    font-weight: inherit;
+    cursor:auto;
+    width: 75%;
+    background: rgba(0, 0, 0, 0.5);
+    @include transition("background .2s");
+
+    &:focus {
+        background: transparentize($color_blue, 0.5);
+    }
+
+    &.is--invalid {
+        background: transparentize($color_red, 0.5);
+    }
+}
+
+/* AVATAR */
+%avatar {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+    padding: 5px;
+    z-index: 0;
+
+    @include transition("background .2s .2s, box-shadow .2s");
+
+    &:before {
+        content: "";
+        position: absolute;
+        background: rgba(0, 0, 0, 0.75);
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        left: 5px;
+        top: 5px;
+        z-index: -1;
+
+        @include transition("box-shadow .2s");
+    }
+
+    &:after {
+        content: "";
+        position: absolute;
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        left: 5px;
+        top: 5px;
+        box-shadow: 2.5px 2.5px 2.5px 0px rgba(0, 0, 0, 0.5) inset;
+    }
+
+    &-img {
+        width: auto;
+        height: 100%;
+        background-size: cover;
+        background-repeat: no-repeat; 
+    }
+}
+
+%avatar-blue {
+    background: rgba(71, 53, 235, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25),
+                0 0 0px 5px rgba(255, 255, 255, 0.05) inset,
+                0 0 18px 4px rgba(40, 0, 255, 0.25);
+
+    &:before {
+        box-shadow: 0 0 18px 8px rgba(33, 150, 243, 0.25);
+    }
+}
+
+%avatar-red {
+    background: transparentize($color_red, 0.75);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25),
+                0 0 0px 5px rgba(255, 255, 255, 0.05) inset,
+                0 0 18px 4px rgba(255, 0, 40, 0.25);
+
+    &:before {
+        box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25);
+    }
+}
+
 
 /*=======================*/
 /* FOOTER
@@ -698,7 +896,7 @@ h1 {
 
 .menu_element {
     flex-basis: 20%;
-    filter: saturate(0) brightness(0.075);
+    filter: saturate(0) brightness(0.1);
     padding: $globalPadding;
     position: relative;
     background: #000;
@@ -755,7 +953,6 @@ h1 {
 .menu_networkMode  .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_prompto.jpg"}) 50% 100%; }
 .menu_cardAlbum    .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_ignis.jpg"}) 50% 100%; }
 .menu_userSettings .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_luna.jpg"}) 50% 100%; }
-
 
 
 /*=======================*/
@@ -957,145 +1154,58 @@ h1 {
     }
 }
 
+.rulesSelect_header-help {
+    text-transform: none;
+    position: absolute;
+    left: 0;
+    padding: 0 $globalPadding;
+    margin-top: 1em;
+    line-height: 1.25em;
+}
+
 /* CONTENT --------------*/
 .rulesSelect_content {
     @extend %content
 }
 
-.rulesSelect_content-confirm {
-    @extend %content-prompt;
+.rulesSelect_content-confirm, .rulesSelect_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
 }
 
 .rulesSelect_content-confirm {
     background: transparentize($color_blue, 0.5);
-
-    &-choice {
-        display: flex;
-        align-items: center;
-        margin-right: 1em;
-        height: 100%;
-
-        &-element {
-            @extend %btn-rect;
-
-            position: relative;
-            display: inline-block;
-            margin-right: .5em;
-        }
-    }
-}
-
-.rulesSelect_content-screenNav {
-    @extend %content-screenNav;
-
-    &-choice {
-        display: flex;
-        align-items: center;
-        margin-right: 1em;
-        height: 100%;
-
-        &-element {
-            @extend %content-screenNav-element;
-        }
-    }
 }
 
 .rulesSelect_content-rules {
-    height: 270px;
-    top: calc(50% - 270px / 2);
-    position: absolute;
-    width: 100%;
-    left: 0;
-    display: flex;
-    padding: 0 $globalPadding;
-
-    & .col {
-        width: 50%;
-        margin-right: 1em;
-    }
+    @extend %options;
 }
 
 .rulesSelect_content-rules-rule {
-    display: flex;
-    height: $globalPadding;
-    line-height: $globalPadding;
-    margin-bottom: 1em;
+    @extend %options-option;
 
-    &.is--on, &.is--off, &.rule-trade {
-        cursor:pointer;
+    &.rule-trade {
+        @extend %options-option-list;
     }
 }
 
 .rulesSelect_content-rules-rule-label {
-    text-transform: none;
-    flex: 1;
-    padding-left: 1em;
-    background: rgba(255, 255, 255, 0.1);
-    position: relative;
+    @extend %options-option-label;
 }
 
 .rulesSelect_content-rules-rule-toggle {
-    position: relative;
-    width: $globalPadding;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.5);
-    @include transition("background .2s");
-
-    .rulesSelect_content-rules-rule.is--on & {
-        background: transparentize($color_blue, 0.5);
-    }
-
-    .rulesSelect_content-rules-rule.is--off & {
-        background: transparentize($color_red, 0.5);
-    }
+    @extend %options-option-toggle;
 }
 
 .rulesSelect_content-rules-rule-select {
-    text-transform: none;
-    flex: 1;
-    padding-left: 1em;
-    background: rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-
-    @include transition("height .2s .2s");
-}
-
-.rule-trade {
-    & .rulesSelect_content-rules-rule-toggle {
-        @include transition("width .2s, opacity .2s");
-
-        &:after {
-            content: "";
-            position: absolute;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid #FFF;
-            left:calc(50% - 4.5px);
-            top:calc(50% - 4.5px);
-
-            @include transition("transform .2s .2s");
-        }
-    }
-
-    &.is--active {
-        & .rulesSelect_content-rules-rule-toggle {
-            width: 0;
-            opacity: 0;
-            @include transition("width .2s .2s, opacity .2s .2s");
-
-            &:after {
-                @include transform("rotate(90deg)");
-                @include transition("transform .2s");
-            }
-        }
-
-        & .rulesSelect_content-rules-rule-select {
-            overflow-y: scroll;
-            height: 100px;
-        }
-    }
+    @extend %options-option-select;
 }
 
 
@@ -1162,42 +1272,20 @@ h1 {
     @extend %content
 }
 
-.cardSelect_content-confirm {
-    @extend %content-prompt;
+.cardSelect_content-confirm, .cardSelect_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
 }
 
 .cardSelect_content-confirm {
     background: transparentize($color_blue, 0.5);
-
-    &-choice {
-        display: flex;
-        align-items: center;
-        margin-right: 1em;
-        height: 100%;
-
-        &-element {
-            @extend %btn-rect;
-
-            position: relative;
-            display: inline-block;
-            margin-right: .5em;
-        }
-    }
-}
-
-.cardSelect_content-screenNav {
-    @extend %content-screenNav;
-
-    &-choice {
-        display: flex;
-        align-items: center;
-        margin-right: 1em;
-        height: 100%;
-
-        &-element {
-            @extend %content-screenNav-element;
-        }
-    }
 }
 
 .cardSelect_content-scroll {
@@ -1523,69 +1611,26 @@ h1 {
 .game_playerHUD-user .game_playerHUD-score     { left:0; }
 
 .game_playerHUD-avatar {
+    @extend %avatar;
     position: absolute;
     width: 100px;
     height: 100px;
     top: calc(-100px / 4);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
-    padding: 5px;
-    z-index: 0;
 
-    @include transition("background .2s .2s, box-shadow .2s");
+    &-img {
+        @extend %avatar-img;
+    }
 }
 
 .game_playerHUD-opponent .game_playerHUD-avatar { left: 0; }
 .game_playerHUD-user .game_playerHUD-avatar     { right: 0; }
 
-.game_playerHUD-avatar:before {
-    content: "";
-    position: absolute;
-    background: rgba(0, 0, 0, 0.75);
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    left: 5px;
-    top: 5px;
-    z-index: -1;
-
-    @include transition("box-shadow .2s");
-}
-
 .game_playerHUD-user.is--active .game_playerHUD-avatar {
-    background: rgba(71, 53, 235, 0.25);
-    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25),
-                0 0 0px 5px rgba(255, 255, 255, 0.05) inset,
-                0 0 18px 4px rgba(40, 0, 255, 0.25);
-
-    &:before {
-        box-shadow: 0 0 18px 8px rgba(33, 150, 243, 0.25);
-    }
+    @extend %avatar-blue;
 }
 
 .game_playerHUD-opponent.is--active .game_playerHUD-avatar {
-    background: transparentize($color_red, 0.75);
-    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25),
-                0 0 0px 5px rgba(255, 255, 255, 0.05) inset,
-                0 0 18px 4px rgba(255, 0, 40, 0.25);
-
-    &:before {
-        box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25);
-    }
-}
-
-.game_playerHUD-avatar:after {
-    content: "";
-    position: absolute;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    left: 5px;
-    top: 5px;
-    box-shadow: 2.5px 2.5px 2.5px 0px rgba(0, 0, 0, 0.5) inset;
-}
-
-.game_playerHUD-avatar img {
-    width: 100%;
-    height: 100%;
+    @extend %avatar-red;
 }
 
 /* DECK HOLDERS --------------*/
@@ -1658,4 +1703,111 @@ h1 {
     & .card-blue:hover {
         @include transform("scale(1)");
     }
+}
+
+
+/*=======================*/
+/* USER SETTINGS SCREEN
+/*=======================*/
+#screen_userSettings {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.userSettings_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+}
+
+.userSettings_header-countWon,
+.userSettings_header-countLost,
+.userSettings_header-countDraw {
+    @extend .row;
+    margin-top: 1em;
+}
+
+.userSettings_header-countWon-label,
+.userSettings_header-countLost-label,
+.userSettings_header-countDraw-label {
+    @extend .col_9;
+    text-transform: none;
+}
+
+.userSettings_header-countWon-count,
+.userSettings_header-countLost-count,
+.userSettings_header-countDraw-count {
+    @extend .col_3, .weight-medium;
+    text-align: right;
+}
+
+.userSettings_header-avatar {
+    @extend %avatar;
+    position: relative;
+    height: 200px;
+    width: 200px;
+
+    &:hover {
+        @extend %avatar-blue;
+    }
+
+    &-img {
+        @extend %avatar-img;
+    }
+}
+
+/* CONTENT --------------*/
+.userSettings_content {
+    @extend %content
+}
+
+.userSettings_content-save, .userSettings_content-load {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.userSettings_content-load {
+    background: transparentize($color_blue, 0.5);
+}
+
+.userSettings_content-settings {
+    @extend %options;
+}
+
+.userSettings_content-settings-setting {
+    @extend %options-option;
+
+    &.setting-difficulty {
+        @extend %options-option-list;
+    }
+}
+
+.userSettings_content-settings-setting-label {
+    @extend %options-option-label;
+}
+
+.userSettings_content-settings-setting-toggle {
+    @extend %options-option-toggle;
+}
+
+.userSettings_content-settings-setting-select {
+    @extend %options-option-select;
+}
+
+.userSettings_content-settings-setting-input {
+    @extend %options-option-input;
 }

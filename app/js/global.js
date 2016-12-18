@@ -31,7 +31,11 @@ define([
         }
     }
 
-    var appName = "xvthTriad";
+    var appInfo = {
+        version   : "0.0.1",
+        name      : "xvthTriad",
+        extension : "xvtsave"
+    };
     var dom     = $("#app");
     var assets  = new AssetStore();
     var events  = _.clone(Backbone.Events);
@@ -53,11 +57,14 @@ define([
 
         fadeIn,
         fadeOut,
-        getNodeIndex
+        getNodeIndex,
+        getLocalStorage,
+
+        getBase64Image
     };
 
     var _$ = window._$ = {
-        appName,
+        appInfo,
         dom,
         ui,
         state,
@@ -67,8 +74,8 @@ define([
     };
 
     var saveSettings   = {
-        prefix        : appName + ":save//",
-        extension     : "xvtsave",
+        prefix        : appInfo.name + ":save//",
+        extension     : appInfo.extension,
         charOffset    : 1,
         charSeparator : "x"
     };
@@ -173,6 +180,20 @@ define([
         return Array.from($(element)[0].parentNode.children).indexOf($(element)[0]);
     }
 
+    function getBase64Image (url, callback = _.noop) {
+        return fetch(url).then(response => response.blob()).then(blob => {
+            return new Promise((resolve, reject) => {
+                var reader = new FileReader();
+                reader.onloadend = () => {
+                    callback(reader.result);
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        });
+    }
+
     /* GAME */
     function getUID (length = 8, usedList = {}) {
         var hex    = "0123456789ABCDEF";
@@ -268,14 +289,15 @@ define([
     // SAVE/LOAD MANAGEMENT
     //===============================
     function saveData () {
-        var data   = _.omit(_$.state.user.attributes, "album");
-        data.album = _.map(_$.state.user.attributes.album.models, "attributes");
+        var data     = _.omit(_$.state.user.attributes, "album");
+        data.album   = _.map(_$.state.user.attributes.album.models, "attributes");
+        data.version = _$.version;
 
-        _setLocalStorage(_$.appName, _encodeSaveData(data));
+        setLocalStorage(_$.appInfo.name, _encodeSaveData(data));
     }
 
     function loadData (data) {
-        data = data || _getLocalStorage(_$.appName);
+        data = data || getLocalStorage(_$.appInfo.name);
 
         if (!data) {
             console.error("LoadData: No data");
@@ -290,19 +312,20 @@ define([
         _$.state.user.get("album").reset(JSONdata.album);
     }
 
-    function importSave (saveFile) {
+    function importSave (saveFile, callback = _.noop) {
         var blob = URL.createObjectURL(saveFile);
 
         fetch(blob).then(function (response) {
             return response.text();
         }).then(function (data) {
-            _$.loadData(data);
+            _$.utils.loadData(data);
+            callback(data);
             return data;
         });
     }
 
     function exportSave (fileName) {
-        var data = _getLocalStorage(_$.appName);
+        var data = getLocalStorage(_$.appInfo.name);
 
         if (!data) {
             console.error("ExportSave: No data");
@@ -316,7 +339,7 @@ define([
         ).replace(/[^\d+-]/g, "");
 
         if (!fileName) {
-            fileName = _$.appName + "_" + saveTime + "." + saveSettings.extension;
+            fileName = _$.appInfo.name + "_" + saveTime + "." + saveSettings.extension;
         }
 
         if (typeof data === "object") {
@@ -362,6 +385,6 @@ define([
     //===============================
     // LOCAL STORAGE
     //===============================
-    function _setLocalStorage (key, value) { window.localStorage.setItem(key, JSON.stringify(value)); }
-    function _getLocalStorage (key)        { return JSON.parse(window.localStorage.getItem(key)); }
+    function setLocalStorage (key, value) { window.localStorage.setItem(key, JSON.stringify(value)); }
+    function getLocalStorage (key)        { return JSON.parse(window.localStorage.getItem(key)); }
 });

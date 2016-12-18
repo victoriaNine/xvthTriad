@@ -1,4 +1,7 @@
-define(["underscore", "global"], function assetLoader (_, _$) {
+define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_, _$) {
+    require("es6-promise").polyfill();
+    require("fetch");
+
     var events = _$.events;
     var assets = _$.assets;
 

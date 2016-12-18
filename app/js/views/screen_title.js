@@ -2,13 +2,13 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "models/model_user",
-    "views/screen",
-    "views/screen_rulesSelect",
-    "text!templates/templ_title.html",
     "global",
+    "models/model_user",
+    "text!templates/templ_title.html",
     "tweenMax"
-], function Screen_Title ($, _, Backbone, Model_User, Screen, Screen_RulesSelect, Templ_Title, _$) {
+], function Screen_Title ($, _, Backbone, _$, Model_User, Templ_Title) {
+    var Screen = require("views/screen");
+
     return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
@@ -39,8 +39,15 @@ define([
 
         if (options.setup) {
             _$.state.user = new Model_User();
-            _$.utils.addDomObserver(this.$el, this.playIntro.bind(this), true);
-        } else if (options.fullIntro) {
+
+            if (_$.utils.getLocalStorage(_$.appInfo.name) && !options.resetUser) {
+                _$.utils.loadData();
+            } else {
+                _$.state.user.setup();
+            }
+        }
+
+        if (options.fullIntro) {
             _$.utils.addDomObserver(this.$el, this.playIntro.bind(this), true);
         } else {
             _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
@@ -64,6 +71,7 @@ define([
         var logoTl   = new TimelineMax();
 
         this.introTL.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });
+        this.introTL.add(_$.ui.footer.toggleLogo("hide"), 0);
         this.introTL.set(_.map(logoPaths, "path"), { attr: { fill: "rgba(255, 255, 255, 0)", stroke: "rgba(255, 255, 255, 0)", strokeWidth: 0 } }, 0);
         this.introTL.to(_.map(logoPaths, "path"), 2, { attr: { stroke: "rgba(255, 255, 255, 1)" } }, 1);
         this.introTL.add(logoTl, 1);
@@ -122,7 +130,7 @@ define([
     function transitionOut (nextScreen) {
         _$.events.trigger("stopUserEvents");
         
-        if (this.introTL.time() !== this.introTL.duration()) {
+        if (this.introTL && this.introTL.time() !== this.introTL.duration()) {
             this.introTL.progress(1);
         }
 
@@ -136,13 +144,18 @@ define([
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {
-            if (nextScreen === "rulesSelect") {
-                _$.utils.addDomObserver(this.$el, () => {
-                    _$.events.trigger("startUserEvents");
-                    _$.ui.screen = new Screen_RulesSelect();
-                }, true, "remove");
-                this.remove();
-            }
+            _$.utils.addDomObserver(this.$el, () => {
+                _$.events.trigger("startUserEvents");
+
+                if (nextScreen === "rulesSelect") {
+                    var Screen_RulesSelect = require("views/screen_rulesSelect");
+                    _$.ui.screen           = new Screen_RulesSelect();
+                } else if (nextScreen === "userSettings") {
+                    var Screen_UserSettings = require("views/screen_userSettings");
+                    _$.ui.screen            = new Screen_UserSettings();
+                }
+            }, true, "remove");
+            this.remove();
         }
     }
 });
