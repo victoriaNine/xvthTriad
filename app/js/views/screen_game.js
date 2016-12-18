@@ -47,11 +47,11 @@ define([
     function initialize (options) {
         var that        = this;
         _$.state.inGame = true;
-        _$.state.game   = new Model_Game({}, options);
+        _$.state.game   = new Model_Game({ difficulty: _$.state.user.get("difficulty") }, options);
 
         this.players = _$.state.game.get("players");
         this.$el.html(this.template({
-            difficultyLevel : _$.state.game.get("level"),
+            difficultyLevel : _$.state.game.get("difficulty"),
             userName        : this.players.user.get("name"),
             userPoints      : this.players.user.get("points"),
             userAvatar      : this.players.user.get("avatar"),
@@ -493,10 +493,10 @@ define([
 
         function onTransitionComplete () {
             _$.utils.addDomObserver(this.$el, () => {
-                var Screen_Title = require("views/screen_title");
-
                 _$.events.trigger("startUserEvents");
-                _$.ui.screen = new Screen_Title();
+
+                var Screen_Title = require("views/screen_title");
+                _$.ui.screen     = new Screen_Title();
             }, true, "remove");
             this.remove();
         }
