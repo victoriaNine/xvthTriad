@@ -28,6 +28,7 @@ require.config({
         jqueryNearest      : "libs/jquery-nearest/src/jquery.nearest",
         "es6-promise"      : "libs/es6-promise/es6-promise",
         "fetch"            : "libs/fetch/fetch",
+        aggregation        : "libs/aggregation/src/aggregation-es6",
 
         global            : "global"
     },
@@ -56,10 +57,14 @@ require([
     "views/screen_userSettings",
     "views/screen_overlayAbout",
     "views/screen_overlayMenu",
-    "jqueryNearest"
+    "jqueryNearest",
+    "aggregation"
 ], function ($, _, AudioEngine, canvasWebGL, assetLoader, loaderImgUI, loaderImgAvatars, loaderAudio, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
     var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudio];
+
+    TweenMax.set(_$.dom, { opacity : 0 });
+    _$.audio.audioEngine = new AudioEngine({ aliases: _$.audio.aliases });
 
     _$.events.on("all", function (eventName) {
         console.log("event triggered:", eventName);
@@ -77,8 +82,6 @@ require([
         });
     });
 
-    TweenMax.set(_$.dom, { opacity : 0 });
-    _$.state.audioEngine = new AudioEngine();
     assetLoader.init(loaders);
 });
 

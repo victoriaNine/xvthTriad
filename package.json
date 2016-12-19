@@ -32,6 +32,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
+    "aggregation": "^0.9.9",
     "es6-promise": "^4.0.5",
     "whatwg-fetch": "^2.0.1"
   }

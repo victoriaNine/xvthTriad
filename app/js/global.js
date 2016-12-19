@@ -34,6 +34,23 @@ define([
         }
     }
 
+    var aliases = {
+        bgm: {},
+        sfx: {}
+    };
+
+    aliases.bgm = {
+        menus   : "inDreams",
+        inGame  : "starlitWaltz",
+        win     : "daysEndFanfare",
+        postWin : "relaxReflect",
+        lose    : "relaxReflectPensive"
+    };
+
+    aliases.sfx = {
+
+    };
+
     var appInfo = {
         version   : "0.0.1",
         name      : "xvthTriad",
@@ -44,6 +61,9 @@ define([
     var events  = _.clone(Backbone.Events);
     var state   = {};
     var ui      = {};
+    var audio   = {
+        aliases
+    };
     var utils   = {
         getAppSizeRatio,
         getCardList,
@@ -71,6 +91,7 @@ define([
         appInfo,
         dom,
         ui,
+        audio,
         state,
         assets,
         events,

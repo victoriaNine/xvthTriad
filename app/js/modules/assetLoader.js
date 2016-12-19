@@ -83,7 +83,7 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
 
     function _decodeAudio (fileInfo, data) {
         return new Promise(function resolver (resolve, reject) {
-            _$.state.audioEngine.createAudioInstance(fileInfo, data, onDecode, reject);
+            _$.audio.audioEngine.createAudioInstance(fileInfo, data, onDecode, reject);
 
             function onDecode (audioBuffer) {
                 resolve(audioBuffer);

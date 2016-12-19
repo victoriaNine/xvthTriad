@@ -11,7 +11,8 @@
     "gsap": "^1.19.0",
     "jquery-nearest": "^1.4.0",
     "es6-promise": "^4.0.5",
-    "fetch": "^2.0.1"
+    "fetch": "^2.0.1",
+    "aggregation": "^0.9.9"
   },
   "devDependencies": {
     "chai": "^3.5.0",
