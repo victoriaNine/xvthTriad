@@ -12,16 +12,9 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
             }
         },
 
-        initialize,
         setup,
         setAvatarPath
     });
-
-    function initialize () {
-        this.on("change", (model, name) => {
-            console.log(JSON.stringify(this.attributes));
-        });
-    }
 
     function setup (options) {
         var name          = _$.utils.getRandomName();

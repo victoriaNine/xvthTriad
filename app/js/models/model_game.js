@@ -123,13 +123,13 @@ define([
                 cardMaxLevel = 3;
                 break;
             case "medium":
-                info.name    = "CC Jack Computer";
-                info.avatar  = "./assets/img/avatars/computer_jack.jpg";
+                info.name    = "Gentiana";
+                info.avatar  = "./assets/img/avatars/computer_gentiana.jpg";
                 cardMaxLevel = 7;
                 break;
             case "hard":
-                info.name    = "Queen of Cards Computer";
-                info.avatar  = "./assets/img/avatars/computer_queen.jpg";
+                info.name    = "Bahamut";
+                info.avatar  = "./assets/img/avatars/computer_bahamut.jpg";
                 cardMaxLevel = 10;
                 break;
         }

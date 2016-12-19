@@ -1,0 +1,117 @@
+{
+    "name"  : "imgUI",
+    "files" : [
+        {
+            "type" : "img.ui",
+            "name" : "bg.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "bgDepthMap.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "bgPattern.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "bgFlare.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "arrow.png"
+        },
+        {
+            "type" : "svg.ui",
+            "name" : "logo.svg"
+        },
+        {
+            "type" : "svg.ui",
+            "name" : "cardBG.svg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "headerPattern.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "about_bg.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "menu_gladiolus.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "menu_ignis.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "menu_luna.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "menu_noctis.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "menu_prompto.jpg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "board_caseBG.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "board_cornerBL.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "board_cornerBR.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "board_cornerTL.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "board_cornerTR.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "card_back.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_earth.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_fire.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_holy.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_ice.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_poison.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_thunder.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_water.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "elem_wind.png"
+        }
+    ]
+}

@@ -15,8 +15,8 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "mouseenter .menu_element" : function (e) { TweenMax.to($(e.currentTarget).find(".menu_element-bg"), 0.4, { y: -50 }); },
-            "mouseleave .menu_element" : function (e) { TweenMax.to($(e.currentTarget).find(".menu_element-bg"), 0.4, { y: 0, clearProps: "all" }); },
+            "mouseenter .menu_element" : function (e) { TweenMax.to($(e.currentTarget).find(".menu_element-bg"), 0.2, { y: -50 }); },
+            "mouseleave .menu_element" : function (e) { TweenMax.to($(e.currentTarget).find(".menu_element-bg"), 0.2, { y: 0, clearProps: "all" }); },
             "click .menu_soloMode"     : "toSoloMode",
             "click .menu_userSettings" : "toUserSettings"
         },

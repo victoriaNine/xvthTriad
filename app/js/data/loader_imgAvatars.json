@@ -1,0 +1,49 @@
+{
+    "name"  : "imgAvatars",
+    "files" : [
+        {
+            "type" : "img.avatars",
+            "name" : "computer_carbuncle.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "computer_gentiana.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "computer_bahamut.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_ardyn.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_gladiolus.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_iedolas.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_ignis.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_luna.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_noctis.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_prompto.jpg"
+        },
+        {
+            "type" : "img.avatars",
+            "name" : "user_regis.jpg"
+        }
+    ]
+}

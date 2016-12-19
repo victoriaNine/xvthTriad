@@ -2,11 +2,8 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
     require("es6-promise").polyfill();
     require("fetch");
 
-    var events = _$.events;
-    var assets = _$.assets;
-
     return {
-        init: init
+        init
     };
 
     function init (loaders) {
@@ -17,20 +14,24 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
         });
 
         Promise.all(promises).then(function (responses) {
-            events.trigger("allLoadersComplete");
+            _$.events.trigger("allLoadersComplete");
         });
     }
 
     function _loadFiles (loader) {
         var promises = [];
         var promise;
-        var url;
-        var type;
-        var name;
 
         _.each(loader.files, function (fileInfo) {
+            let type = fileInfo.type.slice(0, fileInfo.type.indexOf("."));
+            let url;
+            let name;
+
+            if (type === "audio" && !fileInfo.name.match(".ogg|.mp3|.wav")) {
+                fileInfo.name += Modernizr.audio.ogg ? ".ogg" : Modernizr.audio.mp3 ? ".mp3" : ".wav";
+            }
+
             url  = _getFilePath(fileInfo.type) + fileInfo.name;
-            type = fileInfo.type.slice(0, fileInfo.type.indexOf("."));
             name = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
 
             if (type === "img") {
@@ -49,7 +50,7 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
                 promise = fetch(url).then(function (response) {
                     switch (type) {
                         case "audio":
-                            return response.buffer();
+                            return response.arrayBuffer().then(_decodeAudio.bind(null, fileInfo));
                         case "data":
                             return response.json();
                         case "text":
@@ -68,7 +69,7 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
 
         return new Promise(function resolver (resolve, reject) {
             Promise.all(promises).then(function (responses) {
-                events.trigger("loaderComplete:" + loader.name);
+                _$.events.trigger("loaderComplete:" + loader.name);
                 resolve();
             });
         });
@@ -76,8 +77,18 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
 
     function _onFileLoaded (file, fileInfo) {
         var assetName = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
-        assets.set(fileInfo.type + "." + assetName, file);
-        events.trigger("fileLoaded:" + assetName);
+        _$.assets.set(fileInfo.type + "." + assetName, file);
+        _$.events.trigger("fileLoaded:" + assetName);
+    }
+
+    function _decodeAudio (fileInfo, data) {
+        return new Promise(function resolver (resolve, reject) {
+            _$.state.audioEngine.createAudioInstance(fileInfo, data, onDecode, reject);
+
+            function onDecode (audioBuffer) {
+                resolve(audioBuffer);
+            }
+        });
     }
 
     function _parseSvg (fileInfo, data) {

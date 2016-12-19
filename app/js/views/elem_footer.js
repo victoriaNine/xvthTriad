@@ -46,6 +46,14 @@ define([
 
         var logo = $(_$.assets.get("svg.ui.logo"));
         this.logo.append(logo);
+
+        _$.events.on("mainMenuOpen aboutPageOpen", function () {
+            _$.state.FX_LEVEL--;
+        });
+
+        _$.events.on("mainMenuClosed aboutPageClosed", function () {
+            _$.state.FX_LEVEL++;
+        });
     }
 
     function toggleMainMenu (nextScreen) {

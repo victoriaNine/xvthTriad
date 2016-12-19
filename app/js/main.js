@@ -40,9 +40,12 @@ require.config({
 require([
     "jquery",
     "underscore",
+    "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
-    "json!data/loader_img.json",
+    "json!data/loader_imgUI.json",
+    "json!data/loader_imgAvatars.json",
+    "json!data/loader_audio.json",
     "global",
     "views/elem_footer",
     "views/screen",
@@ -54,9 +57,9 @@ require([
     "views/screen_overlayAbout",
     "views/screen_overlayMenu",
     "jqueryNearest"
-], function ($, _, canvasWebGL, assetLoader, loaderImg, _$, Elem_Footer) {
+], function ($, _, AudioEngine, canvasWebGL, assetLoader, loaderImgUI, loaderImgAvatars, loaderAudio, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
-    var loaders      = [loaderImg];
+    var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudio];
 
     _$.events.on("all", function (eventName) {
         console.log("event triggered:", eventName);
@@ -75,6 +78,7 @@ require([
     });
 
     TweenMax.set(_$.dom, { opacity : 0 });
+    _$.state.audioEngine = new AudioEngine();
     assetLoader.init(loaders);
 });
 

@@ -1,0 +1,52 @@
+{
+    "name"  : "audio",
+    "files" : [
+        {
+            "type" : "audio.bgm",
+            "name" : "inDreams",
+            "meta" : {
+                "loop"      : true,
+                "start"     : "0:00:01.512",
+                "end"       : "",
+                "loopStart" : "0:00:01.512",
+                "loopEnd"   : "0:01:36.229"
+            }
+        },
+        {
+            "type" : "audio.bgm",
+            "name" : "starlitWaltz",
+            "meta" : {
+                "loop"      : true,
+                "start"     : "0:00:01.378",
+                "end"       : "",
+                "loopStart" : "0:00:09.818",
+                "loopEnd"   : "0:01:17.329"
+            }
+        },
+        {
+            "type" : "audio.bgm",
+            "name" : "daysEndFanfare",
+            "meta" : {
+                "loop"      : false
+            }
+        },
+        {
+            "type" : "audio.bgm",
+            "name" : "relaxReflect",
+            "meta" : {
+                "loop"      : false,
+                "start"     : "0:00:01.546",
+                "end"       : "",
+                "loopStart" : "0:00:10.400",
+                "loopEnd"   : "0:01:28.045"
+            }
+        },
+        {
+            "type" : "audio.bgm",
+            "name" : "relaxReflectPensive",
+            "meta" : {
+                "loop"      : false
+            }
+        }
+    ]
+}

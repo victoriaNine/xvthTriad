@@ -12,7 +12,10 @@ define([
                 avatars : {}
             };
 
-            this.audio = {};
+            this.audio = {
+                bgm : {},
+                sfx : {}
+            };
         }
 
         set (path, value)                     { return _.set(this, path, value); }
@@ -60,7 +63,8 @@ define([
         getNodeIndex,
         getLocalStorage,
 
-        getBase64Image
+        getBase64Image,
+        timecodeToSecs
     };
 
     var _$ = window._$ = {
@@ -93,6 +97,12 @@ define([
     });
 
     return _$;
+
+    /* AUDIO */
+    function timecodeToSecs (timeCode) {
+        var timeValues = _.map(timeCode.split(":"), parseFloat);
+        return timeValues[0] * 60 * 60 + timeValues[1] * 60 + timeValues[2];
+    }
 
     /* DESIGN */
     function getAppSizeRatio () {

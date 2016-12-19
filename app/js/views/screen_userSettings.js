@@ -57,7 +57,7 @@ define([
     }
 
     function toggleDifficulty (e, init) {
-        var closestValidOption = $(e.target).parent().children(":not(.is--disabled)").eq(0);
+        var closestValidOption = $(e.target).hasClass("is--disabled") ? $(e.target).parent().children(":not(.is--disabled)").eq(0) : $(e.target);
         var index              = _$.utils.getNodeIndex(closestValidOption);
         var selectHeight       = this.$(".setting-difficulty").height();
         var toggle             = this.$(".setting-difficulty .userSettings_content-settings-setting-toggle");
