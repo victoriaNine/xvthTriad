@@ -47,6 +47,9 @@ define([
             }
         }
 
+        _$.audio.audioEngine.setBGM("bgm.menus");
+        _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
+        
         if (options.fullIntro) {
             _$.utils.addDomObserver(this.$el, this.playIntro.bind(this), true);
         } else {

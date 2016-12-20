@@ -79,6 +79,10 @@ require([
             var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
             (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
             return confirmationMessage;                                // Gecko and WebKit
+        }).on("blur", function() {
+            _$.audio.audioEngine.channels.master.fadeOut();
+        }).on("focus", function() {
+            _$.audio.audioEngine.channels.master.fadeIn({ to: 1 });
         });
     });
 

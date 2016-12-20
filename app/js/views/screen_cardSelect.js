@@ -19,7 +19,7 @@ define([
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
             "click .cardSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("rulesSelect"); },
-            "click .cardSelect_content-confirm-choice-yesBtn"    : function () { this.transitionOut("game"); },
+            "click .cardSelect_content-confirm-choice-yesBtn"    : function () { this.transitionOut("game"); _$.audio.audioEngine.stopBGM({ fadeDuration: 1 }); },
             "click .cardSelect_content-confirm-choice-noBtn"     : function () { this.toggleConfirm("hide"); },
             "click .cardSelect_content-nav-prevBtn"              : function () { this.pageChange(-1); },
             "click .cardSelect_content-nav-nextBtn"              : function () { this.pageChange(1); }
@@ -132,12 +132,13 @@ define([
                 _$.events.trigger("startUserEvents");
                 _$.ui.screen = _$.state.rulesSelectScreen.transitionIn();
             } else {
+                var rules = _$.state.rulesSelectScreen.rules;
                 _$.utils.addDomObserver(this.$el, () => {
                     _$.events.trigger("startUserEvents");
 
                     if (nextScreen === "game") {
                         var Screen_Game = require("views/screen_game");
-                        _$.ui.screen = new Screen_Game({ userDeck: this.userDeck, rules: _$.state.rulesSelectScreen.rules });
+                        _$.ui.screen = new Screen_Game({ userDeck: this.userDeck, rules });
                     } else if (nextScreen === "title") {
                         var Screen_Title = require("views/screen_title");
                         _$.ui.screen     = new Screen_Title();
@@ -286,8 +287,8 @@ define([
             this.$(".cardSelect_content-confirm").css({pointerEvents: ""}).slideDown();
             this.$(".cardSelect_content-screenNav").css({pointerEvents: "none"}).slideUp();
         } else if (state === "hide") {
-            this.$(".cardSelect_content-screenNav").css({pointerEvents: ""}).slideDown();
             this.$(".cardSelect_content-confirm").css({pointerEvents: "none"}).slideUp();
+            this.$(".cardSelect_content-screenNav").css({pointerEvents: ""}).slideDown();
         }
     }
 });

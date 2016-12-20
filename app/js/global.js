@@ -34,23 +34,6 @@ define([
         }
     }
 
-    var aliases = {
-        bgm: {},
-        sfx: {}
-    };
-
-    aliases.bgm = {
-        menus   : "inDreams",
-        inGame  : "starlitWaltz",
-        win     : "daysEndFanfare",
-        postWin : "relaxReflect",
-        lose    : "relaxReflectPensive"
-    };
-
-    aliases.sfx = {
-
-    };
-
     var appInfo = {
         version   : "0.0.1",
         name      : "xvthTriad",
@@ -62,7 +45,16 @@ define([
     var state   = {};
     var ui      = {};
     var audio   = {
-        aliases
+        aliases: {
+            bgm: {
+                menus   : "inDreams",
+                game    : "starlitWaltz",
+                win     : "daysEndFanfare",
+                postWin : "relaxReflect",
+                lose    : "relaxReflectPensive"
+            },
+            sfx: {}
+        }
     };
     var utils   = {
         getAppSizeRatio,
@@ -87,6 +79,20 @@ define([
         timecodeToSecs
     };
 
+    var debug = {
+        debugMode : true,
+        log,
+        warn,
+        error
+    };
+
+    var saveSettings   = {
+        prefix        : appInfo.name + ":save//",
+        extension     : appInfo.extension,
+        charOffset    : 1,
+        charSeparator : "x"
+    };
+
     var _$ = window._$ = {
         appInfo,
         dom,
@@ -95,14 +101,8 @@ define([
         state,
         assets,
         events,
-        utils
-    };
-
-    var saveSettings   = {
-        prefix        : appInfo.name + ":save//",
-        extension     : appInfo.extension,
-        charOffset    : 1,
-        charSeparator : "x"
+        utils,
+        debug
     };
 
     $(window).resize(function() {
@@ -118,6 +118,25 @@ define([
     });
 
     return _$;
+
+    /* LOGGING */
+    function log () {
+        if (_$.debug.debugMode) {
+            console.log.apply(this, Array.prototype.slice.call(arguments));
+        }
+    }
+
+    function warn () {
+        if (_$.debug.debugMode) {
+            console.warn.apply(this, Array.prototype.slice.call(arguments));
+        }
+    }
+
+    function error () {
+        if (_$.debug.debugMode) {
+            console.error.apply(this, Array.prototype.slice.call(arguments));
+        }
+    }
 
     /* AUDIO */
     function timecodeToSecs (timeCode) {

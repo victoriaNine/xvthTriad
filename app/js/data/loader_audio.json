@@ -28,13 +28,16 @@
             "name" : "daysEndFanfare",
             "meta" : {
                 "loop"      : false
+            },
+            "events" : {
+                "ended" : "playPostWin"
             }
         },
         {
             "type" : "audio.bgm",
             "name" : "relaxReflect",
             "meta" : {
-                "loop"      : false,
+                "loop"      : true,
                 "start"     : "0:00:01.546",
                 "end"       : "",
                 "loopStart" : "0:00:10.400",

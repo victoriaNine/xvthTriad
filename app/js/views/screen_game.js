@@ -128,6 +128,8 @@ define([
         _$.events.on("endGameCardSelected", this.endGameCardSelected.bind(this));
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
+        _$.audio.audioEngine.setBGM("bgm.game");
+        _$.audio.audioEngine.playBGM();
         this.add();
     }
 
@@ -357,6 +359,29 @@ define([
             this.$(".game_overlay-endGame h1").find("span").text("Draw");
         }
 
+        if (gameResult === "won") {
+            _$.audio.audioEngine.stopBGM({
+                fadeDuration : 0.5,
+                callback     : () => {
+                    _$.audio.audioEngine.setBGM("bgm.win");
+                    _$.audio.audioEngine.playBGM();
+
+                    _$.events.once(_$.audio.audioEngine.getBGM("bgm.win").events.ended, () => {
+                        _$.audio.audioEngine.setBGM("bgm.postWin");
+                        _$.audio.audioEngine.playBGM();
+                    });
+                }
+            });
+        } else if (gameResult === "lost") {
+            _$.audio.audioEngine.stopBGM({
+                fadeDuration : 0.5,
+                callback     : () => {
+                    _$.audio.audioEngine.setBGM("bgm.lose");
+                    _$.audio.audioEngine.playBGM();
+                }
+            });
+        }
+
         if (gameResult === "draw" && _$.state.game.get("rules").suddenDeath) {
             this.$(".game_overlay-endGame-confirmBtn").text("Start next round");
             noCardSelection.call(this);
@@ -482,6 +507,7 @@ define([
 
     function toTitleScreen () {
         _$.events.trigger("stopUserEvents");
+        _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
 
         var tl = new TimelineMax();
         tl.call(() => { this.$(".game_overlay-endGame").removeClass("is--active"); });

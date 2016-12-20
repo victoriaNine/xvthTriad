@@ -125,6 +125,8 @@ define([
         var file = this.$(".setting-import input")[0].files[0];
         _$.utils.importSave(file, () => {
             this.transitionOut("title", { fullIntro: true });
+            TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
+            _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
         });
     }
 
@@ -133,7 +135,9 @@ define([
     }
 
     function resetUser () {
-        this.transitionOut("title", { setup: true, resetUser: true });
+        this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
+        TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
+        _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
     }
 
     function transitionIn () {

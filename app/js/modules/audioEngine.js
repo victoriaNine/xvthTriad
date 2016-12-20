@@ -5,11 +5,21 @@ define(["underscore", "global"], function audioEngine (_, _$) {
     // VOLUME MIXINS
     //===============================
     class VolumeMixins {
-        constructor () {
+        constructor (audioEngine) {
+            this.audioEngine   = audioEngine;
+            this.audioCtx      = this.audioEngine.audioCtx;
+            this.volume        = 1;
+            this.defaultVolume = this.volume;
+            this.gainNode      = this.audioCtx.createGain();
+
             this.fade = {
                 options : null,
                 tween   : null
             };
+        }
+
+        resetVolume () {
+            this.setVolume(this.defaultVolume);
         }
 
         setVolume (gain) {
@@ -19,12 +29,13 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
         rampToVolume (options = {}) {
             options = _.defaults(options, {
-                from     : this.volume,
-                to       : this.volume,
-                type     : "ramp",
-                duration : 3,
-                delay    : 0,
-                ease     : (options.type === "fadeIn") ? Circ.easeIn : (options.type === "fadeOut") ? Circ.easeIn : Power2.easeOut
+                from      : this.volume,
+                to        : this.volume,
+                type      : "ramp",
+                duration  : 2,
+                delay     : 0,
+                ease      : (options.type === "fadeIn") ? Circ.easeIn : (options.type === "fadeOut") ? Circ.easeIn : Power2.easeOut,
+                clearGain : false
             });
 
             this.fade.options = options;
@@ -36,6 +47,10 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                     this.gainNode.gain.value = this.volume;
                 },
                 onComplete : () => {
+                    if (options.clearGain) {
+                        this.setVolume(this.defaultVolume);
+                    }
+
                     if (options.callback) {
                         if (_.isString(options.callback)) {
                             // Event
@@ -69,14 +84,9 @@ define(["underscore", "global"], function audioEngine (_, _$) {
     // CHANNEL CLASS
     //===============================
     class Channel extends VolumeMixins {
-        constructor (audioEngine, audioCtx, channelName) {
-            super();
-
-            this.audioEngine = audioEngine;
-            this.audioCtx    = this.audioEngine.audioCtx;
-            this.name        = channelName;
-            this.volume      = 1,
-            this.gainNode    = this.audioCtx.createGain();
+        constructor (audioEngine, channelName) {
+            super(audioEngine);
+            this.name = channelName;
         }
     }
 
@@ -86,18 +96,17 @@ define(["underscore", "global"], function audioEngine (_, _$) {
     //===============================
     class AudioInstance extends VolumeMixins {
         constructor (audioEngine, fileInfo, audioBuffer) {
-            super();
+            super(audioEngine);
+            this.name          = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
+            this.meta          = fileInfo.meta;
+            this.events        = fileInfo.events || {};
+            this.buffer        = audioBuffer;
+            this.duration      = this.buffer.duration;
+            this.volume        = this.meta.volume || 1;
+            this.defaultVolume = this.volume;
 
-            this.audioEngine = audioEngine;
-            this.audioCtx    = this.audioEngine.audioCtx;
-            this.name        = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
-            this.meta        = fileInfo.meta;
-            this.buffer      = audioBuffer;
-            this.duration    = this.buffer.duration;
-            this.volume      = this.meta.volume || 1;
-
-            this.source      = null;
-            this.gainNode    = null;
+            this.source        = null;
+            this.gainNode      = null;
         }
 
         createSource () {
@@ -173,12 +182,16 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             }
 
             this.source.addEventListener("ended", (e) => {
-                if (!this.isPaused) {
-                    this.endTime   = this.audioCtx.currentTime;
-                    this.endedAt   = (this.stopTime - this.startTime) + this.startedAt;
-                    this.hasEnded  = true;
-                    this.isPlaying = false;
+                this.endTime   = this.audioCtx.currentTime;
+                this.endedAt   = (this.endTime - this.startTime) + this.startedAt;
+                this.hasEnded  = true;
+                this.isPlaying = false;
+
+                if (this.events.ended) {
+                    _$.events.trigger(this.events.ended, this);
                 }
+
+                this.createSource(); // Regenerate a source
             });
         }
 
@@ -207,6 +220,11 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         createSource () {
             super.createSource();
             this.gainNode.connect(this.audioEngine.channels.sfx.gainNode);
+
+            this.source.addEventListener("ended", (e) => {
+                _$.events.trigger(this.events.ended, this);
+                this.createSource(); // Regenerate a source
+            });
         }
     }
 
@@ -256,7 +274,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         }
 
         createChannel (channelName) {
-            var channel = new Channel(this, this.audioCtx, channelName);
+            var channel = new Channel(this, channelName);
 
             if (channel.name === "master") {
                 channel.gainNode.connect(this.audioCtx.destination);
@@ -302,16 +320,20 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.triggerMute("toggle", channelName);
         }
 
-        getInstanceByAlias (alias) {
+        getInstanceAlias (alias) {
             // Returns the original string if no corresponding alias was found
             return _.get(this.aliases, alias) || alias;
         }
 
+        getBGM (name) {
+            return this.BGMs[this.getInstanceAlias(name)];
+        }
+
         setBGM (name) {
             if (name !== null) {
-                this.currentBGM = this.BGMs[this.getInstanceByAlias(name)];
+                this.currentBGM = this.getBGM(name);
                 if (!this.currentBGM) {
-                    console.error("BGM", name, "not found.");
+                    _$.debug.error("BGM", name, "not found.");
                     return;
                 }
             } else {
@@ -319,23 +341,25 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             }
         }
 
-        playBGM (name, options = {}) {
-            var bgm = name ? this.BGMs[this.getInstanceByAlias(name)] : this.currentBGM;
+        playBGM (options = {}) {
+            var bgm = options.name ? this.getBGM(options.name) : this.currentBGM;
 
             if (!bgm) {
-                console.error("BGM", name, "not found.");
+                _$.debug.error("BGM", options.name, "not found.");
                 return;
             } else if (bgm.isPlaying) {
-                console.warn("BGM", bgm.name, "is already playing. Moving playhead to designated start point.");
+                if (options.seeking) {
+                    bgm.source.addEventListener("ended", (e) => {
+                        if (bgm.fade.tween) {
+                            bgm.fade.tween.kill();
+                        }
+                        this.playBGM(options);
+                    });
 
-                bgm.source.addEventListener("ended", (e) => {
-                    if (bgm.fade.tween) {
-                        bgm.fade.tween.kill();
-                    }
-                    this.playBGM(name, options);
-                });
-
-                this.stopBGM(name, _.omit(options, "fadeDuration"));
+                    this.stopBGM(name, _.omit(options, "fadeDuration"));
+                } else {
+                    _$.debug.warn("BGM", bgm.name, "is already playing.");
+                }
                 return;
             } else if (bgm.hasEnded) {
                 // If a playback had previously ended, reinitialize the values
@@ -365,7 +389,8 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                     to       : options.fadeTo,
                     duration : options.fadeDuration,
                     delay    : delay,
-                    ease     : options.fadeEase
+                    ease     : options.fadeEase,
+                    callback : options.callback
                 }).tween.eventCallback("onStart", proceed.bind(this));
             } else {
                 proceed.call(this);
@@ -380,14 +405,18 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             }
         }
 
-        stopBGM (name, options = {}) {
-            var bgm = name ? this.BGMs[this.getInstanceByAlias(name)] : this.currentBGM;
+        seekToBGM (options = {}) {
+            this.playBGM(_.extend(options, { seeking: true }));
+        }
+
+        stopBGM (options = {}) {
+            var bgm = options.name ? this.getBGM(options.name) : this.currentBGM;
 
             if (!bgm) {
-                console.error("BGM", name, "not found.");
+                _$.debug.error("BGM", options.name, "not found.");
                 return;
             } else if (bgm.getState() === "idle" || bgm.getState() === "ended") {
-                console.warn("BGM", bgm.name, "cannot be stopped, it hasn't started yet.");
+                _$.debug.warn("BGM", bgm.name, "cannot be stopped, it hasn't started yet.");
                 return;
             }
 
@@ -403,10 +432,12 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 }
 
                 bgm.fadeOut({
-                    from     : options.fadeFrom,
-                    duration : options.fadeDuration,
-                    delay    : delay,
-                    ease     : options.fadeEase
+                    from      : options.fadeFrom,
+                    duration  : options.fadeDuration,
+                    delay     : delay,
+                    ease      : options.fadeEase,
+                    callback  : options.callback,
+                    clearGain : _.isNil(options.clearGain) ? true : options.clearGain
                 }).tween.eventCallback("onComplete", proceed.bind(this));
             } else {
                 proceed.call(this);
@@ -414,15 +445,14 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             function proceed () {
                 bgm.source.stop(endTime);
-                bgm.createSource(); // Regenerate a source for the BGM
             }
         }
 
-        triggerPauseBGM (state, name, options = {}) {
-            var bgm = name ? this.BGMs[this.getInstanceByAlias(name)] : this.currentBGM;
+        triggerPauseBGM (state, options = {}) {
+            var bgm = options.name ? this.getBGM(options.name) : this.currentBGM;
 
             if (!bgm) {
-                console.error("BGM", name, "not found.");
+                _$.debug.error("BGM", options.name, "not found.");
                 return;
             }
 
@@ -435,11 +465,11 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             }
 
             if (bgm.getState() === "idle" || bgm.getState() === "ended") {
-                console.warn("BGM", bgm.name, "cannot be paused or resumed, it hasn't started yet. Starting playback.");
-                this.playBGM(name, options);
+                _$.debug.warn("BGM", bgm.name, "cannot be paused or resumed, it hasn't started yet. Starting playback.");
+                this.playBGM(options);
                 return;
             } else if (state && bgm.getState() === "paused") {
-                console.warn("BGM", bgm.name, "is already paused.");
+                _$.debug.warn("BGM", bgm.name, "is already paused.");
                 return;
             }
 
@@ -456,7 +486,8 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                         from     : options.fadeFrom,
                         duration : options.fadeDuration,
                         delay    : delay,
-                        ease     : options.fadeEase
+                        ease     : options.fadeEase,
+                        callback : options.callback
                     }).tween.eventCallback("onComplete", proceed.bind(this));
                 } else {
                     proceed.call(this);
@@ -473,31 +504,30 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 bgm.isPlaying = false;
 
                 bgm.source.stop(pauseTime);
-                bgm.createSource(); // Regenerate a source for the BGM
             }
         }
 
-        pauseBGM (name, options = {}) {
-            this.triggerPauseBGM(true, name, options);
+        pauseBGM (options = {}) {
+            this.triggerPauseBGM(true, options);
         }
 
-        resumeBGM (name, options = {}) {
-            this.triggerPauseBGM(false, name, options);
+        resumeBGM (options = {}) {
+            this.triggerPauseBGM(false, options);
         }
 
-        togglePauseBGM (name, options = {}) {
-            this.triggerPauseBGM("toggle", name, options);
+        togglePauseBGM (options = {}) {
+            this.triggerPauseBGM("toggle", options);
         }
 
-        crossfadeBGM (from, to, options = {}) {
-            var fromBGM = this.BGMs[from];
-            var toBGM   = this.BGMs[to];
+        crossfadeBGM (options = {}) {
+            var fromBGM = options.from ? this.getBGM(options.from) : this.currentBGM;
+            var toBGM   = this.getBGM(options.to);
 
             if (!fromBGM) {
-                console.error("BGM", from, "not found.");
+                _$.debug.error("BGM", options.from, "not found.");
                 return;
             } else if (!toBGM) {
-                console.error("BGM", to, "not found.");
+                _$.debug.error("BGM", options.to, "not found.");
                 return;
             }
 
@@ -532,10 +562,14 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             return this.crossfade;
         }
 
-        playSFX (name, options = {}) {
-            var sfx = this.SFXs[name];
+        getSFX (name) {
+            return this.SFXs[this.getInstanceAlias(name)];
+        }
+
+        playSFX (options = {}) {
+            var sfx = this.getSFX(options.name);
             if (!sfx) {
-                console.error("SFX", name, "not found.");
+                _$.debug.error("SFX", options.name, "not found.");
                 return;
             }
 

@@ -26,7 +26,10 @@ define([
             "click .rulesSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("title"); },
             "click .rulesSelect_content-screenNav-choice-nextBtn" : "toNextStep",
             "click .rulesSelect_content-confirm-choice-yesBtn"    : "toNextStep",
-            "click .rulesSelect_content-confirm-choice-noBtn"     : function () { this.toggleConfirm("hide"); },
+            "click .rulesSelect_content-confirm-choice-noBtn"     : function () { 
+                this.toggleConfirm("hide");
+                this.toggleRule("random", false);
+            },
             "mouseenter .rulesSelect_content-rules-rule:not(.rule-trade)" : function (e) {
                 this.showHelp(e.currentTarget.className.match(RULES)[0]);
             },
@@ -152,6 +155,7 @@ define([
 
         if (this.rules.random) {
             this.transitionOut("game");
+            _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
         } else {
             this.transitionOut("cardSelect");
         }
@@ -230,8 +234,8 @@ define([
             this.$(".rulesSelect_content-confirm").css({pointerEvents: ""}).slideDown();
             this.$(".rulesSelect_content-screenNav").css({pointerEvents: "none"}).slideUp();
         } else if (state === "hide") {
-            this.$(".rulesSelect_content-confirm").css({pointerEvents: ""}).slideUp();
-            this.$(".rulesSelect_content-screenNav").css({pointerEvents: "none"}).slideDown();
+            this.$(".rulesSelect_content-confirm").css({pointerEvents: "none"}).slideUp();
+            this.$(".rulesSelect_content-screenNav").css({pointerEvents: ""}).slideDown();
         }
     }
 
