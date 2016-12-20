@@ -41,6 +41,12 @@ define([
             },
             "mouseleave .rule-trade li" : function (e) {
                 this.showHelp("");
+            },
+            "mouseenter .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element" : function () {
+                _$.audio.audioEngine.playSFX("uiHover");
+            },
+            "click .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element,.rulesSelect_content-rules-rule" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
             }
         },
 
@@ -152,10 +158,12 @@ define([
         rules.trade    = tradeRule;
 
         this.rules = rules;
+        console.log(this.rules);
 
         if (this.rules.random) {
             this.transitionOut("game");
             _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+            _$.audio.audioEngine.playSFX("titleStart");
         } else {
             this.transitionOut("cardSelect");
         }

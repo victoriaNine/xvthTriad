@@ -110,6 +110,7 @@ define([
 
         $(window).on("mousemove", dragCard);
         $(window).on("mouseup", dragCardStop);
+        _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
             var deltaX = e.pageX - prevX;
@@ -127,6 +128,7 @@ define([
         function dragCardStop (e) {
             $(window).off("mousemove", dragCard);
             $(window).off("mouseup", dragCardStop);
+            _$.audio.audioEngine.playSFX("cardDrop");
 
             var scaledPageX = e.pageX * window.devicePixelRatio;
             var scaledPageY = e.pageY * window.devicePixelRatio;

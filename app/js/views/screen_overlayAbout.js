@@ -15,7 +15,13 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "click .about_prevBtn" : "close"
+            "click .about_prevBtn" : "close",
+            "click .about_social-element,.about_prevBtn,.about_credits" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "mouseenter .about_social-element,.about_prevBtn,.about_credits" : function () {
+                _$.audio.audioEngine.playSFX("uiHover");
+            }
         },
 
         initialize,

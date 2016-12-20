@@ -1,5 +1,5 @@
 {
-    "name"  : "audio",
+    "name"  : "audioBGM",
     "files" : [
         {
             "type" : "audio.bgm",
@@ -24,11 +24,9 @@
             }
         },
         {
-            "type" : "audio.bgm",
-            "name" : "daysEndFanfare",
-            "meta" : {
-                "loop"      : false
-            },
+            "type"   : "audio.bgm",
+            "name"   : "daysEndFanfare",
+            "meta"   : {},
             "events" : {
                 "ended" : "playPostWin"
             }
@@ -45,11 +43,10 @@
             }
         },
         {
-            "type" : "audio.bgm",
-            "name" : "relaxReflectPensive",
-            "meta" : {
-                "loop"      : false
-            }
+            "type"   : "audio.bgm",
+            "name"   : "relaxReflectPensive",
+            "meta"   : {},
+            "events" : {}
         }
     ]
 }

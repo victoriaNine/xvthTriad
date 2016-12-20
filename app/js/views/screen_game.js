@@ -19,7 +19,13 @@ define([
         events           : {
             "mouseenter #cardsContainer .card-blue:not(.is--played)" : function (e) { TweenMax.set(e.currentTarget, { scale: "1.1" }); },
             "mouseleave #cardsContainer .card-blue"                  : function (e) { TweenMax.set(e.currentTarget, { scale: "1" }); },
-            "click .game_overlay-endGame-confirmBtn" : function ()  { this.postGameAction(); }
+            "click .game_overlay-endGame-confirmBtn" : function ()  {
+                this.postGameAction();
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "mouseenter .game_overlay-endGame-confirmBtn" : function ()  {
+                _$.audio.audioEngine.playSFX("uiHover");
+            }
         },
 
         initialize,
@@ -165,12 +171,17 @@ define([
         tl.from(this.$(".game_playerHUD-score"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, "-=.2");
         tl.from(this.$(".game_deck"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, "-=.2");
         tl.addLabel("enterCards");
-        tl.staggerFrom(blueCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop" }, 0.1, "enterCards");
-        tl.staggerFrom(redCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop" }, 0.1, "enterCards");
+        tl.staggerFrom(blueCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
+        tl.staggerFrom(redCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
         tl.call(() => {
             _$.events.trigger("startUserEvents");
             this.showTurnOverlay();
+            _$.audio.audioEngine.playSFX("gameStart");
         }, [], null, "+=.2");
+
+        function playSFX () {
+            _$.audio.audioEngine.playSFX("cardSort");
+        }
 
         return this;
     }
@@ -218,6 +229,7 @@ define([
 
         $(window).on("mousemove", dragCard);
         $(window).on("mouseup", dragCardStop);
+        _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
             var deltaX = e.pageX - prevX;
@@ -235,6 +247,7 @@ define([
         function dragCardStop (e) {
             $(window).off("mousemove", dragCard);
             $(window).off("mouseup", dragCardStop);
+            _$.audio.audioEngine.playSFX("cardDrop");
 
             var scaledPageX = e.pageX * window.devicePixelRatio;
             var scaledPageY = e.pageY * window.devicePixelRatio;
@@ -320,6 +333,7 @@ define([
             }
 
             this.showTurnOverlay();
+            _$.audio.audioEngine.playSFX("titleLogo");
         }, 500);
     }
 
@@ -596,6 +610,7 @@ define([
                 subTL.call(() => {
                     this.$(".game_overlay-endGame").append(cardsArray[i].$el);
                     TweenMax.set(cardsArray[i].$el, { clearProps: "all" });
+                    _$.audio.audioEngine.playSFX("gameGain");
 
                     if (i === 0) {
                         TweenMax.from(cardsArray[i].$el, 0.4, { opacity: 0, height: 0 });

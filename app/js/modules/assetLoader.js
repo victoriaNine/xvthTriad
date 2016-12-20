@@ -42,7 +42,7 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
                     img.src     = url;
 
                     function onLoad () {
-                        _onFileLoaded(img, fileInfo);
+                        _onFileLoaded(img, fileInfo, loader.name);
                         resolve(img);
                     }
                 });
@@ -59,7 +59,7 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
                             return (response.text()).then(_parseSvg.bind(null, fileInfo));
                     }
                 }).then(function (data) {
-                    _onFileLoaded(data, fileInfo);
+                    _onFileLoaded(data, fileInfo, loader.name);
                     return data;
                 });
             }
@@ -75,10 +75,10 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
         });
     }
 
-    function _onFileLoaded (file, fileInfo) {
+    function _onFileLoaded (file, fileInfo, loaderName) {
         var assetName = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
         _$.assets.set(fileInfo.type + "." + assetName, file);
-        _$.events.trigger("fileLoaded:" + assetName);
+        _$.events.trigger("fileLoaded:" + loaderName + ":" + assetName);
     }
 
     function _decodeAudio (fileInfo, data) {

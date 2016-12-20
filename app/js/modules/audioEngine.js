@@ -84,9 +84,12 @@ define(["underscore", "global"], function audioEngine (_, _$) {
     // CHANNEL CLASS
     //===============================
     class Channel extends VolumeMixins {
-        constructor (audioEngine, channelName) {
+        constructor (audioEngine, channelName, volume) {
             super(audioEngine);
             this.name = channelName;
+            this.volume        = volume || 1;
+            this.defaultVolume = this.volume;
+            this.resetVolume();
         }
     }
 
@@ -98,7 +101,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         constructor (audioEngine, fileInfo, audioBuffer) {
             super(audioEngine);
             this.name          = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
-            this.meta          = fileInfo.meta;
+            this.meta          = fileInfo.meta || {};
             this.events        = fileInfo.events || {};
             this.buffer        = audioBuffer;
             this.duration      = this.buffer.duration;
@@ -113,6 +116,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.gainNode      = this.audioCtx.createGain();
             this.source        = this.audioCtx.createBufferSource();
             this.source.buffer = this.buffer;
+            this.resetVolume();
 
             this.source.connect(this.gainNode);
         }
@@ -215,6 +219,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
     class SFX extends AudioInstance {
         constructor (audioEngine, fileInfo, audioBuffer) {
             super(audioEngine, fileInfo, audioBuffer);
+            this.createSource();
         }
 
         createSource () {
@@ -222,7 +227,9 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.gainNode.connect(this.audioEngine.channels.sfx.gainNode);
 
             this.source.addEventListener("ended", (e) => {
-                _$.events.trigger(this.events.ended, this);
+                if (this.events.ended) {
+                    _$.events.trigger(this.events.ended, this);
+                }
                 this.createSource(); // Regenerate a source
             });
         }
@@ -249,7 +256,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             this.createChannel("master");
             this.createChannel("bgm");
-            this.createChannel("sfx");
+            this.createChannel("sfx", 0.5);
         }
 
         decode (arrayBuffer, onDecode, onError) {
@@ -273,8 +280,8 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             }
         }
 
-        createChannel (channelName) {
-            var channel = new Channel(this, channelName);
+        createChannel (channelName, volume) {
+            var channel = new Channel(this, channelName, volume);
 
             if (channel.name === "master") {
                 channel.gainNode.connect(this.audioCtx.destination);
@@ -566,17 +573,20 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             return this.SFXs[this.getInstanceAlias(name)];
         }
 
-        playSFX (options = {}) {
-            var sfx = this.getSFX(options.name);
+        playSFX (name, options = {}) {
+            var sfx = this.getSFX(name);
             if (!sfx) {
-                _$.debug.error("SFX", options.name, "not found.");
+                _$.debug.error("SFX", name, "not found.");
                 return;
             }
 
             var delay     = options.delay || 0;
             var startTime = this.audioCtx.currentTime + delay;
-
+            
             sfx.createSource(); // Regenerate a source for the SFX
+            if (options.volume) {
+                sfx.setVolume(options.volume);
+            }
             sfx.source.start(startTime);
         }
     }

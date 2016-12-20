@@ -19,7 +19,13 @@ define([
             "click .footer_logo"          : "toggleFooter",
             "click .footer_menu-homeBtn"  : "toTitleScreen",
             "click .footer_menu-menuBtn"  : function (e) { this.toggleMainMenu(); },
-            "click .footer_menu-aboutBtn" : function (e) { this.toggleAboutPage(); }
+            "click .footer_menu-aboutBtn" : function (e) { this.toggleAboutPage(); },
+            "click .footer_menu-element,.footer_social-element,.footer_logo" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "mouseenter .footer_menu-element,.footer_social-element,.footer_logo" : function () {
+                _$.audio.audioEngine.playSFX("uiHover");
+            }
         },
 
         initialize,
@@ -63,6 +69,7 @@ define([
                 this.isOpen = false;
             }
             _$.ui.menu.transitionOut(nextScreen);
+            _$.audio.audioEngine.playSFX("menuClose");
             _$.events.once("mainMenuClosed", () => {
                 delete _$.ui.menu;
                 this.$(".footer_menu-menuBtn").removeClass("is--active");
@@ -73,6 +80,7 @@ define([
         } else {
             this.$(".footer_menu-element").removeClass("is--active");
             _$.ui.menu = new Screen_OverlayMenu();
+            _$.audio.audioEngine.playSFX("menuOpen");
             _$.events.once("mainMenuOpen", () => {
                 if (_$.ui.screen.id === "screen_title") {
                     this.toggleLogo("show");

@@ -19,10 +19,20 @@ define([
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
             "click .cardSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("rulesSelect"); },
-            "click .cardSelect_content-confirm-choice-yesBtn"    : function () { this.transitionOut("game"); _$.audio.audioEngine.stopBGM({ fadeDuration: 1 }); },
+            "click .cardSelect_content-confirm-choice-yesBtn"    : function () {
+                this.transitionOut("game");
+                _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+                _$.audio.audioEngine.playSFX("titleStart");
+            },
             "click .cardSelect_content-confirm-choice-noBtn"     : function () { this.toggleConfirm("hide"); },
             "click .cardSelect_content-nav-prevBtn"              : function () { this.pageChange(-1); },
-            "click .cardSelect_content-nav-nextBtn"              : function () { this.pageChange(1); }
+            "click .cardSelect_content-nav-nextBtn"              : function () { this.pageChange(1); },
+            "mouseenter .cardSelect_content-screenNav-choice-element,.cardSelect_content-confirm-choice-element,.cardSelect_content-nav-element" : function () {
+                _$.audio.audioEngine.playSFX("uiHover");
+            },
+            "click .cardSelect_content-screenNav-choice-element,.cardSelect_content-confirm-choice-element,.cardSelect_content-nav-element" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            }
         },
 
         initialize,
@@ -276,6 +286,7 @@ define([
         if (_.compact(this.userDeck).length === 5) {
             if (!this.$(".cardSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("show");
+                _$.audio.audioEngine.playSFX("gameGain");
             }
         } else if (this.$(".cardSelect_content-confirm").is(":visible")) {
             this.toggleConfirm("hide");

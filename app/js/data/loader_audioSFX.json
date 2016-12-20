@@ -1,0 +1,65 @@
+{
+    "name"  : "audioSFX",
+    "files" : [
+        {
+            "type" : "audio.sfx",
+            "name" : "cardDrop"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "cardFlip"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "cardGrab"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "cardSort"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "gameGain"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "gameStart"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "menuClose"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "menuHover"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "menuOpen"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "titleIntro"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "titleLogo"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "titleStart"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "uiConfirm"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "uiHover"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "uiInput"
+        }
+    ]
+}

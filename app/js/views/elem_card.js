@@ -47,6 +47,7 @@ define([
 
     function flip (info) {
         info = info || { from: "right" };
+        _$.audio.audioEngine.playSFX("cardFlip");
         var tl = new TimelineMax();
 
         if (info.from === "top") {

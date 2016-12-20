@@ -30,11 +30,11 @@ require.config({
         "fetch"            : "libs/fetch/fetch",
         aggregation        : "libs/aggregation/src/aggregation-es6",
 
-        global            : "global"
+        global             : "global"
     },
 
     shim: {
-        jqueryNearest : ["jquery"]
+        jqueryNearest : ["jquery"],
     }
 });
 
@@ -46,7 +46,8 @@ require([
     "modules/assetLoader",
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
-    "json!data/loader_audio.json",
+    "json!data/loader_audioBGM.json",
+    "json!data/loader_audioSFX.json",
     "global",
     "views/elem_footer",
     "views/screen",
@@ -59,12 +60,9 @@ require([
     "views/screen_overlayMenu",
     "jqueryNearest",
     "aggregation"
-], function ($, _, AudioEngine, canvasWebGL, assetLoader, loaderImgUI, loaderImgAvatars, loaderAudio, _$, Elem_Footer) {
+], function ($, _, AudioEngine, canvasWebGL, assetLoader, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
-    var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudio];
-
-    TweenMax.set(_$.dom, { opacity : 0 });
-    _$.audio.audioEngine = new AudioEngine({ aliases: _$.audio.aliases });
+    var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX];
 
     _$.events.on("all", function (eventName) {
         console.log("event triggered:", eventName);
@@ -86,6 +84,8 @@ require([
         });
     });
 
+    TweenMax.set(_$.dom, { opacity : 0 });
+    _$.audio.audioEngine = new AudioEngine({ aliases: _$.audio.aliases });
     assetLoader.init(loaders);
 });
 

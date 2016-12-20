@@ -24,7 +24,16 @@ define([
             "click .userSettings_content-load-choice-cancelBtn"  : function () { $(".setting-import input").val(""); this.toggleLoad("hide"); },
             "keyup .setting-name input"                          : function (e) { this.validateInput(e.target); },
             "change .setting-avatar input"                       : function (e) { this.validateInput(e.target); },
-            "change .setting-import input"                       : function (e) { this.validateInput(e.target); }
+            "change .setting-import input"                       : function (e) { this.validateInput(e.target); },
+            "mouseenter .userSettings_content-save-choice-element,.userSettings_content-load-choice-element" : function () {
+                _$.audio.audioEngine.playSFX("uiHover");
+            },
+            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.setting-difficulty,.setting-avatar input,.setting-import input" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "focus .setting-name input" : function () {
+                _$.audio.audioEngine.playSFX("uiInput");
+            }
         },
 
         initialize,
