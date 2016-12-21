@@ -21,7 +21,11 @@ define([
             },
             "mouseenter .about_social-element,.about_prevBtn,.about_credits" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
-            }
+            },
+            "click .about_social-fbBtn"  : function () { _$.utils.openSharePopup("facebook"); },
+            "click .about_social-ttBtn"  : function () { _$.utils.openSharePopup("twitter"); },
+            "click .about_social-rdtBtn" : function () { _$.utils.openSharePopup("reddit"); },
+            "click .about_social-tbrBtn" : function () { _$.utils.openSharePopup("tumblr"); }
         },
 
         initialize,
@@ -53,6 +57,7 @@ define([
         tl.add(this.toggleLine("show"));
         tl.from(this.logo, 0.4, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=1");
         tl.from($(".about_text, .about_credits, .about_legal"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, tl.recent().endTime());
+        tl.call(() => { _$.audio.audioEngine.playSFX("menuOpen"); }, [], null, tl.recent().endTime() - 0.4);
         tl.staggerFrom($(".about_social-element"), 0.4, { opacity: 0, y: 20, clearProps: "all" }, 0.1, "-=0.2");
         tl.from(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
         tl.call(() => {
@@ -75,7 +80,8 @@ define([
         });
         tl.to(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25 });
         tl.staggerTo($(".about_social-element"), 0.4, { opacity: 0, y: 20 }, -0.1);
-        tl.to($(".about_text, .about_credits, .about_legal"), 0.4, { opacity: 0, y: -20 }, "-=0.2");
+        tl.call(() => { _$.audio.audioEngine.playSFX("menuClose"); }, [], null, "-=0.2");
+        tl.to($(".about_text, .about_credits, .about_legal"), 0.4, { opacity: 0, y: -20 });
         tl.to(this.logo, 0.4, { opacity: 0, scale: 1.25 });
         tl.add(this.toggleLine("hide"), "-=0.4");
         tl.to(this.$(".about_bg"), 0.4, { opacity: 0, scale: 1.25 }, "-=1");

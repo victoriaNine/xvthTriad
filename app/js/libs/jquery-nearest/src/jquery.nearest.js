@@ -25,6 +25,21 @@
  * $(elem).touching()
  */
 ;(function ($, undefined) {
+	function getAbsoluteOffset (element) {
+        var top  = 0;
+        var left = 0;
+
+        do {
+            top     += $(element)[0].offsetTop  || 0;
+            left    += $(element)[0].offsetLeft || 0;
+            element  = $(element)[0].offsetParent;
+        } while (element);
+
+        return {
+            left : left,
+            top  : top
+        };
+    }
 
 	/**
 	 * Internal method that does the grunt work
@@ -40,10 +55,10 @@
 		// Normalise selector, dimensions and constraints
 		selector || (selector = 'div'); // I STRONGLY recommend passing in a selector
 		var $container = $(options.container),
-			containerOffset = $container.offset() || {left: 0, top: 0},
+			containerOffset = getAbsoluteOffset($container) || {left: 0, top: 0},
 			containerWH = [
-				$container.width() || 0,
-				$container.height() || 0
+				$container.outerWidth() || 0,
+				$container.outerHeight() || 0
 			],
 			containerProps = {
 				// prop: [min, max]
@@ -108,7 +123,7 @@
 		// Loop through all elements and check their positions
 		$all[hasEach2 ? 'each2' : 'each'](function (i, elem) {
 			var $this = hasEach2 ? elem : $(this),
-				off = $this.offset(),
+				off = getAbsoluteOffset($this),
 				x = off.left,
 				y = off.top,
 				w = $this.outerWidth(),

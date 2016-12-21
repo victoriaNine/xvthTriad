@@ -5,8 +5,9 @@ define([
     "global"
 ], function Screen ($, _, Backbone, _$) {
     return Backbone.View.extend({
-        tagName   : "section",
-        className : "screen",
+        tagName        : "section",
+        className      : "screen",
+        eventsDisabled : false,
 
         add,
         show,
@@ -14,9 +15,8 @@ define([
     });
 
     function add () {
-        _$.events.on("stopUserEvents", () => { this.undelegateEvents(); });
-        _$.events.on("startUserEvents", () => { this.delegateEvents(); });
-        
+        _$.events.on("stopUserEvents", () => { this.undelegateEvents(); this.eventsDisabled = true; });
+        _$.events.on("startUserEvents", () => { this.delegateEvents(); this.eventsDisabled = false; });
         $(_$.dom).find("#screen").append(this.$el);
     }
 

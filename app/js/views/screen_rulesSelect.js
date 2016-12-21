@@ -158,7 +158,6 @@ define([
         rules.trade    = tradeRule;
 
         this.rules = rules;
-        console.log(this.rules);
 
         if (this.rules.random) {
             this.transitionOut("game");

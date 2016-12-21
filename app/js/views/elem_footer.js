@@ -25,7 +25,11 @@ define([
             },
             "mouseenter .footer_menu-element,.footer_social-element,.footer_logo" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
-            }
+            },
+            "click .footer_social-fbBtn"  : function () { _$.utils.openSharePopup("facebook"); },
+            "click .footer_social-ttBtn"  : function () { _$.utils.openSharePopup("twitter"); },
+            "click .footer_social-rdtBtn" : function () { _$.utils.openSharePopup("reddit"); },
+            "click .footer_social-tbrBtn" : function () { _$.utils.openSharePopup("tumblr"); }
         },
 
         initialize,
@@ -52,14 +56,6 @@ define([
 
         var logo = $(_$.assets.get("svg.ui.logo"));
         this.logo.append(logo);
-
-        _$.events.on("mainMenuOpen aboutPageOpen", function () {
-            _$.state.FX_LEVEL--;
-        });
-
-        _$.events.on("mainMenuClosed aboutPageClosed", function () {
-            _$.state.FX_LEVEL++;
-        });
     }
 
     function toggleMainMenu (nextScreen) {

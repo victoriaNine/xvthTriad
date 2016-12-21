@@ -84,6 +84,64 @@ require([
         });
     });
 
+    (function () {
+        var ORIGINAL_SIZE = {
+            width  : 1920,
+            height : 950
+        };
+
+        function pixelRatioAdjust (forceSize) {
+            var html             = document.querySelector("html");
+            var body             = document.body;
+            var devicePixelRatio = window.devicePixelRatio = window.devicePixelRatio || 1;
+
+            window.screen       = window.screen || {};
+            screen.actualWidth  = window.screen.width * devicePixelRatio;
+            screen.actualHeight = window.screen.height * devicePixelRatio;
+
+            var scalar           = 1 / devicePixelRatio;
+            var offset           = (devicePixelRatio * 100 - 100) / 2;
+
+            if (forceSize) {
+                html.style.transformOrigin = "0 0";
+                _$.events.on("scalarUpdate", function (newScalar) {
+                    _$.state.appScalar = newScalar;
+                });
+                window.addEventListener("resize", reScale);
+                reScale();
+            } else {
+                html.style.width   = window.innerWidth * devicePixelRatio + "px";
+                html.style.height  = window.innerHeight * devicePixelRatio + "px";
+                _$.state.appScalar = 1;
+            }
+
+            body.style.transform = "scale(" + scalar + ") translate(-" + offset + "%, -" + offset + "%)";
+
+            function reScale () {
+                var fullWidth  = window.innerWidth * devicePixelRatio;
+                var fullHeight = window.innerHeight * devicePixelRatio;
+                var scalarW = fullWidth / ORIGINAL_SIZE.width;
+                var scalarH = fullHeight / ORIGINAL_SIZE.height;
+                var scalar;
+
+                if (scalarW < scalarH) {
+                    scalar = scalarW;
+                    html.style.width  = ORIGINAL_SIZE.width + "px";
+                    html.style.height = ((window.innerHeight * devicePixelRatio) / scalar) + "px";
+                } else {
+                    scalar = scalarH;
+                    html.style.width  = ((window.innerWidth * devicePixelRatio) / scalar) + "px";
+                    html.style.height = ORIGINAL_SIZE.height + "px";
+                }
+
+                html.style.transform = "scale(" + scalar + ")";
+                _$.events.trigger("scalarUpdate", scalar);
+            }
+        }
+
+        pixelRatioAdjust(true);
+    })();
+
     TweenMax.set(_$.dom, { opacity : 0 });
     _$.audio.audioEngine = new AudioEngine({ aliases: _$.audio.aliases });
     assetLoader.init(loaders);
@@ -104,22 +162,5 @@ require([
         });
     }
 
-    function pixelRatioAdjust () {
-        var html             = document.querySelector("html");
-        var body             = document.body;
-        var devicePixelRatio = window.devicePixelRatio = window.devicePixelRatio || 1;
-
-        window.screen       = window.screen || {};
-        screen.actualWidth  = window.screen.width * devicePixelRatio;
-        screen.actualHeight = window.screen.height * devicePixelRatio;
-
-        var scalar           = 1 / devicePixelRatio;
-        var offset           = (devicePixelRatio * 100 - 100) / 2;
-        html.style.width     = "calc(100vw * " + devicePixelRatio + ")";
-        html.style.height    = "calc(100vh * " + devicePixelRatio + ")";
-        body.style.transform = "scale(" + scalar + ") translate(-" + offset + "%, -" + offset + "%)";
-    }
-
     setupStats();
-    pixelRatioAdjust();
 })();

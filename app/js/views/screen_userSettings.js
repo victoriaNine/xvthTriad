@@ -153,7 +153,6 @@ define([
         _$.events.trigger("stopUserEvents");
 
         var tl = new TimelineMax();
-        tl.set(this.$el, { clearProps: "display" });
         tl.set(this.$(".userSettings_content-settings"), { clearProps: "opacity" });
         tl.set(this.$(".userSettings_content-settings-setting, .userSettings_header-avatar"), { opacity: 0 });
         tl.call(() => {
@@ -184,7 +183,6 @@ define([
             this.$(".userSettings_header").slideUp(500);
         });
         tl.call(() => {
-            TweenMax.set(this.$el, { display: "none" });
             onTransitionComplete.call(this);
         }, null, [], tl.recent().endTime() + 0.5);
 

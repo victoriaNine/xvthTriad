@@ -159,7 +159,7 @@ define([
         bgSettings.width  = bgSettings.INITIAL_WIDTH * ratio;
         bgSettings.height = bgSettings.INITIAL_HEIGHT * ratio;
 
-        appRatio               = _$.utils.getAppSizeRatio();
+        appRatio               = _$.utils.getAppSizeRatio() / _$.state.appScalar;
         bgSettings.flareX      = bgSettings.FLARE_INITIAL_X * appRatio;
         bgSettings.flareY      = bgSettings.FLARE_INITIAL_Y * appRatio;
         bgSettings.flareWidth  = bgSettings.FLARE_INITIAL_WIDTH * appRatio;
@@ -244,8 +244,8 @@ define([
     }
 
     function onResize () {
-        WIDTH             = document.body.scrollWidth;
-        HEIGHT            = document.body.scrollHeight;
+        WIDTH             = document.body.offsetWidth;
+        HEIGHT            = document.body.offsetHeight;
         targetNode.width  = reformatNode.width  = noiseNode.width  = vignetteNode.width  = WIDTH;
         targetNode.height = reformatNode.height = noiseNode.height = vignetteNode.height = HEIGHT;
 

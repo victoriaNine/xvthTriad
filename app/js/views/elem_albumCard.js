@@ -117,8 +117,8 @@ define([
             var deltaY = e.pageY - prevY;
 
             TweenMax.set(cardCopy.card, {
-                x: cardCopy.card[0]._gsTransform.x + deltaX * 1.25,
-                y: cardCopy.card[0]._gsTransform.y + deltaY * 1.25
+                x: cardCopy.card[0]._gsTransform.x + deltaX * _$.utils.getDragSpeed(),
+                y: cardCopy.card[0]._gsTransform.y + deltaY * _$.utils.getDragSpeed()
             });
 
             prevX = e.pageX;
@@ -130,21 +130,23 @@ define([
             $(window).off("mouseup", dragCardStop);
             _$.audio.audioEngine.playSFX("cardDrop");
 
-            var scaledPageX = e.pageX * window.devicePixelRatio;
-            var scaledPageY = e.pageY * window.devicePixelRatio;
+            var scaledPageX = e.pageX * window.devicePixelRatio / _$.state.appScalar;
+            var scaledPageY = e.pageY * window.devicePixelRatio / _$.state.appScalar;
 
             var deckOffset   = _$.utils.getAbsoluteOffset($(".cardSelect_header-deck"));
             var deckPosition = {
                 x1: deckOffset.left,
-                x2: deckOffset.left + $(".cardSelect_header-deck").width(),
+                x2: deckOffset.left + $(".cardSelect_header-deck").outerWidth(),
                 y1: deckOffset.top,
-                y2: deckOffset.top + $(".cardSelect_header-deck").height()
+                y2: deckOffset.top + $(".cardSelect_header-deck").outerHeight()
             };
 
-            var nearestHolder = $.nearest({ x: e.pageX, y: e.pageY }, $(".cardSelect_header-deck-holder"))[0];
-            var holderOffset  = _$.utils.getAbsoluteOffset(nearestHolder);
+            var nearestHolder = $.nearest({ x: scaledPageX, y: scaledPageY }, $(".cardSelect_header-deck-holder"))[0];
 
-            if (scaledPageX >= deckPosition.x1 && scaledPageX <= deckPosition.x2 && scaledPageY >= deckPosition.y1 && scaledPageY <= deckPosition.y2) {
+            if (scaledPageX >= deckPosition.x1 &&
+                scaledPageX <= deckPosition.x2 &&
+                scaledPageY >= deckPosition.y1 &&
+                scaledPageY <= deckPosition.y2) {
                 that.moveToDeck(nearestHolder, cardCopy);
             } else {
                 that.moveToOrigin(cardCopy);

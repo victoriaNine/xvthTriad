@@ -59,8 +59,8 @@ define([
         _$.events.trigger("stopUserEvents");
 
         var tl = new TimelineMax();
-        tl.staggerTo(this.$(".menu_element-bg"), 0.4, { opacity: 0, y: 50 }, -0.1, 0.2);
-        tl.staggerTo(this.$(".menu_element"), 0.4, { opacity: 0 }, -0.1);
+        tl.staggerTo(this.$(".menu_element-bg"), 0.4, { opacity: 0, y: 50 }, -0.1);
+        tl.staggerTo(this.$(".menu_element"), 0.4, { opacity: 0 }, -0.1, 0.2);
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {

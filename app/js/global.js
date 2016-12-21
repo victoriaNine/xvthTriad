@@ -58,6 +58,7 @@ define([
     };
     var utils   = {
         getAppSizeRatio,
+        getDragSpeed,
         getCardList,
         getRandomName,
         getRandomCards,
@@ -76,7 +77,8 @@ define([
         getLocalStorage,
 
         getBase64Image,
-        timecodeToSecs
+        timecodeToSecs,
+        openSharePopup
     };
 
     var debug = {
@@ -91,6 +93,18 @@ define([
         extension     : appInfo.extension,
         charOffset    : 1,
         charSeparator : "x"
+    };
+
+    var shareSettings = {
+        url      : "http://15thtriad.com",
+        text     : "",
+        hashtags : "",
+        posttype : "",
+        tags     : "",
+        title    : "",
+        content  : "",
+        caption  : "",
+        showVia  : ""
     };
 
     var _$ = window._$ = {
@@ -118,6 +132,32 @@ define([
     });
 
     return _$;
+
+    /* SOCIAL SHARE*/
+    function openSharePopup (platform) {
+        window.open(_getShareUrl(_.extend(shareSettings, { platform })), "", "toolbar=0,status=0,width=540,height=600");
+    }
+
+    function _getShareUrl (options = {}) {
+        switch (options.platform) {
+            case "facebook":
+                return "https://www.facebook.com/sharer.php?u=" + encodeURIComponent(options.url);
+            case "twitter":
+                return "https://twitter.com/intent/tweet?url=" + encodeURIComponent(options.url) +
+                "&text="     + encodeURIComponent(options.text) +
+                "&hashtags=" + encodeURIComponent(options.hashtags);
+            case "reddit":
+                return "https://www.reddit.com/submit?url=" + encodeURIComponent(options.url);
+            case "tumblr":
+                return "http://tumblr.com/widgets/share/tool?canonicalUrl=" + encodeURIComponent(options.url) +
+                "&posttype=" + encodeURIComponent(options.posttype) +
+                "&tags="     + encodeURIComponent(options.tags) +
+                "&title="    + encodeURIComponent(options.title) +
+                "&content="  + encodeURIComponent(options.content) +
+                "&caption="  + encodeURIComponent(options.caption) +
+                "&show-via=" + encodeURIComponent(options.showVia);
+        }
+    }
 
     /* LOGGING */
     function log () {
@@ -147,6 +187,10 @@ define([
     /* DESIGN */
     function getAppSizeRatio () {
         return document.body.scrollWidth / window.screen.actualWidth;
+    }
+
+    function getDragSpeed () {
+        return 1.25 / _$.state.appScalar;
     }
 
     function fadeIn (elements, callback, duration = 0.5, delay = 0) {
@@ -314,7 +358,7 @@ define([
     function getDestinationCoord (card, destination, options = {}) {
         // Offset the card slightly to compensate for drop shadow
         var cardOffsetX = -2;
-        var cardOffsetY = 0;//options.hidden ? -2 : 2;
+        var cardOffsetY = 0;
 
         var destOffsets = getAbsoluteOffset($(destination)[0]);
         var destOffsetX = destOffsets.left;
