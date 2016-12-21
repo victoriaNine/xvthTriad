@@ -174,7 +174,6 @@ define([
         tl.staggerFrom(blueCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
         tl.staggerFrom(redCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
         tl.call(() => {
-            _$.events.trigger("startUserEvents");
             this.showTurnOverlay();
             _$.audio.audioEngine.playSFX("gameStart");
         }, [], null, "+=.2");
@@ -213,7 +212,7 @@ define([
     }
 
     function dragCardStart (e, cardView) {
-        if (/*_$.state.game.playing === this.players.opponent ||*/ cardView.boardCase) {
+        if (/*_$.state.game.playing === this.players.opponent ||*/ cardView.boardCase || this.eventsDisabled) {
             return;
         }
 
@@ -236,8 +235,8 @@ define([
             var deltaY = e.pageY - prevY;
 
             TweenMax.set(cardView.$el, {
-                x: cardView.$el[0]._gsTransform.x + deltaX * 1.25,
-                y: cardView.$el[0]._gsTransform.y + deltaY * 1.25
+                x: cardView.$el[0]._gsTransform.x + deltaX * _$.utils.getDragSpeed(),
+                y: cardView.$el[0]._gsTransform.y + deltaY * _$.utils.getDragSpeed()
             });
 
             prevX = e.pageX;
@@ -249,21 +248,24 @@ define([
             $(window).off("mouseup", dragCardStop);
             _$.audio.audioEngine.playSFX("cardDrop");
 
-            var scaledPageX = e.pageX * window.devicePixelRatio;
-            var scaledPageY = e.pageY * window.devicePixelRatio;
+            var scaledPageX = e.pageX * window.devicePixelRatio / _$.state.appScalar;
+            var scaledPageY = e.pageY * window.devicePixelRatio / _$.state.appScalar;
 
             var boardOffset   = _$.utils.getAbsoluteOffset($("#board"));
             var boardPosition = {
                 x1: boardOffset.left,
-                x2: boardOffset.left + $("#board").width(),
+                x2: boardOffset.left + $("#board").outerWidth(),
                 y1: boardOffset.top,
-                y2: boardOffset.top + $("#board").height()
+                y2: boardOffset.top + $("#board").outerHeight()
             };
 
-            var nearestCase = $.nearest({ x: e.pageX, y: e.pageY }, $("#board .case"))[0];
-            var caseOffset  = _$.utils.getAbsoluteOffset(nearestCase);
+            var nearestCase = $.nearest({ x: scaledPageX, y: scaledPageY }, $("#board .case"))[0];
 
-            if (!that.board[nearestCase.id] && scaledPageX >= boardPosition.x1 && scaledPageX <= boardPosition.x2 && scaledPageY >= boardPosition.y1 && scaledPageY <= boardPosition.y2) {
+            if (!that.board[nearestCase.id] &&
+                scaledPageX >= boardPosition.x1 &&
+                scaledPageX <= boardPosition.x2 &&
+                scaledPageY >= boardPosition.y1 &&
+                scaledPageY <= boardPosition.y2) {
                 that.moveToBoard(nearestCase, cardView);
             } else {
                 that.moveToOrigin(cardView, originalPosition);
@@ -323,6 +325,8 @@ define([
     }
 
     function toNextTurn () {
+        _$.events.trigger("stopUserEvents");
+
         setTimeout(() => {
             if (_$.state.game.playing === this.players.user) {
                 this.ui.HUDuser.addClass("is--active");
@@ -338,6 +342,8 @@ define([
     }
 
     function toEndGame () {
+        _$.events.trigger("stopUserEvents");
+
         setTimeout(() => {
             this.ui.HUDopponent.removeClass("is--active");
             this.ui.HUDuser.removeClass("is--active"); 
@@ -355,12 +361,17 @@ define([
         this.$(".game_overlay-playerTurn").addClass("is--active");
         setTimeout(() => {
             this.$(".game_overlay-playerTurn").removeClass("is--active");
+            _$.events.trigger("startUserEvents");
         }, 2000);
     }
 
     function showEndGameOverlay () {
         var gameResult;
-        var tl;
+        var tl = new TimelineMax({
+            onComplete : () => {
+                _$.events.trigger("startUserEvents");
+            }
+        });
 
         if (_$.state.game.winner === this.players.user) {
             gameResult = "won";
@@ -413,7 +424,6 @@ define([
         function noCardSelection () {
             this.$(".game_overlay-endGame-album-opponent, .game_overlay-endGame-album-user").remove();
 
-            tl = new TimelineMax();
             tl.call(() => { this.$(".game_overlay-endGame").addClass("is--active"); });
             tl.call(() => { this.$(".game_overlay-endGame-confirmBtn").slideDown(400); }, [], null, "+=0.8");
         }
@@ -422,7 +432,6 @@ define([
             var userEndGameCardViews     = [];
             var opponentEndGameCardViews = [];
 
-            tl = new TimelineMax();
             tl.call(() => { this.$(".game_overlay-endGame").addClass("is--active"); });
 
             var endGameCardView;
@@ -522,6 +531,7 @@ define([
     function toTitleScreen () {
         _$.events.trigger("stopUserEvents");
         _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+        _$.events.off(_$.audio.audioEngine.getBGM("bgm.win").events.ended);
 
         var tl = new TimelineMax();
         tl.call(() => { this.$(".game_overlay-endGame").removeClass("is--active"); });
