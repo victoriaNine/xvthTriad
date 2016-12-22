@@ -161,6 +161,8 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 html {
@@ -215,6 +217,26 @@ h1 {
 
 #app {
     @include fullSizeAbs();
+
+    &.useGamepad * {
+        cursor: none;
+    }
+}
+
+.cursor {
+    position: fixed;
+    width: 35px;
+    height: 25px;
+    background: url(#{ $uiAssetsPath + "cursor.png"}) no-repeat;
+    z-index: 99999;
+    pointer-events: none;
+
+    @include animation("cursorMove 1s ease-in-out infinite");
+}
+
+@include keyframes (cursorMove) {
+  0%, 100% { @include transform("translateX(0)"); }
+  50%     { @include transform("translateX(0.5em)"); }
 }
 
 .color-darkGrey     { color: $color_darkGrey; }
@@ -223,6 +245,21 @@ h1 {
 .weight-bold        { font-weight: 700; }
 .flex-justify-sb    { justify-content: space-between; }
 .flex-justify-start { justify-content: flex-start; }
+
+@media (orientation: portrait) {
+    html {
+        transform: none !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    body {
+        background: #000 url(#{ $uiAssetsPath + "rotateDevice.png"}) no-repeat 50% 50%;
+        transform: none !important;
+    }
+
+    #app { display: none; }
+}
 
 
 /*=======================*/

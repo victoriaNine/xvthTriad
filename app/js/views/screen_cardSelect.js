@@ -53,7 +53,7 @@ define([
     });
 
     function initialize (options) {
-        _$.state.cardSelectScreen = this;
+        _$.ui.cardSelect = this;
 
         var cardList         = _$.utils.getCardList();
         this.userAlbum       = _$.state.user.get("album");
@@ -86,11 +86,11 @@ define([
         _$.events.off("resizeStart", this.emptyAlbumCardViews.bind(this));
         _$.events.off("updateDeck", this.updateDeck.bind(this));
 
-        delete _$.state.cardSelectScreen;
-        Backbone.View.prototype.remove.call(this);
+        delete _$.ui.cardSelect;
+        Screen.prototype.remove.call(this);
 
-        if (_$.state.rulesSelectScreen) {
-            _$.state.rulesSelectScreen.remove();
+        if (_$.ui.rulesSelect) {
+            _$.ui.rulesSelect.remove();
         }
     }
 
@@ -140,9 +140,9 @@ define([
         function onTransitionComplete () {
             if (nextScreen === "rulesSelect") {
                 _$.events.trigger("startUserEvents");
-                _$.ui.screen = _$.state.rulesSelectScreen.transitionIn();
+                _$.ui.screen = _$.ui.rulesSelect.transitionIn();
             } else {
-                var rules = _$.state.rulesSelectScreen.rules;
+                var rules = _$.ui.rulesSelect.rules;
                 _$.utils.addDomObserver(this.$el, () => {
                     _$.events.trigger("startUserEvents");
 

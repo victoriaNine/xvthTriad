@@ -10,21 +10,42 @@ define([
         eventsDisabled : false,
 
         add,
-        show,
-        hide
+        remove,
+        updateControlsState
     });
 
     function add () {
-        _$.events.on("stopUserEvents", () => { this.undelegateEvents(); this.eventsDisabled = true; });
-        _$.events.on("startUserEvents", () => { this.delegateEvents(); this.eventsDisabled = false; });
-        $(_$.dom).find("#screen").append(this.$el);
+        _$.utils.addDomObserver(this.$el, this.updateControlsState.bind(this), true);
+        _$.events.on("startUserEvents", _delegate.bind(this));
+        _$.events.on("stopUserEvents", _undelegate.bind(this));
+        _$.dom.find("#screen").append(this.$el);
     }
 
-    function show () {
-        TweenMax.set(this.$el, { clearProps:"display" });
+    function remove () {
+        _$.events.off("startUserEvents", _delegate.bind(this));
+        _$.events.off("stopUserEvents", _undelegate.bind(this));
+        Backbone.View.prototype.remove.call(this);
     }
 
-    function hide () {
-        TweenMax.set(this.$el, { display:"none" });
+    function updateControlsState () {
+        var screenName = this.id.replace("screen_", "");
+
+        if (screenName === "title") {
+            if (!_$.controls.gamepadManager.isGamepadActive(0)) {
+                _$.controls.gamepadManager.activateGamepads(0);
+            }
+        }
+    }
+
+    function _delegate () {
+        this.delegateEvents();
+        this.eventsDisabled = false;
+
+        _$.controls.gamepadManager.updateCursorTargets();
+    }
+
+    function _undelegate () {
+        this.undelegateEvents();
+        this.eventsDisabled = true;
     }
 });

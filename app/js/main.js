@@ -44,6 +44,7 @@ require([
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
+    "modules/gamepadManager",
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
     "json!data/loader_audioBGM.json",
@@ -60,12 +61,16 @@ require([
     "views/screen_overlayMenu",
     "jqueryNearest",
     "aggregation"
-], function ($, _, AudioEngine, canvasWebGL, assetLoader, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+], function ($, _, AudioEngine, canvasWebGL, assetLoader, GamepadManager, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
     var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX];
 
-    _$.events.on("all", function (eventName) {
-        console.log("event triggered:", eventName);
+    _$.events.on("all", function (eventName, ...data) {
+        if (data.length) {
+            _$.debug.log("event triggered:", eventName, data);
+        } else {
+            _$.debug.log("event triggered:", eventName);
+        }
     });
 
     _$.events.once("allLoadersComplete", function () {
@@ -84,7 +89,15 @@ require([
         });
     });
 
-    (function () {
+    _$.events.on("gamepadOn", function () {
+        _$.controls.type = "gamepad";
+    });
+
+    _$.events.on("gamepadOff", function () {
+        _$.controls.type = "mouse";
+    });
+
+    function setupScale () {
         var ORIGINAL_SIZE = {
             width  : 1920,
             height : 950
@@ -140,10 +153,14 @@ require([
         }
 
         pixelRatioAdjust(true);
-    })();
+    }
 
     TweenMax.set(_$.dom, { opacity : 0 });
-    _$.audio.audioEngine = new AudioEngine({ aliases: _$.audio.aliases });
+    setupScale();
+
+    _$.controls.type           = "mouse";
+    _$.controls.gamepadManager = new GamepadManager();
+    _$.audio.audioEngine       = new AudioEngine();
     assetLoader.init(loaders);
 });
 

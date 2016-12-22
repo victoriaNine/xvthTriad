@@ -34,29 +34,23 @@ define([
         }
     }
 
-    var appInfo = {
-        version   : "0.0.1",
-        name      : "xvthTriad",
-        extension : "xvtsave"
-    };
-    var dom     = $("#app");
-    var assets  = new AssetStore();
-    var events  = _.clone(Backbone.Events);
-    var state   = {};
-    var ui      = {};
-    var audio   = {
-        aliases: {
-            bgm: {
-                menus   : "inDreams",
-                game    : "starlitWaltz",
-                win     : "daysEndFanfare",
-                postWin : "relaxReflect",
-                lose    : "relaxReflectPensive"
-            },
-            sfx: {}
+    var startTime = Date.now();
+    var appInfo   = Object.create(null, {
+        version     : { value: "0.0.1" },
+        name        : { value: "xvthTriad" },
+        extension   : { value: "xvtsave" },
+        currentTime : {
+            get : getCurrentTime
         }
-    };
-    var utils   = {
+    });
+    var dom       = $("#app");
+    var assets    = new AssetStore();
+    var events    = _.clone(Backbone.Events);
+    var state     = {};
+    var ui        = {};
+    var controls  = {};
+    var audio     = {};
+    var utils = {
         getAppSizeRatio,
         getDragSpeed,
         getCardList,
@@ -73,6 +67,8 @@ define([
 
         fadeIn,
         fadeOut,
+        getTopElementAt,
+        isVisibleByUser,
         getNodeIndex,
         getLocalStorage,
 
@@ -88,7 +84,7 @@ define([
         error
     };
 
-    var saveSettings   = {
+    var saveSettings = {
         prefix        : appInfo.name + ":save//",
         extension     : appInfo.extension,
         charOffset    : 1,
@@ -116,7 +112,8 @@ define([
         assets,
         events,
         utils,
-        debug
+        debug,
+        controls
     };
 
     $(window).resize(function() {
@@ -132,6 +129,12 @@ define([
     });
 
     return _$;
+
+    /* TIME */
+    function getCurrentTime () {
+        return parseInt((_$.audio.audioEngine && _$.audio.audioEngine.audioCtx) ?
+                _$.audio.audioEngine.audioCtx.currentTime * 1000 : Date.now() - startTime);
+    }
 
     /* SOCIAL SHARE*/
     function openSharePopup (platform) {
@@ -160,21 +163,14 @@ define([
     }
 
     /* LOGGING */
-    function log () {
-        if (_$.debug.debugMode) {
-            console.log.apply(this, Array.prototype.slice.call(arguments));
-        }
-    }
+    function log ()   { _makeLog("log", arguments); }
+    function warn ()  { _makeLog("warn", arguments); }
+    function error () { _makeLog("error", arguments); }
 
-    function warn () {
+    function _makeLog (type, message) {
+        var log = [_$.appInfo.currentTime.toString()].concat(Array.prototype.slice.call(message));
         if (_$.debug.debugMode) {
-            console.warn.apply(this, Array.prototype.slice.call(arguments));
-        }
-    }
-
-    function error () {
-        if (_$.debug.debugMode) {
-            console.error.apply(this, Array.prototype.slice.call(arguments));
+            console[type].apply(null, log);
         }
     }
 
@@ -225,6 +221,20 @@ define([
         tl.set(elements, { display: "none", clearProps: "opacity" });
 
         return tl;
+    }
+
+    function isVisibleByUser (element) {
+        element = $(element);
+        var offset  = _$.utils.getAbsoluteOffset(element);
+        var centerX = (offset.left + element.width() / 2);
+        var centerY = (offset.top + element.height() / 2);
+        var elementFromPoint = _$.utils.getTopElementAt(centerX, centerY);
+
+        return !!$(elementFromPoint).closest(element).length;
+    }
+
+    function getTopElementAt (offsetX, offsetY) {
+        return document.elementFromPoint(offsetX / window.devicePixelRatio, offsetY / window.devicePixelRatio);
     }
 
     /* DOM */
@@ -340,14 +350,15 @@ define([
     }
 
     function getAbsoluteOffset (element) {
+        element = $(element)[0];
         var top  = 0;
         var left = 0;
 
-        do {
+        while (element) {
             top     += $(element)[0].offsetTop  || 0;
             left    += $(element)[0].offsetLeft || 0;
             element  = $(element)[0].offsetParent;
-        } while (element);
+        }
 
         return {
             left : left,
@@ -441,13 +452,27 @@ define([
         }
 
         var blob = new Blob([data], { type: "text/plain" });
-        var e    = document.createEvent("MouseEvents");
         var a    = document.createElement("a");
+        var e    = new MouseEvent("click", {
+            bubbles       : true,
+            cancelable    : false,
+            view          : window,
+            detail        : 0,
+            screenX       : 0,
+            screenY       : 0,
+            clientX       : 0,
+            clientY       : 0,
+            ctrlKey       : false,
+            altKey        : false,
+            shiftKey      : false,
+            metaKey       : false,
+            button        : 0,
+            relatedTarget : null
+        });
 
         a.download            = fileName;
         a.href                = window.URL.createObjectURL(blob);
         a.dataset.downloadurl = ["text/plain", a.download, a.href].join(":");
-        e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         a.dispatchEvent(e);
     }
 

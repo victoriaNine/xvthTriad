@@ -1,5 +1,15 @@
 define(["underscore", "global"], function audioEngine (_, _$) {
     const aggregation = require("aggregation");
+    const ALIASES     = {
+        bgm: {
+            menus   : "inDreams",
+            game    : "starlitWaltz",
+            win     : "daysEndFanfare",
+            postWin : "relaxReflect",
+            lose    : "relaxReflectPensive"
+        },
+        sfx: {}
+    };
 
     //===============================
     // VOLUME MIXINS
@@ -240,7 +250,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
     // AUDIOENGINE CLASS
     //===============================
     class AudioEngine {
-        constructor (options = {}) {
+        constructor () {
             this.audioCtx   = new window.AudioContext();
             this.BGMs       = {};
             this.SFXs       = {};
@@ -252,7 +262,6 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 tween   : null,
                 options : null
             };
-            this.aliases    = options.aliases || {};
 
             this.createChannel("master");
             this.createChannel("bgm");
@@ -327,9 +336,9 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.triggerMute("toggle", channelName);
         }
 
-        getInstanceAlias (alias) {
+        getInstanceAlias (name) {
             // Returns the original string if no corresponding alias was found
-            return _.get(this.aliases, alias) || alias;
+            return _.get(ALIASES, name) || name;
         }
 
         getBGM (name) {

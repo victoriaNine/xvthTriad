@@ -151,7 +151,7 @@ define([
         _$.state.inGame = false;
         delete _$.state.game;
 
-        Backbone.View.prototype.remove.call(this);
+        Screen.prototype.remove.call(this);
     }
 
     function transitionIn () {

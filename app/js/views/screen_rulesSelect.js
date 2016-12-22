@@ -64,7 +64,7 @@ define([
     });
 
     function initialize (options) {
-        _$.state.rulesSelectScreen = this;
+        _$.ui.rulesSelect = this;
         this.rules = null;
 
         this.$el.html(this.template());
@@ -80,11 +80,11 @@ define([
     }
 
     function remove () {
-        delete _$.state.rulesSelectScreen;
-        Backbone.View.prototype.remove.call(this);
+        delete _$.ui.rulesSelect;
+        Screen.prototype.remove.call(this);
         
-        if (_$.state.cardSelectScreen) {
-            _$.state.cardSelectScreen.remove();
+        if (_$.ui.cardSelect) {
+            _$.ui.cardSelect.remove();
         }
     }
 
@@ -211,7 +211,7 @@ define([
                 _$.events.trigger("startUserEvents");
 
                 var Screen_CardSelect = require("views/screen_cardSelect");
-                _$.ui.screen          = _$.state.cardSelectScreen ? _$.state.cardSelectScreen.transitionIn() : new Screen_CardSelect();
+                _$.ui.screen          = _$.ui.cardSelect ? _$.ui.cardSelect.transitionIn() : new Screen_CardSelect();
             } else {
                 _$.utils.addDomObserver(this.$el, () => {
                     _$.events.trigger("startUserEvents");

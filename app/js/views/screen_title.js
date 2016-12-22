@@ -29,7 +29,6 @@ define([
         },
 
         initialize,
-
         playIntro,
         transitionIn,
         transitionOut
@@ -97,9 +96,11 @@ define([
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
         this.introTL.call(() => {
-            _$.events.trigger("startUserEvents");
             _$.events.trigger("addFX");
         }, [], null, "enterFooter");
+        this.introTL.call(() => {
+            _$.events.trigger("startUserEvents");
+        });
 
         _.each(logoPaths, function (logoPath) {
             let dummyObject = { value: 0 };

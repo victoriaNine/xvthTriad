@@ -46,7 +46,7 @@ define([
 
     function initialize (options) {
         this.$el.html(this.template());
-        $(_$.dom).append(this.$el);
+        _$.dom.append(this.$el);
 
         this.isOpen = false;
         this.logo   = this.$(".footer_logo");

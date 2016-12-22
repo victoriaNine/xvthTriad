@@ -3,6 +3,14 @@
     "files" : [
         {
             "type" : "img.ui",
+            "name" : "cursor.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "rotateDevice.png"
+        },
+        {
+            "type" : "img.ui",
             "name" : "bg.jpg"
         },
         {
