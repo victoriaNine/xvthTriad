@@ -142,12 +142,20 @@
     trigger: function(name) {
       if (!this._events) return this;
       var args = slice.call(arguments, 1);
-      if (!eventsApi(this, 'trigger', name, args)) return this;
+      if (!eventsApi(this, 'trigger', name, arguments)) return this;
       var events = this._events[name];
       var allEvents = this._events.all;
-      if (events) triggerEvents(events, args);
+      if (events) triggerEvents(events, arguments);
       if (allEvents) triggerEvents(allEvents, arguments);
+
+      if (!name.match(/^change/) && getParentNamespace(name)) {
+        this.trigger.apply(this, [getParentNamespace(name)].concat(args));
+      }
       return this;
+
+      function getParentNamespace (name) {
+        return (name.indexOf(":") !== -1) ? name.slice(0, name.lastIndexOf(":")) : "";
+      }
     },
 
     // Tell this object to stop listening to either specific events ... or
