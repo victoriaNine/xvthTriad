@@ -107,22 +107,8 @@ define([
 
         this.postGameAction = null;
 
-        _.each(this.players.user.get("deck"), (cardModel, index) => {
-            if (!cardModel.owner) {
-                cardModel.owner        = this.players.user;
-                cardModel.currentOwner = this.players.user;
-            }
-
-            renderCard.call(this, cardModel, index);
-        });
-
-        _.each(this.players.opponent.get("deck"), (cardModel, index) => {
-            if (!cardModel.owner) {
-                cardModel.owner        = this.players.opponent;
-                cardModel.currentOwner = this.players.opponent;
-            }
-
-            renderCard.call(this, cardModel, index);
+        _.each(_.concat(this.players.user.get("deck"), this.players.opponent.get("deck")), (cardModel, index, deck) => {
+            renderCard.call(this, cardModel, index % (deck.length / 2));
         });
 
         _$.events.on("resize", this.onResize.bind(this));
@@ -188,7 +174,7 @@ define([
     function renderCard (cardModel, index) {
         var cardView = new Elem_Card({ model: cardModel, deckIndex: index });
 
-        //if (cardModel.currentOwner === this.players.user) {
+        //if (cardModel.get("currentOwner") === this.players.user) {
             cardView.$el.on("mousedown", (e) => {
                 dragCardStart.call(this, e, cardView);
             });
@@ -199,7 +185,7 @@ define([
     }
 
     function placeCardOnHolder (cardView) {
-        var player      = (cardView.model.currentOwner === this.players.user) ? "user" : "opponent";
+        var player      = (cardView.model.get("currentOwner") === this.players.user) ? "user" : "opponent";
         var destination = $(".game_playerHUD-" + player).find(".game_deck-holder").eq(cardView.deckIndex);
         var hidden      = !_$.state.game.get("rules").open && player === "opponent";
         var coords      = _$.utils.getDestinationCoord(cardView.$el, destination, { hidden });
@@ -277,22 +263,22 @@ define([
         var caseOffset = _$.utils.getDestinationCoord(cardView.$el, boardCase);
 
         var tl = new TimelineMax();
-        if (!_$.state.game.get("rules").open && cardView.model.currentOwner === this.players.opponent) {
+        if (!_$.state.game.get("rules").open && cardView.model.get("currentOwner") === this.players.opponent) {
             tl.to(cardView.$el, 0.2, { x: caseOffset.left, y: caseOffset.top, rotationY: 0 });
         } else {
             tl.to(cardView.$el, 0.2, { x: caseOffset.left, y: caseOffset.top });
         }
         tl.set(cardView.$el, { scale: "1", zIndex:999 }, "+=.1");
 
-        cardView.model.position = {
+        cardView.model.set("position", {
             x: parseInt(boardCase.id.match(/\d/g)[1]),
             y: parseInt(boardCase.id.match(/\d/g)[0])
-        };
+        });
         cardView.boardCase = boardCase;
         cardView.$el.addClass("is--played");
 
         this.board[boardCase.id] = cardView;
-        _$.state.game.updateBoard(cardView.model);
+        _$.state.game.updateTurn(cardView.model);
     }
 
     function moveToOrigin (cardView, originalPosition) {
@@ -485,11 +471,11 @@ define([
                 }
             } else if (_$.state.game.get("rules").trade === "direct") {
                 this.gainedCards = _.filter(opponentEndGameCardViews, (endGameCardView) => {
-                    return endGameCardView.cardView.model.currentOwner === this.players.user;
+                    return endGameCardView.cardView.model.get("currentOwner") === this.players.user;
                 });
 
                 this.lostCards = _.filter(userEndGameCardViews, (endGameCardView) => {
-                    return endGameCardView.cardView.model.currentOwner === this.players.opponent;
+                    return endGameCardView.cardView.model.get("currentOwner") === this.players.opponent;
                 });
 
                 autoFlipCards(this.gainedCards, true);

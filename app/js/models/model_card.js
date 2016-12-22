@@ -10,7 +10,12 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
                 bottom : 1,
                 left   : 1
             },
-            element      : null
+            element      : null,
+
+            owner        : null,
+            currentOwner : null,
+            position     : null,
+            bonus        : 0
         },
 
         initialize,
@@ -21,11 +26,6 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
     });
 
     function initialize (attributes, options) {
-        this.owner        = null;
-        this.currentOwner = null;
-        this.position     = null;
-        this.bonus        = 0;
-
         this.validate(attributes);
         this.setImagePath();
     }

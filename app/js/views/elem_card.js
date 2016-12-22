@@ -28,13 +28,13 @@ define([
             this.deckIndex = attributes.deckIndex;
 
             if (options.checkOwner) {
-                if (this.model.owner === _$.state.game.get("players").user) {
+                if (this.model.get("owner") === _$.state.game.get("players").user) {
                     this.$el.addClass("card-blue");
                 } else {
                     this.$el.addClass("card-red");
                 }
             } else {
-                if (this.model.currentOwner === _$.state.game.get("players").user) {
+                if (this.model.get("currentOwner") === _$.state.game.get("players").user) {
                     this.$el.addClass("card-blue");
                 } else {
                     this.$el.addClass("card-red");

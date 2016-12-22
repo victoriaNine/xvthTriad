@@ -3,8 +3,9 @@ define([
     "backbone",
     "global",
     "models/model_card",
-    "models/model_player"
-], function Model_Game (_, Backbone, _$, Model_Card, Model_Player) {
+    "models/model_player",
+    "models/model_ai"
+], function Model_Game (_, Backbone, _$, Model_Card, Model_Player, Model_AI) {
     var BOARD_SIZE = 9;
 
     return Backbone.Model.extend({
@@ -17,8 +18,8 @@ define([
         },
 
         initialize,
-        setupComputerInfo,
-        updateBoard,
+        setupComputer,
+        updateTurn,
         getAdjacentCards,
         selectCardsToTrade,
         setupNextTurn,
@@ -30,7 +31,7 @@ define([
         var players   = options.players;
         var userDeck  = options.userDeck;
 
-        this.computerInfo = null;
+        this.computer = null;
         this.set("rules", setRules(options.rules));
 
         // In case of a new round for a game with the sudden death rule,
@@ -39,12 +40,12 @@ define([
             this.set("players", players);
         } else {
             if (!attributes.type || attributes.type === "solo") {
-                this.computerInfo = this.setupComputerInfo();
+                this.computer = this.setupComputer();
 
                 this.set({ players :
                     {
                         user     : new Model_Player({ type: "human", user: _$.state.user, name: _$.state.user.get("name"), avatar: _$.state.user.get("avatar"), deck: userDeck }),
-                        opponent : new Model_Player({ type: "computer", user: null, name: this.computerInfo.name, avatar: this.computerInfo.avatar, deck: this.computerInfo.deck })
+                        opponent : new Model_Player({ type: "computer", user: null, name: this.computer.name, avatar: this.computer.avatar, deck: this.computer.deck, AI: this.computer.AI })
                     }
                 });
             }
@@ -83,53 +84,59 @@ define([
         };
 
         _.each(this.get("players").user.get("deck"), (card) => {
-            if (!card.owner) {
+            if (!card.get("owner")) {
+                card.set("owner", this.get("players").user);
+                card.set("currentOwner", this.get("players").user);
                 this.originalDecks.user.push(card);
             } else {
-                if (card.owner === this.get("players").user) {
+                if (card.get("owner") === this.get("players").user) {
                     this.originalDecks.user.push(card);
-                } else if (card.owner === this.get("players").opponent) {
+                } else if (card.get("owner") === this.get("players").opponent) {
                     this.originalDecks.opponent.push(card);
                 }
             }
         });
 
         _.each(this.get("players").opponent.get("deck"), (card) => {
-            if (!card.owner) {
+            if (!card.get("owner")) {
+                card.set("owner", this.get("players").opponent);
+                card.set("currentOwner", this.get("players").opponent);
                 this.originalDecks.opponent.push(card);
             } else {
-                if (card.owner === this.get("players").user) {
+                if (card.get("owner") === this.get("players").user) {
                     this.originalDecks.user.push(card);
-                } else if (card.owner === this.get("players").opponent) {
+                } else if (card.get("owner") === this.get("players").opponent) {
                     this.originalDecks.opponent.push(card);
                 }
             }
         });
 
-        this.playing         = (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent;
+        this.playing         = null;
         this.playedCards     = [];
         this.cardsToTrade    = null;
+
+        this.setupNextTurn();
     }
 
-    function setupComputerInfo () {
-        var info = {};
+    function setupComputer () {
+        var config = {};
         var cardMaxLevel;
         var randomCards;
 
         switch (this.get("difficulty")) {
             case "easy":
-                info.name    = "Carbuncle";
-                info.avatar  = "./assets/img/avatars/computer_carbuncle.jpg";
+                config.name    = "Carbuncle";
+                config.avatar  = "./assets/img/avatars/computer_carbuncle.jpg";
                 cardMaxLevel = 3;
                 break;
             case "medium":
-                info.name    = "Gentiana";
-                info.avatar  = "./assets/img/avatars/computer_gentiana.jpg";
+                config.name    = "Gentiana";
+                config.avatar  = "./assets/img/avatars/computer_gentiana.jpg";
                 cardMaxLevel = 7;
                 break;
             case "hard":
-                info.name    = "Bahamut";
-                info.avatar  = "./assets/img/avatars/computer_bahamut.jpg";
+                config.name    = "Bahamut";
+                config.avatar  = "./assets/img/avatars/computer_bahamut.jpg";
                 cardMaxLevel = 10;
                 break;
         }
@@ -140,11 +147,13 @@ define([
             maxLevel : 1//cardMaxLevel
         });
 
-        info.deck = _.map(randomCards, function (attributes) {
+        config.deck = _.map(randomCards, function (attributes) {
             return new Model_Card(attributes);
         });
 
-        return info;
+        config.AI   = new Model_AI({ game: this, level: this.get("difficulty") });
+
+        return config;
     }
 
     function setRules (rules = {}) {
@@ -164,29 +173,38 @@ define([
         });
     }
 
-    function updateBoard (newCard) {
-        this.playedCards.push(newCard);
+    function updateTurn (newCard, simulation) {
+        var isSimulatedTurn = !!simulation;
+        var newCard         = isSimulatedTurn ? simulation.newCard : newCard;
+        var playedCards     = isSimulatedTurn ? simulation.playedCards : this.playedCards;
+        var user            = isSimulatedTurn ? simulation.user : this.get("players").user;
+        var opponent        = isSimulatedTurn ? simulation.computer : this.get("players").opponent;
+        var playing         = isSimulatedTurn ? simulation.playing : this.playing;
+
+        playedCards.push(newCard);
 
         var that          = this;
-        var adjacentCards = this.getAdjacentCards(newCard);
+        var adjacentCards = this.getAdjacentCards(newCard, playedCards);
         var index         = -1;
 
         // ELEMENTAL RULE
         if (this.get("rules").elemental) {
-            let boardCase = "case" + newCard.position.y + newCard.position.x;
+            let boardCase = "case" + newCard.get("position").y + newCard.get("position").x;
             let element   = this.elementCases[boardCase];
             if (element && element === newCard.get("element")) {
-                newCard.bonus++;
-                _$.events.trigger("showElementalBonus", { boardCase, bonusType: "bonus" });
+                newCard.set("bonus", newCard.get("bonus") + 1);
+                triggerEvent("showElementalBonus", { boardCase, bonusType: "bonus" });
             } else if (element && element !== newCard.get("element")) {
-                newCard.bonus--;
-                _$.events.trigger("showElementalBonus", { boardCase, bonusType: "penalty" });
+                newCard.set("bonus", newCard.get("bonus") - 1);
+                triggerEvent("showElementalBonus", { boardCase, bonusType: "penalty" });
             }
         }
 
         if (_.isEmpty(adjacentCards)) {
-            this.setupNextTurn();
-            _$.events.trigger("toNextTurn");
+            if (!isSimulatedTurn) {
+                this.setupNextTurn();
+            }
+            triggerEvent("toNextTurn", { nextTurn: true });
             return;
         }
 
@@ -194,39 +212,43 @@ define([
         index = -1;
         _.each(adjacentCards, function (card, side) {
             index++;
-            let boardCase = "case" + card.position.y + card.position.x;
+            let boardCase = "case" + card.get("position").y + card.get("position").x;
             let flipped   = false;
 
-            if (card.currentOwner !== newCard.currentOwner) {
-                if (side === "top" && (newCard.get("ranks").top + newCard.bonus) > (card.get("ranks").bottom + card.bonus)) {
+            if (card.get("currentOwner") !== newCard.get("currentOwner")) {
+                if (side === "top" && (newCard.get("ranks").top + newCard.get("bonus")) > (card.get("ranks").bottom + card.get("bonus"))) {
                     flipped = true;
-                    _$.events.trigger("flipCard", { boardCase, from: "bottom" });
-                } else if (side === "right" && (newCard.get("ranks").right + newCard.bonus) > (card.get("ranks").left + card.bonus)) {
+                    triggerEvent("flipCard", { boardCase, from: "bottom" });
+                } else if (side === "right" && (newCard.get("ranks").right + newCard.get("bonus")) > (card.get("ranks").left + card.get("bonus"))) {
                     flipped = true;
-                    _$.events.trigger("flipCard", { boardCase, from: "left" });
-                } else if (side === "bottom" && (newCard.get("ranks").bottom + newCard.bonus) > (card.get("ranks").top + card.bonus)) {
+                    triggerEvent("flipCard", { boardCase, from: "left" });
+                } else if (side === "bottom" && (newCard.get("ranks").bottom + newCard.get("bonus")) > (card.get("ranks").top + card.get("bonus"))) {
                     flipped = true;
-                    _$.events.trigger("flipCard", { boardCase, from: "top" });
-                } else if (side === "left" && (newCard.get("ranks").left + newCard.bonus) > (card.get("ranks").right + card.bonus)) {
+                    triggerEvent("flipCard", { boardCase, from: "top" });
+                } else if (side === "left" && (newCard.get("ranks").left + newCard.get("bonus")) > (card.get("ranks").right + card.get("bonus"))) {
                     flipped = true;
-                    _$.events.trigger("flipCard", { boardCase, from: "right" });
+                    triggerEvent("flipCard", { boardCase, from: "right" });
                 }
             }
 
             if (index === _.keys(adjacentCards).length - 1) {
-                if (that.playedCards.length === BOARD_SIZE) {
+                if (playedCards.length === BOARD_SIZE) {
                     if (flipped) {
                         updateScore(card, { endGame: true });
                     } else {
-                        that.setupEndGame();
-                        _$.events.trigger("toEndGame");
+                        if (!isSimulatedTurn) {
+                            that.setupEndGame();
+                        }
+                        triggerEvent("toEndGame", { endGame: true });
                     }
                 } else {
                     if (flipped) {
                         updateScore(card, { nextTurn: true });
                     } else {
-                        that.setupNextTurn();
-                        _$.events.trigger("toNextTurn");
+                        if (!isSimulatedTurn) {
+                            that.setupNextTurn();
+                        }
+                        triggerEvent("toNextTurn", { nextTurn: true });
                     }
                 }
             } else if (flipped) {
@@ -235,47 +257,66 @@ define([
         });
 
         function updateScore (flippedCard, options = {}) {
-            flippedCard.currentOwner = newCard.currentOwner;
+            flippedCard.set("currentOwner", newCard.get("currentOwner"));
 
-            if (that.playing === that.get("players").user) {
-                that.get("players").user.attributes.points++;
-                that.get("players").opponent.attributes.points--;
+            if (playing === user) {
+                user.set("points", user.get("points") + 1);
+                opponent.set("points", opponent.get("points") - 1);
             } else {
-                that.get("players").opponent.attributes.points++;
-                that.get("players").user.attributes.points--;
+                opponent.set("points", opponent.get("points") + 1);
+                user.set("points", user.get("points") - 1);
             }
 
-            if (options.nextTurn) {
-                that.setupNextTurn();
-            } else if (options.endGame) {
-                that.setupEndGame();
+            if (!isSimulatedTurn) {
+                if (options.nextTurn) {
+                    that.setupNextTurn();
+                } else if (options.endGame) {
+                    that.setupEndGame();
+                }
             }
 
-            _$.events.trigger("updateScore", options);
+            triggerEvent("updateScore", options);
+        }
+
+        function triggerEvent (eventName, options = {}) {
+            if (!isSimulatedTurn) {
+                _$.events.trigger(eventName, options);
+            } else {
+                simulation = _.extend(simulation, options);
+                _$.events.trigger("outputSimulation", simulation);
+            }
         }
     }
 
     function setupNextTurn () {
-        if (this.playing === this.get("players").user) {
-            this.playing = this.get("players").opponent;
+        if (!this.playing) {
+            this.playing = (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent;
         } else {
-            this.playing = this.get("players").user;
+            if (this.playing === this.get("players").user) {
+                this.playing = this.get("players").opponent;
+            } else {
+                this.playing = this.get("players").user;
+            }
         }
+
+        /*if (this.playing === this.get("players").opponent && this.playing.get("type") === "computer") {
+            this.playing.playTurn();
+        }*/
     }
 
     function setupEndGame () {
         _.each(this.playedCards, (card) => {
-            card.bonus    = 0;
-            card.position = null;
+            card.set("bonus", 0);
+            card.set("position", null);
         });
 
-        if (this.get("players").user.attributes.points > this.get("players").opponent.attributes.points) {
+        if (this.get("players").user.get("points") > this.get("players").opponent.get("points")) {
             this.winner = this.get("players").user;
             _$.state.user.get("gameStats").won++;
-        } else if (this.get("players").opponent.attributes.points > this.get("players").user.attributes.points) {
+        } else if (this.get("players").opponent.get("points") > this.get("players").user.get("points")) {
             this.winner = this.get("players").opponent;
             _$.state.user.get("gameStats").lost++;
-        } else if (this.get("players").user.attributes.points === this.get("players").opponent.attributes.points) {
+        } else if (this.get("players").user.get("points") === this.get("players").opponent.get("points")) {
             this.winner = "draw";
             _$.state.user.get("gameStats").draw++;
         }
@@ -285,17 +326,17 @@ define([
             var newOpponentDeck = [];
 
             _.each(this.get("players").user.get("deck"), (card) => {
-                if (card.currentOwner === this.get("players").user) {
+                if (card.get("currentOwner") === this.get("players").user) {
                     newUserDeck.push(card);
-                } else if (card.currentOwner === this.get("players").opponent) {
+                } else if (card.get("currentOwner") === this.get("players").opponent) {
                     newOpponentDeck.push(card);
                 }
             });
 
             _.each(this.get("players").opponent.get("deck"), (card) => {
-                if (card.currentOwner === this.get("players").user) {
+                if (card.get("currentOwner") === this.get("players").user) {
                     newUserDeck.push(card);
-                } else if (card.currentOwner === this.get("players").opponent) {
+                } else if (card.get("currentOwner") === this.get("players").opponent) {
                     newOpponentDeck.push(card);
                 }
             });
@@ -304,20 +345,20 @@ define([
             this.get("players").opponent.set("deck", newOpponentDeck);
         } else if (this.get("rules").trade === "none") {
             _.each(this.originalDecks.user, (card) => {
-                card.owner        = null;
-                card.currentOwner = null;
+                card.set("owner", null);
+                card.set("currentOwner", null);
             });
 
             _.each(this.originalDecks.opponent, (card) => {
-                card.owner        = null;
-                card.currentOwner = null;
+                card.set("owner", null);
+                card.set("currentOwner", null);
             });
         }
 
         if (this.get("rules").trade === "one") {
             this.cardsToTrade = 1;
         } else if (this.get("rules").trade === "difference") {
-            this.cardsToTrade = Math.abs(this.get("players").user.attributes.points - this.get("players").opponent.attributes.points);
+            this.cardsToTrade = Math.abs(this.get("players").user.get("points") - this.get("players").opponent.get("points"));
 
             if (this.cardsToTrade > 5) {
                 this.cardsToTrade = 5;
@@ -334,21 +375,20 @@ define([
     function selectCardsToTrade () {
         // Select the best cards from the player's deck
         var orderedDeck = _.sortBy(this.originalDecks.user, [function (card) { return card.getRanksSum(); }]);
-        this.computerInfo.selectedCards = orderedDeck.slice(0, this.cardsToTrade);
+        this.computer.selectedCards = orderedDeck.slice(0, this.cardsToTrade);
     }
 
     function updateUserAlbum (gainedLost) {
         _.each(this.originalDecks.user, (card) => {
-            card.owner        = null;
-            card.currentOwner = null;
+            card.set("owner", null);
+            card.set("currentOwner", null);
         });
 
         _.each(this.originalDecks.opponent, (card) => {
-            card.owner        = null;
-            card.currentOwner = null;
+            card.set("owner", null);
+            card.set("currentOwner", null);
         });
 
-        console.log(gainedLost);
         if (gainedLost.gained.length) {
             _$.state.user.get("album").add(gainedLost.gained);
         }
@@ -358,17 +398,17 @@ define([
         }
     }
 
-    function getAdjacentCards (card) {
+    function getAdjacentCards (card, playedCards) {
         var adjacentCards = {};
 
-        _.each(this.playedCards, function (playedCard) {
-            if (playedCard.position.x === card.position.x && playedCard.position.y === card.position.y - 1) {
+        _.each(playedCards, function (playedCard) {
+            if (playedCard.get("position").x === card.get("position").x && playedCard.get("position").y === card.get("position").y - 1) {
                 adjacentCards.top = playedCard;
-            } else if (playedCard.position.x === card.position.x && playedCard.position.y === card.position.y + 1) {
+            } else if (playedCard.get("position").x === card.get("position").x && playedCard.get("position").y === card.get("position").y + 1) {
                 adjacentCards.bottom = playedCard;
-            } else if (playedCard.position.y === card.position.y && playedCard.position.x === card.position.x - 1) {
+            } else if (playedCard.get("position").y === card.get("position").y && playedCard.get("position").x === card.get("position").x - 1) {
                 adjacentCards.left = playedCard;
-            } else if (playedCard.position.y === card.position.y && playedCard.position.x === card.position.x + 1) {
+            } else if (playedCard.get("position").y === card.get("position").y && playedCard.get("position").x === card.get("position").x + 1) {
                 adjacentCards.right = playedCard;
             }
         });

@@ -6,7 +6,16 @@ define(["underscore", "backbone", "global"], function Model_Player (_, Backbone,
             name   : null,
             avatar : null,
             deck   : null,
-            points : 5
-        }
+            points : 5,
+            AI     : null
+        },
+
+        playTurn
     });
+
+    function playTurn () {
+        if (this.get("AI")) {
+            this.get("AI").doAction();
+        }
+    }
 });
