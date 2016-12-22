@@ -148,8 +148,15 @@
       if (events) triggerEvents(events, arguments);
       if (allEvents) triggerEvents(allEvents, arguments);
 
-      if (!name.match(/^change/) && getParentNamespace(name)) {
-        this.trigger.apply(this, [getParentNamespace(name)].concat(args));
+      var parent = getParentNamespace(name);
+      var parentArgs;
+      if (!name.match(/^change/) && parent) {
+        do {
+          parentArgs = [parent].concat(slice.call(args), name);
+          if (this._events[parent]) triggerEvents(this._events[parent], parentArgs);
+          if (allEvents) triggerEvents(allEvents, parentArgs);
+          parent = getParentNamespace(parent);
+        } while (parent);
       }
       return this;
 
