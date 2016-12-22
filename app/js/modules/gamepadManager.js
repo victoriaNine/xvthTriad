@@ -62,7 +62,7 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
 
     var ALIASES = {};
 
-    function setupXboxAliases () {
+    function createXboxAliases () {
         for (var axe in MAP_XBOX.axe) {
             ALIASES[MAP_XBOX.axe[axe]] = MAP_PS.axe[axe];
         }
@@ -72,41 +72,20 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
         }
     }
 
-    setupXboxAliases();
+    createXboxAliases();
 
     class GamepadCursor {
         constructor (gamepad) {
-            this.id       = "cursor_gamepad" + gamepad.index;
-            this.gamepad  = gamepad;
-            this.dom      = null;
-            this.targets  = [];
-            this.isPlaced = false;
-            this.position = {
+            this.id            = "cursor_gamepad" + gamepad.index;
+            this.gamepad       = gamepad;
+            this.dom           = null;
+            this.targets       = [];
+            this.currentTarget = null;
+            this.targetIndex   = -1;
+            this.position      = {
                 x: 0,
                 y: 0
             };
-        }
-
-        getTargets () {
-            var targets = [];
-
-            _$.dom.find("[data-gamepad]").each(function () {
-                if (_$.utils.isVisibleByUser(this)) {
-                    targets.push(this);
-                }
-            });
-
-            return targets;
-        }
-
-        updateTargets () {
-            this.targets = this.getTargets();
-
-            if (this.dom && !this.isPlaced) {
-                this.isPlaced = true;
-                this.dom.fadeIn();
-                this.place({ set: true });
-            }
         }
 
         setup () {
@@ -117,12 +96,11 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
 
         remove () {
             this.dom.fadeOut().remove();
-            this.isPlaced = false;
         }
 
         place (options = {}) {
             options = _.defaults(options, {
-                target : this.targets[0],
+                target : this.currentTarget,
                 set    : false
             });
 
@@ -132,20 +110,120 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
             }
 
             var targetPosition = _$.utils.getAbsoluteOffset(options.target);
-            this.position.x    = targetPosition.left;
-            this.position.y    = targetPosition.top;
-
-            var visualX = this.position.x - this.dom.width() * 0.75;
+            this.position.x    = targetPosition.left - this.dom.width();
+            this.position.y    = targetPosition.top + (($(options.target).height() - this.dom.height()) / 2);
 
             if (this.dom.not(":visible")) {
                 this.dom.fadeIn();
             }
 
             if (options.set) {
-                TweenMax.set(this.dom, { left: visualX, top: this.position.y });
+                TweenMax.set(this.dom, { left: this.position.x, top: this.position.y });
             } else {
-                TweenMax.to(this.dom, 0.15, { left: visualX, top: this.position.y });
+                TweenMax.to(this.dom, 0.15, { left: this.position.x, top: this.position.y });
             }
+        }
+
+        getTargets () {
+            var targets = [];
+
+            _$.dom.find("[data-gamepad]").each(function () {
+                if (_$.utils.isVisibleByUser(this) && !$(this).hasClass("is--disabled")) {
+                    targets.push(this);
+                }
+            });
+
+            return targets;
+        }
+
+        updateTargets () {
+            this.targets = this.getTargets();
+
+            if (this.dom) {
+                this.moveToTarget(this.targets[0], true);
+            }
+        }
+
+        setTarget (target) {
+            this.currentTarget = target || this.targets[0];
+            this.targetIndex   = this.targets.indexOf(target);
+        }
+
+        getNextTarget () {
+            if (++this.targetIndex === this.targets.length) {
+                this.targetIndex = 0;
+            }
+
+            return this.targets[this.targetIndex];
+        }
+
+        getPreviousTarget () {
+            if (--this.targetIndex < 0) {
+                this.targetIndex = this.targets.length - 1;
+            }
+
+            return this.targets[this.targetIndex];
+        }
+
+        press () {
+            this.dispatchMouseEvent(this.currentTarget, [this.createMouseEvent("mousedown")]);
+        }
+
+        release () {
+            var events = [];
+            events.push(this.createMouseEvent("mouseup"));
+            events.push(this.createMouseEvent("click"));
+            this.dispatchMouseEvent(events);
+        }
+
+        moveToTarget (newTarget, noTransition) {
+            var currentTargetEvents = [];
+            var newTargetEvents     = [];
+
+            if (this.currentTarget) {
+                $(this.currentTarget).removeClass("is--hover");
+                currentTargetEvents.push(this.createMouseEvent("mouseout", this.currentTarget, { relatedTarget: newTarget }));
+                currentTargetEvents.push(this.createMouseEvent("mouseleave", this.currentTarget, { relatedTarget: newTarget }));
+            }
+
+            this.setTarget(newTarget);
+
+            $(newTarget).addClass("is--hover");   
+            newTargetEvents.push(this.createMouseEvent("mouseover", newTarget, { relatedTarget: this.currentTarget }));
+            newTargetEvents.push(this.createMouseEvent("mouseenter", newTarget, { relatedTarget: this.currentTarget }));
+
+            this.place({ target: newTarget, set: noTransition });
+        }
+
+        dispatchMouseEvent (events, target) {
+            target = target || this.currentTarget;
+            for (var i = 0, ii = events.length; i < ii; i++) {
+                target.dispatchEvent(events[i]);
+            }
+        }
+
+        createMouseEvent (type, target, options = {}) {
+            target = target || this.currentTarget;
+
+            var targetOffset = $(target).offset();
+            var eventConfig  = _.extend({
+                bubbles       : true,
+                cancelable    : false,
+                view          : window,
+                detail        : 0,
+                pageX         : targetOffset.left,
+                pageY         : targetOffset.top,
+                clientX       : targetOffset.left,
+                clientY       : targetOffset.top,
+                ctrlKey       : false,
+                altKey        : false,
+                shiftKey      : false,
+                metaKey       : false,
+                button        : 0,
+                relatedTarget : null
+            }, options);
+
+            return new MouseEvent(type, eventConfig);
         }
     }
 
@@ -292,7 +370,7 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
                     let axeName = that.getButtonAlias(that.getButtonName("axe." + i, gamepad));
 
                     if (axeValue !== axes[i]) {
-                        _$.events.trigger("gamepad." + axeName, axeValue, gamepad.pad);
+                        _$.events.trigger("gamepad:" + axeName + ":valueChange", axeValue, gamepad);
                         axes[i] = axeValue;
                     }
                 });
@@ -302,16 +380,16 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
 
                     if (buttonState.pressed !== buttons[i].pressed) {
                         if (buttonState.pressed) {
-                            _$.events.trigger("gamepad." + buttonName + ":press", buttonState.pressed, gamepad.pad);
+                            _$.events.trigger("gamepad:" + buttonName + ":press", buttonState.pressed, gamepad);
                         } else {
-                            _$.events.trigger("gamepad." + buttonName + ":release", buttonState.pressed, gamepad.pad);
+                            _$.events.trigger("gamepad:" + buttonName + ":release", buttonState.pressed, gamepad);
                         }
 
                         buttons[i].pressed = buttonState.pressed;
                     }
 
                     if (buttonState.value !== buttons[i].value) {
-                        _$.events.trigger("gamepad." + buttonName + ":valueChange", buttonState.value, gamepad.pad);
+                        _$.events.trigger("gamepad:" + buttonName + ":valueChange", buttonState.value, gamepad);
                         buttons[i].value = buttonState.value;
                     }
                 });
@@ -321,6 +399,22 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
         updateCursorTargets () {
             _.each(this.gamepads, (gamepad) => {
                 gamepad.cursor.updateTargets();
+            });
+        }
+
+        showCursors () {
+            _.each(this.gamepads, (gamepad) => {
+                if (gamepad.cursor.dom) {
+                    gamepad.cursor.dom.fadeIn();
+                }
+            });
+        }
+
+        hideCursors () {
+            _.each(this.gamepads, (gamepad) => {
+                if (gamepad.cursor.dom) {
+                    gamepad.cursor.dom.fadeOut();
+                }
             });
         }
 

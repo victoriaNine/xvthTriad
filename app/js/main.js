@@ -66,11 +66,11 @@ require([
     var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX];
 
     _$.events.on("all", function (eventName, ...data) {
-        if (data.length) {
+        /*if (data.length) {
             _$.debug.log("event triggered:", eventName, data);
         } else {
             _$.debug.log("event triggered:", eventName);
-        }
+        }*/
     });
 
     _$.events.once("allLoadersComplete", function () {
@@ -117,7 +117,7 @@ require([
 
             if (forceSize) {
                 html.style.transformOrigin = "0 0";
-                _$.events.on("scalarUpdate", function (newScalar) {
+                _$.events.on("scalarUpdate", function (event, newScalar) {
                     _$.state.appScalar = newScalar;
                 });
                 window.addEventListener("resize", reScale);

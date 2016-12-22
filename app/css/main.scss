@@ -361,7 +361,7 @@ h1 {
         @include transform("translate3d(0, 0, 0)");
     }
 
-    &:hover, &.is--active {
+    &:hover, &.is--active, &.is--hover {
         background: #FFF;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -392,7 +392,7 @@ h1 {
         }
     }
 
-    &:hover {
+    &:hover, &.is--hover {
         & %btn-diamond-hoverFX {
             &:after {
                 background: #FFF;
@@ -432,7 +432,7 @@ h1 {
         @include transition("letter-spacing .15s .1s, text-indent .15s .1s");
     }
 
-    &:hover {
+    &:hover, &.is--hover {
         &:before {
             box-shadow: -25px 25px 0 0 rgba(0, 0, 0, .25),
                         25px -25px 0 0 rgba(0, 0, 0, .25);
@@ -464,7 +464,7 @@ h1 {
 .arrow-down { @include transform("rotate(90deg)"); }
 .arrow-left { @include transform("rotate(180deg)"); }
 
-%btn-diamond:hover %arrow {
+%btn-diamond:hover %arrow, %btn-diamond.is--hover %arrow {
     mix-blend-mode: exclusion;
 }
 
@@ -478,7 +478,7 @@ h1 {
     top:0;
     transform-style: preserve-3d;
 
-    &:hover {
+    &:hover, &.is--hover {
         @include transform("scale(1.1)");
     }
 
@@ -501,7 +501,7 @@ h1 {
     @include transition("fill .2s");
 }
 
-.card-blue .svg-cardBG, .card-black:hover .svg-cardBG  { fill: transparentize($color_blue, 0.5); }
+.card-blue .svg-cardBG, .card-black:hover .svg-cardBG, .card-black.is--hover .svg-cardBG  { fill: transparentize($color_blue, 0.5); }
 .card-red .svg-cardBG   { fill: transparentize($color_red, 0.5); }
 .card-black .svg-cardBG { fill: rgba(0, 0, 0, 0.5); }
 
@@ -600,7 +600,7 @@ h1 {
         @include transition("fill .15s, stroke .15s");
     }
 
-    &:not(.is--tweening):hover .svg-logo {
+    &:not(.is--tweening):hover .svg-logo, &:not(.is--tweening).is--hover .svg-logo {
         fill: rgba(0, 0, 0, 0.25);
         stroke: rgba(255, 255, 255, 1);
     }
@@ -626,7 +626,7 @@ h1 {
             @extend %btn-diamond-hoverFX;
         }
 
-        &:hover {
+        &:hover, &.is--hover {
             & %socialIcons-icon:before {
                 mix-blend-mode: exclusion;
             }
@@ -950,7 +950,7 @@ h1 {
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 90%);
     }
 
-    &:not(.is--disabled):hover, &.is--active {
+    &:not(.is--disabled):hover, &.is--active, &:not(.is--disabled).is--hover {
         filter: saturate(1) brightness(1);
         cursor: pointer;
     }
@@ -982,7 +982,7 @@ h1 {
         @include transition("opacity .4s, transform .4s");
     }
 
-    &:hover &-title, &.is--active &-title {
+    &:hover &-title, &.is--active &-title, &.is--hover &-title {
         span { opacity: 1; }
         span:nth-of-type(1) { @include transform("translateY(0)"); @include transition("opacity .4s, transform .4s"); }
         span:nth-of-type(2) { @include transform("translateX(0)"); @include transition("opacity .4s .2s, transform .4s .2s"); }
@@ -1102,7 +1102,7 @@ h1 {
             @include transition("width .2s .2s");
         }
 
-        &:hover {
+        &:hover, &.is--hover {
             color: $color_red;
 
             &:before { width: 100%; }
@@ -1362,7 +1362,7 @@ h1 {
         }
     }
 
-    &:hover {
+    &:hover, &.is--hover {
         & .cardSelect_content-nav-prevBtn-hoverFX,
         & .cardSelect_content-nav-nextBtn-hoverFX {
             border: 1px solid #FFF;
@@ -1741,7 +1741,7 @@ h1 {
         @extend %album-card-label
     }
 
-    & .card-blue:hover {
+    & .card-blue:hover, & .card-blue.is--hover {
         @include transform("scale(1)");
     }
 }
@@ -1795,7 +1795,7 @@ h1 {
     height: 200px;
     width: 200px;
 
-    &:hover {
+    &:hover, &.is--hover {
         @extend %avatar-blue;
     }
 

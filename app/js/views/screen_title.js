@@ -66,6 +66,8 @@ define([
 
     function playIntro () {
         _$.events.trigger("stopUserEvents");
+        $(window).one("click touchstart", skipIntro.bind(this));
+        _$.events.once("gamepad", skipIntro.bind(this));
 
         var logoPaths = [];
         this.$(".svg-logo").find("path[fill!=none]").each(function () {
@@ -114,6 +116,13 @@ define([
         });
 
         return this;
+
+        function skipIntro () {
+            $(window).off("click touchstart", skipIntro.bind(this));
+            _$.events.off("gamepad", skipIntro.bind(this));
+
+            this.introTL.progress(1);
+        }
     }
 
     function transitionIn () {

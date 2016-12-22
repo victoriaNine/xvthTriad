@@ -318,12 +318,12 @@ h1 {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .footer_menu-element:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.footer_menu-element, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn {
+  .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .footer_menu-element:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.footer_menu-element, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.footer_menu-element, .is--hover.about_credits, .is--hover.game_overlay-endGame-confirmBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .footer_menu-element:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.footer_menu-element:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after {
+    .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .footer_menu-element:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.footer_menu-element:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.about_credits:after, .is--hover.game_overlay-endGame-confirmBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -346,7 +346,7 @@ h1 {
     -webkit-transition: -webkit-all .2s .2s ease-in;
     -ms-transition: -ms-all .2s .2s ease-in;
     transition: all .2s .2s ease-in; }
-.about_prevBtn:hover .about_prevBtn-hoverFX:after, .title_startBtn:hover .about_prevBtn-hoverFX:after, .footer_social-element:hover .about_prevBtn-hoverFX:after, .about_social-element:hover .about_prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .about_prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .about_prevBtn-hoverFX:after, .about_prevBtn:hover .title_startBtn-hoverFX:after, .title_startBtn:hover .title_startBtn-hoverFX:after, .footer_social-element:hover .title_startBtn-hoverFX:after, .about_social-element:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .title_startBtn-hoverFX:after, .about_prevBtn:hover .footer_social-element-hoverFX:after, .title_startBtn:hover .footer_social-element-hoverFX:after, .footer_social-element:hover .footer_social-element-hoverFX:after, .about_social-element:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .footer_social-element-hoverFX:after, .about_prevBtn:hover .about_social-element-hoverFX:after, .title_startBtn:hover .about_social-element-hoverFX:after, .footer_social-element:hover .about_social-element-hoverFX:after, .about_social-element:hover .about_social-element-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .about_social-element-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .about_social-element-hoverFX:after {
+.about_prevBtn:hover .about_prevBtn-hoverFX:after, .title_startBtn:hover .about_prevBtn-hoverFX:after, .footer_social-element:hover .about_prevBtn-hoverFX:after, .about_social-element:hover .about_prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .about_prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .about_prevBtn-hoverFX:after, .about_prevBtn:hover .title_startBtn-hoverFX:after, .title_startBtn:hover .title_startBtn-hoverFX:after, .footer_social-element:hover .title_startBtn-hoverFX:after, .about_social-element:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .title_startBtn-hoverFX:after, .about_prevBtn:hover .footer_social-element-hoverFX:after, .title_startBtn:hover .footer_social-element-hoverFX:after, .footer_social-element:hover .footer_social-element-hoverFX:after, .about_social-element:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .footer_social-element-hoverFX:after, .about_prevBtn:hover .about_social-element-hoverFX:after, .title_startBtn:hover .about_social-element-hoverFX:after, .footer_social-element:hover .about_social-element-hoverFX:after, .about_social-element:hover .about_social-element-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .about_social-element-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .about_social-element-hoverFX:after, .is--hover.about_prevBtn .about_prevBtn-hoverFX:after, .is--hover.title_startBtn .about_prevBtn-hoverFX:after, .is--hover.footer_social-element .about_prevBtn-hoverFX:after, .is--hover.about_social-element .about_prevBtn-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .about_prevBtn-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .about_prevBtn-hoverFX:after, .is--hover.about_prevBtn .title_startBtn-hoverFX:after, .is--hover.title_startBtn .title_startBtn-hoverFX:after, .is--hover.footer_social-element .title_startBtn-hoverFX:after, .is--hover.about_social-element .title_startBtn-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .title_startBtn-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .title_startBtn-hoverFX:after, .is--hover.about_prevBtn .footer_social-element-hoverFX:after, .is--hover.title_startBtn .footer_social-element-hoverFX:after, .is--hover.footer_social-element .footer_social-element-hoverFX:after, .is--hover.about_social-element .footer_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .footer_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .footer_social-element-hoverFX:after, .is--hover.about_prevBtn .about_social-element-hoverFX:after, .is--hover.title_startBtn .about_social-element-hoverFX:after, .is--hover.footer_social-element .about_social-element-hoverFX:after, .is--hover.about_social-element .about_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .about_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .about_social-element-hoverFX:after {
   background: #FFF;
   top: 0;
   left: 0;
@@ -381,12 +381,12 @@ h1 {
     -webkit-transition: -webkit-letter-spacing .15s .1s, text-indent .15s .1s;
     -ms-transition: -ms-letter-spacing .15s .1s, text-indent .15s .1s;
     transition: letter-spacing .15s .1s, text-indent .15s .1s; }
-  .about_prevBtn:hover:before, .title_startBtn:hover:before {
+  .about_prevBtn:hover:before, .title_startBtn:hover:before, .is--hover.about_prevBtn:before, .is--hover.title_startBtn:before {
     box-shadow: -25px 25px 0 0 rgba(0, 0, 0, 0.25), 25px -25px 0 0 rgba(0, 0, 0, 0.25);
     -webkit-transition: -webkit-box-shadow .2s .1s ease-out;
     -ms-transition: -ms-box-shadow .2s .1s ease-out;
     transition: box-shadow .2s .1s ease-out; }
-  .about_prevBtn:hover:after, .title_startBtn:hover:after {
+  .about_prevBtn:hover:after, .title_startBtn:hover:after, .is--hover.about_prevBtn:after, .is--hover.title_startBtn:after {
     letter-spacing: 0.25em;
     text-indent: 0.25em; }
 
@@ -411,7 +411,7 @@ h1 {
   -ms-transform: rotate(180deg);
   transform: rotate(180deg); }
 
-.about_prevBtn:hover .arrow-up, .title_startBtn:hover .arrow-up, .footer_social-element:hover .arrow-up, .about_social-element:hover .arrow-up, .cardSelect_content-nav-prevBtn:hover .arrow-up, .cardSelect_content-nav-nextBtn:hover .arrow-up, .about_prevBtn:hover .arrow-right, .title_startBtn:hover .arrow-right, .footer_social-element:hover .arrow-right, .about_social-element:hover .arrow-right, .cardSelect_content-nav-prevBtn:hover .arrow-right, .cardSelect_content-nav-nextBtn:hover .arrow-right, .about_prevBtn:hover .arrow-down, .title_startBtn:hover .arrow-down, .footer_social-element:hover .arrow-down, .about_social-element:hover .arrow-down, .cardSelect_content-nav-prevBtn:hover .arrow-down, .cardSelect_content-nav-nextBtn:hover .arrow-down, .about_prevBtn:hover .arrow-left, .title_startBtn:hover .arrow-left, .footer_social-element:hover .arrow-left, .about_social-element:hover .arrow-left, .cardSelect_content-nav-prevBtn:hover .arrow-left, .cardSelect_content-nav-nextBtn:hover .arrow-left {
+.about_prevBtn:hover .arrow-up, .title_startBtn:hover .arrow-up, .footer_social-element:hover .arrow-up, .about_social-element:hover .arrow-up, .cardSelect_content-nav-prevBtn:hover .arrow-up, .cardSelect_content-nav-nextBtn:hover .arrow-up, .about_prevBtn:hover .arrow-right, .title_startBtn:hover .arrow-right, .footer_social-element:hover .arrow-right, .about_social-element:hover .arrow-right, .cardSelect_content-nav-prevBtn:hover .arrow-right, .cardSelect_content-nav-nextBtn:hover .arrow-right, .about_prevBtn:hover .arrow-down, .title_startBtn:hover .arrow-down, .footer_social-element:hover .arrow-down, .about_social-element:hover .arrow-down, .cardSelect_content-nav-prevBtn:hover .arrow-down, .cardSelect_content-nav-nextBtn:hover .arrow-down, .about_prevBtn:hover .arrow-left, .title_startBtn:hover .arrow-left, .footer_social-element:hover .arrow-left, .about_social-element:hover .arrow-left, .cardSelect_content-nav-prevBtn:hover .arrow-left, .cardSelect_content-nav-nextBtn:hover .arrow-left, .is--hover.about_prevBtn .arrow-up, .is--hover.title_startBtn .arrow-up, .is--hover.footer_social-element .arrow-up, .is--hover.about_social-element .arrow-up, .is--hover.cardSelect_content-nav-prevBtn .arrow-up, .is--hover.cardSelect_content-nav-nextBtn .arrow-up, .is--hover.about_prevBtn .arrow-right, .is--hover.title_startBtn .arrow-right, .is--hover.footer_social-element .arrow-right, .is--hover.about_social-element .arrow-right, .is--hover.cardSelect_content-nav-prevBtn .arrow-right, .is--hover.cardSelect_content-nav-nextBtn .arrow-right, .is--hover.about_prevBtn .arrow-down, .is--hover.title_startBtn .arrow-down, .is--hover.footer_social-element .arrow-down, .is--hover.about_social-element .arrow-down, .is--hover.cardSelect_content-nav-prevBtn .arrow-down, .is--hover.cardSelect_content-nav-nextBtn .arrow-down, .is--hover.about_prevBtn .arrow-left, .is--hover.title_startBtn .arrow-left, .is--hover.footer_social-element .arrow-left, .is--hover.about_social-element .arrow-left, .is--hover.cardSelect_content-nav-prevBtn .arrow-left, .is--hover.cardSelect_content-nav-nextBtn .arrow-left {
   mix-blend-mode: exclusion; }
 
 /* CARDS --------------*/
@@ -423,7 +423,7 @@ h1 {
   left: 0;
   top: 0;
   transform-style: preserve-3d; }
-  .card:hover {
+  .card:hover, .card.is--hover {
     -webkit-transform: scale(1.1);
     -ms-transform: scale(1.1);
     transform: scale(1.1); }
@@ -444,7 +444,7 @@ h1 {
   -ms-transition: -ms-fill .2s;
   transition: fill .2s; }
 
-.card-blue .svg-cardBG, .card-black:hover .svg-cardBG {
+.card-blue .svg-cardBG, .card-black:hover .svg-cardBG, .card-black.is--hover .svg-cardBG {
   fill: rgba(40, 51, 120, 0.5); }
 
 .card-red .svg-cardBG {
@@ -547,7 +547,7 @@ h1 {
     -webkit-transition: -webkit-fill .15s, stroke .15s;
     -ms-transition: -ms-fill .15s, stroke .15s;
     transition: fill .15s, stroke .15s; }
-  .footer_logo:not(.is--tweening):hover .svg-logo, .about_logo:not(.is--tweening):hover .svg-logo {
+  .footer_logo:not(.is--tweening):hover .svg-logo, .about_logo:not(.is--tweening):hover .svg-logo, .footer_logo:not(.is--tweening).is--hover .svg-logo, .about_logo:not(.is--tweening).is--hover .svg-logo {
     fill: rgba(0, 0, 0, 0.25);
     stroke: white; }
 
@@ -563,7 +563,7 @@ h1 {
     bottom: .15em;
     overflow: visible !important;
     font-size: inherit; }
-    .footer_social-element:hover .footer_social-icon:before, .about_social-element:hover .footer_social-icon:before, .footer_social-element:hover .about_social-icon:before, .about_social-element:hover .about_social-icon:before {
+    .footer_social-element:hover .footer_social-icon:before, .about_social-element:hover .footer_social-icon:before, .footer_social-element:hover .about_social-icon:before, .about_social-element:hover .about_social-icon:before, .is--hover.footer_social-element .footer_social-icon:before, .is--hover.about_social-element .footer_social-icon:before, .is--hover.footer_social-element .about_social-icon:before, .is--hover.about_social-element .about_social-icon:before {
       mix-blend-mode: exclusion; }
   .footer_social-element:last-child, .about_social-element:last-child {
     margin-right: 0; }
@@ -741,10 +741,10 @@ h1 {
     background-size: cover;
     background-repeat: no-repeat; }
 
-.game_playerHUD-user.is--active .game_playerHUD-avatar, .userSettings_header-avatar:hover {
+.game_playerHUD-user.is--active .game_playerHUD-avatar, .userSettings_header-avatar:hover, .userSettings_header-avatar.is--hover {
   background: rgba(71, 53, 235, 0.25);
   box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset, 0 0 18px 4px rgba(40, 0, 255, 0.25); }
-  .game_playerHUD-user.is--active .game_playerHUD-avatar:before, .userSettings_header-avatar:hover:before {
+  .game_playerHUD-user.is--active .game_playerHUD-avatar:before, .userSettings_header-avatar:hover:before, .userSettings_header-avatar.is--hover:before {
     box-shadow: 0 0 18px 8px rgba(33, 150, 243, 0.25); }
 
 .game_playerHUD-opponent.is--active .game_playerHUD-avatar {
@@ -807,7 +807,7 @@ h1 {
     left: 0;
     top: 0;
     background: linear-gradient(to bottom, transparent 60%, black 90%); }
-  .menu_element:not(.is--disabled):hover, .menu_element.is--active {
+  .menu_element:not(.is--disabled):hover, .menu_element.is--active, .menu_element:not(.is--disabled).is--hover {
     filter: saturate(1) brightness(1);
     cursor: pointer; }
   .menu_element-bg {
@@ -837,16 +837,16 @@ h1 {
     -webkit-transition: -webkit-opacity .4s, transform .4s;
     -ms-transition: -ms-opacity .4s, transform .4s;
     transition: opacity .4s, transform .4s; }
-  .menu_element:hover .menu_element-title span, .menu_element.is--active .menu_element-title span {
+  .menu_element:hover .menu_element-title span, .menu_element.is--active .menu_element-title span, .menu_element.is--hover .menu_element-title span {
     opacity: 1; }
-  .menu_element:hover .menu_element-title span:nth-of-type(1), .menu_element.is--active .menu_element-title span:nth-of-type(1) {
+  .menu_element:hover .menu_element-title span:nth-of-type(1), .menu_element.is--active .menu_element-title span:nth-of-type(1), .menu_element.is--hover .menu_element-title span:nth-of-type(1) {
     -webkit-transform: translateY(0);
     -ms-transform: translateY(0);
     transform: translateY(0);
     -webkit-transition: -webkit-opacity .4s, transform .4s;
     -ms-transition: -ms-opacity .4s, transform .4s;
     transition: opacity .4s, transform .4s; }
-  .menu_element:hover .menu_element-title span:nth-of-type(2), .menu_element.is--active .menu_element-title span:nth-of-type(2) {
+  .menu_element:hover .menu_element-title span:nth-of-type(2), .menu_element.is--active .menu_element-title span:nth-of-type(2), .menu_element.is--hover .menu_element-title span:nth-of-type(2) {
     -webkit-transform: translateX(0);
     -ms-transform: translateX(0);
     transform: translateX(0);
@@ -953,9 +953,9 @@ h1 {
       -webkit-transition: -webkit-width .2s .2s;
       -ms-transition: -ms-width .2s .2s;
       transition: width .2s .2s; }
-    .about_legal a:hover {
+    .about_legal a:hover, .about_legal a.is--hover {
       color: #eb3547; }
-      .about_legal a:hover:before {
+      .about_legal a:hover:before, .about_legal a.is--hover:before {
         width: 100%; }
 
 .about_social {
@@ -1083,9 +1083,9 @@ h1 {
       -webkit-transition: -webkit-all .2s .2s ease-in;
       -ms-transition: -ms-all .2s .2s ease-in;
       transition: all .2s .2s ease-in; }
-  .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX {
+  .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX {
     border: 1px solid #FFF; }
-    .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after {
+    .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX:after {
       background: #FFF;
       -webkit-transition: -webkit-all .2s ease-out;
       -ms-transition: -ms-all .2s ease-out;
@@ -1427,7 +1427,7 @@ h1 {
   height: 270px;
   margin-right: 1.5em;
   border: none; }
-  .game_overlay-endGame-album-card .card-blue:hover {
+  .game_overlay-endGame-album-card .card-blue:hover, .game_overlay-endGame-album-card .card-blue.is--hover {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1); }

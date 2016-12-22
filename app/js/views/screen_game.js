@@ -313,7 +313,7 @@ define([
         });
     }
 
-    function updateScore (options = {}) {
+    function updateScore (event, options = {}) {
         this.ui.HUDuser.find(".game_playerHUD-score").text(this.players.user.get("points"));
         this.ui.HUDopponent.find(".game_playerHUD-score").text(this.players.opponent.get("points"));
 
@@ -519,12 +519,12 @@ define([
         }
     }
 
-    function flipCard (info) {
+    function flipCard (event, info) {
         var cardView = this.board[info.boardCase];
         cardView.flip(info);
     }
 
-    function showElementalBonus (info) {
+    function showElementalBonus (event, info) {
         this.$("#" + info.boardCase).addClass("has--" + info.bonusType);
     }
 
@@ -649,7 +649,7 @@ define([
         }
     }
 
-    function endGameCardSelected (info) {
+    function endGameCardSelected (event, info) {
         if (info.selected) {
             if (!_.includes(this.gainedCards, info.endGameCardView)) {
                 this.gainedCards.push(info.endGameCardView);

@@ -255,7 +255,7 @@ define([
         }
     }
 
-    function updateDeck (options) {
+    function updateDeck (event, options) {
         var holderIndex;
 
         if (options.action === "remove") {
