@@ -95,7 +95,9 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
         }
 
         remove () {
-            this.dom.fadeOut().remove();
+            if (this.dom) {
+                this.dom.fadeOut().remove();
+            }
         }
 
         place (options = {}) {
