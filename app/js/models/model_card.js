@@ -15,7 +15,8 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
             owner        : null,
             currentOwner : null,
             position     : null,
-            bonus        : 0
+            bonus        : 0,
+            deckIndex    : -1
         },
 
         initialize,

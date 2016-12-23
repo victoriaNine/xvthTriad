@@ -58,6 +58,8 @@ define([
         getRandomCards,
         getAbsoluteOffset,
         getDestinationCoord,
+        getPositionFromCaseName,
+        getCaseNameFromPosition,
         getUID,
         addDomObserver,
         saveData,
@@ -237,6 +239,23 @@ define([
         return document.elementFromPoint(offsetX / window.devicePixelRatio, offsetY / window.devicePixelRatio);
     }
 
+    function getAbsoluteOffset (element) {
+        element = $(element)[0];
+        var top  = 0;
+        var left = 0;
+
+        while (element) {
+            top     += $(element)[0].offsetTop  || 0;
+            left    += $(element)[0].offsetLeft || 0;
+            element  = $(element)[0].offsetParent;
+        }
+
+        return {
+            left : left,
+            top  : top
+        };
+    }
+
     /* DOM */
     function addDomObserver (elements, eventName, once = true, mutationType = "add") {
         if (!_.isArray(elements)) {
@@ -349,23 +368,6 @@ define([
         return cards;
     }
 
-    function getAbsoluteOffset (element) {
-        element = $(element)[0];
-        var top  = 0;
-        var left = 0;
-
-        while (element) {
-            top     += $(element)[0].offsetTop  || 0;
-            left    += $(element)[0].offsetLeft || 0;
-            element  = $(element)[0].offsetParent;
-        }
-
-        return {
-            left : left,
-            top  : top
-        };
-    }
-
     function getDestinationCoord (card, destination, options = {}) {
         // Offset the card slightly to compensate for drop shadow
         var cardOffsetX = -2;
@@ -388,6 +390,17 @@ define([
             left : destX,
             top  : destY
         };
+    }
+
+    function getPositionFromCaseName (caseName) {
+        return {
+            x: parseInt(caseName.match(/\d/g)[0]),
+            y: parseInt(caseName.match(/\d/g)[1])
+        };
+    }
+
+    function getCaseNameFromPosition (position = {}) {
+        return "case" + position.x + position.y;
     }
 
     //===============================

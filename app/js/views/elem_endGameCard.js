@@ -35,8 +35,8 @@ define([
         this.$(".game_overlay-endGame-album-card-visual").append(this.cardView.$el);
 
         _$.utils.addDomObserver(this.$el, () => {
-            if (!_$.state.game.cardsToTrade ||
-                _$.state.game.winner !== _$.state.game.get("players").user ||
+            if (!_$.state.game.get("cardsToTrade") ||
+                _$.state.game.get("winner") !== _$.state.game.get("players").user ||
                 this.cardView.model.get("owner") !== _$.state.game.get("players").opponent) {
                 this.undelegateEvents();
             }

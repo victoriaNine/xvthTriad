@@ -120,13 +120,14 @@ define([
         function skipIntro () {
             $(window).off("click touchstart", skipIntro.bind(this));
             _$.events.off("gamepad", skipIntro.bind(this));
-
             this.introTL.progress(1);
         }
     }
 
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
+        $(window).one("click touchstart", skipTransition.bind(this));
+        _$.events.once("gamepad", skipTransition.bind(this));
 
         var tl = new TimelineMax();
         tl.add(_$.ui.footer.toggleLogo("hide"));
@@ -146,6 +147,12 @@ define([
         }, [], null, "enterFooter");
 
         return this;
+
+        function skipTransition () {
+            $(window).off("click touchstart", skipTransition.bind(this));
+            _$.events.off("gamepad", skipTransition.bind(this));
+            tl.progress(1);
+        }
     }
 
     function transitionOut (nextScreen) {

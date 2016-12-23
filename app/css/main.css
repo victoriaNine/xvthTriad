@@ -1150,25 +1150,25 @@ h1 {
 #case11 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
 
-#case12 {
+#case21 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerBL.png) no-repeat 0% 100%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
 
-#case13 {
+#case31 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTR.png) no-repeat 100% 0%, url(../assets/img/ui/board_cornerBL.png) no-repeat 0% 100%; }
 
-#case21 {
+#case12 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTR.png) no-repeat 100% 0%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
 
 #case22 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerTR.png) no-repeat 100% 0%, url(../assets/img/ui/board_cornerBL.png) no-repeat 0% 100%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
 
-#case23 {
+#case32 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerBL.png) no-repeat 0% 100%; }
 
-#case31 {
+#case13 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTR.png) no-repeat 100% 0%, url(../assets/img/ui/board_cornerBL.png) no-repeat 0% 100%; }
 
-#case32 {
+#case23 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerTR.png) no-repeat 100% 0%; }
 
 #case33 {
