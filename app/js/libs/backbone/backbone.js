@@ -267,7 +267,7 @@
     this.attributes = {};
     if (options.collection) this.collection = options.collection;
     if (options.parse) attrs = this.parse(attrs, options) || {};
-    attrs = _.defaults({}, attrs, _.result(this, 'defaults'));
+    attrs = _.defaults({}, attrs, _.cloneDeep(_.result(this, 'defaults')));
     this.set(attrs, options);
     this.changed = {};
     this.initialize.apply(this, arguments);
