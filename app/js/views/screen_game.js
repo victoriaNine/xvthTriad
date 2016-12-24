@@ -225,7 +225,6 @@ define([
         function dragCardStop (e) {
             $(window).off("mousemove", dragCard);
             $(window).off("mouseup", dragCardStop);
-            _$.audio.audioEngine.playSFX("cardDrop");
 
             var scaledPageX = e.pageX * window.devicePixelRatio / _$.state.appScalar;
             var scaledPageY = e.pageY * window.devicePixelRatio / _$.state.appScalar;
@@ -270,6 +269,9 @@ define([
         } else {
             tl.to(cardView.$el, 0.2, { x: caseOffset.left, y: caseOffset.top });
         }
+        tl.call(() => {
+            _$.audio.audioEngine.playSFX("cardDrop");
+        });
         tl.set(cardView.$el, { scale: "1", zIndex: 999 }, "+=.1");
         tl.call(() => {
             _$.state.game.placeCard(cardView.model, _$.utils.getPositionFromCaseName(boardCase.id));
@@ -286,6 +288,7 @@ define([
         var cardView  = this.matchCardViewsFromModels(this.cardViews, cardModel)[0];
         var boardCase = this.$("#" + caseName)[0];
 
+        _$.audio.audioEngine.playSFX("cardGrab");
         this.moveToBoard(boardCase, cardView);
     }
 

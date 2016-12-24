@@ -232,7 +232,7 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
     }
 
     function randomizeAction () {
-        if (this.get("bestActionRate") === 100 || Math.random() < this.get("bestActionRate") / 100) {
+        if (this.get("bestActionRate") === 100 || Math.random() <= this.get("bestActionRate") / 100) {
             return this.bestAction;
         } else {
             return _.sample(this.currentState.possibleActions);
