@@ -45,7 +45,8 @@ define([
         getLostCards,
         setupNextTurn,
         setupEndGame,
-        updateUserAlbum
+        updateUserAlbum,
+        promptOpponentAction
     });
 
     function initialize (attributes, options = {}) {
@@ -76,8 +77,7 @@ define([
                             user   : null,
                             name   : this.get("computer").name,
                             avatar : this.get("computer").avatar,
-                            deck   : this.get("computer").deck,
-                            AI     : this.get("computer").AI
+                            deck   : this.get("computer").deck
                         })
                     }
                 });
@@ -328,10 +328,6 @@ define([
                 this.set("playing", this.get("players").user);
             }
         }
-
-        if (this.get("playing") === this.get("players").opponent && this.get("playing").get("type") === "computer") {
-            this.get("playing").playTurn();
-        }
     }
 
     function setupEndGame () {
@@ -397,10 +393,25 @@ define([
         }
 
         if (this.get("cardsToTrade") && this.get("winner") === this.get("players").opponent) {
-            if (this.get("players").opponent.get("type") === "computer") {
+            if (this.get("computer")) {
                 this.selectCardsToTrade.call(this);
             }
         }
+    }
+
+    function promptOpponentAction () {
+        var action;
+        var card;
+        var caseName;
+
+        if (this.get("type") === "solo") {
+            action = this.get("computer").AI.doAction();
+        }
+
+        card     = this.get("players").opponent.get("deck")[action.card.get("deckIndex")];
+        caseName = _$.utils.getCaseNameFromPosition(action.position);
+
+        _$.events.trigger("placeOpponentCard", card, caseName);
     }
 
     function selectCardsToTrade () {
@@ -410,7 +421,7 @@ define([
     }
 
     function getLostCards () {
-        if (this.get("type") === "solo") {
+        if (this.get("computer")) {
             return this.get("computer").selectedCards;
         }
     }
