@@ -50,12 +50,12 @@ define([
             });
         }
 
-        _$.events.on("resize", this.onResize.bind(this));
+        _$.events.on("resize", this.onResize, this);
         this.render();
     }
 
     function remove () {
-        _$.events.off("resize", this.onResize.bind(this));
+        _$.events.off("resize", this.onResize, this);
         Backbone.View.prototype.remove.call(this);
     }
 

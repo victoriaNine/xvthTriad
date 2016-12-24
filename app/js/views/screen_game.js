@@ -11,7 +11,7 @@ define([
     "tweenMax"
 ], function Screen_Game ($, _, Backbone, _$, Model_Game, Screen, Elem_EndGameCard, Templ_Game, Elem_Card) {
     return Screen.extend({
-        id        : "screen_game",
+        id       : "screen_game",
 
         template : _.template(Templ_Game),
 
@@ -46,6 +46,8 @@ define([
         toNextRound,
         confirmCardSelection,
         endGameCardSelected,
+        matchCardViewsFromModels,
+        placeOpponentCard,
 
         transitionIn
     });
@@ -100,13 +102,14 @@ define([
             renderCard.call(this, cardModel, index % (deck.length / 2));
         });
 
-        _$.events.on("resize", this.onResize.bind(this));
-        _$.events.on("updateScore", this.updateScore.bind(this));
-        _$.events.on("toNextTurn", this.toNextTurn.bind(this));
-        _$.events.on("toEndGame", this.toEndGame.bind(this));
-        _$.events.on("flipCard", this.flipCard.bind(this));
-        _$.events.on("showElementalBonus", this.showElementalBonus.bind(this));
-        _$.events.on("endGameCardSelected", this.endGameCardSelected.bind(this));
+        _$.events.on("resize", this.onResize, this);
+        _$.events.on("updateScore", this.updateScore, this);
+        _$.events.on("toNextTurn", this.toNextTurn, this);
+        _$.events.on("toEndGame", this.toEndGame, this);
+        _$.events.on("flipCard", this.flipCard, this);
+        _$.events.on("showElementalBonus", this.showElementalBonus, this);
+        _$.events.on("endGameCardSelected", this.endGameCardSelected, this);
+        _$.events.on("placeOpponentCard", this.placeOpponentCard, this);
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         _$.audio.audioEngine.setBGM("bgm.game");
@@ -115,13 +118,14 @@ define([
     }
 
     function remove () {
-        _$.events.off("resize", this.onResize.bind(this));
-        _$.events.off("updateScore", this.updateScore.bind(this));
-        _$.events.off("toNextTurn", this.toNextTurn.bind(this));
-        _$.events.off("toEndGame", this.toEndGame.bind(this));
-        _$.events.off("flipCard", this.flipCard.bind(this));
-        _$.events.off("showElementalBonus", this.showElementalBonus.bind(this));
-        _$.events.off("endGameCardSelected", this.endGameCardSelected.bind(this));
+        _$.events.off("resize", this.onResize, this);
+        _$.events.off("updateScore", this.updateScore, this);
+        _$.events.off("toNextTurn", this.toNextTurn, this);
+        _$.events.off("toEndGame", this.toEndGame, this);
+        _$.events.off("flipCard", this.flipCard, this);
+        _$.events.off("showElementalBonus", this.showElementalBonus, this);
+        _$.events.off("endGameCardSelected", this.endGameCardSelected, this);
+        _$.events.off("placeOpponentCard", this.placeOpponentCard, this);
 
         _$.state.inGame = false;
         delete _$.state.game;
@@ -163,11 +167,11 @@ define([
     function renderCard (cardModel, index) {
         var cardView = new Elem_Card({ model: cardModel, deckIndex: index });
 
-        //if (cardModel.get("currentOwner") === this.players.user) {
+        if (cardModel.get("currentOwner") === this.players.user) {
             cardView.$el.on("mousedown", (e) => {
                 dragCardStart.call(this, e, cardView);
             });
-        //}
+        }
 
         this.ui.cardsContainer.append(cardView.$el);
         this.cardViews.push(cardView);
@@ -187,7 +191,7 @@ define([
     }
 
     function dragCardStart (e, cardView) {
-        if (/*_$.state.game.get("playing") === this.players.opponent ||*/ cardView.boardCase || this.eventsDisabled) {
+        if (_$.state.game.get("playing") === this.players.opponent || cardView.boardCase || this.eventsDisabled) {
             return;
         }
 
@@ -251,25 +255,38 @@ define([
     function moveToBoard (boardCase, cardView) {
         var caseOffset = _$.utils.getDestinationCoord(cardView.$el, boardCase);
 
+        cardView.boardCase = boardCase;
+        cardView.$el.addClass("is--played");
+        this.board[boardCase.id] = cardView;
+
         var tl = new TimelineMax();
-        if (!_$.state.game.get("rules").open && cardView.model.get("currentOwner") === this.players.opponent) {
-            tl.to(cardView.$el, 0.2, { x: caseOffset.left, y: caseOffset.top, rotationY: 0 });
+        if (cardView.model.get("currentOwner") === this.players.opponent) {
+            tl.set(cardView.$el, { zIndex: 1000 }); 
+            if (_$.state.game.get("rules").open) {
+                tl.to(cardView.$el, 0.4, { x: caseOffset.left, y: caseOffset.top });
+            } else {
+                tl.to(cardView.$el, 0.4, { x: caseOffset.left, y: caseOffset.top, rotationY: 0 });
+            }
         } else {
             tl.to(cardView.$el, 0.2, { x: caseOffset.left, y: caseOffset.top });
         }
-        tl.set(cardView.$el, { scale: "1", zIndex:999 }, "+=.1");
-
-        cardView.boardCase = boardCase;
-        cardView.$el.addClass("is--played");
-
-        this.board[boardCase.id] = cardView;
-        _$.state.game.placeCard(cardView.model, _$.utils.getPositionFromCaseName(boardCase.id));
+        tl.set(cardView.$el, { scale: "1", zIndex: 999 }, "+=.1");
+        tl.call(() => {
+            _$.state.game.placeCard(cardView.model, _$.utils.getPositionFromCaseName(boardCase.id));
+        });
     }
 
     function moveToOrigin (cardView, originalPosition) {
         var tl = new TimelineMax();
         tl.to(cardView.$el, 0.2, { x: originalPosition.left, y: originalPosition.top });
         tl.set(cardView.$el, { scale: "1" }, "+=.1");
+    }
+
+    function placeOpponentCard (event, cardModel, caseName) {
+        var cardView  = this.matchCardViewsFromModels(this.cardViews, cardModel)[0];
+        var boardCase = this.$("#" + caseName)[0];
+
+        this.moveToBoard(boardCase, cardView);
     }
 
     function onResize () {
@@ -333,13 +350,19 @@ define([
         setTimeout(() => {
             this.$(".game_overlay-playerTurn").removeClass("is--active");
             _$.events.trigger("startUserEvents");
+
+            setTimeout(() => {
+                if (_$.state.game.get("playing") === this.players.opponent) {
+                    _$.state.game.promptOpponentAction();
+                }
+            }, 1000);
         }, 2000);
     }
 
     function showEndGameOverlay () {
         var gameResult;
         var tl = new TimelineMax({
-            onComplete : () => {
+            onComplete: () => {
                 _$.events.trigger("startUserEvents");
             }
         });
@@ -438,12 +461,7 @@ define([
                         autoFlipCards(this.gainedCards, true);
                     }
                 } else if (gameResult === "lost") {
-                    this.lostCards = _.filter(userEndGameCardViews, (endGameCardView) => {
-                        return _.some(_$.state.game.getLostCards(), (selectedCard) => {
-                            return endGameCardView.cardView.model === selectedCard;
-                        });
-                    });
-
+                    this.lostCards = this.matchCardViewsFromModels(_.map(userEndGameCardViews, "cardView"), _$.state.game.getLostCards());
                     autoFlipCards(this.lostCards);
                 }
             } else if (_$.state.game.get("rules").trade === "all") {
@@ -488,6 +506,22 @@ define([
                 }
             }
         }
+    }
+
+    function matchCardViewsFromModels (cardViewList, modelList) {
+        if (!_.isArray(cardViewList)) {
+            cardViewList = [cardViewList];
+        }
+
+        if (!_.isArray(modelList)) {
+            modelList = [modelList];
+        }
+
+        return _.filter(cardViewList, (cardView) => {
+            return _.some(modelList, (model) => {
+                return cardView.model === model;
+            });
+        });
     }
 
     function flipCard (event, info) {

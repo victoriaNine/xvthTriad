@@ -64,8 +64,6 @@ define([
                 this.toggleLogo("hide");
                 this.isOpen = false;
             }
-            _$.ui.menu.transitionOut(nextScreen);
-            _$.audio.audioEngine.playSFX("menuClose");
             _$.events.once("mainMenuClosed", () => {
                 delete _$.ui.menu;
                 this.$(".footer_menu-menuBtn").removeClass("is--active");
@@ -73,10 +71,11 @@ define([
                     this.$(".footer_menu-homeBtn").addClass("is--active");
                 }
             });
+
+            _$.ui.menu.transitionOut(nextScreen);
+            _$.audio.audioEngine.playSFX("menuClose");
         } else {
             this.$(".footer_menu-element").removeClass("is--active");
-            _$.ui.menu = new Screen_OverlayMenu();
-            _$.audio.audioEngine.playSFX("menuOpen");
             _$.events.once("mainMenuOpen", () => {
                 if (_$.ui.screen.id === "screen_title") {
                     this.toggleLogo("show");
@@ -84,6 +83,9 @@ define([
                 }
                 this.$(".footer_menu-menuBtn").addClass("is--active");
             });
+
+            _$.ui.menu = new Screen_OverlayMenu();
+            _$.audio.audioEngine.playSFX("menuOpen");
         }
     }
 
@@ -93,7 +95,7 @@ define([
                 this.toggleLogo("hide");
                 this.isOpen = false;
             }
-            _$.ui.about.transitionOut(nextScreen);
+            
             _$.events.once("aboutPageClosed", () => {
                 delete _$.ui.about;
                 this.$(".footer_menu-aboutBtn").removeClass("is--active");
@@ -104,9 +106,10 @@ define([
                     this.$(".footer_menu-homeBtn").addClass("is--active");
                 }
             });
+
+            _$.ui.about.transitionOut(nextScreen);
         } else {
             this.$(".footer_menu-element").removeClass("is--active");
-            _$.ui.about = new Screen_OverlayAbout();
             _$.events.once("aboutPageOpen", () => {
                 if (_$.ui.screen.id === "screen_title") {
                     this.toggleLogo("show");
@@ -114,6 +117,8 @@ define([
                 }
                 this.$(".footer_menu-aboutBtn").addClass("is--active");
             });
+
+            _$.ui.about = new Screen_OverlayAbout();
         }
     }
 

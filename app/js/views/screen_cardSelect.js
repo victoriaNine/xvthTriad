@@ -75,16 +75,16 @@ define([
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
 
-        _$.events.on("resize", this.onResize.bind(this));
-        _$.events.on("resizeStart", this.emptyAlbumCardViews.bind(this));
-        _$.events.on("updateDeck", this.updateDeck.bind(this));
+        _$.events.on("resize", this.onResize, this);
+        _$.events.on("resizeStart", this.emptyAlbumCardViews, this);
+        _$.events.on("updateDeck", this.updateDeck, this);
         this.add();
     }
 
     function remove () {
-        _$.events.off("resize", this.onResize.bind(this));
-        _$.events.off("resizeStart", this.emptyAlbumCardViews.bind(this));
-        _$.events.off("updateDeck", this.updateDeck.bind(this));
+        _$.events.off("resize", this.onResize, this);
+        _$.events.off("resizeStart", this.emptyAlbumCardViews, this);
+        _$.events.off("updateDeck", this.updateDeck, this);
 
         delete _$.ui.cardSelect;
         Screen.prototype.remove.call(this);

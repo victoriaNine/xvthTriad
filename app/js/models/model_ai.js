@@ -2,7 +2,7 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
     return Backbone.Model.extend({
         defaults : {
             game           : null,
-            level          : "medium",
+            level          : "normal",
             bestActionRate : 75
         },
 
@@ -18,7 +18,6 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
     });
 
     function initialize (options) {
-        this.turnNumber   = -1;
         this.currentState = null;
         this.bestAction   = null;
         this.action       = null;
@@ -28,7 +27,7 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
             case "easy":
                 this.set("bestActionRate", 100);
                 break;
-            case "medium":
+            case "normal":
                 this.set("bestActionRate", 75);
                 break;
             case "hard":
@@ -38,7 +37,6 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
     }
 
     function doAction () {
-        this.turnNumber++;
         this.currentState = this.getState(null, true);
 
         if (this.currentState.possibleActions.length === 1) {
@@ -52,28 +50,29 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
             this.action     = this.randomizeAction();
         }
 
-        console.log("bestAction", this.bestAction);
-        console.log("action", this.action);
-
         return this.action;
     }
 
     function getSimulationDepth () {
+        var turnNumber = this.get("game").get("turnNumber");
+
+        if (turnNumber === 0 || this.get("level") === "easy") {
+            return 0;
+        }
+
         switch (this.get("level")) {
-            case "easy":
-                return 0;
-            case "medium":
-                if (this.turnNumber === 0) {
+            case "normal":
+                if (turnNumber === 1) {
                     return 1;
                 } else {
                     return 2;
                 }
                 break;
             case "hard":
-                if (this.turnNumber === 0) {
+                if (turnNumber === 1) {
                     return 1;
                 } else {
-                    return this.turnNumber + 1;
+                    return turnNumber + 1;
                 }
                 break;
         }
@@ -196,7 +195,6 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
         var possibleAction;
 
         for (var i = 0, ii = possibleActions.length; i < ii; i++) {
-            console.log("=======");
             possibleAction            = possibleActions[i];
             pointsPerInitialAction[i] = findBestOutcomePoints(possibleAction.outcomeState);
         }
@@ -214,12 +212,12 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
         function recurse (currentState) {
             for (i = 0, ii = currentState.possibleActions.length; i < ii; i++) {
                 action = currentState.possibleActions[i];
-                console.log(action.id, action.card.get("deckIndex"), action.card.get("name"), action.position, action.outcomePoints);
+                //console.log(action.id, action.card.get("deckIndex"), action.card.get("name"), action.position, action.outcomePoints);
 
                 if (action.outcomeState.possibleActions) {
                     recurse(action.outcomeState);
                 } else {
-                    console.log("== possible end action:", action, action.outcomeState.totalPoints);
+                    //console.log("== possible end action:", action, action.outcomeState.totalPoints);
                     endGameOutcomePoints.push(action.outcomeState.totalPoints);
                 }
             }

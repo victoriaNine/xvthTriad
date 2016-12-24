@@ -67,7 +67,7 @@ define([
     function playIntro () {
         _$.events.trigger("stopUserEvents");
         $(window).one("click touchstart", skipIntro.bind(this));
-        _$.events.once("gamepad", skipIntro.bind(this));
+        _$.events.once("gamepad", skipIntro, this);
 
         var logoPaths = [];
         this.$(".svg-logo").find("path[fill!=none]").each(function () {
@@ -101,6 +101,8 @@ define([
             _$.events.trigger("addFX");
         }, [], null, "enterFooter");
         this.introTL.call(() => {
+            $(window).off("click touchstart", skipIntro.bind(this));
+            _$.events.off("gamepad", skipIntro, this);
             _$.events.trigger("startUserEvents");
         });
 
@@ -119,7 +121,7 @@ define([
 
         function skipIntro () {
             $(window).off("click touchstart", skipIntro.bind(this));
-            _$.events.off("gamepad", skipIntro.bind(this));
+            _$.events.off("gamepad", skipIntro, this);
             this.introTL.progress(1);
         }
     }
@@ -127,7 +129,7 @@ define([
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
         $(window).one("click touchstart", skipTransition.bind(this));
-        _$.events.once("gamepad", skipTransition.bind(this));
+        _$.events.once("gamepad", skipTransition, this);
 
         var tl = new TimelineMax();
         tl.add(_$.ui.footer.toggleLogo("hide"));
@@ -143,6 +145,8 @@ define([
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
         tl.call(() => {
+            $(window).off("click touchstart", skipTransition.bind(this));
+            _$.events.off("gamepad", skipTransition, this);
             _$.events.trigger("startUserEvents");
         }, [], null, "enterFooter");
 
@@ -150,7 +154,7 @@ define([
 
         function skipTransition () {
             $(window).off("click touchstart", skipTransition.bind(this));
-            _$.events.off("gamepad", skipTransition.bind(this));
+            _$.events.off("gamepad", skipTransition, this);
             tl.progress(1);
         }
     }
@@ -158,10 +162,6 @@ define([
     function transitionOut (nextScreen) {
         _$.events.trigger("stopUserEvents");
         
-        if (this.introTL && this.introTL.time() !== this.introTL.duration()) {
-            this.introTL.progress(1);
-        }
-
         var tl = new TimelineMax();
         tl.call(() => { _$.ui.footer.menu.find(".footer_menu-element").removeClass("is--active"); });
         tl.add(_$.ui.footer.toggleSocial("hide"));

@@ -37,6 +37,7 @@ define([
         },
 
         initialize,
+        remove,
 
         toggleDifficulty,
         toggleLoad,
@@ -60,9 +61,13 @@ define([
             drawCount : _$.state.user.get("gameStats").draw
         }));
 
-        this.resetChanges();
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
+    }
+
+    function remove () {
+        Screen.prototype.remove.call(this);
+        $(window).off("click.toggleDifficulty");
     }
 
     function toggleDifficulty (e, init) {
@@ -71,7 +76,6 @@ define([
         var selectHeight       = this.$(".setting-difficulty").height();
         var toggle             = this.$(".setting-difficulty .userSettings_content-settings-setting-toggle");
         var dropdown           = this.$(".userSettings_content-settings-setting-select");
-        var defaultOption      = $(e.target).parent().children(".difficultySetting-" + _$.state.user.get("difficulty"));
 
         if (this.$(".setting-difficulty").hasClass("is--active") || init) {
             if (!init) {
@@ -83,14 +87,17 @@ define([
             this.$(".setting-difficulty").addClass("is--active");
         }
 
-        $(window).on("click.toggleDifficulty", (clickEvent) => {
-            if (!$(clickEvent.target).parents(".setting-difficulty").length) {
-                var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
-                TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight });
-                this.$(".setting-difficulty").removeClass("is--active");
-                $(window).off("click.toggleDifficulty");
-            }
-        });
+        if (init) {
+            $(window).on("click.toggleDifficulty", (clickEvent) => {
+                if (!$(clickEvent.target).parents(".setting-difficulty").length) {
+                    var defaultOption      = this.$(".difficultySetting-" + _$.state.user.get("difficulty"));
+                    var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
+                    TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight });
+                    this.$(".setting-difficulty").removeClass("is--active");
+                    $(window).off("click.toggleDifficulty");
+                }
+            });
+        }
     }
 
     function saveGame () {
@@ -151,6 +158,7 @@ define([
 
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
+        this.resetChanges();
 
         var tl = new TimelineMax();
         tl.set(this.$(".userSettings_content-settings"), { clearProps: "opacity" });

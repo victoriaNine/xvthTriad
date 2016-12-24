@@ -73,13 +73,13 @@ define([
         this.toggleRule("elemental", false);
         this.toggleRule("suddenDeath", false);
 
-
-
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
     }
 
     function remove () {
+        $(window).off("click.toggleTrade");
+
         delete _$.ui.rulesSelect;
         Screen.prototype.remove.call(this);
         
@@ -121,6 +121,7 @@ define([
 
         if (this.$(".rule-trade").hasClass("is--active")) {
             this.$(".rule-trade").removeClass("is--active");
+            $(window).off("click.toggleTrade");
             TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight });
         } else {
             this.$(".rule-trade").addClass("is--active");

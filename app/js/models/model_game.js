@@ -11,7 +11,7 @@ define([
     return Backbone.Model.extend({
         defaults : {
             type          : "solo",
-            difficulty    : "medium",
+            difficulty    : "normal",
             rules         : setRules(),
             players       : {},
             winner        : null,
@@ -34,7 +34,8 @@ define([
                 user     : [],
                 opponent : []
             },
-            computer      : null
+            computer      : null,
+            turnNumer     : -1
         },
 
         initialize,
@@ -147,7 +148,7 @@ define([
                 config.avatar  = "./assets/img/avatars/computer_carbuncle.jpg";
                 cardMaxLevel = 3;
                 break;
-            case "medium":
+            case "normal":
                 config.name    = "Gentiana";
                 config.avatar  = "./assets/img/avatars/computer_gentiana.jpg";
                 cardMaxLevel = 7;
@@ -319,6 +320,8 @@ define([
     }
 
     function setupNextTurn () {
+        this.set("turnNumber", this.set("turnNumber") + 1);
+
         if (!this.get("playing")) {
             this.set("playing", (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent);
         } else {
@@ -331,6 +334,7 @@ define([
     }
 
     function setupEndGame () {
+        this.set("turnNumber", -1);
         _.each(this.get("playedCards"), (card) => {
             card.set("deckIndex", -1);
             card.set("bonus", 0);
