@@ -182,7 +182,9 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
 
                 // List of possible actions for the new player
                 action.outcomeState.possibleActions = that.getPossibleActions(action.outcomeState, action.depth + 1);
-                that.tryActions(action.outcomeState.possibleActions, action.outcomeState);
+                if (action.outcomeState.possibleActions) {
+                    that.tryActions(action.outcomeState.possibleActions, action.outcomeState);
+                }
             } else {
                 action.outcomeState.possibleActions = null;
             }

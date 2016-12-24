@@ -73,6 +73,14 @@ define([
         this.toggleRule("elemental", false);
         this.toggleRule("suddenDeath", false);
 
+        if (_$.state.user.get("album").length < 6) {
+            this.$(".tradeRule-one").addClass("is--disabled");
+        }
+
+        if (_$.state.user.get("album").length < 11) {
+            this.$(".tradeRule-difference, .tradeRule-direct, .tradeRule-all").addClass("is--disabled");
+        }
+
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
     }
@@ -106,6 +114,7 @@ define([
         if (rule === "random") {
             if (state && !this.$(".rulesSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("show");
+                _$.audio.audioEngine.playSFX("gameGain");
             } else if (this.$(".rulesSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("hide");
             }
@@ -129,8 +138,9 @@ define([
 
         $(window).on("click.toggleTrade", (clickEvent) => {
             if (!$(clickEvent.target).parents(".rule-trade").length) {
-                var scrollPosition = Math.round(dropdown.scrollTop() / selectHeight) * selectHeight;
-                TweenMax.to(dropdown[0], 0.4, { scrollTop: scrollPosition });
+                var defaultOption      = this.$(".tradeRule-none");
+                var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
+                TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight });
                 this.$(".rule-trade").removeClass("is--active");
                 $(window).off("click.toggleTrade");
             }
@@ -287,17 +297,20 @@ define([
                     text = "A friendly match.";
                     break;
                 case "one":
-                    text = "The winner chooses a card from the loser's deck.";
+                    text  = "The winner chooses a card from the loser's deck.<br>";
+                    text += "You must have at least 6 cards to choose this trade mode.";
                     break;
                 case "difference":
-                    text = "The winner chooses one card per score difference (2, 4, or 5).";
+                    text = "The winner chooses one card per score difference (2, 4, or 5).<br>";
+                    text += "You must have at least 11 cards to choose this trade mode.";
                     break;
                 case "direct":
                     text  = "The players take the cards they have captured at the end of the game.<br>";
-                    text += "This also applies in case of a draw.";
+                    text += "This also applies in case of a draw. You must have at least 11 cards to choose this trade mode.";
                     break;
                 case "all":
-                    text = "The winner takes the loser's deck.";
+                    text  = "The winner takes the loser's deck.<br>";
+                    text += "You must have at least 11 cards to choose this trade mode.";
                     break;
             }
         }

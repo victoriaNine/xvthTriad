@@ -25,7 +25,7 @@ define([
         this.$(".card-front").prepend(cardBG);
 
         if (_$.state.inGame) {
-            this.deckIndex = attributes.deckIndex;
+            this.deckIndex = _.isNil(attributes.deckIndex) ? -1 : attributes.deckIndex;
 
             if (options.checkOwner) {
                 if (this.model.get("owner") === _$.state.game.get("players").user) {

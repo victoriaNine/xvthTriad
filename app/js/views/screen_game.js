@@ -46,7 +46,7 @@ define([
         toNextRound,
         confirmCardSelection,
         endGameCardSelected,
-        matchCardViewsFromModels,
+        findCardViewsFromModels,
         placeOpponentCard,
 
         transitionIn
@@ -285,11 +285,13 @@ define([
     }
 
     function placeOpponentCard (event, cardModel, caseName) {
-        var cardView  = this.matchCardViewsFromModels(this.cardViews, cardModel)[0];
+        var cardView  = this.findCardViewsFromModels(this.cardViews, cardModel)[0];
         var boardCase = this.$("#" + caseName)[0];
 
-        _$.audio.audioEngine.playSFX("cardGrab");
-        this.moveToBoard(boardCase, cardView);
+        setTimeout(() => {
+            _$.audio.audioEngine.playSFX("cardGrab");
+            this.moveToBoard(boardCase, cardView);
+        }, 500);
     }
 
     function onResize () {
@@ -464,7 +466,7 @@ define([
                         autoFlipCards(this.gainedCards, true);
                     }
                 } else if (gameResult === "lost") {
-                    this.lostCards = this.matchCardViewsFromModels(_.map(userEndGameCardViews, "cardView"), _$.state.game.getLostCards());
+                    this.lostCards = this.findCardViewsFromModels(userEndGameCardViews, _$.state.game.getLostCards(), "cardView");
                     autoFlipCards(this.lostCards);
                 }
             } else if (_$.state.game.get("rules").trade === "all") {
@@ -511,7 +513,7 @@ define([
         }
     }
 
-    function matchCardViewsFromModels (cardViewList, modelList) {
+    function findCardViewsFromModels (cardViewList, modelList, customPath) {
         if (!_.isArray(cardViewList)) {
             cardViewList = [cardViewList];
         }
@@ -522,7 +524,7 @@ define([
 
         return _.filter(cardViewList, (cardView) => {
             return _.some(modelList, (model) => {
-                return cardView.model === model;
+                return _.get(cardView, customPath + ".model", cardView.model) === model;
             });
         });
     }
@@ -573,11 +575,12 @@ define([
 
         function onTransitionComplete () {
             var rules      = _$.state.game.get("rules");
+            var computer   = _$.state.game.get("computer");
             var newPlayers = { user: this.players.user, opponent: this.players.opponent };
 
             _$.utils.addDomObserver(this.$el, () => {
                 _$.events.trigger("startUserEvents");
-                this.initialize({ players: newPlayers, rules: rules });
+                this.initialize({ players: newPlayers, rules, computer });
             }, true, "remove");
             this.remove();
         }

@@ -35,7 +35,7 @@ define([
                 opponent : []
             },
             computer      : null,
-            turnNumer     : -1
+            turnNumber    : -1
         },
 
         initialize,
@@ -51,8 +51,9 @@ define([
     });
 
     function initialize (attributes, options = {}) {
-        var players   = options.players;
-        var userDeck  = options.userDeck;
+        var players  = options.players;
+        var userDeck = options.userDeck;
+        var computer = options.computer;
 
         this.set("rules", setRules(options.rules));
 
@@ -60,6 +61,7 @@ define([
         // Use the players passed in the options
         if (players) {
             this.set("players", players);
+            this.set("computer", computer).get("computer").AI = new Model_AI({ game: this, level: this.get("difficulty") });
         } else {
             if (this.get("type") === "solo") {
                 this.set("computer", this.setupComputer());
@@ -320,7 +322,7 @@ define([
     }
 
     function setupNextTurn () {
-        this.set("turnNumber", this.set("turnNumber") + 1);
+        this.set("turnNumber", this.get("turnNumber") + 1);
 
         if (!this.get("playing")) {
             this.set("playing", (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent);
@@ -356,15 +358,7 @@ define([
             var newUserDeck     = [];
             var newOpponentDeck = [];
 
-            _.each(this.get("players").user.get("deck"), (card) => {
-                if (card.get("currentOwner") === this.get("players").user) {
-                    newUserDeck.push(card);
-                } else if (card.get("currentOwner") === this.get("players").opponent) {
-                    newOpponentDeck.push(card);
-                }
-            });
-
-            _.each(this.get("players").opponent.get("deck"), (card) => {
+            _.each(_.concat(this.get("players").user.get("deck"), this.get("players").opponent.get("deck")), (card) => {
                 if (card.get("currentOwner") === this.get("players").user) {
                     newUserDeck.push(card);
                 } else if (card.get("currentOwner") === this.get("players").opponent) {
@@ -375,12 +369,7 @@ define([
             this.get("players").user.set("deck", newUserDeck);
             this.get("players").opponent.set("deck", newOpponentDeck);
         } else if (this.get("rules").trade === "none") {
-            _.each(this.get("originalDecks").user, (card) => {
-                card.set("owner", null);
-                card.set("currentOwner", null);
-            });
-
-            _.each(this.get("originalDecks").opponent, (card) => {
+            _.each(_.concat(this.get("originalDecks").user, this.get("originalDecks").opponent), (card) => {
                 card.set("owner", null);
                 card.set("currentOwner", null);
             });
@@ -431,12 +420,7 @@ define([
     }
 
     function updateUserAlbum (gainedLost) {
-        _.each(this.get("originalDecks").user, (card) => {
-            card.set("owner", null);
-            card.set("currentOwner", null);
-        });
-
-        _.each(this.get("originalDecks").opponent, (card) => {
+        _.each(_.concat(this.get("originalDecks").user, this.get("originalDecks").opponent), (card) => {
             card.set("owner", null);
             card.set("currentOwner", null);
         });
