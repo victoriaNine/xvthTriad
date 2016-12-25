@@ -11,8 +11,7 @@ require.config({
         tweenMax          : "libs/gsap/src/uncompressed/TweenMax",
         draggable         : "libs/gsap/src/uncompressed/utils/Draggable",
         seriously         : "libs/seriouslyjs/seriously",
-
-        storage           : "libs/backbone/backbone.localStorage",
+        modernizr         : "libs/modernizr/modernizr",
 
         text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
@@ -25,12 +24,14 @@ require.config({
         propertyParser    : "libs/requirejs-plugins/src/propertyParser",
         markdownConverter : "libs/requirejs-plugins/lib/Markdown.Converter",
 
-        jqueryNearest      : "libs/jquery-nearest/src/jquery.nearest",
-        "es6-promise"      : "libs/es6-promise/es6-promise",
-        "fetch"            : "libs/fetch/fetch",
-        aggregation        : "libs/aggregation/src/aggregation-es6",
+        jqueryNearest     : "libs/jquery-nearest/src/jquery.nearest",
+        "es6-promise"     : "libs/es6-promise/es6-promise",
+        "fetch"           : "libs/fetch/fetch",
+        aggregation       : "libs/aggregation/src/aggregation-es6",
+        storage           : "libs/backbone/backbone.localStorage",
 
-        global             : "global"
+        global            : "global",
+        stats             : "Stats"
     },
 
     shim: {
@@ -39,12 +40,14 @@ require.config({
 });
 
 require([
+    "modernizr",
     "jquery",
     "underscore",
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
     "modules/gamepadManager",
+    "modules/updateManager",
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
     "json!data/loader_audioBGM.json",
@@ -60,17 +63,18 @@ require([
     "views/screen_overlayAbout",
     "views/screen_overlayMenu",
     "jqueryNearest",
-    "aggregation"
-], function ($, _, AudioEngine, canvasWebGL, assetLoader, GamepadManager, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+    "aggregation",
+    "stats"
+], function (Modernizr, $, _, AudioEngine, canvasWebGL, assetLoader, GamepadManager, UpdateManager, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
     var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX];
 
     _$.events.on("all", function (eventName, ...data) {
-        /*if (data.length) {
+        if (data.length) {
             _$.debug.log("event triggered:", eventName, data);
         } else {
             _$.debug.log("event triggered:", eventName);
-        }*/
+        }
     });
 
     _$.events.once("allLoadersComplete", function () {
@@ -164,20 +168,15 @@ require([
     assetLoader.init(loaders);
 });
 
-(function () {
-    function setupStats () {
-        var stats = new window.Stats();
-        stats.dom.style.left = "auto";
-        stats.dom.style.right = "0px";
-        stats.dom.style.width = "80px";
-        stats.showPanel(0);
-        document.body.appendChild(stats.dom);
 
-        requestAnimationFrame(function loop () {
-            stats.update();
-            requestAnimationFrame(loop);
-        });
-    }
-
-    setupStats();
-})();
+//===============================
+// GOOGLE ANALYTICS
+//===============================
+(function(b,o,i,l,e,r){
+    b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+    e.src="//www.google-analytics.com/analytics.js";
+    r.parentNode.insertBefore(e,r);
+}(window,document,"script","ga"));
+ga("create","UA-89445990-1");
+ga("send","pageview");

@@ -126,7 +126,7 @@ define([
 
         function proceed () {
             _$.state.user.set({ name: settings.name, difficulty: settings.difficulty });
-            _$.utils.saveData();
+            _$.app.saveData();
             this.transitionOut("title");
         }
     }
@@ -139,7 +139,7 @@ define([
 
     function loadGame () {
         var file = this.$(".setting-import input")[0].files[0];
-        _$.utils.importSave(file, () => {
+        _$.app.importSave(file, () => {
             this.transitionOut("title", { fullIntro: true });
             TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
             _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
@@ -147,7 +147,7 @@ define([
     }
 
     function exportSaveFile () {
-        _$.utils.exportSave();
+        _$.app.exportSave();
     }
 
     function resetUser () {
@@ -232,7 +232,7 @@ define([
         } else if (input === this.$(".setting-avatar input")[0]) {
             check = !input.files.length || !!input.files[0].name.match(/\.jpg|\.jpeg|\.png|\.gif$/);
         } else if (input === this.$(".setting-import input")[0]) {
-            check = !input.files.length || input.files[0].name.endsWith("." + _$.appInfo.extension);
+            check = !input.files.length || input.files[0].name.endsWith("." + _$.app.saveExt);
         }
 
         if (check) {

@@ -141,31 +141,35 @@ define([
 
     function setupComputer () {
         var config = {};
+        var cardMinLevel;
         var cardMaxLevel;
         var randomCards;
 
         switch (this.get("difficulty")) {
             case "easy":
-                config.name    = "Carbuncle";
-                config.avatar  = "./assets/img/avatars/computer_carbuncle.jpg";
-                cardMaxLevel = 3;
+                config.name   = "Carbuncle";
+                config.avatar = "./assets/img/avatars/computer_carbuncle.jpg";
+                cardMinLevel  = 1;
+                cardMaxLevel  = 1;
                 break;
             case "normal":
-                config.name    = "Gentiana";
-                config.avatar  = "./assets/img/avatars/computer_gentiana.jpg";
-                cardMaxLevel = 7;
+                config.name   = "Gentiana";
+                config.avatar = "./assets/img/avatars/computer_gentiana.jpg";
+                cardMinLevel  = 2;
+                cardMaxLevel  = 2;
                 break;
             case "hard":
-                config.name    = "Bahamut";
-                config.avatar  = "./assets/img/avatars/computer_bahamut.jpg";
-                cardMaxLevel = 10;
+                config.name   = "Bahamut";
+                config.avatar = "./assets/img/avatars/computer_bahamut.jpg";
+                cardMinLevel  = 3;
+                cardMaxLevel  = 3;
                 break;
         }
 
         randomCards = _$.utils.getRandomCards({
             amount   : 5,
-            minLevel : 1,
-            maxLevel : 1//cardMaxLevel
+            minLevel : cardMinLevel,
+            maxLevel : cardMaxLevel
         });
 
         config.deck = _.map(randomCards, function (attributes) {

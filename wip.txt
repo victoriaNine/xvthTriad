@@ -76,8 +76,49 @@ Simulateur :
 - Phase simulée
 - Simulations
 - Possibilités
+- Meilleur résultat
+- Taux de sélection meilleur résultat
 Simulation :
  - Phase
  - Action IA
  - Action joueur
  - Résultat
+
+----------
+
+! Card selection (computer)
+! Card selection (player)
+! Trade rules:
+    ! One
+    ! All
+    ! Difference
+    ! Direct
+! Screen transitions
+! Menu
+! About page
+! User account (name, avatar, stats, save/load, difficulty)
+! Save prompt on close
+! Rules explanations
+! BGM
+! SFX
+! Social sharing
+! Cross-browser & responsive check
+! Transitions & performance check
+~ Gamepad API
+~ AI
+! Cards
+! Favicon
+! OG tags & social share
+! 404 page
+- Build
+- Set redirect http://15thtriad.com => http://beta.15thtriad.com
+- Serve!
+
+--------------
+
+- Better AI
+- Same, same wall, plus, combo rules
+- Tutorial section
+- Multi player
+- Loading page for updates
+- Gamepad API ? (useful?)

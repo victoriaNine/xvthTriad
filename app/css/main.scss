@@ -517,7 +517,7 @@ h1 {
 }
 
 .card-back {
-    background: url(#{ $uiAssetsPath + "card_back.png" });
+    background: url(#{ $uiAssetsPath + "card_back.png" }) no-repeat;
     z-index: 2;
     @include transform("rotateX(180deg)");
 }
@@ -993,11 +993,11 @@ h1 {
     }
 }
 
-.menu_soloMode     .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_noctis.jpg"}) 50% 100%; }
-.menu_versusMode   .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_gladiolus.jpg"}) 50% 100%; }
-.menu_networkMode  .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_prompto.jpg"}) 50% 100%; }
-.menu_cardAlbum    .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_ignis.jpg"}) 50% 100%; }
-.menu_userSettings .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_luna.jpg"}) 50% 100%; }
+.menu_soloMode     .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_noctis.jpg"}) 50% 100% no-repeat; }
+.menu_versusMode   .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_gladiolus.jpg"}) 50% 100% no-repeat; }
+.menu_networkMode  .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_prompto.jpg"}) 50% 100% no-repeat; }
+.menu_cardAlbum    .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_ignis.jpg"}) 50% 100% no-repeat; }
+.menu_userSettings .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_luna.jpg"}) 50% 100% no-repeat; }
 
 
 /*=======================*/
@@ -1028,10 +1028,10 @@ h1 {
 
 .about_bg {
     @include fullSizeAbs();
-    background: url(#{ $uiAssetsPath + "about_bg.jpg"}) 50% 100%;
+    background: url(#{ $uiAssetsPath + "about_bg.jpg"}) 50% 100% no-repeat;
     background-size: cover;
 
-    &:after {
+    &:before {
         @include fullSizeAbs("");
         background: rgba(0, 0, 0, 0.9);
     }
@@ -1144,6 +1144,13 @@ h1 {
     &-hoverFX {
         @extend %btn-diamond-text-hoverFX;
     }
+}
+
+.about_version {
+    @extend %creditsText;
+    position: absolute;
+    right: $globalPadding;
+    bottom: $globalPadding;
 }
 
 
@@ -1855,4 +1862,35 @@ h1 {
 
 .userSettings_content-settings-setting-input {
     @extend %options-option-input;
+}
+
+
+/*=======================*/
+/* 404 PAGE
+/*=======================*/
+
+.notfound {
+    background: url(#{ $uiAssetsPath + "about_bg.jpg"}) 50% 100% no-repeat;
+    background-size: cover;
+
+    &:before {
+        @include fullSizeAbs("");
+        background: rgba(0, 0, 0, 0.9);
+    }
+
+    &_img {
+        position: absolute;
+        width: 75%;
+        height: 75%;
+        left: 12.5%;
+        top: 12.5%;
+        background: url(#{ $uiAssetsPath + "404.png"}) 50% 50% no-repeat;
+        background-size: contain;
+    }
+
+    &_redirectLink {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
 }

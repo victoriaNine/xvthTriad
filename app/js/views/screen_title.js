@@ -45,8 +45,8 @@ define([
         if (options.setup) {
             _$.state.user = new Model_User();
 
-            if (_$.utils.getLocalStorage(_$.appInfo.name) && !options.resetUser) {
-                _$.utils.loadData();
+            if (_$.utils.getLocalStorage(_$.app.name) && !options.resetUser) {
+                _$.app.loadData();
             } else {
                 _$.state.user.setup();
             }

@@ -464,7 +464,7 @@ h1 {
   z-index: 1; }
 
 .card-back {
-  background: url(../assets/img/ui/card_back.png);
+  background: url(../assets/img/ui/card_back.png) no-repeat;
   z-index: 2;
   -webkit-transform: rotateX(180deg);
   -ms-transform: rotateX(180deg);
@@ -593,9 +593,9 @@ h1 {
     text-align: center;
     vertical-align: text-bottom; }
 
-.footer_text, .about_text {
+.footer_text, .about_text, .about_version {
   cursor: default; }
-  .footer_text span, .about_text span {
+  .footer_text span, .about_text span, .about_version span {
     font-size: .75em;
     margin-right: .5em; }
 
@@ -859,19 +859,19 @@ h1 {
     transition: opacity .4s .2s, transform .4s .2s; }
 
 .menu_soloMode .menu_element-bg {
-  background: url(../assets/img/ui/menu_noctis.jpg) 50% 100%; }
+  background: url(../assets/img/ui/menu_noctis.jpg) 50% 100% no-repeat; }
 
 .menu_versusMode .menu_element-bg {
-  background: url(../assets/img/ui/menu_gladiolus.jpg) 50% 100%; }
+  background: url(../assets/img/ui/menu_gladiolus.jpg) 50% 100% no-repeat; }
 
 .menu_networkMode .menu_element-bg {
-  background: url(../assets/img/ui/menu_prompto.jpg) 50% 100%; }
+  background: url(../assets/img/ui/menu_prompto.jpg) 50% 100% no-repeat; }
 
 .menu_cardAlbum .menu_element-bg {
-  background: url(../assets/img/ui/menu_ignis.jpg) 50% 100%; }
+  background: url(../assets/img/ui/menu_ignis.jpg) 50% 100% no-repeat; }
 
 .menu_userSettings .menu_element-bg {
-  background: url(../assets/img/ui/menu_luna.jpg) 50% 100%; }
+  background: url(../assets/img/ui/menu_luna.jpg) 50% 100% no-repeat; }
 
 /*=======================*/
 /* ABOUT SCREEN
@@ -889,9 +889,9 @@ h1 {
   width: 100%;
   height: 100%;
   position: absolute;
-  background: url(../assets/img/ui/about_bg.jpg) 50% 100%;
+  background: url(../assets/img/ui/about_bg.jpg) 50% 100% no-repeat;
   background-size: cover; }
-  .about_bg:after {
+  .about_bg:before {
     content: "";
     width: 100%;
     height: 100%;
@@ -972,6 +972,11 @@ h1 {
   margin-top: 50px; }
   .about_prevBtn:after {
     content: "Back"; }
+
+.about_version {
+  position: absolute;
+  right: 50px;
+  bottom: 50px; }
 
 /*=======================*/
 /* TITLE SCREEN
@@ -1467,5 +1472,30 @@ h1 {
 /* CONTENT --------------*/
 .userSettings_content-load {
   background: rgba(40, 51, 120, 0.5); }
+
+/*=======================*/
+/* 404 PAGE
+/*=======================*/
+.notfound {
+  background: url(../assets/img/ui/about_bg.jpg) 50% 100% no-repeat;
+  background-size: cover; }
+  .notfound:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9); }
+  .notfound_img {
+    position: absolute;
+    width: 75%;
+    height: 75%;
+    left: 12.5%;
+    top: 12.5%;
+    background: url(../assets/img/ui/404.png) 50% 50% no-repeat;
+    background-size: contain; }
+  .notfound_redirectLink {
+    display: block;
+    width: 100%;
+    height: 100%; }
 
 /*# sourceMappingURL=main.css.map */

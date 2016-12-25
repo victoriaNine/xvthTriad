@@ -71,8 +71,10 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
             case "hard":
                 if (turnNumber === 1) {
                     return 1;
+                } else if (turnNumber === 2) {
+                    return 2;
                 } else {
-                    return turnNumber + 1;
+                    return 3;
                 }
                 break;
         }

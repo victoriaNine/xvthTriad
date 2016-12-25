@@ -35,13 +35,17 @@ define([
     }
 
     var startTime = Date.now();
-    var appInfo   = Object.create(null, {
-        version     : { value: "0.0.1" },
-        name        : { value: "xvthTriad" },
-        extension   : { value: "xvtsave" },
-        currentTime : {
-            get : getCurrentTime
-        }
+    var app       = Object.create(null, {
+        version      : { value: "0.1.0" },
+        versionName  : { value: "Beta" },
+        name         : { value: "xvthTriad" },
+        saveExt      : { value: "xvtsave" },
+        currentTime  : { get: getCurrentTime },
+        checkUpdates : { value: checkUpdates },
+        saveData     : { value: saveData },
+        loadData     : { value: loadData },
+        importSave   : { value: importSave },
+        exportSave   : { value: exportSave }
     });
     var dom       = $("#app");
     var assets    = new AssetStore();
@@ -62,10 +66,6 @@ define([
         getCaseNameFromPosition,
         getUID,
         addDomObserver,
-        saveData,
-        loadData,
-        importSave,
-        exportSave,
 
         fadeIn,
         fadeOut,
@@ -80,33 +80,33 @@ define([
     };
 
     var debug = {
-        debugMode : true,
+        debugMode : false,
         log,
         warn,
         error
     };
 
     var saveSettings = {
-        prefix        : appInfo.name + ":save//",
-        extension     : appInfo.extension,
+        prefix        : app.name + ":save//",
+        extension     : app.saveExt,
         charOffset    : 1,
         charSeparator : "x"
     };
 
     var shareSettings = {
-        url      : "http://15thtriad.com",
-        text     : "",
-        hashtags : "",
-        posttype : "",
-        tags     : "",
-        title    : "",
-        content  : "",
-        caption  : "",
+        url      : $("meta[property='og:url']").attr("content"),
+        text     : $("meta[property='twitter:description']").attr("content"),
+        posttype : "link",
+        hashtags : "ff,ff15,ffxv,tripletriad",
+        tags     : $("meta[name='keywords']").attr("content"),
+        title    : $("meta[property='og:title']").attr("content"),
+        content  : $("meta[property='og:url']").attr("content"),
+        caption  : $("meta[property='og:description']").attr("content"),
         showVia  : ""
     };
 
-    var _$ = window._$ = {
-        appInfo,
+    var _$ = {
+        app,
         dom,
         ui,
         audio,
@@ -117,6 +117,20 @@ define([
         debug,
         controls
     };
+
+    function setupStats () {
+        var stats = new window.Stats();
+        stats.dom.style.left = "auto";
+        stats.dom.style.right = "0px";
+        stats.dom.style.width = "80px";
+        stats.showPanel(0);
+        document.body.appendChild(stats.dom);
+
+        requestAnimationFrame(function loop () {
+            stats.update();
+            requestAnimationFrame(loop);
+        });
+    }
 
     $(window).resize(function() {
         if (_.isNil(window.resizedFinished)) {
@@ -129,6 +143,11 @@ define([
             _$.events.trigger("resize");
         }, 500);
     });
+
+    if (_$.debug.debugMode) {
+        window._$ = _$;
+        setupStats();
+    }
 
     return _$;
 
@@ -170,7 +189,7 @@ define([
     function error () { _makeLog("error", arguments); }
 
     function _makeLog (type, message) {
-        var log = [_$.appInfo.currentTime.toString()].concat(Array.prototype.slice.call(message));
+        var log = [_$.app.currentTime.toString()].concat(Array.prototype.slice.call(message));
         if (_$.debug.debugMode) {
             console[type].apply(null, log);
         }
@@ -409,13 +428,13 @@ define([
     function saveData () {
         var data     = _.omit(_$.state.user.attributes, "album");
         data.album   = _.map(_$.state.user.attributes.album.models, "attributes");
-        data.version = _$.version;
+        data.version = _$.app.version;
 
-        setLocalStorage(_$.appInfo.name, _encodeSaveData(data));
+        setLocalStorage(_$.app.name, _encodeSaveData(data));
     }
 
     function loadData (data) {
-        data = data || getLocalStorage(_$.appInfo.name);
+        data = data || getLocalStorage(_$.app.name);
 
         if (!data) {
             console.error("LoadData: No data");
@@ -423,11 +442,13 @@ define([
         }
 
         var JSONdata = _decodeSaveData(data);
-        _.each(_.omit(JSONdata, "album"), function (value, key) {
-            _$.state.user.set(key, value);
-        });
+        _$.app.checkUpdates(JSONdata, (updatedData) => {
+            _.each(_.omit(updatedData, "album"), function (value, key) {
+                _$.state.user.set(key, value);
+            });
 
-        _$.state.user.get("album").reset(JSONdata.album);
+            _$.state.user.get("album").reset(updatedData.album);
+        });
     }
 
     function importSave (saveFile, callback = _.noop) {
@@ -436,14 +457,14 @@ define([
         fetch(blob).then(function (response) {
             return response.text();
         }).then(function (data) {
-            _$.utils.loadData(data);
+            _$.app.loadData(data);
             callback(data);
             return data;
         });
     }
 
     function exportSave (fileName) {
-        var data = getLocalStorage(_$.appInfo.name);
+        var data = getLocalStorage(_$.app.name);
 
         if (!data) {
             console.error("ExportSave: No data");
@@ -457,7 +478,7 @@ define([
         ).replace(/[^\d+-]/g, "");
 
         if (!fileName) {
-            fileName = _$.appInfo.name + "_" + saveTime + "." + saveSettings.extension;
+            fileName = _$.app.name + "_" + saveTime + "." + saveSettings.extension;
         }
 
         if (typeof data === "object") {
@@ -512,6 +533,16 @@ define([
         });
 
         return JSON.parse(JSONdata);
+    }
+
+    function checkUpdates (saveData, onUpdateCallback) {
+        if (saveData.version === _$.app.version) {
+            onUpdateCallback(saveData);
+        } else {
+            var updateManager = require("modules/updateManager");
+            var updatedData   = updateManager.update(saveData);
+            onUpdateCallback(updatedData);
+        }
     }
 
     //===============================

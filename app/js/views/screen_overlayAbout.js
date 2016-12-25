@@ -36,7 +36,7 @@ define([
     });
 
     function initialize (options) {
-        this.$el.html(this.template());
+        this.$el.html(this.template({ appVersion: _$.app.version, appVersionName: _$.app.versionName }));
         this.line = this.$(".about_line");
         this.logo = this.$(".about_logo");
 
@@ -57,6 +57,7 @@ define([
         tl.add(this.toggleLine("show"));
         tl.from(this.logo, 0.4, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=1");
         tl.from($(".about_text, .about_credits, .about_legal"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, tl.recent().endTime());
+        tl.from($(".about_version"), 0.4, { opacity: 0, x: 20, clearProps: "all" }, tl.recent().startTime());
         tl.call(() => { _$.audio.audioEngine.playSFX("menuOpen"); }, [], null, tl.recent().endTime() - 0.4);
         tl.staggerFrom($(".about_social-element"), 0.4, { opacity: 0, y: 20, clearProps: "all" }, 0.1, "-=0.2");
         tl.from(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
@@ -82,6 +83,7 @@ define([
         tl.staggerTo($(".about_social-element"), 0.4, { opacity: 0, y: 20 }, -0.1);
         tl.call(() => { _$.audio.audioEngine.playSFX("menuClose"); }, [], null, "-=0.2");
         tl.to($(".about_text, .about_credits, .about_legal"), 0.4, { opacity: 0, y: -20 });
+        tl.to($(".about_version"), 0.4, { opacity: 0, x: 20 }, tl.recent().startTime());
         tl.to(this.logo, 0.4, { opacity: 0, scale: 1.25 });
         tl.add(this.toggleLine("hide"), "-=0.4");
         tl.to(this.$(".about_bg"), 0.4, { opacity: 0, scale: 1.25 }, "-=1");
