@@ -45,103 +45,109 @@ define([
         set: function set (value) { return setFXLevel(value); }
     });
 
-    return {
-        init       : init,
-        setFXLevel : setFXLevel,
-        getFXLevel : getFXLevel
-    };
-
-    function init () {
-        bgImg        = _$.assets.get("img.ui.bg");
-        bgDepthMap   = _$.assets.get("img.ui.bgDepthMap");
-        bgFlare      = _$.assets.get("img.ui.bgFlare");
-        bgPattern    = ctx2d.createPattern(_$.assets.get("img.ui.bgPattern"), "repeat");
-        bgSettings   = {
-            INITIAL_X1: 161,
-            INITIAL_X2: 2321,
-            INITIAL_Y1: 68,
-            INITIAL_Y2: 1283,
-
-            FLARE_INITIAL_X: 1035,
-            FLARE_INITIAL_Y: 440,
-            FLARE_INITIAL_WIDTH: bgFlare.width,
-            FLARE_INITIAL_HEIGHT: bgFlare.height
-        };
-
-        bgSettings.INITIAL_WIDTH  = bgSettings.INITIAL_X2 - bgSettings.INITIAL_X1;
-        bgSettings.INITIAL_HEIGHT = bgSettings.INITIAL_Y2 - bgSettings.INITIAL_Y1;
-
-        // Fireflies
-        for (let i = 0, ii = fireflySettings.firefliesNb; i < ii; i++) {
-            fireflySettings.fireflies[i] = new Firefly(canvas2d);
+    class CanvasWebGL {
+        constructor () {
+            this.initialized = false;
         }
 
-        flareSettings.tween = new TimelineMax({ delay: 1, repeat: -1, paused:true });
-        flareSettings.tween.to(flareSettings, 10, { opacity: 0.5, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
-        flareSettings.tween.to(flareSettings, 10, { opacity: 0.1, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 100, taper: "none", randomize: true, clamp: true }) });
-        flareSettings.tween.to(flareSettings, 4, { opacity: 0.0, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
+        init () {
+            if (this.initialized) {
+                _$.debug.warn("The canvas is already initialized.");
+                return;
+            }
 
-        vignetteSettings.tween = new TimelineMax({ repeat: -1, paused:true });
-        vignetteSettings.tween.to(vignetteSettings, 6, { amount: 1.77, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
-        vignetteSettings.tween.to(vignetteSettings, 6, { amount: 1, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 100, taper: "none", randomize: true, clamp: true }) });
+            this.initialized = true;
+            bgImg        = _$.assets.get("img.ui.bg");
+            bgDepthMap   = _$.assets.get("img.ui.bgDepthMap");
+            bgFlare      = _$.assets.get("img.ui.bgFlare");
+            bgPattern    = ctx2d.createPattern(_$.assets.get("img.ui.bgPattern"), "repeat");
+            bgSettings   = {
+                INITIAL_X1: 161,
+                INITIAL_X2: 2321,
+                INITIAL_Y1: 68,
+                INITIAL_Y2: 1283,
 
-        noiseSettings.tween = TweenMax.to(noiseSettings, 1, { time: 0.9, repeat: -1, yoyo: true, ease: SteppedEase.config(15) });
+                FLARE_INITIAL_X: 1035,
+                FLARE_INITIAL_Y: 440,
+                FLARE_INITIAL_WIDTH: bgFlare.width,
+                FLARE_INITIAL_HEIGHT: bgFlare.height
+            };
 
-        seriously           = new Seriously();
-        reformatNode        = seriously.transform("reformat");
-        reformatNode.mode   = "none";
+            bgSettings.INITIAL_WIDTH  = bgSettings.INITIAL_X2 - bgSettings.INITIAL_X1;
+            bgSettings.INITIAL_HEIGHT = bgSettings.INITIAL_Y2 - bgSettings.INITIAL_Y1;
 
-        noiseNode           = seriously.effect("noise");
-        noiseNode.overlay   = true;
-        noiseNode.amount    = 0.1;
-        noiseNode.time      = noiseSettings.time;
-        noiseNode.source    = reformatNode;
+            // Fireflies
+            for (let i = 0, ii = fireflySettings.firefliesNb; i < ii; i++) {
+                fireflySettings.fireflies[i] = new Firefly(canvas2d);
+            }
 
-        vignetteNode        = seriously.effect("vignette");
-        vignetteNode.amount = vignetteSettings.amount;
-        vignetteNode.source = noiseNode;
+            flareSettings.tween = new TimelineMax({ delay: 1, repeat: -1, paused:true });
+            flareSettings.tween.to(flareSettings, 10, { opacity: 0.5, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
+            flareSettings.tween.to(flareSettings, 10, { opacity: 0.1, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 100, taper: "none", randomize: true, clamp: true }) });
+            flareSettings.tween.to(flareSettings, 4, { opacity: 0.0, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
 
-        displaceNode          = seriously.effect("displacement");
-        displaceNode.source   = vignetteNode;
-        displaceNode.offset   = 0;
-        displaceNode.mapScale = [displaceSettings.x, displaceSettings.y];
+            vignetteSettings.tween = new TimelineMax({ repeat: -1, paused:true });
+            vignetteSettings.tween.to(vignetteSettings, 6, { amount: 1.77, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
+            vignetteSettings.tween.to(vignetteSettings, 6, { amount: 1, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 100, taper: "none", randomize: true, clamp: true }) });
 
-        scaleNode             = seriously.transform("2d");
-        scaleNode.source      = displaceNode;
-        scaleNode.scale(1.02);
+            noiseSettings.tween = TweenMax.to(noiseSettings, 1, { time: 0.9, repeat: -1, yoyo: true, ease: SteppedEase.config(15) });
 
-        targetNode          = seriously.target(canvas3d);
-        targetNode.source   = scaleNode;
+            seriously           = new Seriously();
+            reformatNode        = seriously.transform("reformat");
+            reformatNode.mode   = "none";
 
-        _$.events.once("addFX", function () {
-            ADD_FX = true;
+            noiseNode           = seriously.effect("noise");
+            noiseNode.overlay   = true;
+            noiseNode.amount    = 0.1;
+            noiseNode.time      = noiseSettings.time;
+            noiseNode.source    = reformatNode;
 
-            flareSettings.tween.play();
-            vignetteSettings.tween.play();
+            vignetteNode        = seriously.effect("vignette");
+            vignetteNode.amount = vignetteSettings.amount;
+            vignetteNode.source = noiseNode;
 
-            $(window).on("mousemove", function (e) {
-                if (FX_LEVEL >= 3) {
-                    var newMapScale = {
-                        x: 0.01 * e.pageX / WIDTH,
-                        y: -1 * (0.01 * e.pageY / HEIGHT)
-                    };
+            displaceNode          = seriously.effect("displacement");
+            displaceNode.source   = vignetteNode;
+            displaceNode.offset   = 0;
+            displaceNode.mapScale = [displaceSettings.x, displaceSettings.y];
 
-                    TweenMax.to(displaceSettings, 0.3, {
-                        x        : newMapScale.x,
-                        y        : newMapScale.y,
-                        onUpdate : function () {
-                            displaceNode.mapScale = [displaceSettings.x, displaceSettings.y];
-                        }
-                    });
-                }
+            scaleNode             = seriously.transform("2d");
+            scaleNode.source      = displaceNode;
+            scaleNode.scale(1.02);
+
+            targetNode          = seriously.target(canvas3d);
+            targetNode.source   = scaleNode;
+
+            _$.events.once("addFX", function () {
+                ADD_FX = true;
+
+                flareSettings.tween.play();
+                vignetteSettings.tween.play();
+
+                $(window).on("mousemove", function (e) {
+                    if (FX_LEVEL >= 3) {
+                        var newMapScale = {
+                            x: 0.01 * e.pageX / WIDTH,
+                            y: -1 * (0.01 * e.pageY / HEIGHT)
+                        };
+
+                        TweenMax.to(displaceSettings, 0.3, {
+                            x        : newMapScale.x,
+                            y        : newMapScale.y,
+                            onUpdate : function () {
+                                displaceNode.mapScale = [displaceSettings.x, displaceSettings.y];
+                            }
+                        });
+                    }
+                });
             });
-        });
 
-        _$.events.on("resize", onResize);
-        onResize();
+            _$.events.on("resize", onResize);
+            onResize();
 
-        seriously.go();
-        rAF = requestAnimationFrame(draw);
+            seriously.go();
+            rAF = requestAnimationFrame(draw);
+        }
     }
 
     function scaleBG () {
@@ -266,4 +272,6 @@ define([
 
     function setFXLevel (fxLevel) { if (fxLevel >= 0 && fxLevel <= 5) { FX_LEVEL = fxLevel; } }
     function getFXLevel () { return FX_LEVEL; }
+
+    return CanvasWebGL;
 });

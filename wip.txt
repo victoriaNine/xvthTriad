@@ -121,4 +121,23 @@ Simulation :
 - Tutorial section
 - Multi player
 - Loading page for updates
-- Gamepad API ? (useful?)
+- Gamepad API? (useful?)
+- Check rules OK for both players
+- Allow for card reset when < 5 cards
+
+-----------
+
+- Check screen loads before screen_title
+- Check decks are sent/received to/from server in right order
+
+- Timeout prompt
+- Preload fonts
+
+-------
+The Fifteenth Triad
+Application Description
+HTML5 multiplayer card game
+Application Key
+hYtTbA6m6D9n6kOM
+Application Secret
+6a4uQxwETNQjtxUUoXHGb18nXcGJTVL6

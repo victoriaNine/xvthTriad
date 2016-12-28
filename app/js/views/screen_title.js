@@ -159,7 +159,7 @@ define([
         }
     }
 
-    function transitionOut (nextScreen) {
+    function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
         
         var tl = new TimelineMax();
@@ -170,21 +170,8 @@ define([
         tl.to(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25 }, 0);
         tl.to(this.$(".title_logo"), 1, { opacity : 0, scale: 1.25 }, 0.5);
         tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); }, [], null, 0.5);
-        tl.call(onTransitionComplete.bind(this));
+        tl.call(this.changeScreen.bind(this, nextScreen, options));
 
-        function onTransitionComplete () {
-            _$.utils.addDomObserver(this.$el, () => {
-                _$.events.trigger("startUserEvents");
-
-                if (nextScreen === "rulesSelect") {
-                    var Screen_RulesSelect = require("views/screen_rulesSelect");
-                    _$.ui.screen           = new Screen_RulesSelect();
-                } else if (nextScreen === "userSettings") {
-                    var Screen_UserSettings = require("views/screen_userSettings");
-                    _$.ui.screen            = new Screen_UserSettings();
-                }
-            }, true, "remove");
-            this.remove();
-        }
+        return this;
     }
 });

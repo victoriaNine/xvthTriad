@@ -22,7 +22,9 @@ define([
             "click .userSettings_content-save-choice-resetBtn"   : "resetUser",
             "click .userSettings_content-load-choice-loadBtn"    : "loadGame",
             "click .userSettings_content-load-choice-cancelBtn"  : function () { $(".setting-import input").val(""); this.toggleLoad("hide"); },
-            "keyup .setting-name input"                          : function (e) { this.validateInput(e.target); },
+            "keyup .setting-name input"                          : _.debounce(function (e) {
+                this.validateInput(e.target);
+            }, 250),
             "change .setting-avatar input"                       : function (e) { this.validateInput(e.target); },
             "change .setting-import input"                       : function (e) { this.validateInput(e.target); },
             "mouseenter .userSettings_content-save-choice-element,.userSettings_content-load-choice-element" : function () {
@@ -70,34 +72,34 @@ define([
         $(window).off("click.toggleDifficulty");
     }
 
-    function toggleDifficulty (e, init) {
+    function toggleDifficulty (e, auto) {
         var closestValidOption = $(e.target).hasClass("is--disabled") ? $(e.target).parent().children(":not(.is--disabled)").eq(0) : $(e.target);
         var index              = _$.utils.getNodeIndex(closestValidOption);
         var selectHeight       = this.$(".setting-difficulty").height();
         var toggle             = this.$(".setting-difficulty .userSettings_content-settings-setting-toggle");
         var dropdown           = this.$(".userSettings_content-settings-setting-select");
 
-        if (this.$(".setting-difficulty").hasClass("is--active") || init) {
-            if (!init) {
+        if (this.$(".setting-difficulty").hasClass("is--active") || auto) {
+            if (!auto) {
+                $(window).off("click.toggleDifficulty");
                 this.$(".setting-difficulty").removeClass("is--active");
             }
 
-            TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight });
+            TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight, delay: 0.6 });
+            return;
         } else {
             this.$(".setting-difficulty").addClass("is--active");
         }
 
-        if (init) {
-            $(window).on("click.toggleDifficulty", (clickEvent) => {
-                if (!$(clickEvent.target).parents(".setting-difficulty").length) {
-                    var defaultOption      = this.$(".difficultySetting-" + _$.state.user.get("difficulty"));
-                    var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
-                    TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight });
-                    this.$(".setting-difficulty").removeClass("is--active");
-                    $(window).off("click.toggleDifficulty");
-                }
-            });
-        }
+        $(window).on("click.toggleDifficulty", (clickEvent) => {
+            if (!$(clickEvent.target).parents(".setting-difficulty").length) {
+                $(window).off("click.toggleDifficulty");
+                var defaultOption      = this.$(".difficultySetting-" + _$.state.user.get("difficulty"));
+                var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
+                this.$(".setting-difficulty").removeClass("is--active");
+                TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight, delay: 0.6 });
+            }
+        });
     }
 
     function saveGame () {
@@ -176,7 +178,7 @@ define([
         return this;
     }
 
-    function transitionOut (nextScreen, nextScreenOptions = {}) {
+    function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
 
         var tl = new TimelineMax();
@@ -191,24 +193,8 @@ define([
             this.$(".userSettings_header").slideUp(500);
         });
         tl.call(() => {
-            onTransitionComplete.call(this);
+            this.changeScreen(nextScreen, options);
         }, null, [], tl.recent().endTime() + 0.5);
-
-        function onTransitionComplete () {
-            _$.utils.addDomObserver(this.$el, () => {
-                _$.events.trigger("startUserEvents");
-
-                if (nextScreen === "title") {
-                    var Screen_Title = require("views/screen_title");
-                    _$.ui.screen = new Screen_Title(nextScreenOptions);
-                } else if (nextScreen === "rulesSelect") {
-                    var Screen_RulesSelect = require("views/screen_rulesSelect");
-                    _$.ui.screen = new Screen_RulesSelect(nextScreenOptions);
-                }
-            }, true, "remove");
-
-            this.remove();
-        }
 
         return this;
     }
@@ -261,7 +247,7 @@ define([
                     this.toggleLoad("show");
                 }
             } else if (!this.$(".userSettings_content-save, .userSettings_content-load").is(":visible")) {
-                this.$(".userSettings_content-save").css({pointerEvents: ""}).slideDown();
+                this.$(".userSettings_content-save").css({ pointerEvents: "" }).slideDown();
             }
         }
     }

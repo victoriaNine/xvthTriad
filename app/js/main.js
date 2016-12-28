@@ -9,9 +9,10 @@ require.config({
         backbone          : "libs/backbone/backbone",
         underscore        : "libs/lodash/dist/lodash",
         tweenMax          : "libs/gsap/src/uncompressed/TweenMax",
-        draggable         : "libs/gsap/src/uncompressed/utils/Draggable",
         seriously         : "libs/seriouslyjs/seriously",
         modernizr         : "libs/modernizr/modernizr",
+        socketIO          : "libs/socket.io-client/dist/socket.io",
+        stats             : "libs/stats.js/build/stats",
 
         text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
@@ -25,17 +26,16 @@ require.config({
         markdownConverter : "libs/requirejs-plugins/lib/Markdown.Converter",
 
         jqueryNearest     : "libs/jquery-nearest/src/jquery.nearest",
-        "es6-promise"     : "libs/es6-promise/es6-promise",
-        "fetch"           : "libs/fetch/fetch",
+        es6Promise        : "libs/es6-promise/es6-promise",
+        fetch             : "libs/fetch/fetch",
         aggregation       : "libs/aggregation/src/aggregation-es6",
         storage           : "libs/backbone/backbone.localStorage",
 
-        global            : "global",
-        stats             : "Stats"
+        global            : "global"
     },
 
-    shim: {
-        jqueryNearest : ["jquery"],
+    shim   : {
+        jqueryNearest     : ["jquery"]
     }
 });
 
@@ -43,11 +43,14 @@ require([
     "modernizr",
     "jquery",
     "underscore",
+    "socketIO",
+    "stats",
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
     "modules/gamepadManager",
     "modules/updateManager",
+    "modules/socketManager",
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
     "json!data/loader_audioBGM.json",
@@ -57,30 +60,31 @@ require([
     "views/screen",
     "views/screen_cardSelect",
     "views/screen_game",
+    "views/screen_roomSelect",
     "views/screen_rulesSelect",
     "views/screen_title",
     "views/screen_userSettings",
     "views/screen_overlayAbout",
     "views/screen_overlayMenu",
     "jqueryNearest",
-    "aggregation",
-    "stats"
-], function (Modernizr, $, _, AudioEngine, canvasWebGL, assetLoader, GamepadManager, UpdateManager, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+    "aggregation"
+], function (Modernizr, $, _, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
     var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX];
 
     _$.events.on("all", function (eventName, ...data) {
-        if (data.length) {
+        /*if (data.length) {
             _$.debug.log("event triggered:", eventName, data);
         } else {
             _$.debug.log("event triggered:", eventName);
-        }
+        }*/
     });
 
     _$.events.once("allLoadersComplete", function () {
-        canvasWebGL.init();
-        _$.ui.footer = new Elem_Footer();
-        _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
+        _$.ui.canvas.init();
+        _$.comm.socketManager = new SocketManager();
+        _$.ui.footer          = new Elem_Footer();
+        _$.ui.screen          = new Screen_Title({ setup: true, fullIntro: true });
 
         $(window).on("beforeunload", function (e) {
             var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
@@ -93,13 +97,8 @@ require([
         });
     });
 
-    _$.events.on("gamepadOn", function () {
-        _$.controls.type = "gamepad";
-    });
-
-    _$.events.on("gamepadOff", function () {
-        _$.controls.type = "mouse";
-    });
+    _$.events.on("gamepadOn",  () => { _$.controls.type = "gamepad"; });
+    _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
 
     function setupScale () {
         var ORIGINAL_SIZE = {
@@ -159,24 +158,46 @@ require([
         pixelRatioAdjust(true);
     }
 
+    function setupStats () {
+        var stats = new Stats();
+        stats.dom.style.left = "auto";
+        stats.dom.style.right = "0px";
+        stats.dom.style.width = "80px";
+        stats.showPanel(0);
+        document.body.appendChild(stats.dom);
+
+        requestAnimationFrame(function loop () {
+            stats.update();
+            requestAnimationFrame(loop);
+        });
+    }
+
     TweenMax.set(_$.dom, { opacity : 0 });
     setupScale();
 
+    if (_$.debug.debugMode) {
+        setupStats();
+    }
+
     _$.controls.type           = "mouse";
     _$.controls.gamepadManager = new GamepadManager();
+    _$.app.updateManager       = new UpdateManager();
+    _$.app.assetLoader         = new AssetLoader();
     _$.audio.audioEngine       = new AudioEngine();
-    assetLoader.init(loaders);
+    _$.ui.canvas               = new CanvasWebGL();
+
+    _$.app.assetLoader.load(loaders);
 });
 
 
 //===============================
 // GOOGLE ANALYTICS
 //===============================
-(function(b,o,i,l,e,r){
+/*(function(b,o,i,l,e,r){
     b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
     e=o.createElement(i);r=o.getElementsByTagName(i)[0];
     e.src="//www.google-analytics.com/analytics.js";
     r.parentNode.insertBefore(e,r);
 }(window,document,"script","ga"));
 ga("create","UA-89445990-1");
-ga("send","pageview");
+ga("send","pageview");*/

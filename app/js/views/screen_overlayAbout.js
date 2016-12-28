@@ -95,8 +95,8 @@ define([
                 _$.events.trigger("startUserEvents");
                 _$.events.trigger("aboutPageClosed");
 
-                if (nextScreen && _$.ui.screen.id !== "screen_" + nextScreen) {
-                    _$.ui.screen.transitionOut(nextScreen);
+                if (nextScreen) {
+                    _$.ui.screen.transitionOut(nextScreen, { fromMenu: true });
                 }
             }, true, "remove");
             this.remove();

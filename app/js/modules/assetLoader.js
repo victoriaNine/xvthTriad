@@ -1,21 +1,33 @@
-define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_, _$) {
-    require("es6-promise").polyfill();
+define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_, _$) {
+    require("es6Promise").polyfill();
     require("fetch");
 
-    return {
-        init
-    };
+    class AssetLoader {
+        constructor () {
+            this.loading  = false;
+            this.complete = false;
+        }
 
-    function init (loaders) {
-        var promises = [];
+        load (loaders) {
+            var that = this;
+            if (this.complete) {
+                _$.debug.warn("All assets have already been loaded");
+            } else if (this.loading) {
+                _$.debug.warn("Assets are currently being loaded");
+            } else {
+                this.loading = true;
 
-        _.each(loaders, function (loader) {
-            promises.push(_loadFiles(loader));
-        });
+                var promises = [];
+                _.each(loaders, function (loader) {
+                    promises.push(_loadFiles(loader));
+                });
 
-        Promise.all(promises).then(function (responses) {
-            _$.events.trigger("allLoadersComplete");
-        });
+                Promise.all(promises).then(function (responses) {
+                    that.complete = true;
+                    _$.events.trigger("allLoadersComplete");
+                });
+            }
+        }
     }
 
     function _loadFiles (loader) {
@@ -105,4 +117,6 @@ define(["underscore", "global", "es6-promise", "fetch"], function assetLoader (_
     function _getFilePath (type) {
         return "./assets/" + type.replace(".", "/") + "/";
     }
+
+    return AssetLoader;
 });

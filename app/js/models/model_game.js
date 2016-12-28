@@ -35,7 +35,9 @@ define([
                 opponent : []
             },
             computer      : null,
-            turnNumber    : -1
+            turnNumber    : -1,
+            role          : null,
+            roundNumber   : 0
         },
 
         initialize,
@@ -47,25 +49,31 @@ define([
         setupNextTurn,
         setupEndGame,
         updateUserAlbum,
-        promptOpponentAction
+        promptOpponentAction,
+        resetCardAttributes
     });
 
     function initialize (attributes, options = {}) {
         var players  = options.players;
         var userDeck = options.userDeck;
         var computer = options.computer;
+        var opponent = options.opponent;
 
         this.set("rules", setRules(options.rules));
+        if (options.roundNumber) {
+            this.set("roundNumber", options.roundNumber);
+        }
 
         // In case of a new round for a game with the sudden death rule,
         // Use the players passed in the options
         if (players) {
             this.set("players", players);
-            this.set("computer", computer).get("computer").AI = new Model_AI({ game: this, level: this.get("difficulty") });
+            if (this.get("type") === "solo") {
+                this.set("computer", computer).get("computer").AI = new Model_AI({ game: this, level: this.get("difficulty") });
+            }
         } else {
             if (this.get("type") === "solo") {
                 this.set("computer", this.setupComputer());
-
                 this.set({ players :
                     {
                         user     : new Model_Player({
@@ -84,7 +92,43 @@ define([
                         })
                     }
                 });
+            } else if (this.get("type") === "versus") {
+                var opponentDeck = _.map(opponent.deck, function (attributes) {
+                    return new Model_Card(attributes);
+                });
+
+                this.set({ players :
+                    {
+                        user     : new Model_Player({
+                            type   : "human",
+                            user   : _$.state.user,
+                            name   : _$.state.user.get("name"),
+                            avatar : _$.state.user.get("avatar"),
+                            deck   : userDeck
+                        }),
+                        opponent : new Model_Player({
+                            type   : "human",
+                            user   : opponent,
+                            name   : opponent.name,
+                            avatar : opponent.avatar,
+                            deck   : opponentDeck
+                        })
+                    }
+                });
             }
+        }
+
+        if (this.get("role") === "transmitter") {
+            _$.comm.socketManager.emit("roundReset");
+        } else if (this.get("role") === "receiver") {
+            _$.events.on("getFirstPlayer", (eventName, response) => {
+                if (response.msg) {
+                    _$.events.off("getFirstPlayer");
+                    var firstPlayer = (response.msg === "transmitter") ? this.get("players").opponent : this.get("players").user;
+                    this.set("playing", firstPlayer);
+                    _$.events.trigger("firstPlayerSet");
+                }
+            });
         }
 
         if (this.get("rules").elemental) {
@@ -206,10 +250,15 @@ define([
         var playing         = isSimulatedTurn ? simulation.playing : this.get("playing");
         var board           = isSimulatedTurn ? simulation.board : this.get("board");
 
-        newCard.set("position", {
-            x: position.x,
-            y: position.y
-        });
+        if (this.get("type") === "versus" && playing === user) {
+            _$.comm.socketManager.emit("setPlayerAction", {
+                deckIndex : newCard.get("deckIndex"),
+                position,
+                turnNumber : this.get("turnNumber")
+            });
+        }
+
+        newCard.set("position", position);
 
         board[_$.utils.getCaseNameFromPosition(newCard.get("position"))] = newCard;
         playedCards.push(newCard);
@@ -328,8 +377,19 @@ define([
     function setupNextTurn () {
         this.set("turnNumber", this.get("turnNumber") + 1);
 
-        if (!this.get("playing")) {
-            this.set("playing", (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent);
+        if (this.get("turnNumber") === 0) {
+            if (this.get("role") === "receiver") {
+                _$.comm.socketManager.emit("getFirstPlayer");
+            } else {
+                this.set("playing", (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent);
+
+                if (this.get("role") === "transmitter") {
+                    var firstPlayer = (this.get("playing") === this.get("players").user) ? "transmitter" : "receiver";
+                    _$.comm.socketManager.emit("setFirstPlayer", firstPlayer);
+                }
+
+                _$.events.trigger("firstPlayerSet");
+            }
         } else {
             if (this.get("playing") === this.get("players").user) {
                 this.set("playing", this.get("players").opponent);
@@ -389,10 +449,8 @@ define([
             }
         }
 
-        if (this.get("cardsToTrade") && this.get("winner") === this.get("players").opponent) {
-            if (this.get("computer")) {
-                this.selectCardsToTrade.call(this);
-            }
+        if (this.get("computer") && this.get("winner") === this.get("players").opponent && this.get("cardsToTrade")) {
+            this.selectCardsToTrade.call(this);
         }
     }
 
@@ -402,13 +460,25 @@ define([
         var caseName;
 
         if (this.get("type") === "solo") {
-            action = this.get("computer").AI.doAction();
+            action           = this.get("computer").AI.doAction();
+            action.deckIndex = action.card.get("deckIndex");
+            proceed.call(this);
+        } else {
+            _$.events.on("getPlayerAction", (eventName, response) => {
+                if (response.msg) {
+                    _$.events.off("getPlayerAction");
+                    action = response.msg;
+                    proceed.call(this);
+                }
+            });
+            _$.comm.socketManager.emit("getPlayerAction");
         }
 
-        card     = this.get("players").opponent.get("deck")[action.card.get("deckIndex")];
-        caseName = _$.utils.getCaseNameFromPosition(action.position);
-
-        _$.events.trigger("placeOpponentCard", card, caseName);
+        function proceed () {
+            card     = this.get("players").opponent.get("deck")[action.deckIndex];
+            caseName = _$.utils.getCaseNameFromPosition(action.position);
+            _$.events.trigger("placeOpponentCard", card, caseName);
+        }
     }
 
     function selectCardsToTrade () {
@@ -454,5 +524,11 @@ define([
         });
 
         return adjacentCards;
+    }
+
+    function resetCardAttributes () {
+        _.each(_.concat(this.get("originalDecks").user, this.get("originalDecks").opponent), (card) => {
+            card.reset();
+        });
     }
 });

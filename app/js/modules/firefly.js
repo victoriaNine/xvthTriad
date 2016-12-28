@@ -1,5 +1,5 @@
 define(["underscore"], function Firefly (_) {
-    return class Firefly {
+    class Firefly {
         constructor (canvas, timer = 0, drawAreaWidth = canvas.width, drawAreaHeight = canvas.height, options = {}) {
             this.ctx            = canvas.getContext("2d");
             this.options        = _.defaults(options, {
@@ -85,5 +85,7 @@ define(["underscore"], function Firefly (_) {
             this.drawAreaWidth  = options.drawAreaWidth;
             this.drawAreaHeight = options.drawAreaHeight;
         }
-    };
+    }
+
+    return Firefly;
 });

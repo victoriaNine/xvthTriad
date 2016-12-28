@@ -241,7 +241,7 @@ h1 {
   top: 0;
   left: 0; }
 
-.rulesSelect_header, .cardSelect_header, .userSettings_header {
+.rulesSelect_header, .cardSelect_header, .userSettings_header, .roomSelect_header {
   height: 300px;
   width: 100%;
   padding: 50px;
@@ -249,7 +249,7 @@ h1 {
   position: relative;
   z-index: 1;
   display: flex; }
-  .rulesSelect_header:before, .cardSelect_header:before, .userSettings_header:before {
+  .rulesSelect_header:before, .cardSelect_header:before, .userSettings_header:before, .roomSelect_header:before {
     content: "";
     width: 100%;
     height: 100%;
@@ -259,21 +259,28 @@ h1 {
     background: url(../assets/img/ui/headerPattern.jpg);
     opacity: .25;
     z-index: -1; }
-  .rulesSelect_header-leftCol, .cardSelect_header-leftCol, .userSettings_header-leftCol {
+  .rulesSelect_header-leftCol, .cardSelect_header-leftCol, .userSettings_header-leftCol, .roomSelect_header-leftCol {
     width: auto; }
-  .rulesSelect_header-rightCol, .cardSelect_header-rightCol, .userSettings_header-rightCol {
+  .rulesSelect_header-rightCol, .cardSelect_header-rightCol, .userSettings_header-rightCol, .roomSelect_header-rightCol {
     flex: 1;
     position: relative;
     display: flex;
     justify-content: flex-end; }
+  .rulesSelect_header-help, .roomSelect_header-help {
+    text-transform: none;
+    position: absolute;
+    left: 0;
+    padding: 0 50px;
+    margin-top: 1em;
+    line-height: 1.25em; }
 
-.rulesSelect_content, .cardSelect_content, .userSettings_content {
+.rulesSelect_content, .cardSelect_content, .userSettings_content, .roomSelect_content {
   width: 100%;
   height: calc(100% - 490px);
   position: relative;
   padding: 50px; }
 
-.rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load {
+.rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .roomSelect_content-screenNav {
   position: absolute;
   width: 100%;
   top: 0;
@@ -282,29 +289,29 @@ h1 {
   padding: 0 50px;
   background: rgba(0, 0, 0, 0.5); }
 
-.rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load {
+.rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .roomSelect_content-screenNav {
   display: flex;
   align-items: center; }
-  .rulesSelect_content-confirm-choice, .rulesSelect_content-screenNav-choice, .cardSelect_content-confirm-choice, .cardSelect_content-screenNav-choice, .userSettings_content-save-choice, .userSettings_content-load-choice {
+  .rulesSelect_content-confirm-choice, .rulesSelect_content-screenNav-choice, .cardSelect_content-confirm-choice, .cardSelect_content-screenNav-choice, .userSettings_content-save-choice, .userSettings_content-load-choice, .roomSelect_content-screenNav-choice {
     display: flex;
     align-items: center;
     margin-right: 1em;
     height: 100%; }
-    .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element {
+    .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element {
       position: relative;
       display: inline-block;
       margin-right: .5em; }
 
 /* BUTTONS ------------*/
-.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .serverPrompt_overlay-confirmBtn, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
   cursor: pointer;
   font-size: 16px; }
 
-.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn {
+.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .serverPrompt_overlay-confirmBtn, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .footer_menu-element:after, .about_credits:after, .game_overlay-endGame-confirmBtn:after {
+  .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .serverPrompt_overlay-confirmBtn:after, .footer_menu-element:after, .about_credits:after, .game_overlay-endGame-confirmBtn:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -318,12 +325,12 @@ h1 {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .footer_menu-element:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.footer_menu-element, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.footer_menu-element, .is--hover.about_credits, .is--hover.game_overlay-endGame-confirmBtn {
+  .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .serverPrompt_overlay-confirmBtn:hover, .footer_menu-element:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.serverPrompt_overlay-confirmBtn, .is--active.footer_menu-element, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.serverPrompt_overlay-confirmBtn, .is--hover.footer_menu-element, .is--hover.about_credits, .is--hover.game_overlay-endGame-confirmBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .footer_menu-element:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.footer_menu-element:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.about_credits:after, .is--hover.game_overlay-endGame-confirmBtn:after {
+    .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .serverPrompt_overlay-confirmBtn:hover:after, .footer_menu-element:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.serverPrompt_overlay-confirmBtn:after, .is--active.footer_menu-element:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.serverPrompt_overlay-confirmBtn:after, .is--hover.footer_menu-element:after, .is--hover.about_credits:after, .is--hover.game_overlay-endGame-confirmBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -600,7 +607,7 @@ h1 {
     margin-right: .5em; }
 
 /* OPTIONS PANEL --------------*/
-.rulesSelect_content-rules, .userSettings_content-settings {
+.rulesSelect_content-rules, .userSettings_content-settings, .roomSelect_content-settings {
   height: 270px;
   top: calc(50% - 270px / 2);
   position: absolute;
@@ -608,28 +615,28 @@ h1 {
   left: 0;
   display: flex;
   padding: 0 50px; }
-  .rulesSelect_content-rules .col, .userSettings_content-settings .col {
+  .rulesSelect_content-rules .col, .userSettings_content-settings .col, .roomSelect_content-settings .col {
     width: 50%;
     margin-right: 1em; }
-  .rulesSelect_content-rules .col:last-child, .userSettings_content-settings .col:last-child {
+  .rulesSelect_content-rules .col:last-child, .userSettings_content-settings .col:last-child, .roomSelect_content-settings .col:last-child {
     margin-right: 0; }
 
-.rulesSelect_content-rules-rule, .userSettings_content-settings-setting {
+.rulesSelect_content-rules-rule, .userSettings_content-settings-setting, .roomSelect_content-settings-setting {
   display: flex;
   height: 50px;
   line-height: 50px;
   margin-bottom: 1em; }
-  .is--on.rulesSelect_content-rules-rule, .is--on.userSettings_content-settings-setting, .is--off.rulesSelect_content-rules-rule, .is--off.userSettings_content-settings-setting {
+  .is--on.rulesSelect_content-rules-rule, .is--on.userSettings_content-settings-setting, .is--on.roomSelect_content-settings-setting, .is--off.rulesSelect_content-rules-rule, .is--off.userSettings_content-settings-setting, .is--off.roomSelect_content-settings-setting {
     cursor: pointer; }
 
-.rulesSelect_content-rules-rule-label, .userSettings_content-settings-setting-label {
+.rulesSelect_content-rules-rule-label, .userSettings_content-settings-setting-label, .roomSelect_content-settings-setting-label {
   text-transform: none;
   flex: 1;
   padding-left: 1em;
   background: rgba(255, 255, 255, 0.1);
   position: relative; }
 
-.rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting-toggle {
+.rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting-toggle {
   position: relative;
   width: 50px;
   text-align: center;
@@ -637,12 +644,12 @@ h1 {
   -webkit-transition: -webkit-background .2s;
   -ms-transition: -ms-background .2s;
   transition: background .2s; }
-  .is--on.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--on.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle {
+  .is--on.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--on.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
     background: rgba(40, 51, 120, 0.5); }
-  .is--off.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--off.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle {
+  .is--off.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--off.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
     background: rgba(235, 53, 71, 0.5); }
 
-.rulesSelect_content-rules-rule-select, .userSettings_content-settings-setting-select {
+.rulesSelect_content-rules-rule-select, .userSettings_content-settings-setting-select, .roomSelect_content-settings-setting-select {
   text-transform: none;
   flex: 1;
   padding-left: 1em;
@@ -653,16 +660,16 @@ h1 {
   -webkit-transition: -webkit-height .2s .2s;
   -ms-transition: -ms-height .2s .2s;
   transition: height .2s .2s; }
-  .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled {
+  .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled, .roomSelect_content-settings-setting-select li.is--disabled {
     color: #000; }
 
-.rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty {
+.rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty, .roomSelect_content-settings-setting.setting-mode, .roomSelect_content-settings-setting.setting-difficulty {
   cursor: pointer; }
-  .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle {
+  .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
     -webkit-transition: -webkit-width .2s, opacity .2s;
     -ms-transition: -ms-width .2s, opacity .2s;
     transition: width .2s, opacity .2s; }
-    .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after {
+    .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
       content: "";
       position: absolute;
       border-left: 6px solid transparent;
@@ -673,24 +680,24 @@ h1 {
       -webkit-transition: -webkit-transform .2s .2s;
       -ms-transition: -ms-transform .2s .2s;
       transition: transform .2s .2s; }
-  .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle {
+  .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
     width: 0;
     opacity: 0;
     -webkit-transition: -webkit-width .2s .2s, opacity .2s .2s;
     -ms-transition: -ms-width .2s .2s, opacity .2s .2s;
     transition: width .2s .2s, opacity .2s .2s; }
-    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after {
+    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
       -webkit-transform: rotate(90deg);
       -ms-transform: rotate(90deg);
       transform: rotate(90deg);
       -webkit-transition: -webkit-transform .2s;
       -ms-transition: -ms-transform .2s;
       transition: transform .2s; }
-  .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select {
+  .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select {
     overflow-y: scroll;
     height: 100px; }
 
-.userSettings_content-settings-setting-input {
+.userSettings_content-settings-setting-input, .roomSelect_content-settings-setting-input {
   border: none;
   outline: none;
   padding: 1em;
@@ -704,9 +711,9 @@ h1 {
   -webkit-transition: -webkit-background .2s;
   -ms-transition: -ms-background .2s;
   transition: background .2s; }
-  .userSettings_content-settings-setting-input:focus {
+  .userSettings_content-settings-setting-input:focus, .roomSelect_content-settings-setting-input:focus {
     background: rgba(40, 51, 120, 0.5); }
-  .is--invalid.userSettings_content-settings-setting-input {
+  .is--invalid.userSettings_content-settings-setting-input, .is--invalid.roomSelect_content-settings-setting-input {
     background: rgba(235, 53, 71, 0.5); }
 
 /* AVATAR */
@@ -756,6 +763,18 @@ h1 {
   box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset, 0 0 18px 4px rgba(255, 0, 40, 0.25); }
   .game_playerHUD-opponent.is--active .game_playerHUD-avatar:before {
     box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25); }
+
+/*=======================*/
+/* SERVER PROMPT OVERLAY
+/*=======================*/
+.serverPrompt_overlay {
+  z-index: 10000; }
+  .serverPrompt_overlay-message {
+    text-transform: none;
+    margin-top: 1em; }
+  .serverPrompt_overlay-confirmBtn {
+    position: relative;
+    margin-top: 50px; }
 
 /*=======================*/
 /* FOOTER
@@ -818,6 +837,7 @@ h1 {
     width: 100%;
     height: 100%;
     position: absolute;
+    background: #E5E6DE 50% 100% no-repeat;
     top: 0;
     left: 0; }
   .menu_element-title {
@@ -859,19 +879,19 @@ h1 {
     transition: opacity .4s .2s, transform .4s .2s; }
 
 .menu_soloMode .menu_element-bg {
-  background: url(../assets/img/ui/menu_noctis.jpg) 50% 100% no-repeat; }
+  background-image: url(../assets/img/ui/menu_noctis.jpg); }
 
 .menu_versusMode .menu_element-bg {
-  background: url(../assets/img/ui/menu_gladiolus.jpg) 50% 100% no-repeat; }
+  background-image: url(../assets/img/ui/menu_gladiolus.jpg); }
 
 .menu_networkMode .menu_element-bg {
-  background: url(../assets/img/ui/menu_prompto.jpg) 50% 100% no-repeat; }
+  background-image: url(../assets/img/ui/menu_prompto.jpg); }
 
 .menu_cardAlbum .menu_element-bg {
-  background: url(../assets/img/ui/menu_ignis.jpg) 50% 100% no-repeat; }
+  background-image: url(../assets/img/ui/menu_ignis.jpg); }
 
 .menu_userSettings .menu_element-bg {
-  background: url(../assets/img/ui/menu_luna.jpg) 50% 100% no-repeat; }
+  background-image: url(../assets/img/ui/menu_luna.jpg); }
 
 /*=======================*/
 /* ABOUT SCREEN
@@ -1005,14 +1025,6 @@ h1 {
   flex-direction: column; }
 
 /* HEADER --------------*/
-.rulesSelect_header-help {
-  text-transform: none;
-  position: absolute;
-  left: 0;
-  padding: 0 50px;
-  margin-top: 1em;
-  line-height: 1.25em; }
-
 /* CONTENT --------------*/
 .rulesSelect_content-confirm {
   background: rgba(40, 51, 120, 0.5); }
@@ -1473,6 +1485,15 @@ h1 {
 .userSettings_content-load {
   background: rgba(40, 51, 120, 0.5); }
 
+/*=======================*/
+/* ROOM SELECTION SCREEN
+/*=======================*/
+#screen_roomSelect {
+  display: flex;
+  flex-direction: column; }
+
+/* HEADER --------------*/
+/* CONTENT --------------*/
 /*=======================*/
 /* 404 PAGE
 /*=======================*/

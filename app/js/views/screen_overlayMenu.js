@@ -25,6 +25,7 @@ define([
                 _$.audio.audioEngine.playSFX("menuHover");
             },
             "click .menu_soloMode"     : "toSoloMode",
+            "click .menu_versusMode"   : "toVersusMode",
             "click .menu_userSettings" : "toUserSettings"
         },
 
@@ -32,6 +33,7 @@ define([
         transitionIn,
         transitionOut,
         toSoloMode,
+        toVersusMode,
         toUserSettings
     });
 
@@ -68,8 +70,8 @@ define([
                 _$.events.trigger("startUserEvents");
                 _$.events.trigger("mainMenuClosed");
 
-                if (nextScreen && _$.ui.screen.id !== "screen_" + nextScreen) {
-                    _$.ui.screen.transitionOut(nextScreen);
+                if (nextScreen) {
+                    _$.ui.screen.transitionOut(nextScreen, { fromMenu: true });
                 }
             }, true, "remove");
             this.remove();
@@ -81,6 +83,11 @@ define([
     function toSoloMode () {
         this.$(".menu_soloMode").css({ pointerEvents: "none" });
         _$.ui.footer.toggleMainMenu("rulesSelect");
+    }
+
+    function toVersusMode () {
+        this.$(".menu_versusMode").css({ pointerEvents: "none" });
+        _$.ui.footer.toggleMainMenu("roomSelect");
     }
 
     function toUserSettings () {

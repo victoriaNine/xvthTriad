@@ -25,8 +25,9 @@ define([
     });
 
     function initialize (options) {
-        this.selected = false;
-        this.cardView = new Elem_Card({ model: options.card }, { checkOwner: true });
+        this.selected  = false;
+        this.deckIndex = options.deckIndex;
+        this.cardView  = new Elem_Card({ model: options.card }, { checkOwner: true });
 
         this.$el.html(this.template({
             name: this.cardView.model.get("name")

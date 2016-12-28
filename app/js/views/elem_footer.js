@@ -72,7 +72,7 @@ define([
                 }
             });
 
-            _$.ui.menu.transitionOut(nextScreen);
+            _$.ui.menu.transitionOut(nextScreen, { fromMenu: true });
             _$.audio.audioEngine.playSFX("menuClose");
         } else {
             this.$(".footer_menu-element").removeClass("is--active");
@@ -107,7 +107,7 @@ define([
                 }
             });
 
-            _$.ui.about.transitionOut(nextScreen);
+            _$.ui.about.transitionOut(nextScreen, { fromMenu: true });
         } else {
             this.$(".footer_menu-element").removeClass("is--active");
             _$.events.once("aboutPageOpen", () => {
@@ -129,7 +129,7 @@ define([
             this.toggleAboutPage("title");
         } else {
             if (_$.ui.screen.id !== "screen_title") {
-                _$.ui.screen.transitionOut("title");
+                _$.ui.screen.transitionOut("title", { fromMenu: true });
             }
         }
     }

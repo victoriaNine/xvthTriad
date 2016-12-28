@@ -26,6 +26,8 @@
     "grunt-usemin": "^2.4.0",
     "jit-grunt": "^0.9.1",
     "jshint-stylish": "^1.0.0",
+    "lodash": "^4.17.3",
+    "socket.io": "^1.7.2",
     "time-grunt": "^1.0.0"
   },
   "engines": {

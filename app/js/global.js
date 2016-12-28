@@ -4,7 +4,7 @@ define([
     "jquery",
     "json!data/cardList.json"
 ], function global (_, Backbone, $, cardList) {
-    class AssetStore {
+    class AssetManager {
         constructor () {
             this.img = {
                 ui      : {},
@@ -18,19 +18,19 @@ define([
             };
         }
 
-        set (path, value)                     { return _.set(this, path, value); }
-        get (path, defaultValue, directAsset) {
+        set (path, value) { return _.set(this, path, value); }
+        get (path, defaultValue, noClone) {
             var asset = _.get(this, path);
 
             if (!asset) {
                 console.warn("Missing asset:", path);
 
                 if (defaultValue) {
-                    return this.get(path, defaultValue, directAsset);
+                    return this.get(path, defaultValue, noClone);
                 }
             }
 
-            return directAsset ? asset : asset.cloneNode(true);
+            return noClone ? asset : asset.cloneNode(true);
         }
     }
 
@@ -48,12 +48,13 @@ define([
         exportSave   : { value: exportSave }
     });
     var dom       = $("#app");
-    var assets    = new AssetStore();
+    var assets    = new AssetManager();
     var events    = _.clone(Backbone.Events);
-    var state     = {};
+    var state     = { inGame: false };
     var ui        = {};
     var controls  = {};
     var audio     = {};
+    var comm      = {};
     var utils = {
         getAppSizeRatio,
         getDragSpeed,
@@ -115,22 +116,9 @@ define([
         events,
         utils,
         debug,
-        controls
+        controls,
+        comm
     };
-
-    function setupStats () {
-        var stats = new window.Stats();
-        stats.dom.style.left = "auto";
-        stats.dom.style.right = "0px";
-        stats.dom.style.width = "80px";
-        stats.showPanel(0);
-        document.body.appendChild(stats.dom);
-
-        requestAnimationFrame(function loop () {
-            stats.update();
-            requestAnimationFrame(loop);
-        });
-    }
 
     $(window).resize(function() {
         if (_.isNil(window.resizedFinished)) {
@@ -146,7 +134,6 @@ define([
 
     if (_$.debug.debugMode) {
         window._$ = _$;
-        setupStats();
     }
 
     return _$;
@@ -443,7 +430,7 @@ define([
 
         var JSONdata = _decodeSaveData(data);
         _$.app.checkUpdates(JSONdata, (updatedData) => {
-            _.each(_.omit(updatedData, "album"), function (value, key) {
+            _.each(_.omit(updatedData, ["album", "version"]), function (value, key) {
                 _$.state.user.set(key, value);
             });
 
@@ -539,8 +526,7 @@ define([
         if (saveData.version === _$.app.version) {
             onUpdateCallback(saveData);
         } else {
-            var updateManager = require("modules/updateManager");
-            var updatedData   = updateManager.update(saveData);
+            var updatedData = _$.app.updateManager.update(saveData);
             onUpdateCallback(updatedData);
         }
     }

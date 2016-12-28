@@ -239,7 +239,7 @@
             "bottom" : 9,
             "left"   : 4
         },
-        "element" : null
+        "element" : "holy"
     },
     {
         "cardId"  : 20,
@@ -311,7 +311,7 @@
             "bottom" : 9,
             "left"   : 2
         },
-        "element" : null
+        "element" : "holy"
     },
     {
         "cardId"  : 26,

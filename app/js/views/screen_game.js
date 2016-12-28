@@ -48,14 +48,20 @@ define([
         endGameCardSelected,
         findCardViewsFromModels,
         placeOpponentCard,
+        getOpponentSelectedCards,
 
-        transitionIn
+        transitionIn,
+        transitionOut
     });
 
-    function initialize (options) {
+    function initialize (options = {}) {
         var that        = this;
         _$.state.inGame = true;
-        _$.state.game   = new Model_Game({ difficulty: _$.state.user.get("difficulty") }, options);
+        _$.state.game   = new Model_Game({
+            difficulty : _$.state.user.get("difficulty"),
+            type       : _$.state.opponent ? "versus" : "solo",
+            role       : _$.state.room ? ((_$.state.room.mode === "create") ? "transmitter" : "receiver") : null
+        }, options);
 
         this.players = _$.state.game.get("players");
         this.$el.html(this.template({
@@ -75,11 +81,14 @@ define([
         this.ui.HUDuser        = this.$(".game_playerHUD-user");
         this.ui.HUDopponent    = this.$(".game_playerHUD-opponent");
 
-        this.cardViews         = [];
-        this.lostCards         = [];
-        this.gainedCards       = [];
-        this.board             = _.clone(_$.state.game.get("board"));
-        this.postGameAction    = null;
+        this.userCardViews            = [];
+        this.opponentCardViews        = [];
+        this.userEndGameCardViews     = [];
+        this.opponentEndGameCardViews = [];
+        this.lostCards                = [];
+        this.gainedCards              = [];
+        this.board                    = _.clone(_$.state.game.get("board"));
+        this.postGameAction           = null;
 
         if (_$.state.game.get("rules").elemental) {
              _.each(_$.state.game.get("elementBoard"), (element, caseName) => {
@@ -87,12 +96,6 @@ define([
                     this.$("#" + caseName).addClass("element-" + element);
                 }
             });
-        }
-
-        if (_$.state.game.get("playing") === this.players.user) {
-            this.ui.HUDuser.addClass("is--active");
-        } else {
-            this.ui.HUDopponent.addClass("is--active");
         }
 
         var cardBG = $(_$.assets.get("svg.ui.cardBG"));
@@ -127,7 +130,14 @@ define([
         _$.events.off("endGameCardSelected", this.endGameCardSelected, this);
         _$.events.off("placeOpponentCard", this.placeOpponentCard, this);
 
+        if (_$.state.room) {
+            _$.events.off("getSelectedCards", this.getOpponentSelectedCards, this);
+        }
+
         _$.state.inGame = false;
+        delete _$.state.opponent;
+        delete _$.state.room;
+        delete _$.state.rules;
         delete _$.state.game;
 
         Screen.prototype.remove.call(this);
@@ -136,12 +146,12 @@ define([
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
 
-        _.each(this.cardViews, (cardView) => {
+        _.each(_.concat(this.userCardViews, this.opponentCardViews), (cardView) => {
             placeCardOnHolder.call(this, cardView);
         });
 
-        var blueCards = this.ui.cardsContainer.children().slice(0, 5);
-        var redCards  = this.ui.cardsContainer.children().slice(5, 10);
+        var userCards     = _.map(this.userCardViews, "$el");
+        var opponentCards = _.map(this.opponentCardViews, "$el");
 
         var tl = new TimelineMax();
         tl.from(this.ui.board, 0.4, { opacity: 0, scale: "1.2", clearProps: "all" });
@@ -150,18 +160,38 @@ define([
         tl.from(this.$(".game_playerHUD-score"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, "-=.2");
         tl.from(this.$(".game_deck"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, "-=.2");
         tl.addLabel("enterCards");
-        tl.staggerFrom(blueCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
-        tl.staggerFrom(redCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
+        tl.staggerFrom(userCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
+        tl.staggerFrom(opponentCards, 0.2, { opacity: 0, marginTop: 20, clearProps: "opacity, marginTop", onStart: playSFX }, 0.1, "enterCards");
         tl.call(() => {
-            this.showTurnOverlay();
-            _$.audio.audioEngine.playSFX("gameStart");
+            if (_$.state.game.get("playing") !== null) {
+                proceed.call(this);
+            } else {
+                _$.events.once("firstPlayerSet", proceed, this);
+            }
         }, [], null, "+=.2");
 
         function playSFX () {
             _$.audio.audioEngine.playSFX("cardSort");
         }
 
+        function proceed () {
+            if (_$.state.game.get("playing") === this.players.user) {
+                this.ui.HUDuser.addClass("is--active");
+            } else {
+                this.ui.HUDopponent.addClass("is--active");
+            }
+
+            this.showTurnOverlay();
+            _$.audio.audioEngine.playSFX("gameStart");
+        }
+
         return this;
+    }
+
+    function transitionOut (nextScreen, fromMenu) {
+        if (nextScreen === "title") {
+            this.toTitleScreen();
+        }
     }
 
     function renderCard (cardModel, index) {
@@ -174,7 +204,12 @@ define([
         }
 
         this.ui.cardsContainer.append(cardView.$el);
-        this.cardViews.push(cardView);
+
+        if (cardModel.get("currentOwner") === this.players.user) {
+            this.userCardViews.push(cardView);
+        } else {
+            this.opponentCardViews.push(cardView);
+        }
     }
 
     function placeCardOnHolder (cardView) {
@@ -285,7 +320,7 @@ define([
     }
 
     function placeOpponentCard (event, cardModel, caseName) {
-        var cardView  = this.findCardViewsFromModels(this.cardViews, cardModel)[0];
+        var cardView  = this.findCardViewsFromModels(this.opponentCardViews, cardModel)[0];
         var boardCase = this.$("#" + caseName)[0];
 
         setTimeout(() => {
@@ -296,7 +331,7 @@ define([
 
     function onResize () {
         var caseOffset;
-        _.each(this.cardViews, (cardView) => {
+        _.each(_.concat(this.userCardViews, this.opponentCardViews), (cardView) => {
             if (cardView.boardCase) {
                 caseOffset = _$.utils.getDestinationCoord(cardView.$el, cardView.boardCase);
                 TweenMax.to(cardView.$el, 0.2, { x: caseOffset.left, y: caseOffset.top });
@@ -409,15 +444,36 @@ define([
         if (gameResult === "draw" && _$.state.game.get("rules").suddenDeath) {
             this.$(".game_overlay-endGame-confirmBtn").text("Start next round");
             noCardSelection.call(this);
-            this.postGameAction = this.toNextRound.bind(this);
+            this.postGameAction = () => {
+                if (_$.state.room) {
+                    this.$(".game_overlay-endGame-confirmBtn").text("Waiting for the other player...");
+                    _$.comm.socketManager.emit("confirmEnd", null, this.toNextRound.bind(this));
+                } else {
+                    this.toNextRound();
+                }
+            };
         } else if ((gameResult === "draw" && _$.state.game.get("rules").trade !== "direct") || _$.state.game.get("rules").trade === "none") {
             this.$(".game_overlay-endGame-confirmBtn").text("Go back to title screen");
             noCardSelection.call(this);
-            this.postGameAction = this.toTitleScreen.bind(this);
+            this.postGameAction = () => {
+                if (_$.state.room) {
+                    this.$(".game_overlay-endGame-confirmBtn").text("Waiting for the other player...");
+                    _$.comm.socketManager.emit("confirmEnd", null, this.toTitleScreen.bind(this));
+                } else {
+                    this.toTitleScreen();
+                }
+            };
         } else if (_$.state.game.get("rules").trade !== "none") {
             this.$(".game_overlay-endGame-confirmBtn").text("Confirm & Go back to title screen");
             cardSelection.call(this);
-            this.postGameAction = this.confirmCardSelection.bind(this);
+            this.postGameAction = () => {
+                if (_$.state.room) {
+                    this.$(".game_overlay-endGame-confirmBtn").text("Waiting for the other player...");
+                    _$.comm.socketManager.emit("confirmEnd", null, this.confirmCardSelection.bind(this));
+                } else {
+                    this.confirmCardSelection();
+                }
+            };
         }
 
         function noCardSelection () {
@@ -428,29 +484,32 @@ define([
         }
 
         function cardSelection () {
-            var userEndGameCardViews     = [];
-            var opponentEndGameCardViews = [];
-
             tl.call(() => { this.$(".game_overlay-endGame").addClass("is--active"); });
 
+            var i, ii;
             var endGameCardView;
-            for (let i = 0, ii = _$.state.game.get("originalDecks").user.length; i < ii; i++) {
-                endGameCardView = new Elem_EndGameCard({ card: _$.state.game.get("originalDecks").user[i] });
+            for (i = 0, ii = _$.state.game.get("originalDecks").user.length; i < ii; i++) {
+                endGameCardView = new Elem_EndGameCard({ card: _$.state.game.get("originalDecks").user[i], deckIndex: i });
                 this.$(".game_overlay-endGame-album-user").append(endGameCardView.$el);
-                userEndGameCardViews.push(endGameCardView);
+                this.userEndGameCardViews.push(endGameCardView);
 
                 _$.utils.fadeIn(endGameCardView.$el, null, 0.5, 1 + 0.15 * i);
             }
 
-            for (let i = 0, ii = _$.state.game.get("originalDecks").opponent.length; i < ii; i++) {
-                endGameCardView = new Elem_EndGameCard({ card: _$.state.game.get("originalDecks").opponent[i] });
+            for (i = 0, ii = _$.state.game.get("originalDecks").opponent.length; i < ii; i++) {
+                endGameCardView = new Elem_EndGameCard({ card: _$.state.game.get("originalDecks").opponent[i], deckIndex: i });
                 this.$(".game_overlay-endGame-album-opponent").append(endGameCardView.$el);
-                opponentEndGameCardViews.push(endGameCardView);
+                this.opponentEndGameCardViews.push(endGameCardView);
 
                 _$.utils.fadeIn(endGameCardView.$el, null, 0.5, 1 + 0.15 * i);
             }
 
             if (_$.state.game.get("rules").trade === "one" || _$.state.game.get("rules").trade === "difference") {
+                if (_$.state.room) {
+                    _$.events.on("getSelectedCards", this.getOpponentSelectedCards, this);
+                    _$.comm.socketManager.emit("getSelectedCards");
+                }
+
                 if (gameResult === "won") {
                     tl.set(this.$(".game_overlay-endGame h1"), { transition: "none" }, "+=2");
                     tl.to(this.$(".game_overlay-endGame h1"), 0.4, { opacity: 0 });
@@ -462,27 +521,31 @@ define([
                     tl.to(this.$(".game_overlay-endGame h1"), 0.4, { opacity: 1, clearProps: "all" });
 
                     if (_$.state.game.get("cardsToTrade") === 5) {
-                        this.gainedCards = opponentEndGameCardViews;
+                        this.gainedCards = this.opponentEndGameCardViews;
                         autoFlipCards(this.gainedCards, true);
                     }
                 } else if (gameResult === "lost") {
-                    this.lostCards = this.findCardViewsFromModels(userEndGameCardViews, _$.state.game.getLostCards(), "cardView");
-                    autoFlipCards(this.lostCards);
+                    if (_$.state.game.get("type") === "solo") {
+                        this.lostCards = this.findCardViewsFromModels(this.userEndGameCardViews, _$.state.game.getLostCards(), "cardView");
+                        autoFlipCards(this.lostCards);
+                    } else {
+                        this.$(".game_overlay-endGame-confirmBtn").slideDown(400);
+                    }
                 }
             } else if (_$.state.game.get("rules").trade === "all") {
                 if (gameResult === "won") {
-                    this.gainedCards = opponentEndGameCardViews;
+                    this.gainedCards = this.opponentEndGameCardViews;
                     autoFlipCards(this.gainedCards, true);
                 } else if (gameResult === "lost") {
-                    this.lostCards = userEndGameCardViews;
+                    this.lostCards = this.userEndGameCardViews;
                     autoFlipCards(this.lostCards);
                 }
             } else if (_$.state.game.get("rules").trade === "direct") {
-                this.gainedCards = _.filter(opponentEndGameCardViews, (endGameCardView) => {
+                this.gainedCards = _.filter(this.opponentEndGameCardViews, (endGameCardView) => {
                     return endGameCardView.cardView.model.get("currentOwner") === this.players.user;
                 });
 
-                this.lostCards = _.filter(userEndGameCardViews, (endGameCardView) => {
+                this.lostCards = _.filter(this.userEndGameCardViews, (endGameCardView) => {
                     return endGameCardView.cardView.model.get("currentOwner") === this.players.opponent;
                 });
 
@@ -542,6 +605,11 @@ define([
         _$.events.trigger("stopUserEvents");
         _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
         _$.events.off(_$.audio.audioEngine.getBGM("bgm.win").events.ended);
+        _$.state.game.resetCardAttributes();
+
+        if (_$.state.room) {
+            _$.comm.socketManager.emit("playerReset");
+        }
 
         var tl = new TimelineMax();
         tl.call(() => { this.$(".game_overlay-endGame").removeClass("is--active"); });
@@ -574,13 +642,18 @@ define([
         });
 
         function onTransitionComplete () {
-            var rules      = _$.state.game.get("rules");
-            var computer   = _$.state.game.get("computer");
-            var newPlayers = { user: this.players.user, opponent: this.players.opponent };
+            var rules       = _$.state.game.get("rules");
+            var computer    = _$.state.game.get("computer");
+            var newPlayers  = { user: this.players.user, opponent: this.players.opponent };
+            var roundNumber = _$.state.game.get("roundNumber") + 1;
+
+            if (roundNumber === 4) {
+                rules.suddenDeath = false;
+            }
 
             _$.utils.addDomObserver(this.$el, () => {
                 _$.events.trigger("startUserEvents");
-                this.initialize({ players: newPlayers, rules, computer });
+                this.initialize({ players: newPlayers, rules, computer, roundNumber });
             }, true, "remove");
             this.remove();
         }
@@ -673,6 +746,10 @@ define([
             _.remove(this.gainedCards, info.endGameCardView);
         }
 
+        if (_$.state.room) {
+            _$.comm.socketManager.emit("setSelectedCards", _.map(this.gainedCards, "deckIndex"));
+        }
+
         if ((_$.state.game.get("rules").trade === "one" || _$.state.game.get("rules").trade === "difference")) {
             if (this.gainedCards.length === _$.state.game.get("cardsToTrade")) {
                 if (!this.$(".game_overlay-endGame-confirmBtn").is(":visible")) {
@@ -681,6 +758,25 @@ define([
             } else if (this.$(".game_overlay-endGame-confirmBtn").is(":visible")) {
                 this.$(".game_overlay-endGame-confirmBtn").slideUp(400);
             }
+        }
+    }
+
+    function getOpponentSelectedCards (eventName, response) {
+        var opponentSelectedCards = response.msg;
+
+        if (opponentSelectedCards) {
+            this.lostCards = _.filter(this.userEndGameCardViews, (endGameCardView) => {
+                return _.some(opponentSelectedCards, (deckIndex) => {
+                    return endGameCardView.deckIndex === deckIndex;
+                });
+            });
+
+            var tl = new TimelineMax();
+            _.each(this.lostCards, function (endGameCardView, index) {
+                tl.call(() => {
+                    endGameCardView.cardView.flip();
+                }, [], null, 0.15 * index);
+            });
         }
     }
 });

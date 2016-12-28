@@ -2,30 +2,41 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "global"
-], function Screen ($, _, Backbone, _$) {
+    "global",
+    "views/elem_serverPromptOverlay",
+], function Screen ($, _, Backbone, _$, Elem_ServerPromptOverlay) {
     return Backbone.View.extend({
-        tagName        : "section",
-        className      : "screen",
-        eventsDisabled : false,
+        tagName   : "section",
+        className : "screen",
 
         add,
         remove,
         updateControlsState,
-        triggerGamepadAction
+        triggerGamepadAction,
+        error,
+        info,
+        closePrompt,
+        toGame,
+        waitForOpponent,
+        changeScreen
     });
 
     function add () {
+        this.eventsDisabled = false;
+        this.serverPrompt   = new Elem_ServerPromptOverlay();
+
         _$.utils.addDomObserver(this.$el, this.updateControlsState.bind(this), true);
         _$.events.on("startUserEvents", _delegate, this);
         _$.events.on("stopUserEvents", _undelegate, this);
+        _$.events.on("showServerError", this.error, this);
         _$.dom.find("#screen").append(this.$el);
     }
 
     function remove () {
         _$.events.off("startUserEvents", _delegate, this);
         _$.events.off("stopUserEvents", _undelegate, this);
-        _$.events.off("gamepad", this.triggerGamepadAction.bind(this));
+        _$.events.off("gamepad", this.triggerGamepadAction, this);
+        _$.events.off("showServerError", this.error, this);
         Backbone.View.prototype.remove.call(this);
     }
 
@@ -82,5 +93,137 @@ define([
         _$.events.off("gamepad", this.triggerGamepadAction, this);
         this.undelegateEvents();
         this.eventsDisabled = true;
+    }
+
+    function error (eventName, options) {
+        if (_$.ui.screen.id === this.id) {
+            if (!this.serverPrompt.isOpen) {
+                this.$el.append(this.serverPrompt.$el);
+            }
+
+            this.serverPrompt.show(_.extend(options, { type: "error" }));
+        }
+    }
+
+    function info (eventName, options) {
+        if (_$.ui.screen.id === this.id) {
+            if (!this.serverPrompt.isOpen) {
+                this.$el.append(this.serverPrompt.$el);
+            }
+
+            this.serverPrompt.show(_.extend(options, { type: "info" }));
+        }
+    }
+
+    function closePrompt () {
+        this.serverPrompt.close();
+    }
+
+    function toGame (deck) {
+        if (_$.state.room) {
+            this.waitForOpponent({
+                deck: _.map(deck, "attributes"),
+            }, proceed.bind(this));
+        } else {
+            proceed.call(this);
+        }
+
+        function proceed () {
+            var gameInfo = {
+                userDeck : deck,
+                rules    : _$.state.rules,
+                room     : _$.state.room,
+                opponent : _$.state.opponent
+            };
+
+            this.transitionOut("game", gameInfo);
+            _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+            _$.audio.audioEngine.playSFX("titleStart");
+        }
+    }
+
+    function waitForOpponent (userData, callback) {
+        userData = _.extend(userData, {
+            name      : _$.state.user.get("name"),
+            avatar    : _$.state.user.get("avatar"),
+            albumSize : _$.state.user.get("album").length
+        });
+
+        _$.comm.socketManager.emit("confirmReady", userData, onResponse.bind(this));
+        
+        this.info(null, {
+            action       : onCancel.bind(this),
+            titleBold    : "Please",
+            titleRegular : "wait",
+            msg          : "Waiting for the other player to confirm"
+        });
+
+        function onResponse (response) {
+            _$.state.opponent = response;
+            this.closePrompt();
+            callback();
+        }
+
+        function onCancel () {
+            _$.comm.socketManager.emit("cancelReady");
+            this.closePrompt();
+        }
+    }
+
+    function changeScreen (nextScreen, options = {}) {
+        if (nextScreen === "title" || options.fromMenu) {
+            if (_$.state.room) {
+                _$.comm.socketManager.emit("playerReset");
+            }
+
+            delete _$.state.opponent;
+            delete _$.state.room;
+            delete _$.state.rules;
+            delete _$.state.game;
+            
+            _$.utils.addDomObserver(this.$el, () => {
+                _$.events.trigger("startUserEvents");
+
+                if (nextScreen === "title") {
+                    var Screen_Title = require("views/screen_title");
+                    _$.ui.screen     = new Screen_Title(options);
+                } else if (nextScreen === "userSettings") {
+                    var Screen_UserSettings = require("views/screen_userSettings");
+                    _$.ui.screen            = new Screen_UserSettings(options);
+                } else if (nextScreen === "roomSelect") {
+                    var Screen_RoomSelect = require("views/screen_roomSelect");
+                    _$.ui.screen          = new Screen_RoomSelect(options);
+                } else if (nextScreen === "rulesSelect") {
+                    var Screen_RulesSelect = require("views/screen_rulesSelect");
+                    _$.ui.screen           = new Screen_RulesSelect(options);
+                } else if (nextScreen === "cardsSelect") {
+                    var Screen_CardSelect = require("views/screen_cardSelect");
+                    _$.ui.screen          = new Screen_CardSelect(options);
+                }
+            }, true, "remove");
+            this.remove();
+        } else {
+            if (nextScreen === "game") {
+                _$.utils.addDomObserver(this.$el, () => {
+                    _$.events.trigger("startUserEvents");
+
+                    var Screen_Game = require("views/screen_game");
+                    _$.ui.screen = new Screen_Game(options);
+                }, true, "remove");
+                this.remove();
+            } else {
+                _$.events.trigger("startUserEvents");
+                if (nextScreen === "roomSelect") {
+                    var Screen_RoomSelect = require("views/screen_roomSelect");
+                    _$.ui.screen          = _$.ui.roomSelect ? _$.ui.roomSelect.transitionIn() : new Screen_RoomSelect(options);
+                } else if (nextScreen === "rulesSelect") {
+                    var Screen_RulesSelect = require("views/screen_rulesSelect");
+                    _$.ui.screen =_$.ui.rulesSelect ? _$.ui.rulesSelect.transitionIn() : new Screen_RulesSelect(options);
+                } else if (nextScreen === "cardSelect") {
+                    var Screen_CardSelect = require("views/screen_cardSelect");
+                    _$.ui.screen =_$.ui.cardSelect ? _$.ui.cardSelect.transitionIn() : new Screen_CardSelect(options);
+                }
+            }
+        }
     }
 });

@@ -299,6 +299,15 @@ h1 {
         display: flex;
         justify-content: flex-end;
     }
+
+    &-help {
+        text-transform: none;
+        position: absolute;
+        left: 0;
+        padding: 0 $globalPadding;
+        margin-top: 1em;
+        line-height: 1.25em;
+    }
 }
 
 %content {
@@ -875,6 +884,26 @@ h1 {
 
 
 /*=======================*/
+/* SERVER PROMPT OVERLAY
+/*=======================*/
+.serverPrompt_overlay {
+    z-index: 10000;
+
+    &-message {
+        text-transform: none;
+        margin-top: 1em;
+    }
+
+    &-confirmBtn {
+        @extend %btn-rect;
+
+        position: relative;
+        margin-top: 50px;
+    }
+}
+
+
+/*=======================*/
 /* FOOTER
 /*=======================*/
 #footer {
@@ -961,6 +990,7 @@ h1 {
 
     &-bg {
         @include fullSizeAbs();
+        background: #E5E6DE 50% 100% no-repeat;
         top:0;
         left:0;
     }
@@ -993,11 +1023,11 @@ h1 {
     }
 }
 
-.menu_soloMode     .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_noctis.jpg"}) 50% 100% no-repeat; }
-.menu_versusMode   .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_gladiolus.jpg"}) 50% 100% no-repeat; }
-.menu_networkMode  .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_prompto.jpg"}) 50% 100% no-repeat; }
-.menu_cardAlbum    .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_ignis.jpg"}) 50% 100% no-repeat; }
-.menu_userSettings .menu_element-bg { background: url(#{ $uiAssetsPath + "menu_luna.jpg"}) 50% 100% no-repeat; }
+.menu_soloMode     .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_noctis.jpg"}); }
+.menu_versusMode   .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_gladiolus.jpg"}); }
+.menu_networkMode  .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_prompto.jpg"}); }
+.menu_cardAlbum    .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_ignis.jpg"}); }
+.menu_userSettings .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_luna.jpg"}); }
 
 
 /*=======================*/
@@ -1204,15 +1234,10 @@ h1 {
     &-rightCol {
         @extend %header-rightCol;
     }
-}
 
-.rulesSelect_header-help {
-    text-transform: none;
-    position: absolute;
-    left: 0;
-    padding: 0 $globalPadding;
-    margin-top: 1em;
-    line-height: 1.25em;
+    &-help {
+        @extend %header-help;
+    }
 }
 
 /* CONTENT --------------*/
@@ -1861,6 +1886,85 @@ h1 {
 }
 
 .userSettings_content-settings-setting-input {
+    @extend %options-option-input;
+}
+
+
+/*=======================*/
+/* ROOM SELECTION SCREEN
+/*=======================*/
+#screen_roomSelect {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.roomSelect_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+    }
+}
+
+/* CONTENT --------------*/
+.roomSelect_content {
+    @extend %content
+}
+
+.roomSelect_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.roomSelect_content-settings {
+    @extend %options;
+}
+
+.roomSelect_content-settings-setting {
+    @extend %options-option;
+
+    &.setting-mode {
+        @extend %options-option-list;
+    }
+}
+
+.roomSelect_content-settings-setting {
+    @extend %options-option;
+
+    &.setting-difficulty {
+        @extend %options-option-list;
+    }
+}
+
+.roomSelect_content-settings-setting-label {
+    @extend %options-option-label;
+}
+
+.roomSelect_content-settings-setting-toggle {
+    @extend %options-option-toggle;
+}
+
+.roomSelect_content-settings-setting-select {
+    @extend %options-option-select;
+}
+
+.roomSelect_content-settings-setting-input {
     @extend %options-option-input;
 }
 

@@ -23,7 +23,8 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
         validate,
 
         setImagePath,
-        getRanksSum
+        getRanksSum,
+        reset
     });
 
     function initialize (attributes, options) {
@@ -43,5 +44,15 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
 
     function getRanksSum () {
         return (this.get("ranks").top + this.get("ranks").right + this.get("ranks").bottom + this.get("ranks").left);
+    }
+
+    function reset () {
+        this.set({
+            owner        : this.defaults.owner,
+            currentOwner : this.defaults.currentOwner,
+            position     : this.defaults.position,
+            bonus        : this.defaults.bonus,
+            deckIndex    : this.defaults.deckIndex
+        });
     }
 });

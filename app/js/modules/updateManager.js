@@ -1,23 +1,21 @@
 define(["underscore", "global"], function updateManager (_, _$) {
-    var PATCH_HISTORY = [
+    const PATCH_HISTORY = [
         { version: "0.1.0", name: "Beta", flag: "beta", patch: _.identity }
     ];
 
-    return {
-        update
-    };
+    class UpdateManager {
+        update (saveData) {
+            var saveVersion    = saveData.version;
+            var updateFrom     = _.findIndex(PATCH_HISTORY, { version: saveVersion });
+            var updateTo       = PATCH_HISTORY.length;
+            var patchesToApply = _.slice(PATCH_HISTORY, updateFrom, updateTo);
 
-    function update (saveData) {
-        var saveVersion    = saveData.version;
-        var updateFrom     = _.findIndex(PATCH_HISTORY, { version: saveVersion });
-        var updateTo       = PATCH_HISTORY.length;
-        var patchesToApply = _.slice(PATCH_HISTORY, updateFrom, updateTo);
-
-        if (!patchesToApply.length) {
-            return saveData;
-        } else {
-            var patchFns = _.map(patchesToApply, "patch");
-            return _pipe(...patchFns)(saveData);
+            if (!patchesToApply.length) {
+                return saveData;
+            } else {
+                var patchFns = _.map(patchesToApply, "patch");
+                return _pipe(...patchFns)(saveData);
+            }
         }
     }
 
@@ -28,4 +26,6 @@ define(["underscore", "global"], function updateManager (_, _$) {
             }, x) ;
         };
     }
+
+    return UpdateManager;
 });
