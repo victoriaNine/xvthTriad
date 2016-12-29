@@ -265,7 +265,6 @@ module.exports = function (grunt) {
     if (target === 'dist') {
       return grunt.task.run([
         'clean:server',
-        'sass:server',
         'copy:dist',
         'open:server',
         'connect:dist:keepalive'
