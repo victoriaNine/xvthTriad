@@ -34,6 +34,7 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
     function setAvatarPath (url) {
         _$.utils.getBase64Image(url, (base64URL) => {
             this.set({ avatar: base64URL });
+            fetch(this.get("avatar")); // Pre-load the user's avatar
         });
     }
 });

@@ -743,7 +743,7 @@ define([
                 }
             }
         } else {
-            _.remove(this.gainedCards, info.endGameCardView);
+            _.remove(this.gainedCards, (item) => item === info.endGameCardView);
         }
 
         if (_$.state.room) {

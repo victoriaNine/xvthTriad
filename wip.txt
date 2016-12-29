@@ -110,7 +110,9 @@ Simulation :
 ! Favicon
 ! OG tags & social share
 ! 404 page
-- Build
+! Build
+- Deploy server
+- Update htaccess
 - Set redirect http://15thtriad.com => http://beta.15thtriad.com
 - Serve!
 
@@ -134,6 +136,7 @@ Simulation :
 - Preload fonts
 
 -------
+OVH node.js key
 The Fifteenth Triad
 Application Description
 HTML5 multiplayer card game

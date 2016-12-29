@@ -68,13 +68,17 @@ define([
         tl.call(() => { _$.events.trigger("startUserEvents"); this.delegateEvents(); this.isOpen = true; });
     }
 
-    function close (callback = _.noop) {
+    function close (callback) {
         this.$el.removeClass("is--active");
-        this.isOpen        = false;
-        this.confirmAction = null;
+        _$.utils.addDomObserver(this.$el, () => {
+            this.isOpen        = false;
+            this.confirmAction = null;
 
-        _$.utils.addDomObserver(this.$el, callback, true, "remove");
-        setTimeout(this.remove.bind(this), 900);
+            if (_.isFunction(callback)) {
+                callback();
+            }
+        }, true, "remove");
+        setTimeout(this.remove.bind(this), 800);
     }
 
     function toTitleScreen () {

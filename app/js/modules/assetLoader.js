@@ -89,7 +89,9 @@ define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_,
 
     function _onFileLoaded (file, fileInfo, loaderName) {
         var assetName = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
-        _$.assets.set(fileInfo.type + "." + assetName, file);
+        if (fileInfo.type !== "font") {
+             _$.assets.set(fileInfo.type + "." + assetName, file);
+        }
         _$.events.trigger("fileLoaded:" + loaderName + ":" + assetName);
     }
 

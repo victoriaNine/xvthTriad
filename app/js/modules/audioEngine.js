@@ -1,5 +1,4 @@
 define(["underscore", "global"], function audioEngine (_, _$) {
-    const aggregation = require("aggregation");
     const ALIASES     = {
         bgm: {
             menus   : "inDreams",

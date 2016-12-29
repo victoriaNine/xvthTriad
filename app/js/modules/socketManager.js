@@ -50,18 +50,18 @@ define(["underscore", "global"], function socketManager (_, _$) {
         }
 
         emit (eventName, data = {}, callback = null) {
-            if (callback) {
+            if (_.isFunction(callback)) {
                 this.socket.once("in:" + eventName, callback);
             }
 
             this.socket.emit("out:" + eventName, data);
         }
 
-        emitEventToClient (eventName, clientName, data = {}, callback = _.noop) {
+        emitEventToClient (eventName, clientName, data = {}, callback = null) {
             this.socket.emit("out:emitEventToClient", _.extend(data, { eventName, toClient: clientName, fromClient: this.socket.id }));
         }
 
-        emitEventToOpponent (eventName, data = {}, callback = _.noop) {
+        emitEventToOpponent (eventName, data = {}, callback = null) {
             this.socket.emit("out:emitEventToOpponent", _.extend(data, { eventName, fromClient: this.socket.id }));
         }
     }

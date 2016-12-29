@@ -36,8 +36,8 @@ define([
 
     var startTime = Date.now();
     var app       = Object.create(null, {
-        version      : { value: "0.1.0" },
-        versionName  : { value: "Beta" },
+        version      : { value: "{{ VERSION }}" },
+        versionName  : { value: "{{ VERSION_NAME }}" },
         name         : { value: "xvthTriad" },
         saveExt      : { value: "xvtsave" },
         currentTime  : { get: getCurrentTime },
@@ -81,7 +81,7 @@ define([
     };
 
     var debug = {
-        debugMode : false,
+        debugMode : true,
         log,
         warn,
         error
@@ -95,14 +95,14 @@ define([
     };
 
     var shareSettings = {
-        url      : $("meta[property='og:url']").attr("content"),
-        text     : $("meta[property='twitter:description']").attr("content"),
+        url      : $("meta[property='og:url']")[0].content,
+        text     : $("meta[name='twitter:description']")[0].content,
         posttype : "link",
         hashtags : "ff,ff15,ffxv,tripletriad",
-        tags     : $("meta[name='keywords']").attr("content"),
-        title    : $("meta[property='og:title']").attr("content"),
-        content  : $("meta[property='og:url']").attr("content"),
-        caption  : $("meta[property='og:description']").attr("content"),
+        tags     : $("meta[name='keywords']")[0].content,
+        title    : $("meta[property='og:title']")[0].content,
+        content  : $("meta[property='og:url']")[0].content,
+        caption  : $("meta[property='og:description']")[0].content,
         showVia  : ""
     };
 
@@ -309,12 +309,15 @@ define([
         return Array.from($(element)[0].parentNode.children).indexOf($(element)[0]);
     }
 
-    function getBase64Image (url, callback = _.noop) {
+    function getBase64Image (url, callback) {
         return fetch(url).then(response => response.blob()).then(blob => {
             return new Promise((resolve, reject) => {
                 var reader = new FileReader();
                 reader.onloadend = () => {
-                    callback(reader.result);
+                    if (_.isFunction(callback)) {
+                        callback(reader.result);
+                    }
+                    
                     resolve(reader.result);
                 };
                 reader.onerror = reject;
@@ -438,14 +441,16 @@ define([
         });
     }
 
-    function importSave (saveFile, callback = _.noop) {
+    function importSave (saveFile, callback) {
         var blob = URL.createObjectURL(saveFile);
 
         fetch(blob).then(function (response) {
             return response.text();
         }).then(function (data) {
             _$.app.loadData(data);
-            callback(data);
+            if (_.isFunction(callback)) {
+                callback(data);
+            }
             return data;
         });
     }

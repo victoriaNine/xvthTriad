@@ -96,27 +96,30 @@ define([
     }
 
     function error (eventName, options) {
-        if (_$.ui.screen.id === this.id) {
-            if (!this.serverPrompt.isOpen) {
-                this.$el.append(this.serverPrompt.$el);
-            }
-
-            this.serverPrompt.show(_.extend(options, { type: "error" }));
-        }
+        _showPrompt.call(this, _.extend(options, { type: "error" }));
     }
 
     function info (eventName, options) {
-        if (_$.ui.screen.id === this.id) {
-            if (!this.serverPrompt.isOpen) {
-                this.$el.append(this.serverPrompt.$el);
-            }
-
-            this.serverPrompt.show(_.extend(options, { type: "info" }));
-        }
+        _showPrompt.call(this, _.extend(options, { type: "info" }));
     }
 
     function closePrompt () {
         this.serverPrompt.close();
+    }
+
+    function _showPrompt (options) {
+        if (_$.ui.screen.id === this.id) {
+            if (!this.serverPrompt.isOpen) {
+                _$.utils.addDomObserver(this.serverPrompt.$el, proceed.bind(this), true);
+                this.$el.append(this.serverPrompt.$el);
+            } else {
+                proceed.call(this);
+            }
+        }
+
+        function proceed () {
+            this.serverPrompt.show(options);
+        }
     }
 
     function toGame (deck) {
@@ -160,6 +163,7 @@ define([
 
         function onResponse (response) {
             _$.state.opponent = response;
+            fetch(_$.state.opponent.avatar); // Pre-load the opponent's avatar
             this.closePrompt();
             callback();
         }

@@ -1,0 +1,113 @@
+{
+	"name": "imgCards",
+	"files": [
+		{
+			"type": "img.cards",
+			"name": "luche.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "libertus.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "crowe.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "pelna.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "tredd.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "axis.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "sonitus.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "iedolas.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "glauca.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "drautos.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "cid.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "cindy.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "iris.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "cor.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "clarus.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "gentiana.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "ravus.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "aranea.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "nyx.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "noctis.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "prompto.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "gladiolus.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "ignis.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "lunafreya.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "regis.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "olderNoctis.png"
+		},
+		{
+			"type": "img.cards",
+			"name": "ardyn.png"
+		}
+	]
+}

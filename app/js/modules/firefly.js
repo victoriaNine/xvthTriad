@@ -1,4 +1,4 @@
-define(["underscore"], function Firefly (_) {
+define(["underscore"], function firefly (_) {
     class Firefly {
         constructor (canvas, timer = 0, drawAreaWidth = canvas.width, drawAreaHeight = canvas.height, options = {}) {
             this.ctx            = canvas.getContext("2d");

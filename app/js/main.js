@@ -28,7 +28,6 @@ require.config({
         jqueryNearest     : "libs/jquery-nearest/src/jquery.nearest",
         es6Promise        : "libs/es6-promise/es6-promise",
         fetch             : "libs/fetch/fetch",
-        aggregation       : "libs/aggregation/src/aggregation-es6",
         storage           : "libs/backbone/backbone.localStorage",
 
         global            : "global"
@@ -53,6 +52,7 @@ require([
     "modules/socketManager",
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
+    "json!data/loader_imgCards.json",
     "json!data/loader_audioBGM.json",
     "json!data/loader_audioSFX.json",
     "global",
@@ -66,39 +66,10 @@ require([
     "views/screen_userSettings",
     "views/screen_overlayAbout",
     "views/screen_overlayMenu",
-    "jqueryNearest",
-    "aggregation"
-], function (Modernizr, $, _, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+    "jqueryNearest"
+], function (Modernizr, $, _, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
-    var loaders      = [loaderImgUI, loaderImgAvatars, loaderAudioBGM, loaderAudioSFX];
-
-    _$.events.on("all", function (eventName, ...data) {
-        /*if (data.length) {
-            _$.debug.log("event triggered:", eventName, data);
-        } else {
-            _$.debug.log("event triggered:", eventName);
-        }*/
-    });
-
-    _$.events.once("allLoadersComplete", function () {
-        _$.ui.canvas.init();
-        _$.comm.socketManager = new SocketManager();
-        _$.ui.footer          = new Elem_Footer();
-        _$.ui.screen          = new Screen_Title({ setup: true, fullIntro: true });
-
-        $(window).on("beforeunload", function (e) {
-            var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
-            (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
-            return confirmationMessage;                                // Gecko and WebKit
-        }).on("blur", function() {
-            _$.audio.audioEngine.channels.master.fadeOut();
-        }).on("focus", function() {
-            _$.audio.audioEngine.channels.master.fadeIn({ to: 1 });
-        });
-    });
-
-    _$.events.on("gamepadOn",  () => { _$.controls.type = "gamepad"; });
-    _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
+    var loaders      = [loaderImgUI, loaderImgAvatars, loaderImgCards, loaderAudioBGM, loaderAudioSFX];
 
     function setupScale () {
         var ORIGINAL_SIZE = {
@@ -158,6 +129,26 @@ require([
         pixelRatioAdjust(true);
     }
 
+    function preloadFonts () {
+        var fonts = [
+            { name: "AvantGarde LT", weights : [200, 500, 700] },
+            { name: "socicon", weights : ["normal"] }
+        ];
+
+        var glyphs = String.fromCharCode("0xe041") + String.fromCharCode("0xe040") +
+                     String.fromCharCode("0xe022") + String.fromCharCode("0xe059");
+
+        _.each(fonts, (font) => {
+            _.each(font.weights, (weight) => {
+                $("<div class='preloadFont'>").css({
+                    fontFamily: font.name,
+                    fontWeight: weight,
+                    opacity: 0
+                }).text(font.name === "socicon" ? glyphs : "preLoad").appendTo($("body"));
+            });
+        });
+    }
+
     function setupStats () {
         var stats = new Stats();
         stats.dom.style.left = "auto";
@@ -172,8 +163,38 @@ require([
         });
     }
 
+    _$.events.on("all", function (eventName, ...data) {
+        if (data.length) {
+            _$.debug.log("event triggered:", eventName, data);
+        } else {
+            _$.debug.log("event triggered:", eventName);
+        }
+    });
+
+    _$.events.once("allLoadersComplete", function () {
+        $(".preloadFont").remove();
+        _$.ui.canvas.init();
+        _$.comm.socketManager = new SocketManager();
+        _$.ui.footer          = new Elem_Footer();
+        _$.ui.screen          = new Screen_Title({ setup: true, fullIntro: true });
+
+        $(window).on("beforeunload", function (e) {
+            var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
+            (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
+            return confirmationMessage;                                // Gecko and WebKit
+        }).on("blur", function() {
+            _$.audio.audioEngine.channels.master.fadeOut();
+        }).on("focus", function() {
+            _$.audio.audioEngine.channels.master.fadeIn({ to: 1 });
+        });
+    });
+
+    _$.events.on("gamepadOn",  () => { _$.controls.type = "gamepad"; });
+    _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
+
     TweenMax.set(_$.dom, { opacity : 0 });
     setupScale();
+    preloadFonts();
 
     if (_$.debug.debugMode) {
         setupStats();
@@ -193,11 +214,11 @@ require([
 //===============================
 // GOOGLE ANALYTICS
 //===============================
-/*(function(b,o,i,l,e,r){
+(function(b,o,i,l,e,r){
     b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
     e=o.createElement(i);r=o.getElementsByTagName(i)[0];
     e.src="//www.google-analytics.com/analytics.js";
     r.parentNode.insertBefore(e,r);
 }(window,document,"script","ga"));
 ga("create","UA-89445990-1");
-ga("send","pageview");*/
+ga("send","pageview");
