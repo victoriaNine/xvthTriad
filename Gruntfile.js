@@ -26,7 +26,8 @@ module.exports = function (grunt) {
   var yeomanConfig = {
     app  : 'app',
     dist : 'dist',
-    tmp  : '.tmp'
+    tmp  : '.tmp',
+    prod : 'html'
   };
 
   var cardList     = grunt.file.readJSON(yeomanConfig.app + '/js/data/cardList.json');
@@ -75,6 +76,15 @@ module.exports = function (grunt) {
           middleware: function (connect) {
             return [
               mountFolder(connect, yeomanConfig.tmp)
+            ];
+          }
+        }
+      },
+      prod: {
+        options: {
+          middleware: function (connect) {
+            return [
+              mountFolder(connect, yeomanConfig.prod)
             ];
           }
         }
@@ -262,6 +272,12 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('serve', function (target) {
+    if (target === 'prod') {
+      return grunt.task.run([
+        'connect:prod:keepalive'
+      ]);
+    }
+
     if (target === 'dist') {
       return grunt.task.run([
         'clean:server',

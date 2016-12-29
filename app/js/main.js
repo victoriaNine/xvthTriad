@@ -69,7 +69,7 @@ require([
     "jqueryNearest"
 ], function (Modernizr, $, _, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Title = require("views/screen_title");
-    var loaders      = [loaderImgUI, loaderImgAvatars, loaderImgCards, loaderAudioBGM, loaderAudioSFX];
+    var loaders      = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards];
 
     function setupScale () {
         var ORIGINAL_SIZE = {
@@ -164,11 +164,15 @@ require([
     }
 
     _$.events.on("all", function (eventName, ...data) {
-        if (data.length) {
+        /*if (data.length) {
             _$.debug.log("event triggered:", eventName, data);
         } else {
             _$.debug.log("event triggered:", eventName);
-        }
+        }*/
+    });
+
+    _$.events.on("loadProgress", function () {
+        console.log(_$.app.assetLoader.getPercentage(), _$.app.assetLoader.loaded, _$.app.assetLoader.total);
     });
 
     _$.events.once("allLoadersComplete", function () {
