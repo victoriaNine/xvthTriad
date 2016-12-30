@@ -272,15 +272,15 @@ h1 {
       margin-right: .5em; }
 
 /* BUTTONS ------------*/
-.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .serverPrompt_overlay-confirmBtn, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .serverPrompt_overlay-confirmBtn, .about_credits, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
   cursor: pointer;
   font-size: 16px; }
 
-.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .serverPrompt_overlay-confirmBtn, .footer_menu-element, .about_credits, .game_overlay-endGame-confirmBtn {
+.rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .serverPrompt_overlay-confirmBtn, .about_credits, .game_overlay-endGame-confirmBtn {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .serverPrompt_overlay-confirmBtn:after, .footer_menu-element:after, .about_credits:after, .game_overlay-endGame-confirmBtn:after {
+  .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .footer_menu-element:after, .serverPrompt_overlay-confirmBtn:after, .about_credits:after, .game_overlay-endGame-confirmBtn:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -294,12 +294,12 @@ h1 {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .serverPrompt_overlay-confirmBtn:hover, .footer_menu-element:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.serverPrompt_overlay-confirmBtn, .is--active.footer_menu-element, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.serverPrompt_overlay-confirmBtn, .is--hover.footer_menu-element, .is--hover.about_credits, .is--hover.game_overlay-endGame-confirmBtn {
+  .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .footer_menu-element:hover, .serverPrompt_overlay-confirmBtn:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.serverPrompt_overlay-confirmBtn, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.footer_menu-element, .is--hover.serverPrompt_overlay-confirmBtn, .is--hover.about_credits, .is--hover.game_overlay-endGame-confirmBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .serverPrompt_overlay-confirmBtn:hover:after, .footer_menu-element:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.serverPrompt_overlay-confirmBtn:after, .is--active.footer_menu-element:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.serverPrompt_overlay-confirmBtn:after, .is--hover.footer_menu-element:after, .is--hover.about_credits:after, .is--hover.game_overlay-endGame-confirmBtn:after {
+    .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .serverPrompt_overlay-confirmBtn:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.serverPrompt_overlay-confirmBtn:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.serverPrompt_overlay-confirmBtn:after, .is--hover.about_credits:after, .is--hover.game_overlay-endGame-confirmBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -513,12 +513,12 @@ h1 {
       transition: letter-spacing .4s .2s, opacity .2s .2s; }
 
 /* SMALL LOGO, SOCIAL ICONS & CREDITS TEXT --------------*/
-.footer_logo, .loading_logo, .about_logo {
+.loading_logo, .footer_logo, .about_logo {
   width: 190px;
   height: 145px;
   display: flex;
   align-items: flex-end; }
-  .footer_logo .svg-logo, .loading_logo .svg-logo, .about_logo .svg-logo, .footer_logo .svg-logoNoText, .loading_logo .svg-logoNoText, .about_logo .svg-logoNoText {
+  .loading_logo .svg-logo, .footer_logo .svg-logo, .about_logo .svg-logo, .loading_logo .svg-logoNoText, .footer_logo .svg-logoNoText, .about_logo .svg-logoNoText {
     fill: white;
     stroke: rgba(255, 255, 255, 0);
     cursor: pointer;
@@ -527,7 +527,7 @@ h1 {
     -webkit-transition: -webkit-fill .15s, stroke .15s;
     -ms-transition: -ms-fill .15s, stroke .15s;
     transition: fill .15s, stroke .15s; }
-  .footer_logo:not(.is--tweening):hover .svg-logo, .loading_logo:not(.is--tweening):hover .svg-logo, .about_logo:not(.is--tweening):hover .svg-logo, .footer_logo:not(.is--tweening).is--hover .svg-logo, .loading_logo:not(.is--tweening).is--hover .svg-logo, .about_logo:not(.is--tweening).is--hover .svg-logo {
+  .loading_logo:not(.is--tweening):hover .svg-logo, .footer_logo:not(.is--tweening):hover .svg-logo, .about_logo:not(.is--tweening):hover .svg-logo, .loading_logo:not(.is--tweening).is--hover .svg-logo, .footer_logo:not(.is--tweening).is--hover .svg-logo, .about_logo:not(.is--tweening).is--hover .svg-logo {
     fill: rgba(0, 0, 0, 0.25);
     stroke: white; }
 
@@ -801,16 +801,61 @@ h1 {
     -ms-transform: translateX(0.5em);
     transform: translateX(0.5em); } }
 /*=======================*/
-/* SERVER PROMPT OVERLAY
+/* LOADING SCREEN
 /*=======================*/
-.serverPrompt_overlay {
-  z-index: 10000; }
-  .serverPrompt_overlay-message {
-    text-transform: none;
-    margin-top: 1em; }
-  .serverPrompt_overlay-confirmBtn {
+#screen_loading {
+  z-index: 99999; }
+
+.loading_bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: url(../assets/img/ui/bg.jpg) 50% 50% no-repeat;
+  background-size: cover; }
+
+.loading_content {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: #000;
+  mix-blend-mode: multiply;
+  pointer-events: none; }
+
+.loading_wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; }
+
+.loading_logo {
+  width: 285px;
+  height: 220px; }
+  .loading_logo-svg {
+    flex: 1;
     position: relative;
-    margin-top: 50px; }
+    height: 100%;
+    background: url("../assets/svg/ui/logoNoText.svg") no-repeat 50% 50%; }
+
+.loading_text {
+  font-size: 24px;
+  margin-top: 1em;
+  -webkit-animation: extendText 4s ease-in-out infinite;
+  -ms-animation: extendText 4s ease-in-out infinite;
+  animation: extendText 4s ease-in-out infinite; }
+
+.loading_line {
+  background: #FFF;
+  width: 0;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  top: calc(50% + 6px);
+  -webkit-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0); }
 
 /*=======================*/
 /* FOOTER
@@ -843,39 +888,16 @@ h1 {
   bottom: 50px; }
 
 /*=======================*/
-/* LOADING SCREEN
+/* SERVER PROMPT OVERLAY
 /*=======================*/
-#screen_loading {
-  background: #000;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 1; }
-
-.loading_logo {
-  width: 285px;
-  height: 220px; }
-
-.loading_text {
-  font-size: 24px;
-  margin-top: 1em;
-  -webkit-animation: extendText 4s ease-in-out infinite;
-  -ms-animation: extendText 4s ease-in-out infinite;
-  animation: extendText 4s ease-in-out infinite; }
-
-.loading_line {
-  background: #FFF;
-  width: 0;
-  height: 1px;
-  position: absolute;
-  left: 0;
-  top: calc(50% + 6px);
-  -webkit-transform: translate3d(0, 0, 0);
-  -ms-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0); }
+.serverPrompt_overlay {
+  z-index: 10000; }
+  .serverPrompt_overlay-message {
+    text-transform: none;
+    margin-top: 1em; }
+  .serverPrompt_overlay-confirmBtn {
+    position: relative;
+    margin-top: 50px; }
 
 /*=======================*/
 /* MENU SCREEN

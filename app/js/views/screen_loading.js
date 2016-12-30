@@ -12,26 +12,23 @@ define([
         // Our template for the line of statistics at the bottom of the app.
         template  : _.template(Templ_Loading),
 
-        // Delegated events for creating new items, and clearing completed ones.
-        events    : {},
-
         initialize
     });
 
     function initialize (options) {
-        this.$el.html(this.template());
-
-        this.line           = this.$(".loading_line");
-        this.logo           = this.$(".loading_logo");
-        this.canvasAssets   = 0;
         this.loadPercentage = 0;
+        this.canvasAssets   = 0;
+        this.$el.html(this.template());
+        TweenMax.set([this.$(".loading_bg, .loading_wrapper"), _$.ui.canvas.dom], { opacity: 0 });
 
-        var that = this;
         _$.events.on("loadProgress", () => {
-            this.loadPercentage = _$.app.assetLoader.getPercentage();
-            TweenMax.to(this.line, 0.2, { width: this.loadPercentage + "%" });
+            if (_$.app.assetLoader.getPercentage() > this.loadPercentage) {
+                this.loadPercentage = _$.app.assetLoader.getPercentage();
+                TweenMax.to(this.$(".loading_line"), 0.2, { width: this.loadPercentage + "%" });
+            }
         });
 
+        var that = this;
         _$.events.on("fileLoaded:imgUI", function (eventName, originalEventName) {
             if (originalEventName === "fileLoaded:imgUI:bg" ||
                 originalEventName === "fileLoaded:imgUI:bgDepthMap" ||
@@ -42,25 +39,32 @@ define([
             }
         });
 
-        _$.events.once("fileLoaded:imgUI:logoNoText", () => {
-            var logo = $(_$.assets.get("svg.ui.logoNoText"));
-            this.logo.append(logo.fadeIn());
+        _$.events.once("fileLoaded:imgUI:bg", () => {
+            TweenMax.to(this.$(".loading_bg"), 1, { opacity: 1, clearProps: "opacity", delay: 2 });
         });
 
-        _$.events.once("allLoadersComplete", function () {
+        _$.events.once("fileLoaded:imgUI:logoNoText", () => {
+            var logo = $(_$.assets.get("svg.ui.logoNoText"));
+            this.$(".loading_logo").append(logo);
+
+            TweenMax.to(this.$(".loading_wrapper"), 1, { opacity: 1, clearProps: "opacity" });
+        });
+
+        _$.events.once("allLoadersComplete", () => {
             _$.events.off("loadProgress");
             $(".preloadFont").remove();
-            
-            TweenMax.to(that.$el, 1, { opacity: 0, scale:"1.25",
-                onStart   : () => {
+
+            TweenMax.to(this.$el, 1, { opacity: 0, scale: "1.25", delay: 1,
+                onStart    : () => {
                     _$.events.trigger("launch");
                 },
-                onComplete: () => {
-                    that.remove.call(that);
+                onComplete : () => {
+                    this.remove();
                 }
             });
         });
 
+        TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });
         _preloadFonts();
         this.add();
     }
@@ -70,7 +74,7 @@ define([
             _$.events.off("fileLoaded:imgUI");
             _$.ui.canvas.init();
             _$.events.trigger("addFX");
-            TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity", delay: 1 });
+            TweenMax.to(_$.ui.canvas.dom, 2, { opacity : 1, clearProps: "opacity", delay: 1 });
         }
     }
 
