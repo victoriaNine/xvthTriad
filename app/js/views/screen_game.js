@@ -463,7 +463,7 @@ define([
                 }
             };
         } else if ((this.gameResult === "draw" && _$.state.game.get("rules").trade !== "direct") || _$.state.game.get("rules").trade === "none") {
-            this.$(".game_overlay-endGame-confirmBtn").text("Go back to title screen");
+            this.$(".game_overlay-endGame-confirmBtn").text("Return to title screen");
             noCardSelection.call(this);
             this.postGameAction = () => {
                 if (_$.state.room) {
@@ -474,7 +474,7 @@ define([
                 }
             };
         } else if (_$.state.game.get("rules").trade !== "none") {
-            this.$(".game_overlay-endGame-confirmBtn").text("Confirm & Go back to title screen");
+            this.$(".game_overlay-endGame-confirmBtn").text("Confirm & Return to title screen");
             cardSelection.call(this);
             this.postGameAction = () => {
                 if (_$.state.room) {
@@ -647,9 +647,11 @@ define([
         function onTransitionComplete () {
             _$.utils.addDomObserver(this.$el, () => {
                 _$.events.trigger("startUserEvents");
+                _$.app.saveData();
 
                 var Screen_Title = require("views/screen_title");
                 _$.ui.screen     = new Screen_Title();
+                _$.ui.screen.showAutoSavePrompt();
             }, true, "remove");
             this.remove();
         }

@@ -185,9 +185,7 @@ require([
         _$.ui.screen          = new Screen_Title({ setup: true, fullIntro: true });
 
         $(window).on("beforeunload", function (e) {
-            var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
-            (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
-            return confirmationMessage;                                // Gecko and WebKit
+            return _$.ui.screen.showSavePrompt(e);
         }).on("blur", function() {
             _$.audio.audioEngine.channels.master.fadeOut();
         }).on("focus", function() {

@@ -3,8 +3,8 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "views/elem_serverPromptOverlay",
-], function Screen ($, _, Backbone, _$, Elem_ServerPromptOverlay) {
+    "views/elem_promptOverlay",
+], function Screen ($, _, Backbone, _$, Elem_PromptOverlay) {
     return Backbone.View.extend({
         tagName   : "section",
         className : "screen",
@@ -15,7 +15,10 @@ define([
         triggerGamepadAction,
         error,
         info,
+        choice,
         closePrompt,
+        showSavePrompt,
+        showAutoSavePrompt,
         toGame,
         waitForOpponent,
         changeScreen
@@ -23,7 +26,7 @@ define([
 
     function add () {
         this.eventsDisabled = false;
-        this.serverPrompt   = new Elem_ServerPromptOverlay();
+        this.promptOverlay  = new Elem_PromptOverlay();
 
         _$.utils.addDomObserver(this.$el, this.updateControlsState.bind(this), true);
         _$.events.on("startUserEvents", _delegate, this);
@@ -103,23 +106,60 @@ define([
         _showPrompt.call(this, _.extend(options, { type: "info" }));
     }
 
+    function choice (eventName, options) {
+        _showPrompt.call(this, _.extend(options, { type: "choice" }));
+    }
+
     function closePrompt () {
-        this.serverPrompt.close();
+        this.promptOverlay.close();
     }
 
     function _showPrompt (options) {
         if (_$.ui.screen.id === this.id) {
-            if (!this.serverPrompt.isOpen) {
-                _$.utils.addDomObserver(this.serverPrompt.$el, proceed.bind(this), true);
-                this.$el.append(this.serverPrompt.$el);
+            if (!this.promptOverlay.isOpen) {
+                _$.utils.addDomObserver(this.promptOverlay.$el, proceed.bind(this), true);
+                this.$el.append(this.promptOverlay.$el);
             } else {
                 proceed.call(this);
             }
         }
 
         function proceed () {
-            this.serverPrompt.show(options);
+            this.promptOverlay.show(options);
         }
+    }
+
+    function showSavePrompt (e = {}) {
+        this.choice(null, {
+            titleBold    : "Save your",
+            titleRegular : "progress",
+            msg          : "All unsaved progress will be lost. Do you really wish to leave?",
+            btn1Msg      : "Open save screen",
+            btn2Msg      : "Cancel",
+            action1      : onGoSave.bind(this),
+            action2      : this.closePrompt.bind(this)
+        });
+
+        var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
+        (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
+        return confirmationMessage;                                // Gecko and WebKit
+
+        function onGoSave () {
+            this.promptOverlay.close(() => {
+                this.transitionOut("userSettings");
+            });
+        }
+    }
+
+    function showAutoSavePrompt () {
+        _$.audio.audioEngine.playSFX("gameGain");
+
+        this.info(null, {
+            titleBold    : "Autosave",
+            titleRegular : "complete",
+            msg          : "Your progress was saved.",
+            autoClose    : true
+        });
     }
 
     function toGame (deck) {
@@ -155,10 +195,11 @@ define([
         _$.comm.socketManager.emit("confirmReady", userData, onResponse.bind(this));
         
         this.info(null, {
-            action       : onCancel.bind(this),
             titleBold    : "Please",
             titleRegular : "wait",
-            msg          : "Waiting for the other player to confirm"
+            msg          : "Waiting for the other player to confirm",
+            btnMsg       : "Cancel",
+            action       : onCancel.bind(this)
         });
 
         function onResponse (response) {
@@ -184,7 +225,7 @@ define([
             });
         }
 
-        if (nextScreen === "title" || options.fromMenu) {
+        if (nextScreen === "title" || nextScreen === "userSettings" || options.fromMenu) {
             if (_$.state.room) {
                 _$.comm.socketManager.emit("playerReset");
             }
@@ -216,6 +257,7 @@ define([
             }, true, "remove");
             this.remove();
         } else {
+            // Game flow
             if (nextScreen === "game") {
                 _$.utils.addDomObserver(this.$el, () => {
                     _$.events.trigger("startUserEvents");

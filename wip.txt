@@ -114,7 +114,8 @@ Simulation :
 ! Deploy server
 ! Set redirect http://15thtriad.com => http://beta.15thtriad.com
 ! Redirect rules for 404
-- Fix cross-browser drag speed
+! Fix cross-browser drag speed
+- Fix card album resize
 
 --------------
 

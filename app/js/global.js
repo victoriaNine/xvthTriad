@@ -194,7 +194,7 @@ define([
     }
 
     function getDragSpeed () {
-        return 1.25 / _$.state.appScalar;
+        return window.devicePixelRatio / _$.state.appScalar;
     }
 
     function fadeIn (elements, callback, duration = 0.5, delay = 0) {

@@ -245,18 +245,12 @@ h1 {
 .flex-justify-start { justify-content: flex-start; }
 
 @media (orientation: portrait) {
-    html {
-        transform: none !important;
-        width: 100% !important;
-        height: 100% !important;
-    }
-    
     body {
         background: #000 url(#{ $uiAssetsPath + "rotateDevice.png"}) no-repeat 50% 50%;
-        transform: none !important;
+        background-size: 30%;
     }
 
-    #app { display: none; }
+    #app { visibility: hidden; }
 }
 
 
@@ -1009,9 +1003,9 @@ h1 {
 
 
 /*=======================*/
-/* SERVER PROMPT OVERLAY
+/* PROMPT OVERLAY
 /*=======================*/
-.serverPrompt_overlay {
+.prompt_overlay {
     z-index: 10000;
 
     &-message {
@@ -1019,11 +1013,16 @@ h1 {
         margin-top: 1em;
     }
 
-    &-confirmBtn {
+    &-confirmBtn, &-confirm2Btn {
         @extend %btn-rect;
 
         position: relative;
         margin-top: 50px;
+        display: inline-block;
+    }
+
+    &-confirm2Btn {
+        margin-left: 1em;
     }
 }
 
