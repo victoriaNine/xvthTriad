@@ -199,13 +199,13 @@ define([
             case "normal":
                 config.name   = "Gentiana";
                 config.avatar = "./assets/img/avatars/computer_gentiana.jpg";
-                cardMinLevel  = 2;
+                cardMinLevel  = 1;
                 cardMaxLevel  = 2;
                 break;
             case "hard":
                 config.name   = "Bahamut";
                 config.avatar = "./assets/img/avatars/computer_bahamut.jpg";
-                cardMinLevel  = 3;
+                cardMinLevel  = 1;
                 cardMaxLevel  = 3;
                 break;
         }

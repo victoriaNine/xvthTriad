@@ -127,6 +127,16 @@ define([
 
         function proceed () {
             _$.state.user.set({ name: settings.name, difficulty: settings.difficulty });
+            if (!_$.debug.debugMode) {
+                ga("send", "event", {
+                    eventCategory : "userSettingsEvent",
+                    eventAction   : "saveGame",
+                    gameStats     : JSON.stringify(_$.state.user.get("gameStats")),
+                    albumSize     : _$.state.user.get("album").length,
+                    difficulty    : _$.state.user.get("difficulty")
+                });
+            }
+            
             _$.app.saveData();
             this.transitionOut("title");
         }
@@ -139,6 +149,13 @@ define([
     }
 
     function loadGame () {
+        if (!_$.debug.debugMode) {
+            ga("send", "event", {
+                eventCategory : "userSettingsEvent",
+                eventAction   : "loadGame"
+            });
+        }
+
         var file = this.$(".setting-import input")[0].files[0];
         _$.app.importSave(file, () => {
             this.transitionOut("title", { fullIntro: true });
@@ -148,10 +165,30 @@ define([
     }
 
     function exportSaveFile () {
+        if (!_$.debug.debugMode) {
+            ga("send", "event", {
+                eventCategory : "userSettingsEvent",
+                eventAction   : "exportSaveFile",
+                gameStats     : JSON.stringify(_$.state.user.get("gameStats")),
+                albumSize     : _$.state.user.get("album").length,
+                difficulty    : _$.state.user.get("difficulty")
+            });
+        }
+
         _$.app.exportSave();
     }
 
     function resetUser () {
+        if (!_$.debug.debugMode) {
+            ga("send", "event", {
+                eventCategory : "userSettingsEvent",
+                eventAction   : "resetUser",
+                gameStats     : JSON.stringify(_$.state.user.get("gameStats")),
+                albumSize     : _$.state.user.get("album").length,
+                difficulty    : _$.state.user.get("difficulty")
+            });
+        }
+
         this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
         TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
         _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });

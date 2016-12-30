@@ -243,7 +243,8 @@ define([
         tl.call(() => {
             this.$(".rulesSelect_content-screenNav").slideDown(500);
             _$.events.trigger("startUserEvents");
-
+            this.updateRules();
+            
             if (this.readOnly) {
                 _$.events.on("getRules", this.setOpponentRules, this);
                 _$.comm.socketManager.emit("getRules");

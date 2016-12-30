@@ -1568,10 +1568,10 @@ h1 {
     background: rgba(0, 0, 0, 0.9); }
   .notfound_img {
     position: absolute;
-    width: 75%;
-    height: 75%;
-    left: 12.5%;
-    top: 12.5%;
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    top: 25%;
     background: url(../assets/img/ui/404.png) 50% 50% no-repeat;
     background-size: contain; }
   .notfound_redirectLink {

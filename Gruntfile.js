@@ -27,10 +27,9 @@ module.exports = function (grunt) {
     app  : 'app',
     dist : 'dist',
     tmp  : '.tmp',
+    beta : 'beta',
     prod : 'html'
   };
-
-  var cardList     = grunt.file.readJSON(yeomanConfig.app + '/js/data/cardList.json');
 
   grunt.initConfig({
     pkg   : pkgFile,
@@ -59,34 +58,107 @@ module.exports = function (grunt) {
       options: {
         port: grunt.option('port') || SERVER_PORT,
         // change this to '0.0.0.0' to access the server from outside
-        hostname: 'localhost',
+        hostname: '127.0.0.1',
         onCreateServer: setupSockets
       },
       livereload: {
         options: {
           middleware: function (connect) {
-            return [
-              lrSnippet,
-              mountFolder(connect, yeomanConfig.tmp)
-            ];
+            var middlewares = [];
+
+            middlewares.push(lrSnippet);
+            middlewares.push(mountFolder(connect, yeomanConfig.tmp));
+
+            // ***
+            // Not found - just serve index.html
+            // ***
+            middlewares.push(function (req, res) {
+              var file = yeomanConfig.tmp + '/index.html'; 
+              if (grunt.file.exists(file)) {
+                require('fs').createReadStream(file).pipe(res);
+                return; // we're done
+              }
+
+              res.statusCode(404); // where's index.html?
+              res.end();
+            });
+
+            return middlewares;
           }
         }
       },
       dist: {
         options: {
           middleware: function (connect) {
-            return [
-              mountFolder(connect, yeomanConfig.tmp)
-            ];
+            var middlewares = [];
+
+            middlewares.push(mountFolder(connect, yeomanConfig.tmp));
+
+            // ***
+            // Not found - just serve index.html
+            // ***
+            middlewares.push(function (req, res) {
+              var file = yeomanConfig.tmp + '/index.html'; 
+              if (grunt.file.exists(file)) {
+                require('fs').createReadStream(file).pipe(res);
+                return; // we're done
+              }
+
+              res.statusCode(404); // where's index.html?
+              res.end();
+            });
+
+            return middlewares;
           }
         }
       },
       prod: {
         options: {
           middleware: function (connect) {
-            return [
-              mountFolder(connect, yeomanConfig.prod)
-            ];
+            var middlewares = [];
+
+            middlewares.push(lrSnippet);
+            middlewares.push(mountFolder(connect, yeomanConfig.prod));
+
+            // ***
+            // Not found - just serve index.html
+            // ***
+            middlewares.push(function (req, res) {
+              var file = yeomanConfig.prod + '/index.html'; 
+              if (grunt.file.exists(file)) {
+                require('fs').createReadStream(file).pipe(res);
+                return; // we're done
+              }
+
+              res.statusCode(404); // where's index.html?
+              res.end();
+            });
+
+            return middlewares;
+          }
+        }
+      },
+      beta: {
+        options: {
+          middleware: function (connect) {
+            var middlewares = [];
+            middlewares.push(mountFolder(connect, yeomanConfig.beta));
+
+            // ***
+            // Not found - just serve index.html
+            // ***
+            middlewares.push(function (req, res) {
+              var file = yeomanConfig.beta + '/index.html'; 
+              if (grunt.file.exists(file)) {
+                require('fs').createReadStream(file).pipe(res);
+                return; // we're done
+              }
+
+              res.statusCode(404); // where's index.html?
+              res.end();
+            });
+
+            return middlewares;
           }
         }
       }
@@ -252,6 +324,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('buildCardImgLoader', function (target) {
+    var cardList = grunt.file.readJSON(yeomanConfig.app + '/js/data/cardList.json');
     var fileList = _.map(cardList, function (card) {
       return {
         "type" : "img.cards",
@@ -273,9 +346,9 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('serve', function (target) {
-    if (target === 'prod') {
+    if (target === 'prod' || target === 'beta') {
       return grunt.task.run([
-        'connect:prod:keepalive'
+        'connect:' + target + ':keepalive'
       ]);
     }
 
@@ -443,9 +516,9 @@ module.exports = function (grunt) {
           var opponent = clientList[getOpponentId()];
           roomList[socket.currentRoom].rules = data;
 
-          console.log("transmitter --", socket.id, "set rules:", data);
+          console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "set rules:", data);
           if (opponent) {
-            console.log("transmitter --", socket.id, "send rules:", data);
+            console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "send rules:", data);
             io.to(getOpponentId()).emit("in:getRules", {
               type : "ok",
               msg  : data
@@ -465,7 +538,7 @@ module.exports = function (grunt) {
 
       socket.on("out:getRules", function (data) {
         if (socket.currentRoom && roomList[socket.currentRoom]) {
-          console.log("receiver --", socket.id, "get rules:", roomList[socket.currentRoom].rules);
+          console.log("room", socket.currentRoom, "-- receiver --", socket.id, "get rules:", roomList[socket.currentRoom].rules);
           socket.emit("in:getRules", {
             type : "ok",
             msg  : roomList[socket.currentRoom].rules
@@ -483,9 +556,9 @@ module.exports = function (grunt) {
           var opponent = clientList[getOpponentId()];
           roomList[socket.currentRoom].firstPlayer = data;
 
-          console.log("transmitter --", socket.id, "set firstPlayer:", data);
+          console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "set firstPlayer:", data);
           if (opponent) {
-            console.log("transmitter --", socket.id, "send firstPlayer:", data);
+            console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "send firstPlayer:", data);
             io.to(getOpponentId()).emit("in:getFirstPlayer", {
               type : "ok",
               msg  : data
@@ -505,7 +578,7 @@ module.exports = function (grunt) {
 
       socket.on("out:getFirstPlayer", function (data) {
         if (socket.currentRoom && roomList[socket.currentRoom]) {
-          console.log("receiver --", socket.id, "get firstPlayer:", roomList[socket.currentRoom].firstPlayer);
+          console.log("room", socket.currentRoom, "-- receiver --", socket.id, "get firstPlayer:", roomList[socket.currentRoom].firstPlayer);
           socket.emit("in:getFirstPlayer", {
             type : "ok",
             msg  : roomList[socket.currentRoom].firstPlayer
@@ -524,9 +597,9 @@ module.exports = function (grunt) {
           roomList[socket.currentRoom].currentTurn = data.turnNumber;
           socket.playerActions[data.turnNumber]    = data;
 
-          console.log("turn", data.turnNumber,"-- playing:", socket.id, "set playerAction:", data);
+          console.log("room", socket.currentRoom, "-- turn", data.turnNumber,"-- playing:", socket.id, "set playerAction:", data);
           if (opponent) {
-            console.log("turn", data.turnNumber,"-- playing:", socket.id, "send playerAction:", data);
+            console.log("room", socket.currentRoom, "-- turn", data.turnNumber,"-- playing:", socket.id, "send playerAction:", data);
             io.to(getOpponentId()).emit("in:getPlayerAction", {
               type : "ok",
               msg  : data
@@ -549,7 +622,7 @@ module.exports = function (grunt) {
           var opponent    = clientList[getOpponentId()];
           var currentTurn = roomList[socket.currentRoom].currentTurn;
 
-          console.log("turn", currentTurn,"-- waiting:", socket.id, "get playerAction:", opponent.playerActions[currentTurn]);
+          console.log("room", socket.currentRoom, "-- turn", currentTurn,"-- waiting:", socket.id, "get playerAction:", opponent.playerActions[currentTurn]);
           socket.emit("in:getPlayerAction", {
             type : "ok",
             msg  : opponent.playerActions[currentTurn]
@@ -567,9 +640,9 @@ module.exports = function (grunt) {
           var opponent         = clientList[getOpponentId()];
           socket.selectedCards = data;
 
-          console.log(socket.id, "set selected cards:", data);
+          console.log("room", socket.currentRoom, "--", socket.id, "set selected cards:", data);
           if (opponent) {
-            console.log(socket.id, "send selected cards:", data);
+            console.log("room", socket.currentRoom, "--", socket.id, "send selected cards:", data);
             io.to(getOpponentId()).emit("in:getSelectedCards", {
               type : "ok",
               msg  : data
@@ -591,7 +664,7 @@ module.exports = function (grunt) {
         if (socket.currentRoom && roomList[socket.currentRoom]) {
           var opponent = clientList[getOpponentId()];
 
-          console.log(socket.id, "get selected cards:", opponent.selectedCards);
+          console.log("room", socket.currentRoom, "--", socket.id, "get selected cards:", opponent.selectedCards);
           socket.emit("in:getSelectedCards", {
             type : "ok",
             msg  : opponent.selectedCards
@@ -614,7 +687,7 @@ module.exports = function (grunt) {
         socket.selectedCards = null;
 
         setTimeout(function () {
-          console.log(socket.id, "do playerReset");
+          console.log("room", socket.currentRoom, "--", socket.id, "do playerReset");
           socket.currentRoom = null;
           socket.emit("in:playerReset", {
             type : "ok"
@@ -623,7 +696,7 @@ module.exports = function (grunt) {
       });
 
       socket.on("out:roundReset", function () {
-        console.log("transmitter --", socket.id, "do roundReset");
+        console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "do roundReset");
         roomList[socket.currentRoom].currentTurn  = -1;
         roomList[socket.currentRoom].firstPlayer  = null;
         socket.playerActions                      = {};
@@ -643,7 +716,7 @@ module.exports = function (grunt) {
       });
 
       socket.on("out:confirmReady", function (data) {
-        console.log(socket.id, "do confirmReady", data);
+        console.log("room", socket.currentRoom, "--", socket.id, "do confirmReady", data);
         var opponent = clientList[getOpponentId()];
         socket.isReady    = true;
         socket.playerInfo = data;
@@ -659,7 +732,7 @@ module.exports = function (grunt) {
       });
 
       socket.on("out:cancelReady", function (data) {
-        console.log(socket.id, "do cancelReady");
+        console.log("room", socket.currentRoom, "--", socket.id, "do cancelReady");
         socket.isReady = false;
       });
 

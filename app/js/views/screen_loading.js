@@ -40,7 +40,7 @@ define([
         });
 
         _$.events.once("fileLoaded:imgUI:bg", () => {
-            TweenMax.to(this.$(".loading_bg"), 1, { opacity: 1, clearProps: "opacity", delay: 2 });
+            TweenMax.to(this.$(".loading_bg"), 1, { opacity: 1, clearProps: "opacity", delay: 1 });
         });
 
         _$.events.once("fileLoaded:imgUI:logoNoText", () => {

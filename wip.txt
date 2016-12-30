@@ -111,10 +111,10 @@ Simulation :
 ! OG tags & social share
 ! 404 page
 ! Build
-- Deploy server
-- Update htaccess
-- Set redirect http://15thtriad.com => http://beta.15thtriad.com
-- Serve!
+! Deploy server
+! Set redirect http://15thtriad.com => http://beta.15thtriad.com
+! Redirect rules for 404
+- Fix cross-browser drag speed
 
 --------------
 

@@ -247,7 +247,7 @@ define([
                 _.each(albumCardView.cardCopies, (cardCopy) => {
                     if (cardCopy.holder === options.moveTo) {
                         if (options.moveFrom) {
-                            albumCardView.moveInDeck(options.moveFrom, cardCopy, true);
+                            albumCardView.moveToDeck(options.moveFrom, cardCopy, true);
 
                             holderIndex = _$.utils.getNodeIndex(options.moveFrom);
                             this.userDeck[holderIndex] = albumCardView.cardView.model;

@@ -175,6 +175,15 @@ define([
     }
 
     function changeScreen (nextScreen, options = {}) {
+        if (!_$.debug.debugMode) {
+            ga("send", "event", {
+                eventCategory : "screenChange",
+                eventAction   : nextScreen,
+                fromScreen    : _$.ui.screen.id.replace("screen_", ""),
+                fromMenu      : !!options.fromMenu
+            });
+        }
+
         if (nextScreen === "title" || options.fromMenu) {
             if (_$.state.room) {
                 _$.comm.socketManager.emit("playerReset");
