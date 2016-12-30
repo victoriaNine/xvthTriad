@@ -3,8 +3,7 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "text!templates/templ_card.html",
-    "tweenMax"
+    "text!templates/templ_card.html"
 ], function Elem_Card ($, _, Backbone, _$, Templ_Card) {
     return Backbone.View.extend({
         tagName               : "div",

@@ -12,9 +12,9 @@ define([
 ], function canvasWebGL ($, _, Seriously, _$, Firefly) {
     var FX_LEVEL         = 5;
     var ADD_FX           = false;
+    var WIDTH            = document.body.offsetWidth;
+    var HEIGHT           = document.body.offsetHeight;
 
-    var WIDTH            = document.body.scrollWidth;
-    var HEIGHT           = document.body.scrollHeight;
     var canvas3d         = document.querySelector("#canvas");
     var canvas2d         = createCanvas(WIDTH, HEIGHT);
     var ctx2d            = canvas2d.getContext("2d");
@@ -47,6 +47,7 @@ define([
 
     class CanvasWebGL {
         constructor () {
+            this.dom         = canvas3d;
             this.initialized = false;
         }
 

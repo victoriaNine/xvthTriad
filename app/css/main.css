@@ -166,39 +166,6 @@ h1 {
   -ms-animation: cursorMove 1s ease-in-out infinite;
   animation: cursorMove 1s ease-in-out infinite; }
 
-@-webkit-keyframes cursorMove {
-  0%, 100% {
-    -webkit-transform: translateX(0);
-    -ms-transform: translateX(0);
-    transform: translateX(0); }
-  50% {
-    -webkit-transform: translateX(0.5em);
-    -ms-transform: translateX(0.5em);
-    transform: translateX(0.5em); } }
-/*@-moz-keyframes cursorMove {
-  @content;
-}  */
-@-ms-keyframes cursorMove {
-  0%, 100% {
-    -webkit-transform: translateX(0);
-    -ms-transform: translateX(0);
-    transform: translateX(0); }
-  50% {
-    -webkit-transform: translateX(0.5em);
-    -ms-transform: translateX(0.5em);
-    transform: translateX(0.5em); } }
-/*@-o-keyframes cursorMove {
-  @content;
-}*/
-@keyframes cursorMove {
-  0%, 100% {
-    -webkit-transform: translateX(0);
-    -ms-transform: translateX(0);
-    transform: translateX(0); }
-  50% {
-    -webkit-transform: translateX(0.5em);
-    -ms-transform: translateX(0.5em);
-    transform: translateX(0.5em); } }
 .color-darkGrey {
   color: #3d4043; }
 
@@ -546,12 +513,12 @@ h1 {
       transition: letter-spacing .4s .2s, opacity .2s .2s; }
 
 /* SMALL LOGO, SOCIAL ICONS & CREDITS TEXT --------------*/
-.footer_logo, .about_logo {
+.footer_logo, .loading_logo, .about_logo {
   width: 190px;
   height: 145px;
   display: flex;
   align-items: flex-end; }
-  .footer_logo .svg-logo, .about_logo .svg-logo {
+  .footer_logo .svg-logo, .loading_logo .svg-logo, .about_logo .svg-logo, .footer_logo .svg-logoNoText, .loading_logo .svg-logoNoText, .about_logo .svg-logoNoText {
     fill: white;
     stroke: rgba(255, 255, 255, 0);
     cursor: pointer;
@@ -560,7 +527,7 @@ h1 {
     -webkit-transition: -webkit-fill .15s, stroke .15s;
     -ms-transition: -ms-fill .15s, stroke .15s;
     transition: fill .15s, stroke .15s; }
-  .footer_logo:not(.is--tweening):hover .svg-logo, .about_logo:not(.is--tweening):hover .svg-logo, .footer_logo:not(.is--tweening).is--hover .svg-logo, .about_logo:not(.is--tweening).is--hover .svg-logo {
+  .footer_logo:not(.is--tweening):hover .svg-logo, .loading_logo:not(.is--tweening):hover .svg-logo, .about_logo:not(.is--tweening):hover .svg-logo, .footer_logo:not(.is--tweening).is--hover .svg-logo, .loading_logo:not(.is--tweening).is--hover .svg-logo, .about_logo:not(.is--tweening).is--hover .svg-logo {
     fill: rgba(0, 0, 0, 0.25);
     stroke: white; }
 
@@ -718,7 +685,7 @@ h1 {
   .is--invalid.userSettings_content-settings-setting-input, .is--invalid.roomSelect_content-settings-setting-input {
     background: rgba(235, 53, 71, 0.5); }
 
-/* AVATAR */
+/* AVATAR --------------*/
 .game_playerHUD-avatar, .userSettings_header-avatar {
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
@@ -766,6 +733,73 @@ h1 {
   .game_playerHUD-opponent.is--active .game_playerHUD-avatar:before {
     box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25); }
 
+/* ANIMATIONS --------------*/
+@-webkit-keyframes extendText {
+  0% {
+    opacity: 0;
+    letter-spacing: 0; }
+  10%, 20% {
+    opacity: 1; }
+  75%, 100% {
+    opacity: 0;
+    letter-spacing: 0.75em; } }
+/*@-moz-keyframes extendText {
+  @content;
+}  */
+@-ms-keyframes extendText {
+  0% {
+    opacity: 0;
+    letter-spacing: 0; }
+  10%, 20% {
+    opacity: 1; }
+  75%, 100% {
+    opacity: 0;
+    letter-spacing: 0.75em; } }
+/*@-o-keyframes extendText {
+  @content;
+}*/
+@keyframes extendText {
+  0% {
+    opacity: 0;
+    letter-spacing: 0; }
+  10%, 20% {
+    opacity: 1; }
+  75%, 100% {
+    opacity: 0;
+    letter-spacing: 0.75em; } }
+@-webkit-keyframes cursorMove {
+  0%, 100% {
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0); }
+  50% {
+    -webkit-transform: translateX(0.5em);
+    -ms-transform: translateX(0.5em);
+    transform: translateX(0.5em); } }
+/*@-moz-keyframes cursorMove {
+  @content;
+}  */
+@-ms-keyframes cursorMove {
+  0%, 100% {
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0); }
+  50% {
+    -webkit-transform: translateX(0.5em);
+    -ms-transform: translateX(0.5em);
+    transform: translateX(0.5em); } }
+/*@-o-keyframes cursorMove {
+  @content;
+}*/
+@keyframes cursorMove {
+  0%, 100% {
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0); }
+  50% {
+    -webkit-transform: translateX(0.5em);
+    -ms-transform: translateX(0.5em);
+    transform: translateX(0.5em); } }
 /*=======================*/
 /* SERVER PROMPT OVERLAY
 /*=======================*/
@@ -807,6 +841,41 @@ h1 {
   position: absolute;
   right: 50px;
   bottom: 50px; }
+
+/*=======================*/
+/* LOADING SCREEN
+/*=======================*/
+#screen_loading {
+  background: #000;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 1; }
+
+.loading_logo {
+  width: 285px;
+  height: 220px; }
+
+.loading_text {
+  font-size: 24px;
+  margin-top: 1em;
+  -webkit-animation: extendText 4s ease-in-out infinite;
+  -ms-animation: extendText 4s ease-in-out infinite;
+  animation: extendText 4s ease-in-out infinite; }
+
+.loading_line {
+  background: #FFF;
+  width: 0;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  top: calc(50% + 6px);
+  -webkit-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0); }
 
 /*=======================*/
 /* MENU SCREEN
@@ -1340,43 +1409,10 @@ h1 {
 .is--active.game_playerHUD-opponent .game_playerHUD-bar-state, .is--active.game_playerHUD-user .game_playerHUD-bar-state {
   letter-spacing: 0.75em;
   opacity: 1;
-  -webkit-animation: isPlaying 4s ease-in-out infinite;
-  -ms-animation: isPlaying 4s ease-in-out infinite;
-  animation: isPlaying 4s ease-in-out infinite; }
+  -webkit-animation: extendText 4s ease-in-out infinite;
+  -ms-animation: extendText 4s ease-in-out infinite;
+  animation: extendText 4s ease-in-out infinite; }
 
-@-webkit-keyframes isPlaying {
-  0% {
-    opacity: 0;
-    letter-spacing: 0; }
-  10%, 20% {
-    opacity: 1; }
-  75%, 100% {
-    opacity: 0;
-    letter-spacing: 0.75em; } }
-/*@-moz-keyframes isPlaying {
-  @content;
-}  */
-@-ms-keyframes isPlaying {
-  0% {
-    opacity: 0;
-    letter-spacing: 0; }
-  10%, 20% {
-    opacity: 1; }
-  75%, 100% {
-    opacity: 0;
-    letter-spacing: 0.75em; } }
-/*@-o-keyframes isPlaying {
-  @content;
-}*/
-@keyframes isPlaying {
-  0% {
-    opacity: 0;
-    letter-spacing: 0; }
-  10%, 20% {
-    opacity: 1; }
-  75%, 100% {
-    opacity: 0;
-    letter-spacing: 0.75em; } }
 .game_playerHUD-score {
   position: absolute;
   font-size: 96px;

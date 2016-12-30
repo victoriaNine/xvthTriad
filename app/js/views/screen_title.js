@@ -4,11 +4,9 @@ define([
     "backbone",
     "global",
     "models/model_user",
-    "text!templates/templ_title.html",
-    "tweenMax"
-], function Screen_Title ($, _, Backbone, _$, Model_User, Templ_Title) {
-    var Screen = require("views/screen");
-
+    "views/screen",
+    "text!templates/templ_title.html"
+], function Screen_Title ($, _, Backbone, _$, Model_User, Screen, Templ_Title) {
     return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
@@ -97,9 +95,6 @@ define([
         this.introTL.call(function () {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
-        this.introTL.call(() => {
-            _$.events.trigger("addFX");
-        }, [], null, "enterFooter");
         this.introTL.call(() => {
             $(window).off("click touchstart", skipIntro.bind(this));
             _$.events.off("gamepad", skipIntro, this);

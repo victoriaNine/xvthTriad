@@ -4,8 +4,7 @@ define([
     "backbone",
     "global",
     "text!templates/templ_endGameCard.html",
-    "views/elem_card",
-    "tweenMax"
+    "views/elem_card"
 ], function Elem_EndGameCard ($, _, Backbone, _$, Templ_EndGameCard, Elem_Card) {
     return Backbone.View.extend({
         tagName               : "li",

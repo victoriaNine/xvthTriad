@@ -131,6 +131,7 @@ define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_,
         if (fileInfo.type !== "font") {
              _$.assets.set(fileInfo.type + "." + assetName, file);
         }
+        
         _$.events.trigger("fileLoaded:" + loaderName + ":" + assetName);
     }
 

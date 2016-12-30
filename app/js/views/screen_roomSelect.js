@@ -2,12 +2,10 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "models/model_card",
-    "views/screen",
-    "text!templates/templ_roomSelect.html",
     "global",
-    "tweenMax"
-], function Screen_RoomSelect ($, _, Backbone, Model_Card, Screen, Templ_RoomSelect, _$) {
+    "views/screen",
+    "text!templates/templ_roomSelect.html"
+], function Screen_RoomSelect ($, _, Backbone, _$, Screen, Templ_RoomSelect) {
     return Screen.extend({
         id        : "screen_roomSelect",
 

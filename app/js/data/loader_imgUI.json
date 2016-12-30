@@ -3,14 +3,6 @@
     "files" : [
         {
             "type" : "img.ui",
-            "name" : "cursor.png"
-        },
-        {
-            "type" : "img.ui",
-            "name" : "rotateDevice.png"
-        },
-        {
-            "type" : "img.ui",
             "name" : "bg.jpg"
         },
         {
@@ -32,6 +24,18 @@
         {
             "type" : "svg.ui",
             "name" : "logo.svg"
+        },
+        {
+            "type" : "svg.ui",
+            "name" : "logoNoText.svg"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "cursor.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "rotateDevice.png"
         },
         {
             "type" : "svg.ui",

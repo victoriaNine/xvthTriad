@@ -4,8 +4,7 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_overlayAbout.html",
-    "tweenMax"
+    "text!templates/templ_overlayAbout.html"
 ], function Screen_OverlayAbout ($, _, Backbone, _$, Screen, Templ_OverlayAbout) {
     return Screen.extend({
         tagName : "section",

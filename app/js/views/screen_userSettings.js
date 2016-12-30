@@ -2,11 +2,10 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "views/screen",
-    "text!templates/templ_userSettings.html",
     "global",
-    "tweenMax"
-], function Screen_UserSettings ($, _, Backbone, Screen, Templ_UserSettings, _$) {
+    "views/screen",
+    "text!templates/templ_userSettings.html"
+], function Screen_UserSettings ($, _, Backbone, _$, Screen, Templ_UserSettings) {
     return Screen.extend({
         id        : "screen_userSettings",
 

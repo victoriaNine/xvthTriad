@@ -4,8 +4,7 @@ define([
     "backbone",
     "global",
     "text!templates/templ_albumCard.html",
-    "views/elem_card",
-    "tweenMax"
+    "views/elem_card"
 ], function Elem_AlbumCard ($, _, Backbone, _$, Templ_AlbumCard, Elem_Card) {
     return Backbone.View.extend({
         tagName               : "li",

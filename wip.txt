@@ -129,11 +129,11 @@ Simulation :
 
 -----------
 
-- Check screen loads before screen_title
+! Check screen loads before screen_title
 - Check decks are sent/received to/from server in right order
 
 - Timeout prompt
-- Preload fonts
+! Preload fonts
 
 -------
 OVH node.js key

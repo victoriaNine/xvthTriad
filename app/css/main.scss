@@ -237,11 +237,6 @@ h1 {
     @include animation("cursorMove 1s ease-in-out infinite");
 }
 
-@include keyframes (cursorMove) {
-  0%, 100% { @include transform("translateX(0)"); }
-  50%     { @include transform("translateX(0.5em)"); }
-}
-
 .color-darkGrey     { color: $color_darkGrey; }
 .color-lightBlue    { color: $color_lightBlue; }
 .weight-medium      { font-weight: 500; }
@@ -608,7 +603,7 @@ h1 {
     display: flex;
     align-items: flex-end;
 
-    & .svg-logo {
+    & .svg-logo, & .svg-logoNoText {
         fill: rgba(255, 255, 255, 1);
         stroke: rgba(255, 255, 255, 0);
         cursor:pointer;
@@ -822,7 +817,7 @@ h1 {
     }
 }
 
-/* AVATAR */
+/* AVATAR --------------*/
 %avatar {
     border: 1px solid rgba(255, 255, 255, 0.25);
     box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
@@ -883,6 +878,18 @@ h1 {
     &:before {
         box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25);
     }
+}
+
+/* ANIMATIONS --------------*/
+@include keyframes (extendText) {
+  0%   { opacity:0; letter-spacing: 0; }
+  10%, 20%  { opacity:1; }
+  75%, 100%  { opacity:0; letter-spacing: 0.75em; }
+}
+
+@include keyframes (cursorMove) {
+  0%, 100% { @include transform("translateX(0)"); }
+  50%     { @include transform("translateX(0.5em)"); }
 }
 
 
@@ -962,6 +969,42 @@ h1 {
     bottom: $globalPadding;
 }
 
+/*=======================*/
+/* LOADING SCREEN
+/*=======================*/
+#screen_loading {
+    background: #000;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.loading_logo {
+    @extend %smallLogo;
+    width: 285px;
+    height: 220px;
+}
+
+.loading_text {
+    font-size: 24px;
+    margin-top: 1em;
+    @include animation("extendText 4s ease-in-out infinite");
+}
+
+.loading_line {
+    background: #FFF;
+    width: 0;
+    height: 1px;
+    position: absolute;
+    left:0;
+    top: calc(50% + 6px);
+
+    @include transform("translate3d(0, 0, 0)");
+}
 
 /*=======================*/
 /* MENU SCREEN
@@ -1669,13 +1712,7 @@ h1 {
     letter-spacing: 0.75em;
     opacity: 1;
 
-    @include animation("isPlaying 4s ease-in-out infinite");
-}
-
-@include keyframes (isPlaying) {
-  0%   { opacity:0; letter-spacing: 0; }
-  10%, 20%  { opacity:1; }
-  75%, 100%  { opacity:0; letter-spacing: 0.75em; }
+    @include animation("extendText 4s ease-in-out infinite");
 }
 
 .game_playerHUD-score {

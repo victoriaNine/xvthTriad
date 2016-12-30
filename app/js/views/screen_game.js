@@ -7,8 +7,7 @@ define([
     "views/screen",
     "views/elem_endGameCard",
     "text!templates/templ_game.html",
-    "views/elem_card",
-    "tweenMax"
+    "views/elem_card"
 ], function Screen_Game ($, _, Backbone, _$, Model_Game, Screen, Elem_EndGameCard, Templ_Game, Elem_Card) {
     return Screen.extend({
         id       : "screen_game",

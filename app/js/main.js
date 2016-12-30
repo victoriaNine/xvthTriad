@@ -42,6 +42,7 @@ require([
     "modernizr",
     "jquery",
     "underscore",
+    "tweenMax",
     "socketIO",
     "stats",
     "modules/audioEngine",
@@ -60,6 +61,7 @@ require([
     "views/screen",
     "views/screen_cardSelect",
     "views/screen_game",
+    "views/screen_loading",
     "views/screen_roomSelect",
     "views/screen_rulesSelect",
     "views/screen_title",
@@ -67,9 +69,10 @@ require([
     "views/screen_overlayAbout",
     "views/screen_overlayMenu",
     "jqueryNearest"
-], function (Modernizr, $, _, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
-    var Screen_Title = require("views/screen_title");
-    var loaders      = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards];
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+    var Screen_Loading = require("views/screen_loading");
+    var Screen_Title   = require("views/screen_title");
+    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards];
 
     function setupScale () {
         var ORIGINAL_SIZE = {
@@ -129,26 +132,6 @@ require([
         pixelRatioAdjust(true);
     }
 
-    function preloadFonts () {
-        var fonts = [
-            { name: "AvantGarde LT", weights : [200, 500, 700] },
-            { name: "socicon", weights : ["normal"] }
-        ];
-
-        var glyphs = String.fromCharCode("0xe041") + String.fromCharCode("0xe040") +
-                     String.fromCharCode("0xe022") + String.fromCharCode("0xe059");
-
-        _.each(fonts, (font) => {
-            _.each(font.weights, (weight) => {
-                $("<div class='preloadFont'>").css({
-                    fontFamily: font.name,
-                    fontWeight: weight,
-                    opacity: 0
-                }).text(font.name === "socicon" ? glyphs : "preLoad").appendTo($("body"));
-            });
-        });
-    }
-
     function setupStats () {
         var stats = new Stats();
         stats.dom.style.left = "auto";
@@ -163,21 +146,22 @@ require([
         });
     }
 
+    TweenMax.set(_$.dom, { opacity : 0 });
+    setupScale();
+
+    if (_$.debug.debugMode) {
+        setupStats();
+    }
+
     _$.events.on("all", function (eventName, ...data) {
-        /*if (data.length) {
+        if (data.length) {
             _$.debug.log("event triggered:", eventName, data);
         } else {
             _$.debug.log("event triggered:", eventName);
-        }*/
+        }
     });
 
-    _$.events.on("loadProgress", function () {
-        console.log(_$.app.assetLoader.getPercentage(), _$.app.assetLoader.loaded, _$.app.assetLoader.total);
-    });
-
-    _$.events.once("allLoadersComplete", function () {
-        $(".preloadFont").remove();
-        _$.ui.canvas.init();
+    _$.events.once("launch", function () {
         _$.comm.socketManager = new SocketManager();
         _$.ui.footer          = new Elem_Footer();
         _$.ui.screen          = new Screen_Title({ setup: true, fullIntro: true });
@@ -196,20 +180,13 @@ require([
     _$.events.on("gamepadOn",  () => { _$.controls.type = "gamepad"; });
     _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
 
-    TweenMax.set(_$.dom, { opacity : 0 });
-    setupScale();
-    preloadFonts();
-
-    if (_$.debug.debugMode) {
-        setupStats();
-    }
-
     _$.controls.type           = "mouse";
     _$.controls.gamepadManager = new GamepadManager();
     _$.app.updateManager       = new UpdateManager();
     _$.app.assetLoader         = new AssetLoader();
     _$.audio.audioEngine       = new AudioEngine();
     _$.ui.canvas               = new CanvasWebGL();
+    _$.ui.screen               = new Screen_Loading();
 
     _$.app.assetLoader.load(loaders);
 });

@@ -2,12 +2,10 @@ define([
     "jquery",
     "underscore", 
     "backbone",
-    "models/model_card",
-    "views/screen",
-    "text!templates/templ_rulesSelect.html",
     "global",
-    "tweenMax"
-], function Screen_RulesSelect ($, _, Backbone, Model_Card, Screen, Templ_RulesSelect, _$) {
+    "views/screen",
+    "text!templates/templ_rulesSelect.html"
+], function Screen_RulesSelect ($, _, Backbone, _$, Screen, Templ_RulesSelect) {
     var RULES       = "open|random|elemental|sameWall|same|suddenDeath|plus|trade";
     var TRADE_RULES = "none|one|difference|direct|all";
 

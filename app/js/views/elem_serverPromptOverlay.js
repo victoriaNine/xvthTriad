@@ -3,8 +3,7 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "text!templates/templ_serverPromptOverlay.html",
-    "tweenMax"
+    "text!templates/templ_serverPromptOverlay.html"
 ], function Elem_ServerPromptOverlay ($, _, Backbone, _$, Templ_ServerPromptOverlay) {
     return Backbone.View.extend({
         tagName               : "div",

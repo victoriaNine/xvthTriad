@@ -2,12 +2,11 @@ define([
     "jquery",
     "underscore", 
     "backbone",
+    "global",
     "views/screen",
     "views/elem_albumCard",
-    "text!templates/templ_cardSelect.html",
-    "global",
-    "tweenMax",
-], function Screen_CardSelect ($, _, Backbone, Screen, Elem_AlbumCard, Templ_CardSelect, _$) {
+    "text!templates/templ_cardSelect.html"
+], function Screen_CardSelect ($, _, Backbone, _$, Screen, Elem_AlbumCard, Templ_CardSelect) {
     var CARD_WIDTH = 180;
 
     return Screen.extend({
