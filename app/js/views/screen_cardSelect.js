@@ -210,9 +210,7 @@ define([
         this.maxVisibleCards = (Math.floor(this.$(".cardSelect_content-album").width() / CARD_WIDTH) - 1) || 1;
         this.maxPages        = Math.ceil(this.uniqueCopies.length / this.maxVisibleCards);
         this.currentPage     = Math.ceil(this.currentPage / this.maxVisibleCards);
-
-        console.log(this.maxVisibleCards, this.maxPages, this.currentPage);
-        
+    
         if (!noUpdate) {
             this.navUpdate();
             this.render();
