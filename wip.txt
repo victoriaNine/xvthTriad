@@ -117,7 +117,7 @@ Simulation :
 ! Redirect rules for 404
 ! Fix cross-browser drag speed
 ! Fix card album resize
-- Basic rules tutorial
+! Basic rules tutorial
 
 --------------
 
