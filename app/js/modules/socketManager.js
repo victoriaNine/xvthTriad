@@ -8,15 +8,19 @@ define(["underscore", "global"], function socketManager (_, _$) {
 
             this.client.on("connect_timeout", () => {
                  _$.events.trigger("showServerError", {
-                    type : "error",
-                    msg  : "Connection timed out."
+                    type   : "error",
+                    msg    : "Connection timed out.",
+                    btnMsg : "Refresh",
+                    action : window.location.reload.bind(window.location)
                  });
             });
 
             this.socket.on("disconnect", () => {
                  _$.events.trigger("showServerError", {
-                    type : "error",
-                    msg  : "Connection lost."
+                    type   : "error",
+                    msg    : "Connection lost.",
+                    btnMsg : "Refresh",
+                    action : window.location.reload.bind(window.location)
                  });
             });
 

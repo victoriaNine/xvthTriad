@@ -309,6 +309,15 @@ h1 {
     padding: $globalPadding;
 }
 
+%content-inner {
+    height: 270px;
+    top: calc(50% - 270px / 2);
+    position: absolute;
+    width: 100%;
+    left: 0;
+    padding: 0 $globalPadding;
+}
+
 %content-prompt {
     position: absolute;
     width: 100%;
@@ -682,13 +691,8 @@ h1 {
 
 /* OPTIONS PANEL --------------*/
 %options {
-    height: 270px;
-    top: calc(50% - 270px / 2);
-    position: absolute;
-    width: 100%;
-    left: 0;
+    @extend %content-inner;
     display: flex;
-    padding: 0 $globalPadding;
 
     & .col {
         width: 50%;
@@ -871,6 +875,18 @@ h1 {
 
     &:before {
         box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25);
+    }
+}
+
+/* ALTERNATIVE BG --------------*/
+%altBG {
+    @include fullSizeAbs();
+    background: url(#{ $uiAssetsPath + "alt_bg.jpg"}) 50% 100% no-repeat;
+    background-size: cover;
+
+    &:before {
+        @include fullSizeAbs("");
+        background: rgba(0, 0, 0, 0.85);
     }
 }
 
@@ -1124,14 +1140,7 @@ h1 {
 }
 
 .about_bg {
-    @include fullSizeAbs();
-    background: url(#{ $uiAssetsPath + "about_bg.jpg"}) 50% 100% no-repeat;
-    background-size: cover;
-
-    &:before {
-        @include fullSizeAbs("");
-        background: rgba(0, 0, 0, 0.9);
-    }
+    @extend %altBG;
 }
 
 .about_header {
@@ -1248,6 +1257,115 @@ h1 {
     position: absolute;
     right: $globalPadding;
     bottom: $globalPadding;
+}
+
+
+/*=======================*/
+/* HELP SCREEN
+/*=======================*/
+#screen_overlayHelp {
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.help_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+    }
+}
+
+/* CONTENT --------------*/
+.help_content {
+    @extend %content;
+}
+
+.help_content-confirm, .help_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.help_content-confirm {
+    background: transparentize($color_blue, 0.5);
+}
+
+.help_content-topics {
+    @extend %options;
+}
+
+.help_content-topics-topic {
+    @extend %options-option;
+
+    &:not(.is--disabled) {
+        cursor: pointer;
+    }
+}
+
+.help_content-topics-topic-label {
+    @extend %options-option-label;
+}
+
+.help_content-guide {
+    @extend %content-inner;
+    height: calc(100% - #{ $globalPadding / 2 });
+    top: $globalPadding * 2;
+}
+
+.help_content-guide-contents {
+    @extend %options-option-select;
+    cursor: inherit;
+    height: 100%;
+    background: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 0;
+    padding-right: 2em;
+
+    & figure {
+        display: flex;
+
+        &:not(:last-of-type) {
+            margin-bottom: 2em;
+        }
+
+        & figcaption {
+            vertical-align: top;
+            padding: 2em;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.15);
+            margin-left: 2em;
+            line-height: 1.5em;
+
+            padding-left: 4em;
+            text-indent: -2em;
+
+            & span {
+                margin-right: 0.5em;
+            }
+        }
+
+        & img {
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+    }
 }
 
 
@@ -1433,12 +1551,7 @@ h1 {
 }
 
 .cardSelect_content-scroll {
-    height: 270px;
-    top: calc(50% - 270px / 2);
-    position: absolute;
-    width: 100%;
-    left: 0;
-    padding: 0 $globalPadding;
+    @extend %content-inner;
 }
 
 .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
@@ -1563,6 +1676,19 @@ h1 {
     height: calc(33.333% - 4.5px);
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.25);
+
+    &:before {
+        @include fullSizeAbs("");
+        @include transition("background .2s");
+    }
+
+    &.blue:before {
+        background: transparentize($color_blue, 0.75);
+    }
+
+    &.red:before {
+        background: transparentize($color_red, 0.75);
+    }
 }
 
 #case11 {
@@ -2035,12 +2161,12 @@ h1 {
 /*=======================*/
 
 .notfound {
-    background: url(#{ $uiAssetsPath + "about_bg.jpg"}) 50% 100% no-repeat;
+    background: url(#{ $uiAssetsPath + "alt_bg.jpg"}) 50% 100% no-repeat;
     background-size: cover;
 
     &:before {
         @include fullSizeAbs("");
-        background: rgba(0, 0, 0, 0.9);
+        background: rgba(0, 0, 0, 0.85);
     }
 
     &_img {

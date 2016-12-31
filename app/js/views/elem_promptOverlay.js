@@ -34,16 +34,27 @@ define([
 
     function initialize (attributes) {
         this.$el.html(this.template());
-        this.span           = this.$("h1").find("span");
+        this.span           = this.$(".prompt_overlay-title").find("span");
         this.isOpen         = false;
         this.confirmAction  = null;
         this.confirmAction2 = null;
     }
 
     function show (options = { msg: "" }) {
+        if (!_$.debug.debugMode && options.type === "error") {
+            ga("send", "event", {
+                eventCategory : "errorEvent",
+                eventAction   : options.msg
+            });
+        }
+
+        if (this.$el.hasClass("is--active") && options.type !== "error") {
+            return;
+        }
+        
         _$.events.trigger("stopUserEvents");
         this.undelegateEvents();
-        var tl   = new TimelineMax();
+        var tl = new TimelineMax();
         var confirmText, confirmText2;
 
         if (this.$el.hasClass("is--active")) {
@@ -54,19 +65,19 @@ define([
         tl.call(() => {
             if (options.type === "error") {
                 this.span.text("An error");
-                this.$("h1").html(this.span).append(" occured");
+                this.$(".prompt_overlay-title").html(this.span).append(" occured");
 
-                confirmText        = (_$.ui.screen.id === "screen_title") ? "Close" : "Return to title screen";
-                this.confirmAction = toTitleScreen;
+                confirmText        = options.btnMsg || ((_$.ui.screen.id === "screen_title") ? "Close" : "Return to title screen");
+                this.confirmAction = options.action || this.toTitleScreen;
             } else if (options.type === "info") {
                 this.span.text(options.titleBold);
-                this.$("h1").html(this.span).append(" " + options.titleRegular);
+                this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
 
                 confirmText        = options.btnMsg || "Close";
                 this.confirmAction = options.action || this.close;
             } else if (options.type === "choice") {
                 this.span.text(options.titleBold);
-                this.$("h1").html(this.span).append(" " + options.titleRegular);
+                this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
 
                 confirmText         = options.btn1Msg;
                 this.confirmAction  = options.action1;
@@ -87,7 +98,7 @@ define([
         }
         tl.call(() => { _$.events.trigger("startUserEvents"); this.delegateEvents(); this.isOpen = true; });
         if (options.autoClose) {
-            tl.call(() => { this.confirmAction(); }, [], null, "+=1");
+            tl.call(() => { this.confirmAction(); }, [], null, "+=2");
         }
     }
 
@@ -99,7 +110,7 @@ define([
             this.confirmAction2 = null;
 
             this.span.empty();
-            this.$("h1").html(this.span);
+            this.$(".prompt_overlay-title").html(this.span);
             this.$(".prompt_overlay-message, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn").empty();
             this.$(".prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn").hide();
 
@@ -112,9 +123,17 @@ define([
 
     function toTitleScreen () {
         this.close(() => {
-            if (_$.ui.screen.id !== "screen_title") {
-                 _$.ui.screen.transitionOut("title");
-            }
+            if (_$.ui.menu) {
+                this.toggleMainMenu("title");
+            } else if (_$.ui.help) {
+                this.toggleHelpPage("title");
+            } else if (_$.ui.about) {
+                this.toggleAboutPage("title");
+            } else {
+                if (_$.ui.screen.id !== "screen_title") {
+                     _$.ui.screen.transitionOut("title");
+                }
+            }   
         });
     }
 });

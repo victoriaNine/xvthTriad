@@ -4,7 +4,7 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
             name       : null,
             avatar     : null,
             album      : new Coll_Album(),
-            difficulty : "normal",
+            difficulty : "easy",
             gameStats  : {
                 won  : 0,
                 lost : 0,

@@ -6,12 +6,13 @@ define([
     "models/model_player",
     "models/model_ai"
 ], function Model_Game (_, Backbone, _$, Model_Card, Model_Player, Model_AI) {
-    var BOARD_SIZE = 9;
+    const BOARD_SIZE = 9;
+    const ELEMENTS   = ["fire", "ice", "water", "poison", "light", "thunder", "rock", "wind", "dark"];
 
     return Backbone.Model.extend({
         defaults : {
             type          : "solo",
-            difficulty    : "normal",
+            difficulty    : "easy",
             rules         : setRules(),
             players       : {},
             winner        : null,
@@ -134,7 +135,6 @@ define([
         if (this.get("rules").elemental) {
             var randomCase;
             var randomElement;
-            var elements      = ["fire", "ice", "water", "poison", "holy", "thunder", "earth", "wind"];
             var elementsNb    = _.random(1, 5);
             this.set("elementBoard", _.clone(this.get("board")));
 
@@ -143,8 +143,8 @@ define([
                     randomCase = _.random(0, BOARD_SIZE - 1);
                 } while (this.get("elementBoard")[_.keys(this.get("elementBoard"))[randomCase]]);
 
-                randomElement = _.random(0, elements.length - 1);
-                this.get("elementBoard")[_.keys(this.get("elementBoard"))[randomCase]] = elements[randomElement];
+                randomElement = _.random(0, ELEMENTS.length - 1);
+                this.get("elementBoard")[_.keys(this.get("elementBoard"))[randomCase]] = ELEMENTS[randomElement];
             }
         }
 

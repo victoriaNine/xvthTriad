@@ -54,6 +54,7 @@ require([
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
     "json!data/loader_imgCards.json",
+    "json!data/loader_imgHelp.json",
     "json!data/loader_audioBGM.json",
     "json!data/loader_audioSFX.json",
     "global",
@@ -66,13 +67,11 @@ require([
     "views/screen_rulesSelect",
     "views/screen_title",
     "views/screen_userSettings",
-    "views/screen_overlayAbout",
-    "views/screen_overlayMenu",
     "jqueryNearest"
-], function (Modernizr, $, _, tweenMax, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");
-    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards];
+    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp];
 
     function setupScale () {
         var ORIGINAL_SIZE = {
@@ -161,7 +160,7 @@ require([
     }
 
     if (window.location.pathname !== "/") {
-        history.replaceState({}, "", "/");
+        window.history.replaceState({}, "", "/");
     }
     
     TweenMax.set(_$.dom, { opacity : 0 });

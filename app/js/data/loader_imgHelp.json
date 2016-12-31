@@ -1,0 +1,33 @@
+{
+    "name": "imgHelp",
+    "files": [
+        {
+            "type": "img.help",
+            "name": "basicRules1.png"
+        },
+        {
+            "type": "img.help",
+            "name": "basicRules2.png"
+        },
+        {
+            "type": "img.help",
+            "name": "basicRules3.png"
+        },
+        {
+            "type": "img.help",
+            "name": "basicRules4.png"
+        },
+        {
+            "type": "img.help",
+            "name": "basicRules5.png"
+        },
+        {
+            "type": "img.help",
+            "name": "basicRules6.png"
+        },
+        {
+            "type": "img.help",
+            "name": "basicRules7.png"
+        }
+    ]
+}

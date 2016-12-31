@@ -130,24 +130,17 @@ define([
     }
 
     function showSavePrompt (e = {}) {
-        this.choice(null, {
-            titleBold    : "Save your",
-            titleRegular : "progress",
-            msg          : "All unsaved progress will be lost. Do you really wish to leave?",
-            btn1Msg      : "Open save screen",
-            btn2Msg      : "Cancel",
-            action1      : onGoSave.bind(this),
-            action2      : this.closePrompt.bind(this)
-        });
-
-        var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
-        (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
-        return confirmationMessage;                                // Gecko and WebKit
-
-        function onGoSave () {
-            this.promptOverlay.close(() => {
-                this.transitionOut("userSettings");
+        if (_$.state.inGame) {
+            this.info(null, {
+                titleBold    : "Currently",
+                titleRegular : "in-game",
+                msg          : "All unsaved progress will be lost. Do you really wish to leave?",
+                btnMsn       : "Cancel"
             });
+
+            var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
+            (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
+            return confirmationMessage;                                // Gecko and WebKit
         }
     }
 

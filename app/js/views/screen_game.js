@@ -126,7 +126,8 @@ define([
                 difficulty    : _$.state.game.get("difficulty"),
                 type          : _$.state.game.get("type"),
                 role          : _$.state.game.get("role"),
-                rules         : JSON.stringify(_$.state.game.get("rules"))
+                rules         : JSON.stringify(_$.state.game.get("rules")),
+                gameStats     : JSON.stringify(_$.state.user.get("gameStats"))
             });
         }
     }
@@ -207,8 +208,9 @@ define([
 
     function renderCard (cardModel, index) {
         var cardView = new Elem_Card({ model: cardModel, deckIndex: index });
+        var owner    = (cardModel.get("currentOwner") === this.players.user) ? "user" : "opponent";
 
-        if (cardModel.get("currentOwner") === this.players.user) {
+        if (owner === "user") {
             cardView.$el.on("mousedown", (e) => {
                 dragCardStart.call(this, e, cardView);
             });
@@ -216,7 +218,7 @@ define([
 
         this.ui.cardsContainer.append(cardView.$el);
 
-        if (cardModel.get("currentOwner") === this.players.user) {
+        if (owner === "user") {
             this.userCardViews.push(cardView);
         } else {
             this.opponentCardViews.push(cardView);
@@ -224,9 +226,9 @@ define([
     }
 
     function placeCardOnHolder (cardView) {
-        var player      = (cardView.model.get("currentOwner") === this.players.user) ? "user" : "opponent";
-        var destination = $(".game_playerHUD-" + player).find(".game_deck-holder").eq(cardView.deckIndex);
-        var hidden      = !_$.state.game.get("rules").open && player === "opponent";
+        var owner       = (cardView.model.get("currentOwner") === this.players.user) ? "user" : "opponent";
+        var destination = $(".game_playerHUD-" + owner).find(".game_deck-holder").eq(cardView.deckIndex);
+        var hidden      = !_$.state.game.get("rules").open && owner === "opponent";
         var coords      = _$.utils.getDestinationCoord(cardView.$el, destination, { hidden });
 
         if (hidden) {
@@ -299,13 +301,14 @@ define([
 
     function moveToBoard (boardCase, cardView) {
         var caseOffset = _$.utils.getDestinationCoord(cardView.$el, boardCase);
+        var owner      = (cardView.model.get("currentOwner") === this.players.user) ? "user" : "opponent";
 
         cardView.boardCase = boardCase;
         cardView.$el.addClass("is--played");
         this.board[boardCase.id] = cardView;
 
         var tl = new TimelineMax();
-        if (cardView.model.get("currentOwner") === this.players.opponent) {
+        if (owner === "opponent") {
             tl.set(cardView.$el, { zIndex: 1000 }); 
             if (_$.state.game.get("rules").open) {
                 tl.to(cardView.$el, 0.4, { x: caseOffset.left, y: caseOffset.top });
@@ -317,6 +320,7 @@ define([
         }
         tl.call(() => {
             _$.audio.audioEngine.playSFX("cardDrop");
+            this.$(boardCase).addClass(owner === "user" ? "blue" : "red");
         });
         tl.set(cardView.$el, { scale: "1", zIndex: 999 }, "+=.1");
         tl.call(() => {
@@ -414,6 +418,10 @@ define([
         var tl = new TimelineMax({
             onComplete: () => {
                 _$.events.trigger("startUserEvents");
+
+                if (this.gameResult === "lost") {
+                    this.postGameAction();
+                }
             }
         });
 
@@ -538,8 +546,9 @@ define([
                     if (_$.state.game.get("type") === "solo") {
                         this.lostCards = this.findCardViewsFromModels(this.userEndGameCardViews, _$.state.game.getLostCards(), "cardView");
                         autoFlipCards(this.lostCards);
-                    } else {
-                        this.$(".game_overlay-endGame-confirmBtn").slideDown(400);
+                    } else if (_$.state.room) {
+                        _$.events.on("getSelectedCards", this.getOpponentSelectedCards, this);
+                        _$.comm.socketManager.emit("getSelectedCards");
                     }
                 }
             } else if (_$.state.game.get("rules").trade === "all") {
@@ -604,7 +613,9 @@ define([
 
     function flipCard (event, info) {
         var cardView = this.board[info.caseName];
+
         cardView.flip(info);
+        this.$("#" + info.caseName).toggleClass("blue red");
     }
 
     function showElementalBonus (event, info) {
@@ -623,7 +634,8 @@ define([
                 rules         : JSON.stringify(_$.state.game.get("rules")),
                 rounds        : _$.state.game.get("roundNumber"),
                 scoreUser     : _$.state.game.get("players").user.get("points"),
-                scoreOpponent : _$.state.game.get("players").opponent.get("points")
+                scoreOpponent : _$.state.game.get("players").opponent.get("points"),
+                gameStats     : JSON.stringify(_$.state.user.get("gameStats"))
             });
         }
 
@@ -647,7 +659,9 @@ define([
         function onTransitionComplete () {
             _$.utils.addDomObserver(this.$el, () => {
                 _$.events.trigger("startUserEvents");
-                _$.app.saveData();
+                if (this.gameResult) {
+                    _$.app.saveData();
+                }
 
                 var Screen_Title = require("views/screen_title");
                 _$.ui.screen     = new Screen_Title();

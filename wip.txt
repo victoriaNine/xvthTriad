@@ -109,23 +109,26 @@ Simulation :
 ! Cards
 ! Favicon
 ! OG tags & social share
+! Sockets & versus mode
 ! 404 page
 ! Build
 ! Deploy server
 ! Set redirect http://15thtriad.com => http://beta.15thtriad.com
 ! Redirect rules for 404
 ! Fix cross-browser drag speed
-- Fix card album resize
+! Fix card album resize
+- Basic rules tutorial
 
 --------------
 
 - Better AI
 - Same, same wall, plus, combo rules
-- Tutorial section
-- Multi player
+- Full Tutorial section
+- Network mode
+- Card album
 - Loading page for updates
 - Gamepad API? (useful?)
-- Check rules OK for both players
+- Check rules unlocked by both players
 - Allow for card reset when < 5 cards
 
 -----------

@@ -4,9 +4,10 @@ define([
     "backbone",
     "global",
     "views/screen_overlayMenu",
+    "views/screen_overlayHelp",
     "views/screen_overlayAbout",
     "text!templates/templ_footer.html"
-], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Screen_OverlayAbout, Templ_Footer) {
+], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Screen_OverlayHelp, Screen_OverlayAbout, Templ_Footer) {
     return Backbone.View.extend({
         tagName : "footer",
         id      : "footer",
@@ -18,6 +19,7 @@ define([
             "click .footer_logo"          : "toggleFooter",
             "click .footer_menu-homeBtn"  : "toTitleScreen",
             "click .footer_menu-menuBtn"  : function (e) { this.toggleMainMenu(); },
+            "click .footer_menu-helpBtn"  : function (e) { this.toggleHelpPage(); },
             "click .footer_menu-aboutBtn" : function (e) { this.toggleAboutPage(); },
             "click .footer_menu-element,.footer_social-element,.footer_logo" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
@@ -40,6 +42,7 @@ define([
         toggleFooter,
         toTitleScreen,
         toggleMainMenu,
+        toggleHelpPage,
         toggleAboutPage
     });
 
@@ -74,17 +77,78 @@ define([
             _$.ui.menu.transitionOut(nextScreen, { fromMenu: true });
             _$.audio.audioEngine.playSFX("menuClose");
         } else {
-            this.$(".footer_menu-element").removeClass("is--active");
-            _$.events.once("mainMenuOpen", () => {
-                if (_$.ui.screen.id === "screen_title") {
-                    this.toggleLogo("show");
-                    this.isOpen = true;
+            if (_$.ui.help) {
+                _$.events.once("helpPageClosed", () => {
+                     proceed.call(this);
+                });
+
+                this.toggleHelpPage();
+            } else {
+                proceed.call(this);
+            }
+
+            function proceed () {
+                this.$(".footer_menu-element").removeClass("is--active");
+                _$.events.once("mainMenuOpen", () => {
+                    if (_$.ui.screen.id === "screen_title") {
+                        this.toggleLogo("show");
+                        this.isOpen = true;
+                    }
+
+                    this.$(".footer_menu-element").removeClass("is--active");
+                    this.$(".footer_menu-menuBtn").addClass("is--active");
+                });
+
+                _$.ui.menu = new Screen_OverlayMenu();
+                _$.audio.audioEngine.playSFX("menuOpen");
+            }
+        }
+    }
+
+    function toggleHelpPage (nextScreen) {
+        if (_$.ui.help) {
+            if (_$.ui.screen.id === "screen_title") {
+                this.toggleLogo("hide");
+                this.isOpen = false;
+            }
+            
+            _$.events.once("helpPageClosed", () => {
+                delete _$.ui.help;
+                this.$(".footer_menu-helpBtn").removeClass("is--active");
+
+                if (_$.ui.menu) {
+                    this.$(".footer_menu-menuBtn").addClass("is--active");
+                } else if (_$.ui.screen.id === "screen_title") {
+                    this.$(".footer_menu-homeBtn").addClass("is--active");
                 }
-                this.$(".footer_menu-menuBtn").addClass("is--active");
             });
 
-            _$.ui.menu = new Screen_OverlayMenu();
-            _$.audio.audioEngine.playSFX("menuOpen");
+            _$.ui.help.transitionOut(nextScreen, { fromMenu: true });
+        } else {
+            if (_$.ui.menu) {
+                _$.events.once("mainMenuClosed", () => {
+                     proceed.call(this);
+                });
+
+                this.toggleMainMenu();
+            } else {
+                proceed.call(this);
+            }
+
+            function proceed () {
+                this.$(".footer_menu-element").removeClass("is--active");
+                _$.events.once("helpPageOpen", () => {
+                    if (_$.ui.screen.id === "screen_title") {
+                        this.toggleLogo("show");
+                        this.isOpen = true;
+                    }
+
+                    this.$(".footer_menu-element").removeClass("is--active");
+                    this.$(".footer_menu-helpBtn").addClass("is--active");
+                });
+
+                _$.ui.help = new Screen_OverlayHelp();
+            }
         }
     }
 
@@ -101,6 +165,8 @@ define([
 
                 if (_$.ui.menu) {
                     this.$(".footer_menu-menuBtn").addClass("is--active");
+                } else if (_$.ui.help) {
+                    this.$(".footer_menu-helpBtn").addClass("is--active");
                 } else if (_$.ui.screen.id === "screen_title") {
                     this.$(".footer_menu-homeBtn").addClass("is--active");
                 }
@@ -124,6 +190,8 @@ define([
     function toTitleScreen () {
         if (_$.ui.menu) {
             this.toggleMainMenu("title");
+        } else if (_$.ui.help) {
+            this.toggleHelpPage("title");
         } else if (_$.ui.about) {
             this.toggleAboutPage("title");
         } else {

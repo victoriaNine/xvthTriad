@@ -83,6 +83,8 @@ define([
             this.$(".setting-mode").removeClass("is--active");
             $(window).off("click.toggleMode");
             TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight, delay: 0.6 });
+
+            this.validateInput(this.$(".setting-roomName input")[0]);
             return;
         } else {
             this.$(".setting-mode").addClass("is--active");
@@ -95,6 +97,8 @@ define([
                 var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
                 this.$(".setting-mode").removeClass("is--active");
                 TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight, delay: 0.6 });
+
+                this.validateInput(this.$(".setting-roomName input")[0]);
             }
         });
     }

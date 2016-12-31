@@ -35,23 +35,24 @@ module.exports = function (grunt) {
     pkg   : pkgFile,
     yeoman: yeomanConfig,
     watch: {
-      options: {
-        nospawn: true,
-        livereload: LIVERELOAD_PORT
+      sass: {
+        files: ['<%= yeoman.app %>/css/{,*/}*.scss'],
+        tasks: ['newer:sass:server','newer:copy:server']
       },
       livereload: {
         options: {
+          nospawn: true,
           livereload: grunt.option('livereloadport') || LIVERELOAD_PORT
         },
         files: [
           '<%= yeoman.app %>/*.html',
-          '<%= yeoman.app %>/css/{,*/}*.{css,scss}',
+          '<%= yeoman.app %>/css/{,*/}*.css',
           '<%= yeoman.app %>/js/{,*/}*.js',
           '<%= yeoman.app %>/assets/img/{,*/}*.{png,jpg,jpeg,gif,webp}',
-            '<%= yeoman.app %>/assets/svg/{,*/}*.svg',
+          '<%= yeoman.app %>/assets/svg/{,*/}*.svg',
           '<%= yeoman.app %>/js/templates/*.{html,ejs,mustache,hbs}'
         ],
-        tasks: ['livereloadUpdate']
+        tasks: ['newer:copy:server','newer:string-replace:server']
       }
     },
     connect: {
@@ -79,7 +80,7 @@ module.exports = function (grunt) {
                 return; // we're done
               }
 
-              res.statusCode(404); // where's index.html?
+              res.statusCode = 404; // where's index.html?
               res.end();
             });
 
@@ -104,7 +105,7 @@ module.exports = function (grunt) {
                 return; // we're done
               }
 
-              res.statusCode(404); // where's index.html?
+              res.statusCode = 404; // where's index.html?
               res.end();
             });
 
@@ -130,7 +131,7 @@ module.exports = function (grunt) {
                 return; // we're done
               }
 
-              res.statusCode(404); // where's index.html?
+              res.statusCode = 404; // where's index.html?
               res.end();
             });
 
@@ -154,7 +155,7 @@ module.exports = function (grunt) {
                 return; // we're done
               }
 
-              res.statusCode(404); // where's index.html?
+              res.statusCode = 404; // where's index.html?
               res.end();
             });
 
@@ -391,12 +392,6 @@ module.exports = function (grunt) {
     'uglify',
     'usemin',
     'clean:buildPost'
-  ]);
-
-  grunt.registerTask('livereloadUpdate', [
-    'newer:sass:server',
-    'newer:copy:server',
-    'newer:string-replace:server'
   ]);
 
   grunt.registerTask('default', [

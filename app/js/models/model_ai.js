@@ -2,7 +2,7 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
     return Backbone.Model.extend({
         defaults : {
             game           : null,
-            level          : "normal",
+            level          : "easy",
             bestActionRate : 75
         },
 

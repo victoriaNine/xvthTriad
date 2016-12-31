@@ -1,6 +1,6 @@
 define(["underscore", "global"], function updateManager (_, _$) {
     const PATCH_HISTORY = [
-        { version: "0.1.0", name: "Beta", flag: "beta", patch: _.identity }
+        { version: "1.0.0", name: "Beta", flag: "beta", patch: _.identity }
     ];
 
     class UpdateManager {
