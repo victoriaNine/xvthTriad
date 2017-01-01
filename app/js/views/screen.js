@@ -213,8 +213,8 @@ define([
             ga("send", "event", {
                 eventCategory : "screenChange",
                 eventAction   : nextScreen,
-                fromScreen    : _$.ui.screen.id.replace("screen_", ""),
-                fromMenu      : !!options.fromMenu
+                dimension0    : _$.ui.screen.id.replace("screen_", ""),  // fromScreen
+                dimension1    : !!options.fromMenu                       // fromMenu
             });
         }
 

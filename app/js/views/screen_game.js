@@ -123,11 +123,11 @@ define([
             ga("send", "event", {
                 eventCategory : "gameEvent",
                 eventAction   : "startGame",
-                difficulty    : _$.state.game.get("difficulty"),
-                type          : _$.state.game.get("type"),
-                role          : _$.state.game.get("role"),
-                rules         : JSON.stringify(_$.state.game.get("rules")),
-                gameStats     : JSON.stringify(_$.state.user.get("gameStats"))
+                dimension0    : _$.state.game.get("difficulty"),                // difficulty
+                dimension1    : _$.state.game.get("type"),                      // type
+                dimension2    : _$.state.game.get("role"),                      // role
+                dimension3    : JSON.stringify(_$.state.game.get("rules")),     // rules
+                dimension4    : JSON.stringify(_$.state.user.get("gameStats"))  // gameStats
             });
         }
     }
@@ -628,14 +628,14 @@ define([
                 eventCategory : "gameEvent",
                 eventAction   : "endGame",
                 result        : this.gameResult,
-                difficulty    : _$.state.game.get("difficulty"),
-                type          : _$.state.game.get("type"),
-                role          : _$.state.game.get("role"),
-                rules         : JSON.stringify(_$.state.game.get("rules")),
-                rounds        : _$.state.game.get("roundNumber"),
-                scoreUser     : _$.state.game.get("players").user.get("points"),
-                scoreOpponent : _$.state.game.get("players").opponent.get("points"),
-                gameStats     : JSON.stringify(_$.state.user.get("gameStats"))
+                dimension0    : _$.state.game.get("difficulty"),                    // difficulty
+                dimension1    : _$.state.game.get("type"),                          // type
+                dimension2    : _$.state.game.get("role"),                          // role
+                dimension3    : JSON.stringify(_$.state.game.get("rules")),         // rules
+                dimension4    : JSON.stringify(_$.state.user.get("gameStats")),     // gameStats
+                metric0       : _$.state.game.get("roundNumber"),                   // round
+                metric1       : _$.state.game.get("players").user.get("points"),    // scoreUser
+                metric2       : _$.state.game.get("players").opponent.get("points") // scoreOpponent
             });
         }
 

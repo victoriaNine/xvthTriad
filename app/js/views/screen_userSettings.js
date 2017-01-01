@@ -131,9 +131,9 @@ define([
                 ga("send", "event", {
                     eventCategory : "userSettingsEvent",
                     eventAction   : "saveGame",
-                    gameStats     : JSON.stringify(_$.state.user.get("gameStats")),
-                    albumSize     : _$.state.user.get("album").length,
-                    difficulty    : _$.state.user.get("difficulty")
+                    dimension0    : _$.state.user.get("difficulty"),               // difficulty
+                    metric0       : _$.state.user.get("album").length,             // albumSize
+                    metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
                 });
             }
             
@@ -169,9 +169,9 @@ define([
             ga("send", "event", {
                 eventCategory : "userSettingsEvent",
                 eventAction   : "exportSaveFile",
-                gameStats     : JSON.stringify(_$.state.user.get("gameStats")),
-                albumSize     : _$.state.user.get("album").length,
-                difficulty    : _$.state.user.get("difficulty")
+                dimension0    : _$.state.user.get("difficulty"),               // difficulty
+                metric0       : _$.state.user.get("album").length,             // albumSize
+                metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
             });
         }
 
@@ -183,9 +183,9 @@ define([
             ga("send", "event", {
                 eventCategory : "userSettingsEvent",
                 eventAction   : "resetUser",
-                gameStats     : JSON.stringify(_$.state.user.get("gameStats")),
-                albumSize     : _$.state.user.get("album").length,
-                difficulty    : _$.state.user.get("difficulty")
+                dimension0    : _$.state.user.get("difficulty"),               // difficulty
+                metric0       : _$.state.user.get("album").length,             // albumSize
+                metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
             });
         }
 
