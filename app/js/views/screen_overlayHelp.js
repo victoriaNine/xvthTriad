@@ -5,9 +5,11 @@ define([
     "global",
     "views/screen",
     "text!templates/templ_overlayHelp.html",
-    "text!templates/templ_helpBasicRules.html"
-], function Screen_OverlayHelp ($, _, Backbone, _$, Screen, Templ_OverlayHelp, Templ_HelpBasicRules) {
-    var HELP_TOPICS = ["basicRules"];
+    "text!templates/templ_helpBasicRules.html",
+    "text!templates/templ_helpStartSolo.html",
+    "text!templates/templ_helpStartVersus.html"
+], function Screen_OverlayHelp ($, _, Backbone, _$, Screen, Templ_OverlayHelp, Templ_HelpBasicRules, Templ_HelpStartSolo, Templ_HelpStartVersus) {
+    var HELP_TOPICS = "basicRules|startSolo|startVersus";
 
     return Screen.extend({
         tagName : "section",
@@ -49,7 +51,9 @@ define([
 
         this.currentGuide   = null;
         this.guideTemplates = {
-            basicRules: Templ_HelpBasicRules
+            basicRules  : Templ_HelpBasicRules,
+            startSolo   : Templ_HelpStartSolo,
+            startVersus : Templ_HelpStartVersus  
         };
 
         this.showHelp();
@@ -121,7 +125,10 @@ define([
         var img;
         $(guide).find("figure").each(function (index, figure) {
             img = _$.assets.get("img.help." + topicName + (index + 1));
-            $(figure).prepend(img);
+
+            if (img) {
+                $(figure).prepend(img);
+            }
         });
 
         var tl = new TimelineMax();
@@ -181,6 +188,12 @@ define([
             switch (msgName) {
                 case "basicRules":
                     text = "Learn the basic rules of the Fifteenth Triad.";
+                    break;
+                case "startSolo":
+                    text = "How to start a game in Solo mode (play against the computer).";
+                    break;
+                case "startVersus":
+                    text = "How to start a game in Versus mode (play against a friend).";
                     break;
             }
         }

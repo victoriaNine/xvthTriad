@@ -287,7 +287,11 @@ define([
     }
 
     function showHelp (msgName, asIs) {
-        var defaultMsg = "Choose the game's rules. Only the player who created the room can set them.";
+        var defaultMsg = "Choose the game's rules.";
+        if (_$.ui.roomSelect) {
+            defaultMsg += " Only the player who created the room can set them.";
+        }
+
         var text;
 
         if (!msgName) {

@@ -243,10 +243,9 @@ define([
             return;
         }
 
-        e                    = e.originalEvent;
-        var that             = this;
-        var prevX            = e.touches[0].pageX || e.pageX;
-        var prevY            = e.touches[0].pageY || e.pageY;
+        var that  = this;
+        var prevX = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
+        var prevY = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
         var originalPosition = {
             left: cardView.$el[0]._gsTransform.x,
             top : cardView.$el[0]._gsTransform.y
@@ -259,26 +258,28 @@ define([
         _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
-            e          = e.originalEvent;
-            var deltaX = (e.touches[0].pageX || e.pageX) - prevX;
-            var deltaY = (e.touches[0].pageY || e.pageY) - prevY;
+            var pageX  = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
+            var pageY  = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
+            var deltaX = pageX - prevX;
+            var deltaY = pageY - prevY;
 
             TweenMax.set(cardView.$el, {
                 x: cardView.$el[0]._gsTransform.x + deltaX * _$.utils.getDragSpeed(),
                 y: cardView.$el[0]._gsTransform.y + deltaY * _$.utils.getDragSpeed()
             });
 
-            prevX = e.touches[0].pageX || e.pageX;
-            prevY = e.touches[0].pageY || e.pageY;
+            prevX = pageX;
+            prevY = pageY;
         }
 
         function dragCardStop (e) {
             $(window).off("mousemove touchmove", dragCard);
             $(window).off("mouseup touchend", dragCardStop);
 
-            e               = e.originalEvent;
-            var scaledPageX = (e.changedTouches[0].pageX || e.pageX) * window.devicePixelRatio / _$.state.appScalar;
-            var scaledPageY = (e.changedTouches[0].pageY || e.pageY) * window.devicePixelRatio / _$.state.appScalar;
+            var pageX       = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
+            var pageY       = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
+            var scaledPageX = pageX * window.devicePixelRatio / _$.state.appScalar;
+            var scaledPageY = pageY * window.devicePixelRatio / _$.state.appScalar;
 
             var boardOffset   = _$.utils.getAbsoluteOffset($("#board"));
             var boardPosition = {
@@ -414,7 +415,7 @@ define([
                     _$.state.game.promptOpponentAction();
                 }
             }, 1000);
-        }, 2000);
+        }, 1500);
     }
 
     function showEndGameOverlay () {

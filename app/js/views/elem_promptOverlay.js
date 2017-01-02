@@ -98,7 +98,7 @@ define([
         }
         tl.call(() => { _$.events.trigger("startUserEvents"); this.delegateEvents(); this.isOpen = true; });
         if (options.autoClose) {
-            tl.call(() => { this.confirmAction(); }, [], null, "+=2");
+            tl.call(() => { this.confirmAction(); }, [], null, "+=1.5");
         }
     }
 

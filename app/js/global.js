@@ -45,7 +45,11 @@ define([
         saveData     : { value: saveData },
         loadData     : { value: loadData },
         importSave   : { value: importSave },
-        exportSave   : { value: exportSave }
+        exportSave   : { value: exportSave },
+        env          : { value : {
+            deviceType       : "browser",
+            mobileDeviceType : null
+        } }
     });
     var dom       = $("#app");
     var assets    = new AssetManager();

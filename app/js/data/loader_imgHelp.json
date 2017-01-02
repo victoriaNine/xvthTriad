@@ -28,6 +28,52 @@
         {
             "type": "img.help",
             "name": "basicRules7.png"
+        },
+
+        {
+            "type": "img.help",
+            "name": "startSolo1.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startSolo2.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startSolo3.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startSolo4.png"
+        },
+
+        {
+            "type": "img.help",
+            "name": "startVersus1.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startVersus2.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startVersus3.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startVersus4.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startVersus5.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startVersus6.png"
+        },
+        {
+            "type": "img.help",
+            "name": "startVersus7.png"
         }
     ]
 }

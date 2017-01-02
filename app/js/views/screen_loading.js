@@ -73,6 +73,11 @@ define([
         if (this.canvasAssets === 4) {
             _$.events.off("fileLoaded:imgUI");
             _$.ui.canvas.init();
+
+            if (_$.app.env.deviceType === "mobile") {
+                _$.state.FX_LEVEL = 2;
+            }
+            
             _$.events.trigger("addFX");
             TweenMax.to(_$.ui.canvas.dom, 2, { opacity : 1, clearProps: "opacity", delay: 1 });
         }

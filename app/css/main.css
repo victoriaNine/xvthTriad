@@ -230,7 +230,7 @@ h1 {
     position: relative;
     display: flex;
     justify-content: flex-end; }
-  .help_header-help, .rulesSelect_header-help, .roomSelect_header-help {
+  .help_header-help, .rulesSelect_header-help, .cardSelect_header-help, .roomSelect_header-help {
     text-transform: none;
     position: absolute;
     left: 0;
@@ -1178,6 +1178,10 @@ h1 {
   flex-direction: column; }
 
 /* HEADER --------------*/
+.cardSelect_header-help {
+  position: relative;
+  padding: 0; }
+
 .cardSelect_header-ownedCards,
 .cardSelect_header-uniqueCopies {
   margin-top: 1em; }
@@ -1201,10 +1205,15 @@ h1 {
   margin-left: 1em;
   position: relative;
   padding-top: 2px; }
+  .cardSelect_header-deck-holder.glowing .svg-cardBG {
+    fill: rgba(40, 51, 120, 0.5); }
 
 .cardSelect_header-deck-holder .svg-cardBG {
   stroke-width: 1;
-  stroke: rgba(255, 255, 255, 0.05); }
+  stroke: rgba(255, 255, 255, 0.05);
+  -webkit-transition: -webkit-fill .2s;
+  -ms-transition: -ms-fill .2s;
+  transition: fill .2s; }
 
 /* CONTENT --------------*/
 .cardSelect_content-confirm {

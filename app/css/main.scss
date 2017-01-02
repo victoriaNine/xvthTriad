@@ -1491,6 +1491,12 @@ h1 {
     &-rightCol {
         @extend %header-rightCol;
     }
+
+    &-help {
+        @extend %header-help;
+        position: relative;
+        padding: 0;
+    }
 }
 
 .cardSelect_header-ownedCards,
@@ -1523,11 +1529,16 @@ h1 {
     margin-left: 1em;
     position:relative;
     padding-top: 2px;
+
+    &.glowing .svg-cardBG {
+        fill: transparentize($color_blue, 0.5);
+    }
 }
 
 .cardSelect_header-deck-holder .svg-cardBG {
     stroke-width: 1;
     stroke: rgba(255, 255, 255, .05);
+    @include transition("fill .2s");
 }
 
 /* CONTENT --------------*/

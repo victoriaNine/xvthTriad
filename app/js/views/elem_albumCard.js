@@ -74,8 +74,8 @@ define([
 
     function dragCardStart (e, cardCopy) {
         var that  = this;
-        var prevX = e.originalEvent.touches[0].pageX || e.pageX;
-        var prevY = e.originalEvent.touches[0].pageY || e.pageY;
+        var prevX = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
+        var prevY = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
 
         if (e.delegateTarget === this.el) {
             if (!this.copiesCount) {
@@ -92,6 +92,12 @@ define([
                 });
             }
         }
+
+        _.each(_$.ui.cardSelect.holders, function (holder) {
+            if (!holder.card) {
+                $(holder.dom).addClass("glowing");
+            }
+        });
 
         this.originalPosition = _$.utils.getAbsoluteOffset(this.cardDOM);
 
@@ -113,26 +119,28 @@ define([
         _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
-            e          = e.originalEvent;
-            var deltaX = (e.touches[0].pageX || e.pageX) - prevX;
-            var deltaY = (e.touches[0].pageY || e.pageY) - prevY;
+            var pageX  = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
+            var pageY  = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
+            var deltaX = pageX - prevX;
+            var deltaY = pageY - prevY;
 
             TweenMax.set(cardCopy.card, {
                 x: cardCopy.card[0]._gsTransform.x + deltaX * _$.utils.getDragSpeed(),
                 y: cardCopy.card[0]._gsTransform.y + deltaY * _$.utils.getDragSpeed()
             });
 
-            prevX = e.touches[0].pageX || e.pageX;
-            prevY = e.touches[0].pageY || e.pageY;
+            prevX = pageX;
+            prevY = pageY;
         }
 
         function dragCardStop (e) {
             $(window).off("mousemove touchmove", dragCard);
             $(window).off("mouseup touchend", dragCardStop);
 
-            e               = e.originalEvent;
-            var scaledPageX = (e.changedTouches[0].pageX || e.pageX) * window.devicePixelRatio / _$.state.appScalar;
-            var scaledPageY = (e.changedTouches[0].pageY || e.pageY) * window.devicePixelRatio / _$.state.appScalar;
+            var pageX       = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
+            var pageY       = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
+            var scaledPageX = pageX * window.devicePixelRatio / _$.state.appScalar;
+            var scaledPageY = pageY * window.devicePixelRatio / _$.state.appScalar;
 
             var deckOffset   = _$.utils.getAbsoluteOffset($(".cardSelect_header-deck"));
             var deckPosition = {
@@ -152,6 +160,10 @@ define([
             } else {
                 that.moveToOrigin(cardCopy);
             }
+
+            _.each(_$.ui.cardSelect.holders, function (holder) {
+                $(holder.dom).removeClass("glowing");
+            });
         }
     }
 
@@ -164,6 +176,10 @@ define([
             _$.audio.audioEngine.playSFX("cardDrop");
         });
         tl.set(cardCopy.card, { scale: "1", zIndex:999 }, "+=.1");
+
+        if (cardCopy.holder) {
+            _$.ui.cardSelect.holders[cardCopy.holder.id].card = null;
+        }
 
         if (!reorderingDeck) {
             _$.events.trigger("updateDeck", {
@@ -178,6 +194,7 @@ define([
             this.copiesCount--;
         }
 
+        _$.ui.cardSelect.holders[holder.id].card = cardCopy;
         cardCopy.holder = holder;
         this.render();
     }
@@ -203,8 +220,9 @@ define([
 
         if (cardCopy.holder) {
             this.copiesCount++;
+            _$.ui.cardSelect.holders[cardCopy.holder.id].card = null;
         }
-
+        
         cardCopy.holder = null;
         this.render();
     }

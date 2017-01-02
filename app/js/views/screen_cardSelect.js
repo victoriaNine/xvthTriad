@@ -58,6 +58,7 @@ define([
         this.albumCardViews  = [];
         this.currentPage     = 1;
         this.userDeck        = [];
+        this.holders         = null;
 
         this.$el.html(this.template({
             ownedCardsCount: this.userAlbum.length,
@@ -113,6 +114,29 @@ define([
             this.$(".cardSelect_content-screenNav").slideDown(500);
             TweenMax.to(this.$(".cardSelect_content-scroll"), 0.4, { opacity: 1, clearProps: "opacity" });
             _$.events.trigger("startUserEvents");
+
+            this.holders = {
+                holder1 : {
+                    dom  : this.$("#holder1"),
+                    card : null
+                },
+                holder2 : {
+                    dom  : this.$("#holder2"),
+                    card : null
+                },
+                holder3 : {
+                    dom  : this.$("#holder3"),
+                    card : null
+                },
+                holder4 : {
+                    dom  : this.$("#holder4"),
+                    card : null
+                },
+                holder5 : {
+                    dom  : this.$("#holder5"),
+                    card : null
+                }
+            };
         }, null, [], "+=0.5");
 
         return this;
