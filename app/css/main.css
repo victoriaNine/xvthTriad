@@ -291,6 +291,7 @@ h1 {
     background: #FFF;
     left: 0;
     top: -100%;
+    pointer-events: none;
     -webkit-transition: -webkit-top .15s ease-in;
     -ms-transition: -ms-top .15s ease-in;
     transition: top .15s ease-in;

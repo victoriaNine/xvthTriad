@@ -366,6 +366,7 @@ h1 {
         background: #FFF;
         left:0;
         top:-100%;
+        pointer-events:none;
 
         @include transition("top .15s ease-in");
         @include transform("translate3d(0, 0, 0)");
