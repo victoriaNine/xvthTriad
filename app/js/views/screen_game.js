@@ -211,7 +211,7 @@ define([
         var owner    = (cardModel.get("currentOwner") === this.players.user) ? "user" : "opponent";
 
         if (owner === "user") {
-            cardView.$el.on("mousedown", (e) => {
+            cardView.$el.on("mousedown touchstart", (e) => {
                 dragCardStart.call(this, e, cardView);
             });
         }
@@ -243,9 +243,10 @@ define([
             return;
         }
 
+        e                    = e.originalEvent;
         var that             = this;
-        var prevX            = e.pageX;
-        var prevY            = e.pageY;
+        var prevX            = e.touches[0].pageX || e.pageX;
+        var prevY            = e.touches[0].pageY || e.pageY;
         var originalPosition = {
             left: cardView.$el[0]._gsTransform.x,
             top : cardView.$el[0]._gsTransform.y
@@ -253,29 +254,31 @@ define([
 
         TweenMax.set(cardView.$el, { zIndex: 1000 });
 
-        $(window).on("mousemove", dragCard);
-        $(window).on("mouseup", dragCardStop);
+        $(window).on("mousemove touchmove", dragCard);
+        $(window).on("mouseup touchend", dragCardStop);
         _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
-            var deltaX = e.pageX - prevX;
-            var deltaY = e.pageY - prevY;
+            e          = e.originalEvent;
+            var deltaX = (e.touches[0].pageX || e.pageX) - prevX;
+            var deltaY = (e.touches[0].pageY || e.pageY) - prevY;
 
             TweenMax.set(cardView.$el, {
                 x: cardView.$el[0]._gsTransform.x + deltaX * _$.utils.getDragSpeed(),
                 y: cardView.$el[0]._gsTransform.y + deltaY * _$.utils.getDragSpeed()
             });
 
-            prevX = e.pageX;
-            prevY = e.pageY;
+            prevX = e.touches[0].pageX || e.pageX;
+            prevY = e.touches[0].pageY || e.pageY;
         }
 
         function dragCardStop (e) {
-            $(window).off("mousemove", dragCard);
-            $(window).off("mouseup", dragCardStop);
+            $(window).off("mousemove touchmove", dragCard);
+            $(window).off("mouseup touchend", dragCardStop);
 
-            var scaledPageX = e.pageX * window.devicePixelRatio / _$.state.appScalar;
-            var scaledPageY = e.pageY * window.devicePixelRatio / _$.state.appScalar;
+            e               = e.originalEvent;
+            var scaledPageX = (e.changedTouches[0].pageX || e.pageX) * window.devicePixelRatio / _$.state.appScalar;
+            var scaledPageY = (e.changedTouches[0].pageY || e.pageY) * window.devicePixelRatio / _$.state.appScalar;
 
             var boardOffset   = _$.utils.getAbsoluteOffset($("#board"));
             var boardPosition = {

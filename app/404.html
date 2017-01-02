@@ -14,8 +14,8 @@
             redirectLink.href = document.location.origin;
             redirectLink.addEventListener("click", function () {
                 ga("send", "event", {
-                    eventCategory: "Page Not Found",
-                    eventAction: "REDIRECT_CLICK"
+                    eventCategory: "linkClickEvent",
+                    eventAction: "404redirect"
                 });
             });
 

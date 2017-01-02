@@ -14,7 +14,8 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
-            "mousedown .card"  : function (e) { dragCardStart.call(this, e, this.activeCopy); }
+            "mousedown .card"   : function (e) { dragCardStart.call(this, e, this.activeCopy); },
+            "touchstart .card"  : function (e) { dragCardStart.call(this, e, this.activeCopy); }
         },
 
         initialize,
@@ -73,8 +74,8 @@ define([
 
     function dragCardStart (e, cardCopy) {
         var that  = this;
-        var prevX = e.pageX;
-        var prevY = e.pageY;
+        var prevX = e.originalEvent.touches[0].pageX || e.pageX;
+        var prevY = e.originalEvent.touches[0].pageY || e.pageY;
 
         if (e.delegateTarget === this.el) {
             if (!this.copiesCount) {
@@ -86,7 +87,7 @@ define([
                 }
 
                 this.deckHolders.append(cardCopy.card);
-                cardCopy.card.on("mousedown", (e) => {
+                cardCopy.card.on("mousedown touchstart", (e) => {
                     dragCardStart.call(this, e, cardCopy);
                 });
             }
@@ -107,30 +108,31 @@ define([
             });
         }
 
-        $(window).on("mousemove", dragCard);
-        $(window).on("mouseup", dragCardStop);
+        $(window).on("mousemove touchmove", dragCard);
+        $(window).on("mouseup touchend", dragCardStop);
         _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
-            var deltaX = e.pageX - prevX;
-            var deltaY = e.pageY - prevY;
+            e          = e.originalEvent;
+            var deltaX = (e.touches[0].pageX || e.pageX) - prevX;
+            var deltaY = (e.touches[0].pageY || e.pageY) - prevY;
 
             TweenMax.set(cardCopy.card, {
                 x: cardCopy.card[0]._gsTransform.x + deltaX * _$.utils.getDragSpeed(),
                 y: cardCopy.card[0]._gsTransform.y + deltaY * _$.utils.getDragSpeed()
             });
 
-            prevX = e.pageX;
-            prevY = e.pageY;
+            prevX = e.touches[0].pageX || e.pageX;
+            prevY = e.touches[0].pageY || e.pageY;
         }
 
         function dragCardStop (e) {
-            $(window).off("mousemove", dragCard);
-            $(window).off("mouseup", dragCardStop);
-            _$.audio.audioEngine.playSFX("cardDrop");
+            $(window).off("mousemove touchmove", dragCard);
+            $(window).off("mouseup touchend", dragCardStop);
 
-            var scaledPageX = e.pageX * window.devicePixelRatio / _$.state.appScalar;
-            var scaledPageY = e.pageY * window.devicePixelRatio / _$.state.appScalar;
+            e               = e.originalEvent;
+            var scaledPageX = (e.changedTouches[0].pageX || e.pageX) * window.devicePixelRatio / _$.state.appScalar;
+            var scaledPageY = (e.changedTouches[0].pageY || e.pageY) * window.devicePixelRatio / _$.state.appScalar;
 
             var deckOffset   = _$.utils.getAbsoluteOffset($(".cardSelect_header-deck"));
             var deckPosition = {
@@ -158,6 +160,9 @@ define([
 
         var tl = new TimelineMax();
         tl.to(cardCopy.card, 0.2, { x: holderOffset.left, y: holderOffset.top });
+        tl.call(() => {
+            _$.audio.audioEngine.playSFX("cardDrop");
+        });
         tl.set(cardCopy.card, { scale: "1", zIndex:999 }, "+=.1");
 
         if (!reorderingDeck) {

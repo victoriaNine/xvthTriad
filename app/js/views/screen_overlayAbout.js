@@ -21,10 +21,46 @@ define([
             "mouseenter .about_social-element,.about_prevBtn,.about_credits" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .about_social-fbBtn"  : function () { _$.utils.openSharePopup("facebook"); },
-            "click .about_social-ttBtn"  : function () { _$.utils.openSharePopup("twitter"); },
-            "click .about_social-rdtBtn" : function () { _$.utils.openSharePopup("reddit"); },
-            "click .about_social-tbrBtn" : function () { _$.utils.openSharePopup("tumblr"); }
+            "click .about_social-fbBtn"  : function () {
+                _$.utils.openSharePopup("facebook");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "aboutFacebook"
+                });
+            },
+            "click .about_social-ttBtn"  : function () {
+                _$.utils.openSharePopup("twitter");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "aboutTwitter"
+                });
+            },
+            "click .about_social-rdtBtn" : function () {
+                _$.utils.openSharePopup("reddit");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "aboutReddit"
+                });
+             },
+            "click .about_social-tbrBtn" : function () {
+                _$.utils.openSharePopup("tumblr");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "aboutTumblr"
+                });
+            },
+            "click .about_credits" : function () {
+                ga("send", "event", {
+                    eventCategory: "linkClickEvent",
+                    eventAction: "aboutCredits"
+                });
+            },
+            "click .about_credits" : function () {
+                ga("send", "event", {
+                    eventCategory: "linkClickEvent",
+                    eventAction: "aboutLegal"
+                });
+            }
         },
 
         initialize,

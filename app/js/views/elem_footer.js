@@ -27,10 +27,34 @@ define([
             "mouseenter .footer_menu-element,.footer_social-element,.footer_logo" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .footer_social-fbBtn"  : function () { _$.utils.openSharePopup("facebook"); },
-            "click .footer_social-ttBtn"  : function () { _$.utils.openSharePopup("twitter"); },
-            "click .footer_social-rdtBtn" : function () { _$.utils.openSharePopup("reddit"); },
-            "click .footer_social-tbrBtn" : function () { _$.utils.openSharePopup("tumblr"); }
+            "click .footer_social-fbBtn"  : function () {
+                _$.utils.openSharePopup("facebook");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "footerFacebook"
+                });
+            },
+            "click .footer_social-ttBtn"  : function () {
+                _$.utils.openSharePopup("twitter");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "footerTwitter"
+                });
+            },
+            "click .footer_social-rdtBtn" : function () {
+                _$.utils.openSharePopup("reddit");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "footerReddit"
+                });
+             },
+            "click .footer_social-tbrBtn" : function () {
+                _$.utils.openSharePopup("tumblr");
+                ga("send", "event", {
+                    eventCategory: "socialShareEvent",
+                    eventAction: "footerTumblr"
+                });
+            }
         },
 
         initialize,
