@@ -209,18 +209,16 @@ define([
     }
 
     function changeScreen (nextScreen, options = {}) {
-        if (!_$.debug.debugMode) {
-            ga("set", {
-                "dimension0" : "currentScreenId",
-                "dimension1" : "fromMenu"
-            });
-            ga("send", "event", {
-                eventCategory : "screenChange",
-                eventAction   : nextScreen,
-                dimension0    : _$.ui.screen.id.replace("screen_", ""),  // fromScreen
-                dimension1    : !!options.fromMenu                       // fromMenu
-            });
-        }
+        _$.app.track("set", {
+            "dimension0" : "currentScreenId",
+            "dimension1" : "fromMenu"
+        });
+        _$.app.track("send", "event", {
+            eventCategory : "screenChange",
+            eventAction   : nextScreen,
+            dimension0    : _$.ui.screen.id.replace("screen_", ""),  // fromScreen
+            dimension1    : !!options.fromMenu                       // fromMenu
+        });
 
         if (nextScreen === "title" || nextScreen === "userSettings" || options.fromMenu) {
             if (_$.state.room) {

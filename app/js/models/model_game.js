@@ -266,9 +266,10 @@ define([
         //_$.debug.log(isSimulatedTurn ? "=== (AI SIMULATION) NEW TURN ===" : "=== NEW TURN ===");
         //_$.debug.log(playing.get("name"), "placed card", newCard.get("name"), "(deck card n°" + newCard.get("deckIndex") + ") at", position.x + "," + position.y + ".");
 
-        var that          = this;
-        var adjacentCards = this.getAdjacentCards(newCard, playedCards);
-        var index         = -1;
+        var that            = this;
+        var adjacentCards   = this.getAdjacentCards(newCard, playedCards);
+        var adjacentCardsNb = _.keys(adjacentCards).length;
+        var index           = -1;
 
         // ELEMENTAL RULE
         if (this.get("rules").elemental) {
@@ -314,7 +315,7 @@ define([
                 }
             }
 
-            if (index === _.keys(adjacentCards).length - 1) {
+            if (index === adjacentCardsNb - 1) {
                 if (playedCards.length === BOARD_SIZE) {
                     if (flipped) {
                         updateScore(card, { endGame: true });

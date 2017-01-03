@@ -49,7 +49,8 @@ define([
         env          : { value : {
             deviceType       : "browser",
             mobileDeviceType : null
-        } }
+        }},
+        track        : { value: sendGAevent }
     });
     var dom       = $("#app");
     var assets    = new AssetManager();
@@ -171,6 +172,13 @@ define([
                 "&content="  + encodeURIComponent(options.content) +
                 "&caption="  + encodeURIComponent(options.caption) +
                 "&show-via=" + encodeURIComponent(options.showVia);
+        }
+    }
+
+    /* TRACKING */
+    function sendGAevent (...args) {
+        if (!_$.debug.debugMode) {
+            ga(...args);
         }
     }
 

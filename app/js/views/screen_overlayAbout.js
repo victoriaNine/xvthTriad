@@ -23,40 +23,40 @@ define([
             },
             "click .about_social-fbBtn"  : function () {
                 _$.utils.openSharePopup("facebook");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "aboutFacebook"
                 });
             },
             "click .about_social-ttBtn"  : function () {
                 _$.utils.openSharePopup("twitter");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "aboutTwitter"
                 });
             },
             "click .about_social-rdtBtn" : function () {
                 _$.utils.openSharePopup("reddit");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "aboutReddit"
                 });
              },
             "click .about_social-tbrBtn" : function () {
                 _$.utils.openSharePopup("tumblr");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "aboutTumblr"
                 });
             },
             "click .about_credits" : function () {
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "linkClickEvent",
                     eventAction: "aboutCredits"
                 });
             },
             "click .about_credits" : function () {
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "linkClickEvent",
                     eventAction: "aboutLegal"
                 });

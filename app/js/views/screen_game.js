@@ -119,24 +119,22 @@ define([
         _$.audio.audioEngine.playBGM();
         this.add();
 
-        if (!_$.debug.debugMode) {
-            ga("set", {
-                "dimension0" : "difficulty",
-                "dimension1" : "type",
-                "dimension2" : "role",
-                "dimension3" : "rules",
-                "dimension4" : "gameStats"
-            });
-            ga("send", "event", {
-                eventCategory : "gameEvent",
-                eventAction   : "startGame",
-                dimension0    : _$.state.game.get("difficulty"),                // difficulty
-                dimension1    : _$.state.game.get("type"),                      // type
-                dimension2    : _$.state.game.get("role"),                      // role
-                dimension3    : JSON.stringify(_$.state.game.get("rules")),     // rules
-                dimension4    : JSON.stringify(_$.state.user.get("gameStats"))  // gameStats
-            });
-        }
+        _$.app.track("set", {
+            "dimension0" : "difficulty",
+            "dimension1" : "type",
+            "dimension2" : "role",
+            "dimension3" : "rules",
+            "dimension4" : "gameStats"
+        });
+        _$.app.track("send", "event", {
+            eventCategory : "gameEvent",
+            eventAction   : "startGame",
+            dimension0    : _$.state.game.get("difficulty"),                // difficulty
+            dimension1    : _$.state.game.get("type"),                      // type
+            dimension2    : _$.state.game.get("role"),                      // role
+            dimension3    : JSON.stringify(_$.state.game.get("rules")),     // rules
+            dimension4    : JSON.stringify(_$.state.user.get("gameStats"))  // gameStats
+        });
     }
 
     function remove () {
@@ -634,31 +632,29 @@ define([
     }
 
     function toTitleScreen () {
-        if (!_$.debug.debugMode) {
-            ga("set", {
-                "dimension0" : "difficulty",
-                "dimension1" : "type",
-                "dimension2" : "role",
-                "dimension3" : "rules",
-                "dimension4" : "gameStats",
-                "metric0"    : "round",
-                "metric1"    : "scoreUser",
-                "metric2"    : "scoreOpponent"
-            });
-            ga("send", "event", {
-                eventCategory : "gameEvent",
-                eventAction   : "endGame",
-                result        : this.gameResult,
-                dimension0    : _$.state.game.get("difficulty"),                    // difficulty
-                dimension1    : _$.state.game.get("type"),                          // type
-                dimension2    : _$.state.game.get("role"),                          // role
-                dimension3    : JSON.stringify(_$.state.game.get("rules")),         // rules
-                dimension4    : JSON.stringify(_$.state.user.get("gameStats")),     // gameStats
-                metric0       : _$.state.game.get("roundNumber"),                   // round
-                metric1       : _$.state.game.get("players").user.get("points"),    // scoreUser
-                metric2       : _$.state.game.get("players").opponent.get("points") // scoreOpponent
-            });
-        }
+        _$.app.track("set", {
+            "dimension0" : "difficulty",
+            "dimension1" : "type",
+            "dimension2" : "role",
+            "dimension3" : "rules",
+            "dimension4" : "gameStats",
+            "metric0"    : "round",
+            "metric1"    : "scoreUser",
+            "metric2"    : "scoreOpponent"
+        });
+        _$.app.track("send", "event", {
+            eventCategory : "gameEvent",
+            eventAction   : "endGame",
+            result        : this.gameResult,
+            dimension0    : _$.state.game.get("difficulty"),                    // difficulty
+            dimension1    : _$.state.game.get("type"),                          // type
+            dimension2    : _$.state.game.get("role"),                          // role
+            dimension3    : JSON.stringify(_$.state.game.get("rules")),         // rules
+            dimension4    : JSON.stringify(_$.state.user.get("gameStats")),     // gameStats
+            metric0       : _$.state.game.get("roundNumber"),                   // round
+            metric1       : _$.state.game.get("players").user.get("points"),    // scoreUser
+            metric2       : _$.state.game.get("players").opponent.get("points") // scoreOpponent
+        });
 
         _$.events.trigger("stopUserEvents");
         _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });

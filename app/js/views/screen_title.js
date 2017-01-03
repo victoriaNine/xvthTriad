@@ -18,8 +18,13 @@ define([
         // Delegated events for creating new items, and clearing completed ones.
         events           : {
             "click .title_startBtn" : function () {
-                this.transitionOut("rulesSelect");
-                _$.audio.audioEngine.playSFX("titleStart");
+                _$.app.track("send", "event", {
+                    eventCategory: "titleEvent",
+                    eventAction: "clickStart"
+                });
+
+                _$.audio.audioEngine.playSFX("menuOpen");
+                _$.ui.footer.toggleMainMenu();
             },
             "mouseenter .title_startBtn" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
@@ -158,7 +163,10 @@ define([
         _$.events.trigger("stopUserEvents");
         
         var tl = new TimelineMax();
-        tl.call(() => { _$.ui.footer.menu.find(".footer_menu-element").removeClass("is--active"); });
+        tl.call(() => {
+            _$.audio.audioEngine.playSFX("titleStart");
+            _$.ui.footer.menu.find(".footer_menu-element").removeClass("is--active");
+        });
         tl.add(_$.ui.footer.toggleSocial("hide"));
         tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
         tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");

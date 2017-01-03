@@ -41,9 +41,9 @@ define([
     }
 
     function show (options = { msg: "" }) {
-        if (!_$.debug.debugMode && options.type === "error") {
-            ga("set", "dimension0", "currentScreenId");
-            ga("send", "event", {
+        if (options.type === "error") {
+            _$.app.track("set", "dimension0", "currentScreenId");
+            _$.app.track("send", "event", {
                 eventCategory : "errorEvent",
                 eventAction   : options.msg,
                 dimension0    : _$.ui.screen.id // Current screen ID

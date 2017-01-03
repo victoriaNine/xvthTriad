@@ -29,28 +29,28 @@ define([
             },
             "click .footer_social-fbBtn"  : function () {
                 _$.utils.openSharePopup("facebook");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "footerFacebook"
                 });
             },
             "click .footer_social-ttBtn"  : function () {
                 _$.utils.openSharePopup("twitter");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "footerTwitter"
                 });
             },
             "click .footer_social-rdtBtn" : function () {
                 _$.utils.openSharePopup("reddit");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "footerReddit"
                 });
              },
             "click .footer_social-tbrBtn" : function () {
                 _$.utils.openSharePopup("tumblr");
-                ga("send", "event", {
+                _$.app.track("send", "event", {
                     eventCategory: "socialShareEvent",
                     eventAction: "footerTumblr"
                 });
@@ -86,6 +86,11 @@ define([
 
     function toggleMainMenu (nextScreen) {
         if (_$.ui.menu) {
+            _$.app.track("send", "event", {
+                eventCategory: "footerEvent",
+                eventAction: "closeMenu"
+            });
+
             if (_$.ui.screen.id === "screen_title") {
                 this.toggleLogo("hide");
                 this.isOpen = false;
@@ -101,6 +106,11 @@ define([
             _$.ui.menu.transitionOut(nextScreen, { fromMenu: true });
             _$.audio.audioEngine.playSFX("menuClose");
         } else {
+            _$.app.track("send", "event", {
+                eventCategory: "footerEvent",
+                eventAction: "openMenu"
+            });
+
             if (_$.ui.help) {
                 _$.events.once("helpPageClosed", () => {
                      proceed.call(this);
@@ -131,6 +141,11 @@ define([
 
     function toggleHelpPage (nextScreen) {
         if (_$.ui.help) {
+            _$.app.track("send", "event", {
+                eventCategory: "footerEvent",
+                eventAction: "closeHelp"
+            });
+
             if (_$.ui.screen.id === "screen_title") {
                 this.toggleLogo("hide");
                 this.isOpen = false;
@@ -149,6 +164,11 @@ define([
 
             _$.ui.help.transitionOut(nextScreen, { fromMenu: true });
         } else {
+            _$.app.track("send", "event", {
+                eventCategory: "footerEvent",
+                eventAction: "openHelp"
+            });
+
             if (_$.ui.menu) {
                 _$.events.once("mainMenuClosed", () => {
                      proceed.call(this);
@@ -178,6 +198,11 @@ define([
 
     function toggleAboutPage (nextScreen) {
         if (_$.ui.about) {
+            _$.app.track("send", "event", {
+                eventCategory: "footerEvent",
+                eventAction: "closeAbout"
+            });
+
             if (_$.ui.screen.id === "screen_title") {
                 this.toggleLogo("hide");
                 this.isOpen = false;
@@ -198,6 +223,11 @@ define([
 
             _$.ui.about.transitionOut(nextScreen, { fromMenu: true });
         } else {
+            _$.app.track("send", "event", {
+                eventCategory: "footerEvent",
+                eventAction: "openAbout"
+            });
+
             this.$(".footer_menu-element").removeClass("is--active");
             _$.events.once("aboutPageOpen", () => {
                 if (_$.ui.screen.id === "screen_title") {

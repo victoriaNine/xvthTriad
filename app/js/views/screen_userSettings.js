@@ -127,20 +127,18 @@ define([
 
         function proceed () {
             _$.state.user.set({ name: settings.name, difficulty: settings.difficulty });
-            if (!_$.debug.debugMode) {
-                ga("set", {
-                    "dimension0" : "difficulty",
-                    "metric0"    : "albumSize",
-                    "metric1"    : "gameStats"
-                });
-                ga("send", "event", {
-                    eventCategory : "userSettingsEvent",
-                    eventAction   : "saveGame",
-                    dimension0    : _$.state.user.get("difficulty"),               // difficulty
-                    metric0       : _$.state.user.get("album").length,             // albumSize
-                    metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
-                });
-            }
+            _$.app.track("set", {
+                "dimension0" : "difficulty",
+                "metric0"    : "albumSize",
+                "metric1"    : "gameStats"
+            });
+            _$.app.track("send", "event", {
+                eventCategory : "userSettingsEvent",
+                eventAction   : "saveGame",
+                dimension0    : _$.state.user.get("difficulty"),               // difficulty
+                metric0       : _$.state.user.get("album").length,             // albumSize
+                metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
+            });
             
             _$.app.saveData();
             this.transitionOut("title");
@@ -155,7 +153,7 @@ define([
 
     function loadGame () {
         if (!_$.debug.debugMode) {
-            ga("send", "event", {
+            _$.app.track("send", "event", {
                 eventCategory : "userSettingsEvent",
                 eventAction   : "loadGame"
             });
@@ -170,39 +168,35 @@ define([
     }
 
     function exportSaveFile () {
-        if (!_$.debug.debugMode) {
-            ga("set", {
-                "dimension0" : "difficulty",
-                "metric0"    : "albumSize",
-                "metric1"    : "gameStats"
-            });
-            ga("send", "event", {
-                eventCategory : "userSettingsEvent",
-                eventAction   : "exportSaveFile",
-                dimension0    : _$.state.user.get("difficulty"),               // difficulty
-                metric0       : _$.state.user.get("album").length,             // albumSize
-                metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
-            });
-        }
+        _$.app.track("set", {
+            "dimension0" : "difficulty",
+            "metric0"    : "albumSize",
+            "metric1"    : "gameStats"
+        });
+        _$.app.track("send", "event", {
+            eventCategory : "userSettingsEvent",
+            eventAction   : "exportSaveFile",
+            dimension0    : _$.state.user.get("difficulty"),               // difficulty
+            metric0       : _$.state.user.get("album").length,             // albumSize
+            metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
+        });
 
         _$.app.exportSave();
     }
 
     function resetUser () {
-        if (!_$.debug.debugMode) {
-            ga("set", {
-                "dimension0" : "difficulty",
-                "metric0"    : "albumSize",
-                "metric1"    : "gameStats"
-            });
-            ga("send", "event", {
-                eventCategory : "userSettingsEvent",
-                eventAction   : "resetUser",
-                dimension0    : _$.state.user.get("difficulty"),               // difficulty
-                metric0       : _$.state.user.get("album").length,             // albumSize
-                metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
-            });
-        }
+        _$.app.track("set", {
+            "dimension0" : "difficulty",
+            "metric0"    : "albumSize",
+            "metric1"    : "gameStats"
+        });
+        _$.app.track("send", "event", {
+            eventCategory : "userSettingsEvent",
+            eventAction   : "resetUser",
+            dimension0    : _$.state.user.get("difficulty"),               // difficulty
+            metric0       : _$.state.user.get("album").length,             // albumSize
+            metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
+        });
 
         this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
         TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
