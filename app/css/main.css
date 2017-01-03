@@ -938,7 +938,7 @@ h1 {
     left: 0;
     top: 0;
     background: linear-gradient(to bottom, transparent 60%, black 90%); }
-  .menu_element:not(.is--disabled):hover, .menu_element.is--active, .menu_element:not(.is--disabled).is--hover {
+  .menu_element:not(.is--disabled):hover, .menu_element.is--active, .menu_element:not(.is--disabled).is--hover, html.isMobile .menu_element:not(.is--disabled) {
     filter: saturate(1) brightness(1);
     cursor: pointer; }
   .menu_element-bg {
@@ -969,16 +969,16 @@ h1 {
     -webkit-transition: -webkit-opacity .4s, transform .4s;
     -ms-transition: -ms-opacity .4s, transform .4s;
     transition: opacity .4s, transform .4s; }
-  .menu_element:hover .menu_element-title span, .menu_element.is--active .menu_element-title span, .menu_element.is--hover .menu_element-title span {
+  .menu_element:hover .menu_element-title span, .menu_element.is--active .menu_element-title span, .menu_element.is--hover .menu_element-title span, html.isMobile .menu_element .menu_element-title span {
     opacity: 1; }
-  .menu_element:hover .menu_element-title span:nth-of-type(1), .menu_element.is--active .menu_element-title span:nth-of-type(1), .menu_element.is--hover .menu_element-title span:nth-of-type(1) {
+  .menu_element:hover .menu_element-title span:nth-of-type(1), .menu_element.is--active .menu_element-title span:nth-of-type(1), .menu_element.is--hover .menu_element-title span:nth-of-type(1), html.isMobile .menu_element .menu_element-title span:nth-of-type(1) {
     -webkit-transform: translateY(0);
     -ms-transform: translateY(0);
     transform: translateY(0);
     -webkit-transition: -webkit-opacity .4s, transform .4s;
     -ms-transition: -ms-opacity .4s, transform .4s;
     transition: opacity .4s, transform .4s; }
-  .menu_element:hover .menu_element-title span:nth-of-type(2), .menu_element.is--active .menu_element-title span:nth-of-type(2), .menu_element.is--hover .menu_element-title span:nth-of-type(2) {
+  .menu_element:hover .menu_element-title span:nth-of-type(2), .menu_element.is--active .menu_element-title span:nth-of-type(2), .menu_element.is--hover .menu_element-title span:nth-of-type(2), html.isMobile .menu_element .menu_element-title span:nth-of-type(2) {
     -webkit-transform: translateX(0);
     -ms-transform: translateX(0);
     transform: translateX(0);

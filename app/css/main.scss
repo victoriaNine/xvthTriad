@@ -1067,7 +1067,7 @@ h1 {
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 90%);
     }
 
-    &:not(.is--disabled):hover, &.is--active, &:not(.is--disabled).is--hover {
+    &:not(.is--disabled):hover, &.is--active, &:not(.is--disabled).is--hover, html.isMobile &:not(.is--disabled) {
         filter: saturate(1) brightness(1);
         cursor: pointer;
     }
@@ -1100,7 +1100,7 @@ h1 {
         @include transition("opacity .4s, transform .4s");
     }
 
-    &:hover &-title, &.is--active &-title, &.is--hover &-title {
+    &:hover &-title, &.is--active &-title, &.is--hover &-title, html.isMobile & &-title {
         span { opacity: 1; }
         span:nth-of-type(1) { @include transform("translateY(0)"); @include transition("opacity .4s, transform .4s"); }
         span:nth-of-type(2) { @include transform("translateX(0)"); @include transition("opacity .4s .2s, transform .4s .2s"); }
