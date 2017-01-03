@@ -42,9 +42,11 @@ define([
 
     function show (options = { msg: "" }) {
         if (!_$.debug.debugMode && options.type === "error") {
+            ga("set", "dimension0", "currentScreenId");
             ga("send", "event", {
                 eventCategory : "errorEvent",
-                eventAction   : options.msg
+                eventAction   : options.msg,
+                dimension0    : _$.ui.screen.id // Current screen ID
             });
         }
 
@@ -98,7 +100,7 @@ define([
         }
         tl.call(() => { _$.events.trigger("startUserEvents"); this.delegateEvents(); this.isOpen = true; });
         if (options.autoClose) {
-            tl.call(() => { this.confirmAction(); }, [], null, "+=1.5");
+            tl.call(() => { this.confirmAction(); }, [], null, "+=1");
         }
     }
 

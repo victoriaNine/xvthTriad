@@ -210,6 +210,10 @@ define([
 
     function changeScreen (nextScreen, options = {}) {
         if (!_$.debug.debugMode) {
+            ga("set", {
+                "dimension0" : "currentScreenId",
+                "dimension1" : "fromMenu"
+            });
             ga("send", "event", {
                 eventCategory : "screenChange",
                 eventAction   : nextScreen,

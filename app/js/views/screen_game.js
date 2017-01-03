@@ -120,6 +120,13 @@ define([
         this.add();
 
         if (!_$.debug.debugMode) {
+            ga("set", {
+                "dimension0" : "difficulty",
+                "dimension1" : "type",
+                "dimension2" : "role",
+                "dimension3" : "rules",
+                "dimension4" : "gameStats"
+            });
             ga("send", "event", {
                 eventCategory : "gameEvent",
                 eventAction   : "startGame",
@@ -415,7 +422,7 @@ define([
                     _$.state.game.promptOpponentAction();
                 }
             }, 1000);
-        }, 1500);
+        }, 1000);
     }
 
     function showEndGameOverlay () {
@@ -628,6 +635,16 @@ define([
 
     function toTitleScreen () {
         if (!_$.debug.debugMode) {
+            ga("set", {
+                "dimension0" : "difficulty",
+                "dimension1" : "type",
+                "dimension2" : "role",
+                "dimension3" : "rules",
+                "dimension4" : "gameStats",
+                "metric0"    : "round",
+                "metric1"    : "scoreUser",
+                "metric2"    : "scoreOpponent"
+            });
             ga("send", "event", {
                 eventCategory : "gameEvent",
                 eventAction   : "endGame",

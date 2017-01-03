@@ -110,22 +110,22 @@ define([
             } else {
                 proceed.call(this);
             }
+        }
 
-            function proceed () {
+        function proceed () {
+            this.$(".footer_menu-element").removeClass("is--active");
+            _$.events.once("mainMenuOpen", () => {
+                if (_$.ui.screen.id === "screen_title") {
+                    this.toggleLogo("show");
+                    this.isOpen = true;
+                }
+
                 this.$(".footer_menu-element").removeClass("is--active");
-                _$.events.once("mainMenuOpen", () => {
-                    if (_$.ui.screen.id === "screen_title") {
-                        this.toggleLogo("show");
-                        this.isOpen = true;
-                    }
+                this.$(".footer_menu-menuBtn").addClass("is--active");
+            });
 
-                    this.$(".footer_menu-element").removeClass("is--active");
-                    this.$(".footer_menu-menuBtn").addClass("is--active");
-                });
-
-                _$.ui.menu = new Screen_OverlayMenu();
-                _$.audio.audioEngine.playSFX("menuOpen");
-            }
+            _$.ui.menu = new Screen_OverlayMenu();
+            _$.audio.audioEngine.playSFX("menuOpen");
         }
     }
 
@@ -158,21 +158,21 @@ define([
             } else {
                 proceed.call(this);
             }
+        }
 
-            function proceed () {
+        function proceed () {
+            this.$(".footer_menu-element").removeClass("is--active");
+            _$.events.once("helpPageOpen", () => {
+                if (_$.ui.screen.id === "screen_title") {
+                    this.toggleLogo("show");
+                    this.isOpen = true;
+                }
+
                 this.$(".footer_menu-element").removeClass("is--active");
-                _$.events.once("helpPageOpen", () => {
-                    if (_$.ui.screen.id === "screen_title") {
-                        this.toggleLogo("show");
-                        this.isOpen = true;
-                    }
+                this.$(".footer_menu-helpBtn").addClass("is--active");
+            });
 
-                    this.$(".footer_menu-element").removeClass("is--active");
-                    this.$(".footer_menu-helpBtn").addClass("is--active");
-                });
-
-                _$.ui.help = new Screen_OverlayHelp();
-            }
+            _$.ui.help = new Screen_OverlayHelp();
         }
     }
 

@@ -414,6 +414,7 @@ module.exports = function (grunt) {
       socket.playerInfo    = null;
       socket.playerActions = {};
       socket.selectedCards = null;
+      socket.ip            = socket.request.connection.remoteAddress;
       clientList           = io.sockets.connected;
       roomList             = io.sockets.adapter.rooms;
 
@@ -423,7 +424,7 @@ module.exports = function (grunt) {
 
         if (socket.currentRoom && roomList[socket.currentRoom]) {
           var roomClients = roomList[socket.currentRoom].sockets;
-          console.log("room", socket.currentRoom, "--", socket.id, "disconnected.");
+          console.log("room", socket.currentRoom, "--", socket.ip, "disconnected.");
           io.to(socket.currentRoom).emit("in:otherPlayerLeft", {
             type : "error",
             msg  : "Connection with the other player lost."
@@ -448,7 +449,7 @@ module.exports = function (grunt) {
 
           setTimeout(function () {
             socket.currentRoom = data.roomName;
-            console.log("room", socket.currentRoom, "--", socket.id, "do createRoom");
+            console.log("room", socket.currentRoom, "--", socket.ip, "do createRoom");
 
             socket.join(socket.currentRoom);
             socket.emit("in:createRoom", {
@@ -467,7 +468,7 @@ module.exports = function (grunt) {
             setTimeout(function () {
               if (newRoom.length < 2) {
                 socket.currentRoom = data.roomName;
-                console.log("room", socket.currentRoom, "--", socket.id, "do joinRoom");
+                console.log("room", socket.currentRoom, "--", socket.ip, "do joinRoom");
 
                 socket.join(socket.currentRoom);
                 socket.emit("in:joinRoom", {
@@ -498,7 +499,7 @@ module.exports = function (grunt) {
         socket.leave(socket.currentRoom);
 
         setTimeout(function () {
-          console.log("room", socket.currentRoom, "--", socket.id, "do leaveRoom");
+          console.log("room", socket.currentRoom, "--", socket.ip, "do leaveRoom");
           socket.currentRoom = null;
           socket.emit("in:leaveRoom", {
             type : "ok"
@@ -511,9 +512,9 @@ module.exports = function (grunt) {
           var opponent = clientList[getOpponentId()];
           roomList[socket.currentRoom].rules = data;
 
-          console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "set rules:", data);
+          console.log("room", socket.currentRoom, "-- transmitter --", socket.ip, "set rules:", data);
           if (opponent) {
-            console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "send rules:", data);
+            console.log("room", socket.currentRoom, "-- transmitter --", socket.ip, "send rules:", data);
             io.to(getOpponentId()).emit("in:getRules", {
               type : "ok",
               msg  : data
@@ -533,7 +534,7 @@ module.exports = function (grunt) {
 
       socket.on("out:getRules", function (data) {
         if (socket.currentRoom && roomList[socket.currentRoom]) {
-          console.log("room", socket.currentRoom, "-- receiver --", socket.id, "get rules:", roomList[socket.currentRoom].rules);
+          console.log("room", socket.currentRoom, "-- receiver --", socket.ip, "get rules:", roomList[socket.currentRoom].rules);
           socket.emit("in:getRules", {
             type : "ok",
             msg  : roomList[socket.currentRoom].rules
@@ -551,9 +552,9 @@ module.exports = function (grunt) {
           var opponent = clientList[getOpponentId()];
           roomList[socket.currentRoom].firstPlayer = data;
 
-          console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "set firstPlayer:", data);
+          console.log("room", socket.currentRoom, "-- transmitter --", socket.ip, "set firstPlayer:", data);
           if (opponent) {
-            console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "send firstPlayer:", data);
+            console.log("room", socket.currentRoom, "-- transmitter --", socket.ip, "send firstPlayer:", data);
             io.to(getOpponentId()).emit("in:getFirstPlayer", {
               type : "ok",
               msg  : data
@@ -573,7 +574,7 @@ module.exports = function (grunt) {
 
       socket.on("out:getFirstPlayer", function (data) {
         if (socket.currentRoom && roomList[socket.currentRoom]) {
-          console.log("room", socket.currentRoom, "-- receiver --", socket.id, "get firstPlayer:", roomList[socket.currentRoom].firstPlayer);
+          console.log("room", socket.currentRoom, "-- receiver --", socket.ip, "get firstPlayer:", roomList[socket.currentRoom].firstPlayer);
           socket.emit("in:getFirstPlayer", {
             type : "ok",
             msg  : roomList[socket.currentRoom].firstPlayer
@@ -592,9 +593,9 @@ module.exports = function (grunt) {
           roomList[socket.currentRoom].currentTurn = data.turnNumber;
           socket.playerActions[data.turnNumber]    = data;
 
-          console.log("room", socket.currentRoom, "-- turn", data.turnNumber,"-- playing:", socket.id, "set playerAction:", data);
+          console.log("room", socket.currentRoom, "-- turn", data.turnNumber,"-- playing:", socket.ip, "set playerAction:", data);
           if (opponent) {
-            console.log("room", socket.currentRoom, "-- turn", data.turnNumber,"-- playing:", socket.id, "send playerAction:", data);
+            console.log("room", socket.currentRoom, "-- turn", data.turnNumber,"-- playing:", socket.ip, "send playerAction:", data);
             io.to(getOpponentId()).emit("in:getPlayerAction", {
               type : "ok",
               msg  : data
@@ -617,7 +618,7 @@ module.exports = function (grunt) {
           var opponent    = clientList[getOpponentId()];
           var currentTurn = roomList[socket.currentRoom].currentTurn;
 
-          console.log("room", socket.currentRoom, "-- turn", currentTurn,"-- waiting:", socket.id, "get playerAction:", opponent.playerActions[currentTurn]);
+          console.log("room", socket.currentRoom, "-- turn", currentTurn,"-- waiting:", socket.ip, "get playerAction:", opponent.playerActions[currentTurn]);
           socket.emit("in:getPlayerAction", {
             type : "ok",
             msg  : opponent.playerActions[currentTurn]
@@ -635,9 +636,9 @@ module.exports = function (grunt) {
           var opponent         = clientList[getOpponentId()];
           socket.selectedCards = data;
 
-          console.log("room", socket.currentRoom, "--", socket.id, "set selected cards:", data);
+          console.log("room", socket.currentRoom, "--", socket.ip, "set selected cards:", data);
           if (opponent) {
-            console.log("room", socket.currentRoom, "--", socket.id, "send selected cards:", data);
+            console.log("room", socket.currentRoom, "--", socket.ip, "send selected cards:", data);
             io.to(getOpponentId()).emit("in:getSelectedCards", {
               type : "ok",
               msg  : data
@@ -659,7 +660,7 @@ module.exports = function (grunt) {
         if (socket.currentRoom && roomList[socket.currentRoom]) {
           var opponent = clientList[getOpponentId()];
 
-          console.log("room", socket.currentRoom, "--", socket.id, "get selected cards:", opponent.selectedCards);
+          console.log("room", socket.currentRoom, "--", socket.ip, "get selected cards:", opponent.selectedCards);
           socket.emit("in:getSelectedCards", {
             type : "ok",
             msg  : opponent.selectedCards
@@ -682,7 +683,7 @@ module.exports = function (grunt) {
         socket.selectedCards = null;
 
         setTimeout(function () {
-          console.log("room", socket.currentRoom, "--", socket.id, "do playerReset");
+          console.log("room", socket.currentRoom, "--", socket.ip, "do playerReset");
           socket.currentRoom = null;
           socket.emit("in:playerReset", {
             type : "ok"
@@ -691,7 +692,7 @@ module.exports = function (grunt) {
       });
 
       socket.on("out:roundReset", function () {
-        console.log("room", socket.currentRoom, "-- transmitter --", socket.id, "do roundReset");
+        console.log("room", socket.currentRoom, "-- transmitter --", socket.ip, "do roundReset");
         roomList[socket.currentRoom].currentTurn  = -1;
         roomList[socket.currentRoom].firstPlayer  = null;
         socket.playerActions                      = {};
@@ -711,7 +712,7 @@ module.exports = function (grunt) {
       });
 
       socket.on("out:confirmReady", function (data) {
-        console.log("room", socket.currentRoom, "--", socket.id, "do confirmReady", data);
+        console.log("room", socket.currentRoom, "--", socket.ip, "do confirmReady", data);
         var opponent = clientList[getOpponentId()];
         socket.isReady    = true;
         socket.playerInfo = data;
@@ -727,7 +728,7 @@ module.exports = function (grunt) {
       });
 
       socket.on("out:cancelReady", function (data) {
-        console.log("room", socket.currentRoom, "--", socket.id, "do cancelReady");
+        console.log("room", socket.currentRoom, "--", socket.ip, "do cancelReady");
         socket.isReady = false;
       });
 

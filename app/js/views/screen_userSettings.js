@@ -128,6 +128,11 @@ define([
         function proceed () {
             _$.state.user.set({ name: settings.name, difficulty: settings.difficulty });
             if (!_$.debug.debugMode) {
+                ga("set", {
+                    "dimension0" : "difficulty",
+                    "metric0"    : "albumSize",
+                    "metric1"    : "gameStats"
+                });
                 ga("send", "event", {
                     eventCategory : "userSettingsEvent",
                     eventAction   : "saveGame",
@@ -166,6 +171,11 @@ define([
 
     function exportSaveFile () {
         if (!_$.debug.debugMode) {
+            ga("set", {
+                "dimension0" : "difficulty",
+                "metric0"    : "albumSize",
+                "metric1"    : "gameStats"
+            });
             ga("send", "event", {
                 eventCategory : "userSettingsEvent",
                 eventAction   : "exportSaveFile",
@@ -180,6 +190,11 @@ define([
 
     function resetUser () {
         if (!_$.debug.debugMode) {
+            ga("set", {
+                "dimension0" : "difficulty",
+                "metric0"    : "albumSize",
+                "metric1"    : "gameStats"
+            });
             ga("send", "event", {
                 eventCategory : "userSettingsEvent",
                 eventAction   : "resetUser",
