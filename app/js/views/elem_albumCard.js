@@ -74,8 +74,10 @@ define([
 
     function dragCardStart (e, cardCopy) {
         var that  = this;
-        var prevX = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
-        var prevY = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
+        var prevX = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
+        var prevY = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
+
+        console.log(prevX, prevY, e, e.originalEvent.touches);
 
         if (e.delegateTarget === this.el) {
             if (!this.copiesCount) {
@@ -119,8 +121,8 @@ define([
         _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
-            var pageX  = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
-            var pageY  = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
+            var pageX  = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
+            var pageY  = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
             var deltaX = pageX - prevX;
             var deltaY = pageY - prevY;
 
@@ -137,8 +139,8 @@ define([
             $(window).off("mousemove touchmove", dragCard);
             $(window).off("mouseup touchend", dragCardStop);
 
-            var pageX       = window.ontouchstart ? e.originalEvent.touches[0].pageX : e.pageX;
-            var pageY       = window.ontouchstart ? e.originalEvent.touches[0].pageY : e.pageY;
+            var pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
+            var pageY       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageY : e.pageY;
             var scaledPageX = pageX * window.devicePixelRatio / _$.state.appScalar;
             var scaledPageY = pageY * window.devicePixelRatio / _$.state.appScalar;
 

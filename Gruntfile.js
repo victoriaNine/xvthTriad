@@ -405,8 +405,6 @@ module.exports = function (grunt) {
     var roomList;
 
     io.sockets.on("connection", function (socket) {
-      console.log("a user connected. ongoing sessions:", ++clientCount);
-      console.log("=======");
       socket.currentRoom   = null;
       socket.isReady       = false;
       socket.isPlaying     = false;
@@ -414,12 +412,15 @@ module.exports = function (grunt) {
       socket.playerInfo    = null;
       socket.playerActions = {};
       socket.selectedCards = null;
-      socket.ip            = socket.request.connection.remoteAddress;
+      socket.ip            = socket.request.connection._peername.address || socket.request.connection.remoteAddress;
       clientList           = io.sockets.connected;
       roomList             = io.sockets.adapter.rooms;
 
+      console.log("a user connected (" + socket.ip + "). ongoing sessions:", ++clientCount);
+      console.log("=======");
+
       socket.on("disconnect", function () {
-        console.log("a user disconnected. ongoing sessions:", --clientCount);
+        console.log("a user disconnected (" + socket.ip + "). ongoing sessions:", --clientCount);
         console.log("=======");
 
         if (socket.currentRoom && roomList[socket.currentRoom]) {

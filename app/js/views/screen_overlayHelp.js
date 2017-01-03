@@ -100,7 +100,7 @@ define([
                 _$.events.trigger("startUserEvents");
                 _$.events.trigger("helpPageClosed");
 
-                if (nextScreen) {
+                if (nextScreen && nextScreen !== _$.ui.screen.id.replace("screen_", "")) {
                     _$.ui.screen.transitionOut(nextScreen, { fromMenu: true });
                 }
             }, true, "remove");
