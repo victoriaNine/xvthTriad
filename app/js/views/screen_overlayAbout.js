@@ -51,14 +51,14 @@ define([
             },
             "click .about_credits" : function () {
                 _$.app.track("send", "event", {
-                    eventCategory: "linkClickEvent",
-                    eventAction: "aboutCredits"
+                    eventCategory: "aboutEvent",
+                    eventAction: "clickCredits"
                 });
             },
             "click .about_credits" : function () {
                 _$.app.track("send", "event", {
-                    eventCategory: "linkClickEvent",
-                    eventAction: "aboutLegal"
+                    eventCategory: "aboutEvent",
+                    eventAction: "clickLegal"
                 });
             }
         },

@@ -115,6 +115,11 @@ define([
     }
 
     function showGuide (topicName) {
+        _$.app.track("send", "event", {
+            eventCategory: "helpEvent",
+            eventAction: topicName
+        });
+
         _$.events.trigger("stopUserEvents");
 
         var title         = this.$(".topic-" + topicName).text();

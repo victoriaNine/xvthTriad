@@ -14,8 +14,8 @@
             redirectLink.href = document.location.origin;
             redirectLink.addEventListener("click", function () {
                 ga("send", "event", {
-                    eventCategory: "linkClickEvent",
-                    eventAction: "404redirect"
+                    eventCategory: "404Event",
+                    eventAction: "clickRedirect"
                 });
             });
 
