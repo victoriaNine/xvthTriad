@@ -194,13 +194,13 @@ define([
                 config.name   = "Carbuncle";
                 config.avatar = "./assets/img/avatars/computer_carbuncle.jpg";
                 cardMinLevel  = 1;
-                cardMaxLevel  = 3;
+                cardMaxLevel  = 1;
                 break;
             case "normal":
                 config.name   = "Gentiana";
                 config.avatar = "./assets/img/avatars/computer_gentiana.jpg";
                 cardMinLevel  = 1;
-                cardMaxLevel  = 3;
+                cardMaxLevel  = 2;
                 break;
             case "hard":
                 config.name   = "Bahamut";
