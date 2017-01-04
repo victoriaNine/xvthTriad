@@ -29,6 +29,7 @@ require.config({
         es6Promise        : "libs/es6-promise/es6-promise",
         fetch             : "libs/fetch/fetch",
         storage           : "libs/backbone/backbone.localStorage",
+        jsonPrune         : "libs/jsonPrune/json.prune",
 
         global            : "global"
     },
@@ -67,7 +68,8 @@ require([
     "views/screen_rulesSelect",
     "views/screen_title",
     "views/screen_userSettings",
-    "jqueryNearest"
+    "jqueryNearest",
+    "jsonPrune"
 ], function (Modernizr, $, _, tweenMax, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");

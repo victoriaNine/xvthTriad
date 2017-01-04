@@ -18,6 +18,15 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
     });
 
     function initialize (options) {
+        this.worker = new Worker("./js/aiWorker.js");
+        this.worker.onmessage = function (e) {
+            console.log("Message received from worker", e.data);
+        };
+        /*this.worker.postMessage({
+            global : _$,
+            data   :[10, 5]
+        });*/
+
         this.currentState = null;
         this.bestAction   = null;
         this.action       = null;
@@ -239,7 +248,7 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
         if (this.get("bestActionRate") === 100 || Math.random() <= this.get("bestActionRate") / 100) {
             return this.bestAction;
         } else {
-            return _.sample(this.currentState.possibleActions);
+            return _.sample(_.without(this.currentState.possibleActions, this.bestAction));
         }
     }
 });
