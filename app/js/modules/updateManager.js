@@ -30,6 +30,8 @@ define(["underscore", "global"], function updateManager (_, _$) {
 
     function patch_1_0_1 (userData) {
         userData.placingMode = "dragDrop";
+        userData.bgmVolume   = 1;
+        userData.sfxVolume   = 0.5;
         return userData;
     }
 
