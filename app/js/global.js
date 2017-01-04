@@ -38,6 +38,7 @@ define([
     var app       = Object.create(null, {
         version      : { value: "{{ VERSION }}" },
         versionName  : { value: "{{ VERSION_NAME }}" },
+        versionFlag  : { value: "{{ VERSION_FLAG }}" },
         name         : { value: "xvthTriad" },
         saveExt      : { value: "xvtsave" },
         currentTime  : { get: getCurrentTime },
@@ -545,6 +546,7 @@ define([
         } else {
             var updatedData = _$.app.updateManager.update(saveData);
             onUpdateCallback(updatedData);
+            _$.app.saveData();
         }
     }
 

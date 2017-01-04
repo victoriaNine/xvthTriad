@@ -92,7 +92,8 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  cursor: inherit; }
+  cursor: inherit;
+  box-sizing: border-box; }
 
 html, body {
   overflow: hidden;
@@ -142,6 +143,56 @@ hr:before {
 
 h1 {
   font-size: 60px; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 0px 0;
+  padding: 0;
+  cursor: pointer;
+  height: 100%; }
+
+input[type=range]:focus {
+  outline: none; }
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 100%; }
+
+input[type=range]::-webkit-slider-thumb {
+  height: 100%;
+  width: 2px;
+  background: #FFF;
+  -webkit-appearance: none; }
+
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 100%;
+  background: transparent; }
+
+input[type=range]::-moz-range-thumb {
+  height: 100%;
+  width: 2px;
+  background: #FFF;
+  border-radius: 0;
+  border: none; }
+
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 100%;
+  background: transparent; }
+
+input[type=range]::-ms-thumb {
+  height: 100%;
+  width: 2px;
+  background: #FFF;
+  border-radius: 0;
+  border: none; }
+
+label {
+  position: relative;
+  width: 50px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5); }
 
 #canvas {
   position: absolute;
@@ -630,13 +681,14 @@ h1 {
   .help_content-guide-contents li.is--disabled, .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled, .roomSelect_content-settings-setting-select li.is--disabled {
     color: #000; }
 
-.rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty, .roomSelect_content-settings-setting.setting-mode, .roomSelect_content-settings-setting.setting-difficulty {
-  cursor: pointer; }
-  .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
+.rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty, .userSettings_content-settings-setting.setting-placingMode, .roomSelect_content-settings-setting.setting-mode, .roomSelect_content-settings-setting.setting-difficulty {
+  cursor: pointer;
+  position: relative; }
+  .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
     -webkit-transition: -webkit-width .2s, opacity .2s;
     -ms-transition: -ms-width .2s, opacity .2s;
     transition: width .2s, opacity .2s; }
-    .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
+    .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
       content: "";
       position: absolute;
       border-left: 6px solid transparent;
@@ -647,22 +699,33 @@ h1 {
       -webkit-transition: -webkit-transform .2s .2s;
       -ms-transition: -ms-transform .2s .2s;
       transition: transform .2s .2s; }
-  .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
-    width: 0;
-    opacity: 0;
-    -webkit-transition: -webkit-width .2s .2s, opacity .2s .2s;
-    -ms-transition: -ms-width .2s .2s, opacity .2s .2s;
-    transition: width .2s .2s, opacity .2s .2s; }
-    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
-      -webkit-transform: rotate(90deg);
-      -ms-transform: rotate(90deg);
-      transform: rotate(90deg);
-      -webkit-transition: -webkit-transform .2s;
-      -ms-transition: -ms-transform .2s;
-      transition: transform .2s; }
-  .is--active.rulesSelect_content-rules-rule.rule-trade .help_content-guide-contents, .is--active.userSettings_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-mode .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select {
-    overflow-y: scroll;
-    height: 100px; }
+  .rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]) {
+    -webkit-transition: -webkit-opacity .2s .4s;
+    -ms-transition: -ms-opacity .2s .4s;
+    transition: opacity .2s .4s; }
+  .is--active.rulesSelect_content-rules-rule.rule-trade, .is--active.userSettings_content-settings-setting.setting-difficulty, .is--active.userSettings_content-settings-setting.setting-placingMode, .is--active.roomSelect_content-settings-setting.setting-mode, .is--active.roomSelect_content-settings-setting.setting-difficulty {
+    z-index: 1000; }
+    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
+      width: 0;
+      opacity: 0;
+      -webkit-transition: -webkit-width .2s .2s, opacity .2s .2s;
+      -ms-transition: -ms-width .2s .2s, opacity .2s .2s;
+      transition: width .2s .2s, opacity .2s .2s; }
+      .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
+        -webkit-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
+        -webkit-transition: -webkit-transform .2s;
+        -ms-transition: -ms-transform .2s;
+        transition: transform .2s; }
+    .is--active.rulesSelect_content-rules-rule.rule-trade .help_content-guide-contents, .is--active.userSettings_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.userSettings_content-settings-setting.setting-placingMode .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-mode .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select {
+      overflow-y: scroll;
+      height: 100px; }
+    .is--active.rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting {
+      opacity: 0;
+      -webkit-transition: -webkit-opacity .2s;
+      -ms-transition: -ms-opacity .2s;
+      transition: opacity .2s; }
 
 .userSettings_content-settings-setting-input, .roomSelect_content-settings-setting-input {
   border: none;

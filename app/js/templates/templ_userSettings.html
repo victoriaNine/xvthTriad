@@ -5,15 +5,15 @@
         </h1>
         <hr>
         <div class="userSettings_header-countWon">
-            <div class="userSettings_header-countWon-label">Won games</div>
+            <div class="userSettings_header-countWon-label">Games won</div>
             <div class="userSettings_header-countWon-count"><%= wonCount %></div>
         </div>
         <div class="userSettings_header-countLost">
-            <div class="userSettings_header-countLost-label">Lost games</div>
+            <div class="userSettings_header-countLost-label">Losses</div>
             <div class="userSettings_header-countLost-count"><%= lostCount %></div>
         </div>
         <div class="userSettings_header-countDraw">
-            <div class="userSettings_header-countDraw-label">Draws</div>
+            <div class="userSettings_header-countDraw-label">Tie games</div>
             <div class="userSettings_header-countDraw-count"><%= drawCount %></div>
         </div>
     </div>
@@ -45,6 +45,14 @@
                 <div class="userSettings_content-settings-setting-label">Name</div>
                 <input class="userSettings_content-settings-setting-input"></input>
             </div>
+            <div class="userSettings_content-settings-setting setting-avatar">
+                <div class="userSettings_content-settings-setting-label">Upload an avatar</div>
+                <input class="userSettings_content-settings-setting-input" type="file"></input>
+            </div>
+            <div class="userSettings_content-settings-setting setting-import">
+                <div class="userSettings_content-settings-setting-label">Import a save file</div>
+                <input class="userSettings_content-settings-setting-input" type="file"></input>
+            </div>
             <div class="userSettings_content-settings-setting setting-difficulty">
                 <ul class="userSettings_content-settings-setting-select">
                     <li class="difficultySetting-easy">Difficulty level -- Easy</li>
@@ -55,13 +63,22 @@
             </div>
         </div>
         <div class="col">
-            <div class="userSettings_content-settings-setting setting-avatar">
-                <div class="userSettings_content-settings-setting-label">Upload an avatar</div>
-                <input class="userSettings_content-settings-setting-input" type="file"></input>
+            <div class="userSettings_content-settings-setting setting-placingMode">
+                <ul class="userSettings_content-settings-setting-select">
+                    <li class="placingModeSetting-dragDrop">Cards placing mode -- Drag and drop</li>
+                    <li class="placingModeSetting-click">Cards placing mode -- Click</li>
+                </ul>
+                <div class="userSettings_content-settings-setting-toggle"></div>
             </div>
-            <div class="userSettings_content-settings-setting setting-import">
-                <div class="userSettings_content-settings-setting-label">Import a save file</div>
-                <input class="userSettings_content-settings-setting-input" type="file"></input>
+            <div class="userSettings_content-settings-setting setting-bgm">
+                <div class="userSettings_content-settings-setting-label">Music</div>
+                <input id="bgmVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= bgmVolume %>" step="1"></input>
+                <label for="bgmVolume"><%= bgmVolume %></label>
+            </div>
+            <div class="userSettings_content-settings-setting setting-sfx">
+                <div class="userSettings_content-settings-setting-label">Sound effects</div>
+                <input id="sfxVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= sfxVolume %>" step="1"></input>
+                <label for="sfxVolume"><%= sfxVolume %></label>
             </div>
         </div>
     </div>

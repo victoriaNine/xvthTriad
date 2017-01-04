@@ -71,7 +71,7 @@ define([
     });
 
     function initialize (options) {
-        this.$el.html(this.template({ appVersion: _$.app.version, appVersionName: _$.app.versionName }));
+        this.$el.html(this.template({ appVersion: _$.app.version, appVersionFlag: _$.app.versionFlag }));
         this.line = this.$(".about_line");
         this.logo = this.$(".about_logo");
 

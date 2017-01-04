@@ -237,6 +237,10 @@ module.exports = function (grunt) {
             {
               pattern: '{{ VERSION_NAME }}',
               replacement: '<%= pkg.versionName %>'
+            },
+            {
+              pattern: '{{ VERSION_FLAG }}',
+              replacement: '<%= pkg.versionFlag %>'
             }
           ]
         }
@@ -257,6 +261,10 @@ module.exports = function (grunt) {
             {
               pattern: '{{ VERSION_NAME }}',
               replacement: '<%= pkg.versionName %>'
+            },
+            {
+              pattern: '{{ VERSION_FLAG }}',
+              replacement: '<%= pkg.versionFlag %>'
             }
           ]
         }

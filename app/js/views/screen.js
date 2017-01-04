@@ -5,6 +5,69 @@ define([
     "global",
     "views/elem_promptOverlay",
 ], function Screen ($, _, Backbone, _$, Elem_PromptOverlay) {
+    class Dropdown {
+        constructor (options = {}) {
+            this.screen             = options.screen;
+            this.selector           = options.selector;
+            this.dom                = this.screen.$(this.selector);
+            this.dropdownDOM        = this.dom.find(options.dropdownSelector);
+            this.defaultOption      = options.defaultOptionSelector ? this.dropdownDOM.find(options.defaultOptionSelector) : this.dropdownDOM.find("li").eq(0);
+            this.defaultOptionIndex = _$.utils.getNodeIndex(this.defaultOption);
+            this.height             = options.height || this.dom.height();
+            this.name               = _.camelCase(this.selector);
+            this.onUpdate           = options.onUpdate || _.noop;
+            this.currentOption      = null;
+
+            this.dom.click(this.toggle.bind(this));
+            this.reset(true);
+        }
+
+        toggle (e) {
+            var closestValidOption = $(e.target).hasClass("is--disabled") ? $(e.target).parent().children(":not(.is--disabled)").eq(0) : $(e.target);
+            var index              = _$.utils.getNodeIndex(closestValidOption);
+
+            if (this.dom.hasClass("is--active")) {
+                $(window).off("click." + this.name);
+                this.dom.removeClass("is--active");
+
+                TweenMax.to(this.dropdownDOM[0], 0.4, { scrollTop: index * this.height, delay: 0.6, onComplete: this.onUpdate });
+                this.currentOption = closestValidOption;
+            } else {
+                this.dom.addClass("is--active");
+
+                $(window).on("click." + this.name, (clickEvent) => {
+                    if (!$(clickEvent.target).parents(this.selector).length) {
+                        $(window).off("click." + this.name);
+                        this.dom.removeClass("is--active");
+                        this.reset();
+                    }
+                });
+            }
+        }
+
+        scrollTo (optionSelector) {
+            var option = this.dropdownDOM.find(optionSelector);
+            var index  = _$.utils.getNodeIndex(option);
+
+            if (index === -1) {
+                this.reset();
+            } else {
+                TweenMax.to(this.dropdownDOM[0], 0.4, { scrollTop: index * this.height, delay: 0.6, onComplete: this.onUpdate });
+                this.currentOption = option;
+            }
+        }
+
+        reset (init) {
+            var callback = init ? _.noop : this.onUpdate;
+            TweenMax.to(this.dropdownDOM[0], 0.4, { scrollTop: this.defaultOptionIndex * this.height, delay: 0.6, onComplete: callback });
+            this.currentOption = this.defaultOption;
+        }
+
+        remove () {
+            $(window).off("click." + this.name);
+        }
+    }
+
     return Backbone.View.extend({
         tagName   : "section",
         className : "screen",
@@ -13,6 +76,7 @@ define([
         remove,
         updateControlsState,
         triggerGamepadAction,
+        createDropdown,
         error,
         info,
         choice,
@@ -96,6 +160,10 @@ define([
         _$.events.off("gamepad", this.triggerGamepadAction, this);
         this.undelegateEvents();
         this.eventsDisabled = true;
+    }
+
+    function createDropdown (options = {}) {
+        return new Dropdown(_.defaults(options, { screen: this }));
     }
 
     function error (eventName, options) {

@@ -157,6 +157,7 @@ $fontSize_overlay : 72px;
     -moz-user-select:none;
     user-select:none;
     cursor: inherit;
+    box-sizing: border-box;
 }
 
 html, body {
@@ -210,6 +211,58 @@ hr:before { right: -8.5px; }
 
 h1 {
     font-size: $fontSize_title;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    margin: 0px 0;
+    padding:0;
+    cursor: pointer;
+    height:100%;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 100%;
+}
+input[type=range]::-webkit-slider-thumb {
+    height: 100%;
+    width: 2px;
+    background: #FFF;
+    -webkit-appearance: none;
+}
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+input[type=range]::-moz-range-thumb {
+    height: 100%;
+    width: 2px;
+    background: #FFF;
+    border-radius:0;
+    border:none;
+}
+input[type=range]::-ms-track {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+input[type=range]::-ms-thumb {
+    height: 100%;
+    width: 2px;
+    background: #FFF;
+    border-radius:0;
+    border:none;
+}
+
+label {
+    position: relative;
+    width: 50px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
 }
 
 #canvas {
@@ -758,6 +811,7 @@ h1 {
 
 %options-option-list {
     cursor: pointer;
+    position: relative;
 
     & %options-option-toggle {
         @include transition("width .2s, opacity .2s");
@@ -775,7 +829,13 @@ h1 {
         }
     }
 
+    & + %options-option:not([style*=opacity]) {
+        @include transition("opacity .2s .4s");
+    }
+
     &.is--active {
+        z-index: 1000;
+
         & %options-option-toggle {
             width: 0;
             opacity: 0;
@@ -790,6 +850,11 @@ h1 {
         & %options-option-select {
             overflow-y: scroll;
             height: 100px;
+        }
+
+        & + %options-option {
+            opacity: 0;
+            @include transition("opacity .2s");
         }
     }
 }
@@ -2067,7 +2132,7 @@ h1 {
 .userSettings_content-settings-setting {
     @extend %options-option;
 
-    &.setting-difficulty {
+    &.setting-difficulty, &.setting-placingMode {
         @extend %options-option-list;
     }
 }

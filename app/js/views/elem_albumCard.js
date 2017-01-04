@@ -34,11 +34,12 @@ define([
         this.holder           = null;
         this.originalPosition = null;
         this.deckHolders      = null;
+        this.isDraggingCard   = false;
         this.cardCopies       = [];
 
         this.$el.html(this.template({
-            name: this.cardView.model.get("name"),
-            copiesCount: this.copiesCount
+            name        : this.cardView.model.get("name"),
+            copiesCount : this.copiesCount
         }));
 
         this.$(".cardSelect_content-album-card-visual").append(this.cardView.$el);
@@ -73,6 +74,12 @@ define([
     }
 
     function dragCardStart (e, cardCopy) {
+        if (this.isDraggingCard) {
+            return;
+        } else {
+            this.isDraggingCard = true;
+        }
+
         var that  = this;
         var prevX = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
         var prevY = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
@@ -106,16 +113,24 @@ define([
         } else {
             TweenMax.set(cardCopy.card, {
                 position : "fixed",
-                left    : 0,
-                top     : 0,
-                x       : this.originalPosition.left,
-                y       : this.originalPosition.top,
-                zIndex  : 1000
+                left     : 0,
+                top      : 0,
+                x        : this.originalPosition.left,
+                y        : this.originalPosition.top,
+                zIndex   : 1000
             });
         }
 
         $(window).on("mousemove touchmove", dragCard);
-        $(window).on("mouseup touchend", dragCardStop);
+
+        if (_$.state.user.get("placingMode") === "dragDrop") {
+            $(window).one("mouseup touchend", dragCardStop);
+        } else {
+            $(window).one("mouseup touchend", () => {
+                $(window).one("mouseup touchend", dragCardStop);
+            });
+        }
+
         _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
@@ -135,7 +150,7 @@ define([
 
         function dragCardStop (e) {
             $(window).off("mousemove touchmove", dragCard);
-            $(window).off("mouseup touchend", dragCardStop);
+            that.isDraggingCard = false;
 
             var pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
             var pageY       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageY : e.pageY;
