@@ -94,6 +94,9 @@ define([
         placingModeSetting     = this.placingModeDropdown.currentOption[0].className.replace("placingModeSetting-", "");
         settings.placingMode   = placingModeSetting;
 
+        settings.bgmVolume     = this.$(".setting-bgm input").val() / 100;
+        settings.sfxVolume     = this.$(".setting-sfx input").val() / 100;
+
         if (settings.avatar) {
             var url = URL.createObjectURL(settings.avatar);
             _$.utils.getBase64Image(url, (base64URL) => {
@@ -105,18 +108,27 @@ define([
         }
 
         function proceed () {
-            _$.state.user.set({ name: settings.name, difficulty: settings.difficulty, placingMode: settings.placingMode });
+            _$.state.user.set({
+                name        : settings.name,
+                difficulty  : settings.difficulty,
+                placingMode : settings.placingMode,
+                bgmVolume   : settings.bgmVolume,
+                sfxVolume   : settings.sfxVolume
+            });
+            
             _$.app.track("set", {
                 "dimension0" : "difficulty",
+                "dimension1" : "placingMode",
                 "metric0"    : "albumSize",
                 "metric1"    : "gameStats"
             });
             _$.app.track("send", "event", {
                 eventCategory : "userSettingsEvent",
                 eventAction   : "saveGame",
-                dimension0    : _$.state.user.get("difficulty"),               // difficulty
-                metric0       : _$.state.user.get("album").length,             // albumSize
-                metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
+                dimension0    : _$.state.user.get("difficulty"),
+                dimension1    : _$.state.user.get("placingMode"),
+                metric0       : _$.state.user.get("album").length,
+                metric1       : JSON.stringify(_$.state.user.get("gameStats"))
             });
             
             _$.app.saveData();
@@ -267,7 +279,6 @@ define([
         var value = $(input).val().trim();
         var check;
 
-        console.log("validateInput", input);
         if (input === this.$(".setting-name input")[0]) {
             check = value.length && !value.match(/\W/g);
         } else if (input === this.$(".setting-avatar input")[0]) {

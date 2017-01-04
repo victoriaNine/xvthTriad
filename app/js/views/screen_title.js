@@ -55,6 +55,8 @@ define([
             }
         }
 
+        _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
+        _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
         _$.audio.audioEngine.setBGM("bgm.menus");
         _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
         

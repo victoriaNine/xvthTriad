@@ -10,7 +10,9 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
                 won  : 0,
                 lost : 0,
                 draw : 0
-            }
+            },
+            bgmVolume   : 1,
+            sfxVolume   : 0.5
         },
 
         setup,
