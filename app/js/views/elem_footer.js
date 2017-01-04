@@ -84,12 +84,14 @@ define([
         this.logo.append(logo);
     }
 
-    function toggleMainMenu (nextScreen) {
+    function toggleMainMenu (nextScreen, noTracking) {
         if (_$.ui.menu) {
-            _$.app.track("send", "event", {
-                eventCategory: "footerEvent",
-                eventAction: "closeMenu"
-            });
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory: "footerEvent",
+                    eventAction: "closeMenu"
+                });
+            }
 
             if (_$.ui.screen.id === "screen_title") {
                 this.toggleLogo("hide");
@@ -106,10 +108,12 @@ define([
             _$.ui.menu.transitionOut(nextScreen, { fromMenu: true });
             _$.audio.audioEngine.playSFX("menuClose");
         } else {
-            _$.app.track("send", "event", {
-                eventCategory: "footerEvent",
-                eventAction: "openMenu"
-            });
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory: "footerEvent",
+                    eventAction: "openMenu"
+                });
+            }
 
             if (_$.ui.help) {
                 _$.events.once("helpPageClosed", () => {
@@ -139,12 +143,14 @@ define([
         }
     }
 
-    function toggleHelpPage (nextScreen) {
+    function toggleHelpPage (nextScreen, noTracking) {
         if (_$.ui.help) {
-            _$.app.track("send", "event", {
-                eventCategory: "footerEvent",
-                eventAction: "closeHelp"
-            });
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory: "footerEvent",
+                    eventAction: "closeHelp"
+                });
+            }
 
             if (_$.ui.screen.id === "screen_title") {
                 this.toggleLogo("hide");
@@ -164,10 +170,12 @@ define([
 
             _$.ui.help.transitionOut(nextScreen, { fromMenu: true });
         } else {
-            _$.app.track("send", "event", {
-                eventCategory: "footerEvent",
-                eventAction: "openHelp"
-            });
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory: "footerEvent",
+                    eventAction: "openHelp"
+                });
+            }
 
             if (_$.ui.menu) {
                 _$.events.once("mainMenuClosed", () => {
@@ -196,12 +204,14 @@ define([
         }
     }
 
-    function toggleAboutPage (nextScreen) {
+    function toggleAboutPage (nextScreen, noTracking) {
         if (_$.ui.about) {
-            _$.app.track("send", "event", {
-                eventCategory: "footerEvent",
-                eventAction: "closeAbout"
-            });
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory: "footerEvent",
+                    eventAction: "closeAbout"
+                });
+            }
 
             if (_$.ui.screen.id === "screen_title") {
                 this.toggleLogo("hide");
@@ -223,10 +233,12 @@ define([
 
             _$.ui.about.transitionOut(nextScreen, { fromMenu: true });
         } else {
-            _$.app.track("send", "event", {
-                eventCategory: "footerEvent",
-                eventAction: "openAbout"
-            });
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory: "footerEvent",
+                    eventAction: "openAbout"
+                });
+            }
 
             this.$(".footer_menu-element").removeClass("is--active");
             _$.events.once("aboutPageOpen", () => {
