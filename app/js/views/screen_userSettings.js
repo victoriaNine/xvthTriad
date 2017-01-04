@@ -19,8 +19,14 @@ define([
             "click .userSettings_content-save-choice-cancelBtn"  : "resetChanges",
             "click .userSettings_content-save-choice-exportBtn"  : "exportSaveFile",
             "click .userSettings_content-save-choice-resetBtn"   : "resetUser",
+            "click .userSettings_content-save-choice-backBtn"    : function () {
+                this.transitionOut("title");
+            },
             "click .userSettings_content-load-choice-loadBtn"    : "loadGame",
-            "click .userSettings_content-load-choice-cancelBtn"  : function () { $(".setting-import input").val(""); this.toggleLoad("hide"); },
+            "click .userSettings_content-load-choice-cancelBtn"  : function () {
+                $(".setting-import input").val("");
+                this.toggleLoad("hide");
+            },
             "keyup .setting-name input"                          : _.debounce(function (e) {
                 this.validateInput(e.target);
             }, 250),

@@ -292,6 +292,32 @@ define([
             return;
         }
 
+        // SAME RULE
+        /*if (this.get("rules").same && adjacentCardsNb >= 2) {
+            index = -1;
+            let sameTargetCards = {};
+
+            _.each(adjacentCards, function (card, side) {
+                if ((side === "top" && newCard.get("ranks").top === card.get("ranks").bottom) ||
+                    (side === "right" && newCard.get("ranks").right === card.get("ranks").left) ||
+                    (side === "bottom" && newCard.get("ranks").bottom === card.get("ranks").top) ||
+                    (side === "left" && newCard.get("ranks").left === card.get("ranks").right)) {
+                    sameTargetCards.push(card);
+                }
+            });
+
+            if (sameTargetCards.length >= 2) {
+                _.each(sameTargetCards, function (card, side) {
+                    let caseName = _$.utils.getCaseNameFromPosition(card.get("position"));
+                    let flipped  = false;
+
+                    if (card.get("currentOwner") !== newCard.get("currentOwner")) {
+
+                    }
+                });
+            }
+        }*/
+
         // BASIC RULE
         index = -1;
         _.each(adjacentCards, function (card, side) {

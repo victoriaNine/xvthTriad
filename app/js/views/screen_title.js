@@ -24,7 +24,7 @@ define([
                 });
 
                 _$.audio.audioEngine.playSFX("menuOpen");
-                _$.ui.footer.toggleMainMenu();
+                _$.ui.footer.toggleMainMenu(null, false);
             },
             "mouseenter .title_startBtn" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");

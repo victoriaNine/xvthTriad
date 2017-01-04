@@ -428,7 +428,7 @@ define([
             onComplete: () => {
                 _$.events.trigger("startUserEvents");
 
-                if (this.gameResult === "lost") {
+                if (this.gameResult === "lost" && _$.state.game.get("rules").trade !== "none") {
                     this.postGameAction();
                 }
             }

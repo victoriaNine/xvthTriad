@@ -77,8 +77,6 @@ define([
         var prevX = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
         var prevY = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
 
-        console.log(prevX, prevY, e, e.originalEvent.touches);
-
         if (e.delegateTarget === this.el) {
             if (!this.copiesCount) {
                 return;
