@@ -89,6 +89,7 @@ define([
         this.board                    = _.clone(_$.state.game.get("board"));
         this.postGameAction           = null;
         this.gameResult               = null;
+        this.isDraggingCard           = false;
 
         if (_$.state.game.get("rules").elemental) {
              _.each(_$.state.game.get("elementBoard"), (element, caseName) => {
@@ -244,8 +245,10 @@ define([
     }
 
     function dragCardStart (e, cardView) {
-        if (_$.state.game.get("playing") === this.players.opponent || cardView.boardCase || this.eventsDisabled) {
+        if (this.isDraggingCard || _$.state.game.get("playing") === this.players.opponent || cardView.boardCase || this.eventsDisabled) {
             return;
+        } else if (!this.isDraggingCard) {
+            this.isDraggingCard = true;
         }
 
         var that  = this;
@@ -259,7 +262,15 @@ define([
         TweenMax.set(cardView.$el, { zIndex: 1000 });
 
         $(window).on("mousemove touchmove", dragCard);
-        $(window).on("mouseup touchend", dragCardStop);
+
+        if (_$.state.user.get("placingMode") === "dragDrop") {
+            $(window).one("mouseup touchend", dragCardStop);
+        } else {
+            $(window).one("mouseup touchend", () => {
+                $(window).one("mouseup touchend", dragCardStop);
+            });
+        }
+
         _$.audio.audioEngine.playSFX("cardGrab");
 
         function dragCard (e) {
@@ -279,7 +290,7 @@ define([
 
         function dragCardStop (e) {
             $(window).off("mousemove touchmove", dragCard);
-            $(window).off("mouseup touchend", dragCardStop);
+            that.isDraggingCard = false;
 
             var pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
             var pageY       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageY : e.pageY;

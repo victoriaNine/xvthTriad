@@ -1,7 +1,8 @@
 {
   "name": "xvthTriad",
-  "version": "1.0.0",
-  "versionName": "Beta",
+  "version": "1.0.1",
+  "versionName": "",
+  "versionFlag" : "beta",
   "private": true,
   "devDependencies": {
     "apache-server-configs": "^2.8.0",

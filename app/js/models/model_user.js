@@ -1,11 +1,12 @@
 define(["underscore", "backbone", "global", "collections/coll_album"], function Model_User (_, Backbone, _$, Coll_Album) {
     return Backbone.Model.extend({
         defaults : {
-            name       : null,
-            avatar     : null,
-            album      : new Coll_Album(),
-            difficulty : "easy",
-            gameStats  : {
+            name        : null,
+            avatar      : null,
+            album       : new Coll_Album(),
+            difficulty  : "easy",
+            placingMode : "dragDrop",
+            gameStats   : {
                 won  : 0,
                 lost : 0,
                 draw : 0

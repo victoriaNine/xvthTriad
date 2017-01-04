@@ -1,6 +1,7 @@
 define(["underscore", "global"], function updateManager (_, _$) {
     const PATCH_HISTORY = [
-        { version: "1.0.0", name: "Beta", flag: "beta", patch: _.identity }
+        { version: "1.0.0", flag: "beta", patch: _.identity },
+        { version: "1.0.1", flag: "beta", patch: patch_1_0_1 }
     ];
 
     class UpdateManager {
@@ -25,6 +26,11 @@ define(["underscore", "global"], function updateManager (_, _$) {
                 return func(prev);
             }, x) ;
         };
+    }
+
+    function patch_1_0_1 (userData) {
+        userData.placingMode = "dragDrop";
+        return userData;
     }
 
     return UpdateManager;

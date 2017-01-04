@@ -20,7 +20,6 @@ define([
             "click .rulesSelect_content-rules-rule:not(.rule-trade)" : function (e) {
                 this.toggleRule(e.currentTarget.className.match(RULES)[0], "toggle");
             },
-            "click .rule-trade"                                   : "toggleTrade",
             "click .rulesSelect_content-screenNav-choice-backBtn" : function () {
                 if (_$.ui.roomSelect) {
                     this.transitionOut("roomSelect");
@@ -55,7 +54,6 @@ define([
         remove,
 
         toggleRule,
-        toggleTrade,
         toggleConfirm,
         updateRules,
         setOpponentRules,
@@ -77,6 +75,8 @@ define([
         this.toggleRule("random", false, true);
         this.toggleRule("elemental", false, true);
         this.toggleRule("suddenDeath", false, true);
+
+        this.tradeDropdown = null;
 
         if (this.readOnly) {
             this.$(".rulesSelect_content-rules").css({ pointerEvents: "none" });
@@ -104,10 +104,10 @@ define([
         if (this.readOnly) {
             _$.events.off("getRules", this.setOpponentRules, this);
         }
-        $(window).off("click.toggleTrade");
 
         delete _$.ui.rulesSelect;
         Screen.prototype.remove.call(this);
+        this.tradeDropdown.remove();
         
         if (_$.ui.roomSelect) {
             _$.ui.roomSelect.remove();
@@ -124,7 +124,7 @@ define([
         if (opponentRules) {
             _.each(opponentRules, (ruleState, ruleName) => {
                 if (ruleName === "trade") {
-                    this.toggleTrade({ target: this.$(".tradeRule-" + ruleState)[0] }, true);
+                    this.tradeDropdown.scrollTo(".tradeRule-" + ruleState);
                 } else {
                     this.toggleRule(ruleName, ruleState);
                 }
@@ -161,42 +161,10 @@ define([
         }
     }
 
-    function toggleTrade (e, auto) {
-        var closestValidOption = $(e.target).hasClass("is--disabled") ? $(e.target).parent().children(":not(.is--disabled)").eq(0) : $(e.target);
-        var index              = _$.utils.getNodeIndex(closestValidOption);
-        var selectHeight       = this.$(".rule-trade").height();
-        var toggle             = this.$(".rule-trade .rulesSelect_content-rules-rule-toggle");
-        var dropdown           = this.$(".rulesSelect_content-rules-rule-select");
-
-        if (this.$(".rule-trade").hasClass("is--active") || auto) {
-            if (!auto) {
-                this.$(".rule-trade").removeClass("is--active");
-                $(window).off("click.toggleTrade");
-            }
-
-            TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight, delay: 0.6, onComplete: this.updateRules.bind(this) });
-            return;
-        } else {
-            this.$(".rule-trade").addClass("is--active");
-        }
-
-        $(window).on("click.toggleTrade", (clickEvent) => {
-            if (!$(clickEvent.target).parents(".rule-trade").length) {
-                $(window).off("click.toggleTrade");
-                var defaultOption      = this.$(".tradeRule-none");
-                var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
-                this.$(".rule-trade").removeClass("is--active");
-                TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight, delay: 0.6, onComplete: this.updateRules.bind(this) });
-            }
-        });
-    }
-
     function updateRules () {
-        var selectHeight = $(".rule-trade").height();
-        var rules        = {};
+        var rules = {};
         var ruleName;
         var tradeRule;
-        var tradeRuleIndex;
 
         this.$(".rulesSelect_content-rules-rule.is--on").each(function () {
             ruleName = this.className.match(RULES)[0];
@@ -208,8 +176,7 @@ define([
             rules[ruleName] = false;
         });
 
-        tradeRuleIndex = Math.ceil(this.$(".rulesSelect_content-rules-rule-select").scrollTop() / selectHeight);
-        tradeRule      = this.$(".rulesSelect_content-rules-rule-select").children().eq(tradeRuleIndex)[0].className.replace("tradeRule-", "");
+        tradeRule      = this.tradeDropdown.currentOption[0].className.replace("tradeRule-", "");
         rules.trade    = tradeRule;
 
         this.rules     = rules;
@@ -231,6 +198,11 @@ define([
 
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
+        this.tradeDropdown = this.createDropdown({
+            selector         : ".rule-trade",
+            dropdownSelector : ".rulesSelect_content-rules-rule-select",
+            onUpdate         : this.updateRules.bind(this)
+        });
 
         var tl = new TimelineMax();
         tl.set(this.$el, { clearProps: "display" });

@@ -14,7 +14,6 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
-            "click .setting-difficulty"                          : "toggleDifficulty",
             "click .userSettings_content-save-choice-saveBtn"    : "saveGame",
             "click .userSettings_content-save-choice-cancelBtn"  : "resetChanges",
             "click .userSettings_content-save-choice-exportBtn"  : "exportSaveFile",
@@ -27,15 +26,14 @@ define([
                 $(".setting-import input").val("");
                 this.toggleLoad("hide");
             },
-            "keyup .setting-name input"                          : _.debounce(function (e) {
-                this.validateInput(e.target);
-            }, 250),
-            "change .setting-avatar input"                       : function (e) { this.validateInput(e.target); },
-            "change .setting-import input"                       : function (e) { this.validateInput(e.target); },
+            "keyup .setting-name input"                           : _.debounce(function (e) { this.validateInput(e.target); }, 250),
+            "change .setting-avatar input,.setting-import input"  : function (e) { this.validateInput(e.target); },
+            "change .setting-bgm input,.setting-sfx input"        : "updateVolume",
+            "input .setting-bgm input,.setting-sfx input"         : "updateVolume",
             "mouseenter .userSettings_content-save-choice-element,.userSettings_content-load-choice-element" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.setting-difficulty,.setting-avatar input,.setting-import input" : function () {
+            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.setting-difficulty,.setting-placingMode,.setting-avatar input,.setting-import input" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
             },
             "focus .setting-name input" : function () {
@@ -46,7 +44,6 @@ define([
         initialize,
         remove,
 
-        toggleDifficulty,
         toggleLoad,
 
         saveGame,
@@ -54,6 +51,7 @@ define([
         loadGame,
         exportSaveFile,
         resetUser,
+        updateVolume,
 
         transitionIn,
         transitionOut,
@@ -65,8 +63,13 @@ define([
             avatarSrc : _$.state.user.get("avatar"),
             wonCount  : _$.state.user.get("gameStats").won,
             lostCount : _$.state.user.get("gameStats").lost,
-            drawCount : _$.state.user.get("gameStats").draw
+            drawCount : _$.state.user.get("gameStats").draw,
+            bgmVolume : Math.floor(_$.audio.audioEngine.channels.bgm.volume * 100),
+            sfxVolume : Math.floor(_$.audio.audioEngine.channels.sfx.volume * 100)
         }));
+
+        this.difficultyDropdown  = null;
+        this.placingModeDropdown = null;
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
@@ -74,52 +77,22 @@ define([
 
     function remove () {
         Screen.prototype.remove.call(this);
-        $(window).off("click.toggleDifficulty");
-    }
-
-    function toggleDifficulty (e, auto) {
-        var closestValidOption = $(e.target).hasClass("is--disabled") ? $(e.target).parent().children(":not(.is--disabled)").eq(0) : $(e.target);
-        var index              = _$.utils.getNodeIndex(closestValidOption);
-        var selectHeight       = this.$(".setting-difficulty").height();
-        var toggle             = this.$(".setting-difficulty .userSettings_content-settings-setting-toggle");
-        var dropdown           = this.$(".userSettings_content-settings-setting-select");
-
-        if (this.$(".setting-difficulty").hasClass("is--active") || auto) {
-            if (!auto) {
-                $(window).off("click.toggleDifficulty");
-                this.$(".setting-difficulty").removeClass("is--active");
-            }
-
-            TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight, delay: 0.6 });
-            return;
-        } else {
-            this.$(".setting-difficulty").addClass("is--active");
-        }
-
-        $(window).on("click.toggleDifficulty", (clickEvent) => {
-            if (!$(clickEvent.target).parents(".setting-difficulty").length) {
-                $(window).off("click.toggleDifficulty");
-                var defaultOption      = this.$(".difficultySetting-" + _$.state.user.get("difficulty"));
-                var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
-                this.$(".setting-difficulty").removeClass("is--active");
-                TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight, delay: 0.6 });
-            }
-        });
+        this.difficultyDropdown.remove();
+        this.placingModeDropdown.remove();
     }
 
     function saveGame () {
-        var selectHeight = this.$(".setting-difficulty").height();
-        var settings     = {};
-        var settingName;
+        var settings = {};
         var difficultySetting;
-        var difficultySettingIndex;
+        var placingModeSetting;
 
         settings.name   = this.$(".setting-name input").val().trim();
         settings.avatar = this.$(".setting-avatar input")[0].files[0];
 
-        difficultySettingIndex = Math.ceil(this.$(".userSettings_content-settings-setting-select").scrollTop() / selectHeight);
-        difficultySetting      = this.$(".userSettings_content-settings-setting-select").children().eq(difficultySettingIndex)[0].className.replace("difficultySetting-", "");
+        difficultySetting      = this.difficultyDropdown.currentOption[0].className.replace("difficultySetting-", "");
         settings.difficulty    = difficultySetting;
+        placingModeSetting     = this.placingModeDropdown.currentOption[0].className.replace("placingModeSetting-", "");
+        settings.placingMode   = placingModeSetting;
 
         if (settings.avatar) {
             var url = URL.createObjectURL(settings.avatar);
@@ -132,7 +105,7 @@ define([
         }
 
         function proceed () {
-            _$.state.user.set({ name: settings.name, difficulty: settings.difficulty });
+            _$.state.user.set({ name: settings.name, difficulty: settings.difficulty, placingMode: settings.placingMode });
             _$.app.track("set", {
                 "dimension0" : "difficulty",
                 "metric0"    : "albumSize",
@@ -154,7 +127,8 @@ define([
     function resetChanges () {
         this.$(".setting-name input").val(_$.state.user.get("name"));
         $(".setting-avatar input, .setting-import input").val("");
-        this.toggleDifficulty({ target: this.$(".difficultySetting-" + _$.state.user.get("difficulty"))[0] }, true);
+        this.difficultyDropdown.reset();
+        this.placingModeDropdown.reset();
     }
 
     function loadGame () {
@@ -209,8 +183,37 @@ define([
         _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
     }
 
+    function updateVolume (event) {
+        var id    = event.target.id;
+        var value = event.target.value;
+        
+        if (id === "bgmVolume") {
+            _$.audio.audioEngine.channels.bgm.setVolume(value / 100);
+        } else if (id === "sfxVolume") {
+            _$.audio.audioEngine.channels.sfx.setVolume(value / 100);
+            if (event.type === "change") {
+                _$.audio.audioEngine.playSFX("cardFlip");
+            }
+        }
+
+        this.$("label[for=\"" + id + "\"]").html(value);
+    }
+
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
+        this.difficultyDropdown = this.createDropdown({
+            selector              : ".setting-difficulty",
+            dropdownSelector      : ".userSettings_content-settings-setting-select",
+            defaultOptionSelector : ".difficultySetting-" + _$.state.user.get("difficulty")
+        });
+
+
+        this.placingModeDropdown = this.createDropdown({
+            selector              : ".setting-placingMode",
+            dropdownSelector      : ".userSettings_content-settings-setting-select",
+            defaultOptionSelector : ".placingModeSetting-" + _$.state.user.get("placingMode")
+        });
+
         this.resetChanges();
 
         var tl = new TimelineMax();
@@ -264,6 +267,7 @@ define([
         var value = $(input).val().trim();
         var check;
 
+        console.log("validateInput", input);
         if (input === this.$(".setting-name input")[0]) {
             check = value.length && !value.match(/\W/g);
         } else if (input === this.$(".setting-avatar input")[0]) {

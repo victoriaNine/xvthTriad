@@ -14,10 +14,7 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
-            "click .setting-mode"                                : "toggleMode",
-            "keyup .setting-roomName input"                      : _.debounce(function (e) {
-                this.validateInput(e.target);
-            }, 250),
+            "keyup .setting-roomName input"                      : _.debounce(function (e) { this.validateInput(e.target); }, 250),
             "click .roomSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("title"); },
             "click .roomSelect_content-screenNav-choice-nextBtn" : "toNextStep",
             "blur .setting-roomName input" : function (e) {
@@ -37,8 +34,6 @@ define([
         initialize,
         remove,
 
-        toggleMode,
-
         toNextStep,
         transitionIn,
         transitionOut,
@@ -47,8 +42,9 @@ define([
     });
 
     function initialize (options) {
-        _$.ui.roomSelect = this;
-        this.settings    = null;
+        _$.ui.roomSelect  = this;
+        this.settings     = null;
+        this.modeDropdown = null;
 
         this.$el.html(this.template());
         this.showHelp();
@@ -59,9 +55,9 @@ define([
     }
 
     function remove () {
-        $(window).off("click.toggleMode");
         delete _$.ui.roomSelect;
         Screen.prototype.remove.call(this);
+        this.modeDropdown.remove();
 
         if (_$.ui.rulesSelect) {
             _$.ui.rulesSelect.remove();
@@ -72,48 +68,13 @@ define([
         }
     }
 
-    function toggleMode (e) {
-        var closestValidOption = $(e.target).hasClass("is--disabled") ? $(e.target).parent().children(":not(.is--disabled)").eq(0) : $(e.target);
-        var index              = _$.utils.getNodeIndex(closestValidOption);
-        var selectHeight       = this.$(".setting-mode").height();
-        var toggle             = this.$(".setting-mode .roomSelect_content-settings-setting-toggle");
-        var dropdown           = this.$(".roomSelect_content-settings-setting-select");
-
-        if (this.$(".setting-mode").hasClass("is--active")) {
-            this.$(".setting-mode").removeClass("is--active");
-            $(window).off("click.toggleMode");
-            TweenMax.to(dropdown[0], 0.4, { scrollTop: index * selectHeight, delay: 0.6 });
-
-            this.validateInput(this.$(".setting-roomName input")[0]);
-            return;
-        } else {
-            this.$(".setting-mode").addClass("is--active");
-        }
-
-        $(window).on("click.toggleMode", (clickEvent) => {
-            if (!$(clickEvent.target).parents(".setting-mode").length) {
-                $(window).off("click.toggleMode");
-                var defaultOption      = this.$(".modeSetting-create");
-                var defaultOptionIndex = _$.utils.getNodeIndex(defaultOption);
-                this.$(".setting-mode").removeClass("is--active");
-                TweenMax.to(dropdown[0], 0.4, { scrollTop: defaultOptionIndex * selectHeight, delay: 0.6 });
-
-                this.validateInput(this.$(".setting-roomName input")[0]);
-            }
-        });
-    }
-
     function toNextStep () {
-        var selectHeight = $(".setting-mode").height();
-        var settings     = {};
-        var settingName;
+        var settings = {};
         var modeSetting;
-        var modeSettingIndex;
 
         settings.roomName = this.$(".setting-roomName input").val().trim();
 
-        modeSettingIndex  = Math.ceil(this.$(".roomSelect_content-settings-setting-select").scrollTop() / selectHeight);
-        modeSetting       = this.$(".roomSelect_content-settings-setting-select").children().eq(modeSettingIndex)[0].className.replace("modeSetting-", "");
+        modeSetting       = this.modeDropdown.currentOption[0].className.replace("modeSetting-", "");
         settings.mode     = modeSetting;
 
         if (_$.ui.rulesSelect && this.settings &&
@@ -149,6 +110,11 @@ define([
 
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
+        this.modeDropdown = this.createDropdown({
+            selector         : ".setting-mode",
+            dropdownSelector : ".roomSelect_content-settings-setting-select",
+            onUpdate         : this.validateInput.bind(this, this.$(".setting-roomName input")[0])
+        });
 
         var tl = new TimelineMax();
         tl.set(this.$el, { clearProps: "display" });
@@ -194,9 +160,7 @@ define([
 
         if (input === this.$(".setting-roomName input")[0]) {
             check = value.length && !value.match(/\W/g);
-        }/* else if (input === this.$(".setting-mode input")[0]) {
-            check = !input.files.length || !!input.files[0].name.match(/\.jpg|\.jpeg|\.png|\.gif$/);
-        }*/
+        }
 
         if (check) {
             if ($(input).hasClass("is--invalid")) {
