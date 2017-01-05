@@ -1,6 +1,7 @@
 define(["underscore", "backbone", "global", "collections/coll_album"], function Model_User (_, Backbone, _$, Coll_Album) {
     return Backbone.Model.extend({
         defaults : {
+            _id         : null,
             name        : null,
             avatar      : null,
             album       : new Coll_Album(),

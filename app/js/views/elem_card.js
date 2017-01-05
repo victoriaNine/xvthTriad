@@ -3,7 +3,7 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "text!templates/templ_card.html"
+    "text!templates/templ_card.ejs"
 ], function Elem_Card ($, _, Backbone, _$, Templ_Card) {
     return Backbone.View.extend({
         tagName               : "div",

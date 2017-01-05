@@ -5,7 +5,7 @@ define([
     "global",
     "views/screen",
     "views/elem_albumCard",
-    "text!templates/templ_cardSelect.html"
+    "text!templates/templ_cardSelect.ejs"
 ], function Screen_CardSelect ($, _, Backbone, _$, Screen, Elem_AlbumCard, Templ_CardSelect) {
     var CARD_WIDTH = 180;
 

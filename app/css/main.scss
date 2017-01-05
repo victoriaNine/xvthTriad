@@ -296,6 +296,7 @@ label {
 .weight-bold        { font-weight: 700; }
 .flex-justify-sb    { justify-content: space-between; }
 .flex-justify-start { justify-content: flex-start; }
+.fontsize-small     { font-size: .75em; margin-right: .5em; }
 
 @media (orientation: portrait) {
     body {
@@ -738,8 +739,7 @@ label {
     cursor: default;
 
     & span {
-        font-size: .75em;
-        margin-right: .5em;
+        @extend .fontsize-small;
     }
 }
 
@@ -1465,6 +1465,29 @@ label {
     }
 }
 
+.title_account {
+    position: absolute;
+    right: $globalPadding;
+    top: $globalPadding;
+    display: flex;
+    align-items: center;
+
+    &-element {
+        @extend %btn-rect;
+
+        position: relative;
+        display: inline-block;
+
+        &:not(:last-of-type) {
+            margin-right: .5em;
+        }
+    }
+
+    &-welcome {
+        margin-right: 1em;
+        position: relative;
+    }
+}
 
 /*=======================*/
 /* RULES SCREEN

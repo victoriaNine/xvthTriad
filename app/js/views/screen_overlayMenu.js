@@ -4,7 +4,7 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_overlayMenu.html"
+    "text!templates/templ_overlayMenu.ejs"
 ], function Screen_OverlayMenu ($, _, Backbone, _$, Screen, Templ_OverlayMenu) {
     return Screen.extend({
         tagName : "section",

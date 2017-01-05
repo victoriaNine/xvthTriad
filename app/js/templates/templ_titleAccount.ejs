@@ -1,0 +1,26 @@
+<div class="title_account">
+    <% if (isLoggedIn) { %>
+    <div class="title_account-welcome"><span class="fontsize-small">Welcome back,</span><%= userName %>!</div>
+    <div class="title_account-logoutBtn title_account-element">Log out</div>
+    <% } else { %>
+    <div class="title_account-signupBtn title_account-element">Sign up</div>
+    <div class="title_account-loginBtn title_account-element">Log in</div>
+    <% }%>
+</div>
+<% if (isLoggedIn) { %>
+<div class="title_overlay-logout screen overlay">
+    <h1><span class="weight-bold">Logout</span> successful</h1>
+</div>
+<% } else { %>
+<div class="title_overlay-signup screen overlay">
+    <h1><span class="weight-bold">Sign</span> up</h1>
+    <div class="title_overlay-signup-confirmBtn" style="display:none;">Confirm</div>
+    <div class="title_overlay-signup-cancelBtn" style="display:none;">Cancel</div>
+</div>
+<div class="title_overlay-login screen overlay">
+    <h1><span class="weight-bold">Log</span> in</h1>
+    <div class="title_overlay-login-confirmBtn" style="display:none;">Confirm</div>
+    <div class="title_overlay-login-cancelBtn" style="display:none;">Cancel</div>
+    <p>Forgot your password?</p>
+</div>
+<% }%>

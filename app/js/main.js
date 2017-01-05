@@ -13,6 +13,8 @@ require.config({
         modernizr         : "libs/modernizr/modernizr",
         socketIO          : "libs/socket.io-client/dist/socket.io",
         stats             : "libs/stats.js/build/stats",
+        superlogin        : "libs/superlogin-client/superlogin",
+        pouchdb           : "libs/pouchdb/dist/pouchdb-6.1.1",
 
         text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
@@ -30,6 +32,8 @@ require.config({
         fetch             : "libs/fetch/fetch",
         storage           : "libs/backbone/backbone.localStorage",
         jsonPrune         : "libs/jsonPrune/json.prune",
+        axios             : "libs/axios/dist/axios",
+        eventemitter2     : "libs/eventemitter2/lib/eventemitter2",
 
         global            : "global"
     },
@@ -46,6 +50,8 @@ require([
     "tweenMax",
     "socketIO",
     "stats",
+    "superlogin",
+    "pouchdb",
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
@@ -70,7 +76,7 @@ require([
     "views/screen_userSettings",
     "jqueryNearest",
     "jsonPrune"
-], function (Modernizr, $, _, tweenMax, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, PouchDB, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");
     var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp];
@@ -213,17 +219,19 @@ require([
     }
 
     _$.events.on("all", function (eventName, ...data) {
-        if (data.length) {
+        /*if (data.length) {
             _$.debug.log("event triggered:", eventName, data);
         } else {
             _$.debug.log("event triggered:", eventName);
-        }
+        }*/
     });
 
     _$.events.once("launch", function () {
-        _$.comm.socketManager = new SocketManager();
-        _$.ui.footer          = new Elem_Footer();
-        _$.ui.screen          = new Screen_Title({ setup: true, fullIntro: true });
+        _$.comm.sessionManager = new Superlogin(_$.app.sessionConfig);
+        _$.comm.dbManager      = new PouchDB("http://localhost:5984/users");
+        _$.comm.socketManager  = new SocketManager();
+        _$.ui.footer           = new Elem_Footer();
+        _$.ui.screen           = new Screen_Title({ setup: true, fullIntro: true });
 
         $(window).on("beforeunload", function (e) {
             return _$.ui.screen.showSavePrompt(e);

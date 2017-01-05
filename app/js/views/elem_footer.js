@@ -6,7 +6,7 @@ define([
     "views/screen_overlayMenu",
     "views/screen_overlayHelp",
     "views/screen_overlayAbout",
-    "text!templates/templ_footer.html"
+    "text!templates/templ_footer.ejs"
 ], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Screen_OverlayHelp, Screen_OverlayAbout, Templ_Footer) {
     return Backbone.View.extend({
         tagName : "footer",

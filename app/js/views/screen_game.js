@@ -6,9 +6,9 @@ define([
     "models/model_game",
     "views/screen",
     "views/elem_endGameCard",
-    "text!templates/templ_game.html",
-    "views/elem_card"
-], function Screen_Game ($, _, Backbone, _$, Model_Game, Screen, Elem_EndGameCard, Templ_Game, Elem_Card) {
+    "views/elem_card",
+    "text!templates/templ_game.ejs"
+], function Screen_Game ($, _, Backbone, _$, Model_Game, Screen, Elem_EndGameCard, Elem_Card, Templ_Game) {
     return Screen.extend({
         id       : "screen_game",
 

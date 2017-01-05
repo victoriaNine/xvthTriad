@@ -4,7 +4,7 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_loading.html"
+    "text!templates/templ_loading.ejs"
 ], function Screen_Loading ($, _, Backbone, _$, Screen, Templ_Loading) {
     return Screen.extend({
         id        : "screen_loading",

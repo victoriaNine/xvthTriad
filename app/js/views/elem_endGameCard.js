@@ -3,9 +3,9 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "text!templates/templ_endGameCard.html",
-    "views/elem_card"
-], function Elem_EndGameCard ($, _, Backbone, _$, Templ_EndGameCard, Elem_Card) {
+    "views/elem_card",
+    "text!templates/templ_endGameCard.ejs"
+], function Elem_EndGameCard ($, _, Backbone, _$, Elem_Card, Templ_EndGameCard) {
     return Backbone.View.extend({
         tagName               : "li",
         className             : "game_overlay-endGame-album-card",

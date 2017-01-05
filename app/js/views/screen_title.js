@@ -5,8 +5,9 @@ define([
     "global",
     "models/model_user",
     "views/screen",
-    "text!templates/templ_title.html"
-], function Screen_Title ($, _, Backbone, _$, Model_User, Screen, Templ_Title) {
+    "text!templates/templ_title.ejs",
+    "text!templates/templ_titleAccount.ejs"
+], function Screen_Title ($, _, Backbone, _$, Model_User, Screen, Templ_Title, Templ_TitleAccount) {
     return Screen.extend({
         // Instead of generating a new element, bind to the existing skeleton of
         // the App already present in the HTML.
@@ -26,24 +27,33 @@ define([
                 _$.audio.audioEngine.playSFX("menuOpen");
                 _$.ui.footer.toggleMainMenu(null, false);
             },
-            "mouseenter .title_startBtn" : function () {
+            "mouseenter .title_startBtn,.title_account-element" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
+            },
+            "click .title_account-element" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "click .title_account-signupBtn" : function () {
+                this.openOverlay("signup");
+            },
+            "click .title_account-loginBtn" : function () {
+                this.openOverlay("login");
+            },
+            "click .title_account-logoutBtn" : function () {
+                this.openOverlay("logout");
             }
         },
 
         initialize,
         playIntro,
         transitionIn,
-        transitionOut
+        transitionOut,
+        openOverlay
     });
 
     function initialize (options = {}) {
-        var logo = $(_$.assets.get("svg.ui.logo"));
-
-        this.introTL = null;
-
-        this.$el.html(this.template());
-        this.$(".title_logo").append(logo);
+        this.introTL         = null;
+        this.accountTemplate = _.template(Templ_TitleAccount);
 
         if (options.setup) {
             _$.state.user = new Model_User();
@@ -54,6 +64,14 @@ define([
                 _$.state.user.setup();
             }
         }
+
+        this.$el.html(this.template()).append(this.accountTemplate({
+            isLoggedIn : !!_$.state.user.get("_id"),
+            userName   : _$.state.user.get("name")
+        }));
+
+        var logo = $(_$.assets.get("svg.ui.logo"));
+        this.$(".title_logo").append(logo);
 
         _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
         _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
@@ -178,5 +196,31 @@ define([
         tl.call(this.changeScreen.bind(this, nextScreen, options));
 
         return this;
+    }
+
+    function openOverlay (overlayName) {
+        _$.events.trigger("stopUserEvents");
+        var overlaySelector = ".title_overlay-" + overlayName;
+        var overlay         = this.$(overlaySelector);
+
+        var tl = new TimelineMax();
+        tl.call(() => { overlay.addClass("is--active"); });
+
+        if (overlayName !== "signout") {
+            tl.call(() => {
+                this.$(overlaySelector + "-confirmBtn").slideDown(400);
+            }, [], null, "+=0.8");
+        }
+
+        tl.call(() => { _$.events.trigger("startUserEvents"); });
+
+        if (overlayName === "signout") {
+            tl.call(() => { overlay.removeClass("is--active"); }, [], null, "+=1");
+            tl.call(() => {
+                this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
+                TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
+                _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+            }, [], null, "+=0.8");
+        }
     }
 });

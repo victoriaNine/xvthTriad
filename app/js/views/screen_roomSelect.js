@@ -4,7 +4,7 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_roomSelect.html"
+    "text!templates/templ_roomSelect.ejs"
 ], function Screen_RoomSelect ($, _, Backbone, _$, Screen, Templ_RoomSelect) {
     return Screen.extend({
         id        : "screen_roomSelect",

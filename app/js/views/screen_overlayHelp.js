@@ -4,10 +4,10 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_overlayHelp.html",
-    "text!templates/templ_helpBasicRules.html",
-    "text!templates/templ_helpStartSolo.html",
-    "text!templates/templ_helpStartVersus.html"
+    "text!templates/templ_overlayHelp.ejs",
+    "text!templates/templ_helpBasicRules.ejs",
+    "text!templates/templ_helpStartSolo.ejs",
+    "text!templates/templ_helpStartVersus.ejs"
 ], function Screen_OverlayHelp ($, _, Backbone, _$, Screen, Templ_OverlayHelp, Templ_HelpBasicRules, Templ_HelpStartSolo, Templ_HelpStartVersus) {
     var HELP_TOPICS = "basicRules|startSolo|startVersus";
 

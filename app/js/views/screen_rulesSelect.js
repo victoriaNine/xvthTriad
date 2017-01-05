@@ -4,7 +4,7 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_rulesSelect.html"
+    "text!templates/templ_rulesSelect.ejs"
 ], function Screen_RulesSelect ($, _, Backbone, _$, Screen, Templ_RulesSelect) {
     var RULES       = "open|random|elemental|sameWall|same|suddenDeath|plus|trade";
     var TRADE_RULES = "none|one|difference|direct|all";

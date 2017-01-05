@@ -4,7 +4,7 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_userSettings.html"
+    "text!templates/templ_userSettings.ejs"
 ], function Screen_UserSettings ($, _, Backbone, _$, Screen, Templ_UserSettings) {
     return Screen.extend({
         id        : "screen_userSettings",

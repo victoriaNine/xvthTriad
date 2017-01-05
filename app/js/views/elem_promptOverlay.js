@@ -3,7 +3,7 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "text!templates/templ_promptOverlay.html"
+    "text!templates/templ_promptOverlay.ejs"
 ], function Elem_PromptOverlay ($, _, Backbone, _$, Templ_PromptOverlay) {
     return Backbone.View.extend({
         tagName               : "div",

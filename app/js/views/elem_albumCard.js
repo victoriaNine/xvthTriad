@@ -3,9 +3,9 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "text!templates/templ_albumCard.html",
-    "views/elem_card"
-], function Elem_AlbumCard ($, _, Backbone, _$, Templ_AlbumCard, Elem_Card) {
+    "views/elem_card",
+    "text!templates/templ_albumCard.ejs",
+], function Elem_AlbumCard ($, _, Backbone, _$, Elem_Card, Templ_AlbumCard) {
     return Backbone.View.extend({
         tagName               : "li",
         className             : "cardSelect_content-album-card",
