@@ -138,7 +138,9 @@ define([
 
     function resetChanges () {
         this.$(".setting-name input").val(_$.state.user.get("name"));
-        $(".setting-avatar input, .setting-import input").val("");
+        this.$(".setting-avatar input, .setting-import input").val("");
+        this.$(".setting-bgm input").val(_$.state.user.get("bgmVolume") * 100);
+        this.$(".setting-sfx input").val(_$.state.user.get("sfxVolume") * 100);
         this.difficultyDropdown.reset();
         this.placingModeDropdown.reset();
     }
@@ -153,9 +155,20 @@ define([
 
         var file = this.$(".setting-import input")[0].files[0];
         _$.app.importSave(file, () => {
-            this.transitionOut("title", { fullIntro: true });
-            TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
             _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+            TweenMax.to(_$.dom, 1, { opacity: 0,
+                onComplete: () => {
+                    if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
+                        proceed.call(this);
+                    } else {
+                        _$.events.once("bgmEnded", proceed.bind(this));
+                    }
+                }
+            });
+
+            function proceed () {
+                this.transitionOut("title", { fullIntro: true });
+            }
         });
     }
 
@@ -190,9 +203,20 @@ define([
             metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
         });
 
-        this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
-        TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
         _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+        TweenMax.to(_$.dom, 1, { opacity: 0,
+            onComplete: () => {
+                if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
+                    proceed.call(this);
+                } else {
+                    _$.events.once("bgmEnded", proceed.bind(this));
+                }
+            }
+        });
+
+        function proceed () {
+            this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
+        }
     }
 
     function updateVolume (event) {

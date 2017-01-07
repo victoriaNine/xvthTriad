@@ -1,6 +1,6 @@
 module.exports = function (grunt, options) {
     grunt.registerTask("build", [
-        "clean:buildPre",
+        "clean:wipe",
         "sass:server",
         "buildCardImgLoader",
         "copy:build",
@@ -10,6 +10,6 @@ module.exports = function (grunt, options) {
         "babel",
         "uglify",
         "usemin",
-        "clean:buildPost"
+        "clean:buildCleanup"
     ]);
 };

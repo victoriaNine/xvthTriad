@@ -9,28 +9,28 @@ module.exports = function (grunt, options) {
 
     if (target === "dist") {
         return grunt.task.run([
-            "clean:server",
+            "clean:tmp",
             "copy:dist",
-            "open:server",
             "setupEnv:prod",
+            "open:server",
             "connect:dist:keepalive"
         ]);
     }
 
     var defaultTasks = [
-        "clean:server",
+        "clean:wipe",
         "sass:server",
         "buildCardImgLoader",
         "copy:server",
-        "string-replace:server",
         "setupEnv:server",
+        "string-replace:server",
         "connect:livereload",
         //"open:server",
         "watch"
     ];
 
     if (target === "justConnect") {
-        defaultTasks = defaultTasks.slice(-3);
+        defaultTasks = defaultTasks.slice(-4);
     }
 
     grunt.task.run(defaultTasks);

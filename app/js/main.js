@@ -228,7 +228,7 @@ require([
 
     _$.events.once("launch", function () {
         _$.comm.sessionManager = new Superlogin(_$.app.sessionConfig);
-        _$.comm.dbManager      = new PouchDB("http://localhost:5984/users");
+        _$.comm.dbManager      = new PouchDB(_$.app.dbURL.concat("/users"));
         _$.comm.socketManager  = new SocketManager();
         _$.ui.footer           = new Elem_Footer();
         _$.ui.screen           = new Screen_Title({ setup: true, fullIntro: true });

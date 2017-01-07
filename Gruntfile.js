@@ -21,8 +21,7 @@ module.exports = function (grunt, options) {
     dist  : "dist",
     tmp   : ".tmp",
     beta  : "beta",
-    prod  : "html",
-    dbURL : "//" + process.env.DB_HOST
+    prod  : "html"
   };
 
   require("load-grunt-config")(grunt, {

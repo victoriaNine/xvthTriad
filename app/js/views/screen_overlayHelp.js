@@ -146,12 +146,12 @@ define([
         tl.set(this.$(".help_content-guide"), { clearProps: "display" });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 0 });
         tl.call(() => {
-            this.$(".help_content-guide-contents").html(guide);
+            this.$(".help_content-guide-scroll").html(guide);
             this.$(".help_header-title-topicName").text(" / " + title);
             this.showHelp(topicName);
         });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 1, clearProps: "opacity" });
-        tl.from(this.$(".help_content-guide-contents"), 0.5, { height: 0, opacity: 0, clearProps: "all" });
+        tl.from(this.$(".help_content-guide-scroll"), 0.5, { height: 0, opacity: 0, clearProps: "all" });
         tl.call(() => {
             this.$(".help_content-screenNav").slideDown(500);
             _$.events.trigger("startUserEvents");
@@ -169,7 +169,7 @@ define([
         tl.set(this.$(".help_content-topics"), { clearProps: "display" });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 0 });
         tl.call(() => {
-            this.$(".help_content-guide-contents, .help_header-title-topicName").empty();
+            this.$(".help_content-guide-scroll, .help_header-title-topicName").empty();
             this.showHelp();
         });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 1, clearProps: "opacity" });

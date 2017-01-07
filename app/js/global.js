@@ -47,7 +47,7 @@ define([
         loadData     : { value: loadData },
         importSave   : { value: importSave },
         exportSave   : { value: exportSave },
-        dbURL        : { value: "{{ DB_URL }}" },
+        dbURL        : { value: window.location.protocol + "{{ DB_URL }}" },
         track        : { value: sendGAevent },
         env          : { value : {
             deviceType       : "browser",
@@ -202,7 +202,7 @@ define([
     /* TRACKING */
     function sendGAevent (...args) {
         if (!_$.debug.debugMode) {
-            ga(...args);
+            window.ga(...args);
         }
     }
 
@@ -459,25 +459,80 @@ define([
     //===============================
     // SAVE/LOAD MANAGEMENT
     //===============================
-    function saveData () {
-        setLocalStorage(_$.app.name, _encodeSaveData(_$.utils.getUserData()));
+    function saveData (credentials) {
+        if (_$.comm.sessionManager.getSession()) {
+            saveToDb(credentials);
+        } else if (_$.utils.getLocalStorage(_$.app.name)) {
+            saveToStorage();
+        }
     }
 
-    function loadData (data) {
-        data = data || getLocalStorage(_$.app.name);
+    function loadData () {
+        var sessionData = _$.comm.sessionManager.getSession();
+        var storageData = _$.utils.getLocalStorage(_$.app.name);
 
-        if (!data) {
-            _$.debug.error("LoadData: No data");
+        if (sessionData) {
+            loadFromDb(sessionData);
+        } else if (storageData) {
+            loadFromStorage(storageData);
+        }
+    }
+
+    function saveToDb (form = {}) {
+        var data    = _$.utils.getUserData();
+        var profile = _.omit(data, ["version", "userId", "name"]);
+        var newData = _.extend(form, {
+            name    : data.name,
+            profile : profile
+        });
+
+        _$.comm.sessionManager.updateProfile(form).then(() => {
+            _$.events.trigger("userDataSaved:toDatabase");
+        });
+    }
+
+    function loadFromDb (sessionData) {
+         if (!sessionData) {
+            _$.debug.error("loadFromDb: No data");
             return;
         }
 
-        var JSONdata = _decodeSaveData(data);
+        _$.state.user.set({
+            userId : sessionData.user_id,
+            name   : sessionData.name
+        });
+
+        _.each(_.omit(sessionData.profile, "album"), function (value, key) {
+            _$.state.user.set(key, value);
+        });
+
+        _$.state.user.get("album").reset(sessionData.profile.album);
+
+        _$.state.user.dataLoaded = true;
+        _$.events.trigger("userDataLoaded:fromDatabase");
+    }
+
+    function saveToStorage () {
+        setLocalStorage(_$.app.name, _encodeSaveData(_$.utils.getUserData()));
+        _$.events.trigger("userDataSaved:toStorage");
+    }
+
+    function loadFromStorage (storageData) {
+        if (!storageData) {
+            _$.debug.error("loadFromStorage: No data");
+            return;
+        }
+
+        var JSONdata = _decodeSaveData(storageData);
         _$.app.checkUpdates(JSONdata, (updatedData) => {
-            _.each(_.omit(updatedData, ["album", "version"]), function (value, key) {
+            _.each(_.omit(updatedData, ["album", "version", "userId"]), function (value, key) {
                 _$.state.user.set(key, value);
             });
 
             _$.state.user.get("album").reset(updatedData.album);
+
+            _$.state.user.dataLoaded = true;
+            _$.events.trigger("userDataLoaded:fromStorage");
         });
     }
 

@@ -40,45 +40,47 @@
         </ul>
     </div>
     <div class="userSettings_content-settings">
-        <div class="col">
-            <div class="userSettings_content-settings-setting setting-name">
-                <div class="userSettings_content-settings-setting-label">Name</div>
-                <input class="userSettings_content-settings-setting-input"></input>
+        <div class="userSettings_content-settings-scroll">
+            <div class="col">
+                <div class="userSettings_content-settings-setting setting-name">
+                    <div class="userSettings_content-settings-setting-label">Name</div>
+                    <input class="userSettings_content-settings-setting-input"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-avatar">
+                    <div class="userSettings_content-settings-setting-label">Upload an avatar</div>
+                    <input class="userSettings_content-settings-setting-input" type="file"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-import">
+                    <div class="userSettings_content-settings-setting-label">Import a save file</div>
+                    <input class="userSettings_content-settings-setting-input" type="file"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-difficulty">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="difficultySetting-easy">Difficulty level -- Easy</li>
+                        <li class="difficultySetting-normal">Difficulty level -- Normal</li>
+                        <li class="difficultySetting-hard">Difficulty level -- Hard</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
             </div>
-            <div class="userSettings_content-settings-setting setting-avatar">
-                <div class="userSettings_content-settings-setting-label">Upload an avatar</div>
-                <input class="userSettings_content-settings-setting-input" type="file"></input>
-            </div>
-            <div class="userSettings_content-settings-setting setting-import">
-                <div class="userSettings_content-settings-setting-label">Import a save file</div>
-                <input class="userSettings_content-settings-setting-input" type="file"></input>
-            </div>
-            <div class="userSettings_content-settings-setting setting-difficulty">
-                <ul class="userSettings_content-settings-setting-select">
-                    <li class="difficultySetting-easy">Difficulty level -- Easy</li>
-                    <li class="difficultySetting-normal">Difficulty level -- Normal</li>
-                    <li class="difficultySetting-hard">Difficulty level -- Hard</li>
-                </ul>
-                <div class="userSettings_content-settings-setting-toggle"></div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="userSettings_content-settings-setting setting-placingMode">
-                <ul class="userSettings_content-settings-setting-select">
-                    <li class="placingModeSetting-dragDrop">Cards placing mode -- Drag and drop</li>
-                    <li class="placingModeSetting-click">Cards placing mode -- Click</li>
-                </ul>
-                <div class="userSettings_content-settings-setting-toggle"></div>
-            </div>
-            <div class="userSettings_content-settings-setting setting-bgm">
-                <div class="userSettings_content-settings-setting-label">Music</div>
-                <input id="bgmVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= bgmVolume %>" step="1"></input>
-                <label for="bgmVolume"><%= bgmVolume %></label>
-            </div>
-            <div class="userSettings_content-settings-setting setting-sfx">
-                <div class="userSettings_content-settings-setting-label">Sound effects</div>
-                <input id="sfxVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= sfxVolume %>" step="1"></input>
-                <label for="sfxVolume"><%= sfxVolume %></label>
+            <div class="col">
+                <div class="userSettings_content-settings-setting setting-placingMode">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="placingModeSetting-dragDrop">Cards placing mode -- Drag and drop</li>
+                        <li class="placingModeSetting-click">Cards placing mode -- Click</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-bgm">
+                    <div class="userSettings_content-settings-setting-label">Music</div>
+                    <input id="bgmVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= bgmVolume %>" step="1"></input>
+                    <label for="bgmVolume"><%= bgmVolume %></label>
+                </div>
+                <div class="userSettings_content-settings-setting setting-sfx">
+                    <div class="userSettings_content-settings-setting-label">Sound effects</div>
+                    <input id="sfxVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= sfxVolume %>" step="1"></input>
+                    <label for="sfxVolume"><%= sfxVolume %></label>
+                </div>
             </div>
         </div>
     </div>

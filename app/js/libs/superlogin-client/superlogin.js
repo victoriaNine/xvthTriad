@@ -85,16 +85,19 @@ define([
 
         _httpInterceptor() {
             const request = req => {
+                console.log("_httpInterceptor 1", req);
                 const config = this.getConfig();
                 const session = this.getSession();
                 if (!session || !session.token) {
                     return Promise.resolve(req);
                 }
 
+                console.log("_httpInterceptor 2", req);
                 if (req.skipRefresh) {
                     return Promise.resolve(req);
                 }
 
+                console.log("_httpInterceptor 3", req);
                 return this.checkRefresh().then(() => {
                     if (checkEndpoint(req.url, config.endpoints)) {
                         req.headers.Authorization = `Bearer ${session.token}:${session.password}`;
@@ -284,16 +287,21 @@ define([
             if (!credentials.username || !credentials.password) {
                 return Promise.reject({ error: 'Username or Password missing...' });
             }
+            
             return this._http.post(`${this._config.baseUrl}/login`, credentials, { skipRefresh: true })
                 .then(res => {
-                    res.data.serverTimeDiff = res.data.issued - Date.now();
-                    this.setSession(res.data);
-                    this._onLogin(res.data);
-                    return res.data;
+                    if (res.data.error) {
+                        this.deleteSession();
+                        throw parseError(res.data);
+                    } else {
+                        res.data.serverTimeDiff = res.data.issued - Date.now();
+                        this.setSession(res.data);
+                        this._onLogin(res.data);
+                        return res.data;
+                    }
                 })
                 .catch(err => {
                     this.deleteSession();
-
                     throw parseError(err);
                 });
         }
@@ -434,10 +442,89 @@ define([
 
         forgotPassword(email) {
             return this._http.post(`${this._config.baseUrl}/forgot-password`, { email }, { skipRefresh: true })
-                .then(res => res.data)
+                .then(res => {
+                    if (res.data.error) {
+                        throw parseError(res.data);
+                    } else {
+                        return res.data;
+                    }
+                })
                 .catch(err => {
                     throw parseError(err);
                 });
+        }
+
+        getUser(login) {
+            return this._http.get(`${this._config.baseUrl}/getUser/${login}`)
+                .then(res => {
+                    if (res.data.error) {
+                        throw parseError(res.data);
+                    } else {
+                        return res.data;
+                    }
+                })
+                .catch(err => {
+                    throw parseError(err);
+                });
+        }
+
+        removeUser() {
+            if (this.authenticated() && this.confirmRole("user")) {
+                return this._http.post(`${this._config.baseUrl}/remove-user`, {})
+                    .then(res => {
+                        if (res.data.error) {
+                            throw parseError(res.data);
+                        } else {
+                            this._onLogout(res.data);
+                            return res.data;
+                        }
+                    })
+                    .catch(err => {
+                        throw parseError(err);
+                    });
+            }
+            return Promise.reject({ error: 'Authentication required' });
+        }
+
+        updateProfile(form) {
+            const doUpdate = () => {
+                return this._http.post(`${this._config.baseUrl}/profile-update`, { name: form.name, profile: form.profile })
+                    .then(res => {
+                        if (res.data.error) {
+                            throw parseError(res.data);
+                        } else {
+                            return res.data;
+                        }
+                    })
+                    .catch(err => {
+                        throw parseError(err);
+                    });
+            };
+
+            const updatePassword = () => {
+                return this.changePassword({
+                        currentPassword : form.currentPassword,
+                        newPassword     : form.newPassword,
+                        confirmPassword : form.confirmPassword
+                    });
+            };
+
+            const checkEmail  = () => { return this.validateEmail(form.newEmail); };
+            const updateEmail = () => { return this.changeEmail(form.newEmail); };
+            const doRefresh   = () => { return this.refresh(); };
+
+            if (this.authenticated()) {
+                if (form.newPassword && form.newEmail) {
+                    return checkEmail().then(updatePassword).then(updateEmail).then(doUpdate).then(doRefresh);
+                } else if (form.newPassword) {
+                    return updatePassword().then(doUpdate).then(doRefresh);
+                } else if (form.newEmail) {
+                    return checkEmail().then(updateEmail).then(doUpdate).then(doRefresh);
+                } else {
+                    return doUpdate().then(doRefresh);
+                }
+            }
+            return Promise.reject({ error: 'Authentication required' });
         }
 
         resetPassword(form) {

@@ -19,7 +19,9 @@ module.exports = function (grunt, options) {
                 },
                 {
                     pattern: "{{ DB_URL }}",
-                    replacement: "<%= yeoman.dbURL %>"
+                    replacement: function () {
+                        return "//" + process.env.DB_HOST;
+                    }
                 }
               ]
             }
@@ -47,7 +49,9 @@ module.exports = function (grunt, options) {
                 },
                 {
                     pattern: "{{ DB_URL }}",
-                    replacement: "<%= yeoman.dbURL %>"
+                    replacement: function () {
+                        return "//" + process.env.DB_HOST;
+                    }
                 }
               ]
             }

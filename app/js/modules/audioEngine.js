@@ -204,6 +204,8 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                     _$.events.trigger(this.events.ended, this);
                 }
 
+                _$.events.trigger("bgmEnded:" + this.name, this);
+
                 this.createSource(); // Regenerate a source
             });
         }

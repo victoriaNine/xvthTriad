@@ -144,6 +144,33 @@ hr:before {
 h1 {
   font-size: 60px; }
 
+::-webkit-input-placeholder {
+  letter-spacing: 0; }
+
+:-moz-placeholder {
+  letter-spacing: 0; }
+
+::-moz-placeholder {
+  letter-spacing: 0; }
+
+:-ms-input-placeholder {
+  letter-spacing: 0; }
+
+input:not([type]) {
+  -webkit-transition: -webkit-letter-spacing .2s ease-in;
+  -ms-transition: -ms-letter-spacing .2s ease-in;
+  transition: letter-spacing .2s ease-in; }
+  input:not([type]):focus {
+    letter-spacing: .5em; }
+
+input[type=password] {
+  -webkit-transition: -webkit-letter-spacing .2s ease-in;
+  -ms-transition: -ms-letter-spacing .2s ease-in;
+  transition: letter-spacing .2s ease-in;
+  letter-spacing: .5em; }
+  input[type=password]:focus {
+    letter-spacing: 1em; }
+
 input[type=range] {
   -webkit-appearance: none;
   margin: 0px 0;
@@ -193,6 +220,18 @@ label {
   width: 50px;
   text-align: center;
   background: rgba(0, 0, 0, 0.5); }
+
+button {
+  -webkit-appearance: none;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  background: inherit;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  text-align: inherit; }
 
 #canvas {
   position: absolute;
@@ -299,7 +338,7 @@ label {
   position: relative;
   padding: 50px; }
 
-.help_content-topics, .rulesSelect_content-rules, .userSettings_content-settings, .roomSelect_content-settings, .help_content-guide, .cardSelect_content-scroll {
+.help_content-topics, .rulesSelect_content-rules, .roomSelect_content-settings, .help_content-guide, .cardSelect_content-scroll, .userSettings_content-settings {
   height: 270px;
   top: calc(50% - 270px / 2);
   position: absolute;
@@ -330,15 +369,15 @@ label {
       margin-right: .5em; }
 
 /* BUTTONS ------------*/
-.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
   cursor: pointer;
   font-size: 16px; }
 
-.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .game_overlay-endGame-confirmBtn {
+.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .help_content-confirm-choice-element:after, .help_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .footer_menu-element:after, .prompt_overlay-confirmBtn:after, .prompt_overlay-confirm2Btn:after, .about_credits:after, .title_account-element:after, .game_overlay-endGame-confirmBtn:after {
+  .help_content-confirm-choice-element:after, .help_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .footer_menu-element:after, .prompt_overlay-confirmBtn:after, .prompt_overlay-confirm2Btn:after, .about_credits:after, .title_account-element:after, .title_overlay-signup-btn:after, .title_overlay-login-btn:after, .game_overlay-endGame-confirmBtn:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -353,12 +392,12 @@ label {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .help_content-confirm-choice-element:hover, .help_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .footer_menu-element:hover, .prompt_overlay-confirmBtn:hover, .prompt_overlay-confirm2Btn:hover, .about_credits:hover, .title_account-element:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.help_content-confirm-choice-element, .is--active.help_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.prompt_overlay-confirmBtn, .is--active.prompt_overlay-confirm2Btn, .is--active.about_credits, .is--active.title_account-element, .is--active.game_overlay-endGame-confirmBtn, .is--hover.help_content-confirm-choice-element, .is--hover.help_content-screenNav-choice-element, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.footer_menu-element, .is--hover.prompt_overlay-confirmBtn, .is--hover.prompt_overlay-confirm2Btn, .is--hover.about_credits, .is--hover.title_account-element, .is--hover.game_overlay-endGame-confirmBtn {
+  .help_content-confirm-choice-element:hover, .help_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .footer_menu-element:hover, .prompt_overlay-confirmBtn:hover, .prompt_overlay-confirm2Btn:hover, .about_credits:hover, .title_account-element:hover, .title_overlay-signup-btn:hover, .title_overlay-login-btn:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.help_content-confirm-choice-element, .is--active.help_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.prompt_overlay-confirmBtn, .is--active.prompt_overlay-confirm2Btn, .is--active.about_credits, .is--active.title_account-element, .is--active.title_overlay-signup-btn, .is--active.title_overlay-login-btn, .is--active.game_overlay-endGame-confirmBtn, .is--hover.help_content-confirm-choice-element, .is--hover.help_content-screenNav-choice-element, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.footer_menu-element, .is--hover.prompt_overlay-confirmBtn, .is--hover.prompt_overlay-confirm2Btn, .is--hover.about_credits, .is--hover.title_account-element, .is--hover.title_overlay-signup-btn, .is--hover.title_overlay-login-btn, .is--hover.game_overlay-endGame-confirmBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .help_content-confirm-choice-element:hover:after, .help_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .prompt_overlay-confirmBtn:hover:after, .prompt_overlay-confirm2Btn:hover:after, .about_credits:hover:after, .title_account-element:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.help_content-confirm-choice-element:after, .is--active.help_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.prompt_overlay-confirmBtn:after, .is--active.prompt_overlay-confirm2Btn:after, .is--active.about_credits:after, .is--active.title_account-element:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.help_content-confirm-choice-element:after, .is--hover.help_content-screenNav-choice-element:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.prompt_overlay-confirmBtn:after, .is--hover.prompt_overlay-confirm2Btn:after, .is--hover.about_credits:after, .is--hover.title_account-element:after, .is--hover.game_overlay-endGame-confirmBtn:after {
+    .help_content-confirm-choice-element:hover:after, .help_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .prompt_overlay-confirmBtn:hover:after, .prompt_overlay-confirm2Btn:hover:after, .about_credits:hover:after, .title_account-element:hover:after, .title_overlay-signup-btn:hover:after, .title_overlay-login-btn:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.help_content-confirm-choice-element:after, .is--active.help_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.prompt_overlay-confirmBtn:after, .is--active.prompt_overlay-confirm2Btn:after, .is--active.about_credits:after, .is--active.title_account-element:after, .is--active.title_overlay-signup-btn:after, .is--active.title_overlay-login-btn:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.help_content-confirm-choice-element:after, .is--hover.help_content-screenNav-choice-element:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.prompt_overlay-confirmBtn:after, .is--hover.prompt_overlay-confirm2Btn:after, .is--hover.about_credits:after, .is--hover.title_account-element:after, .is--hover.title_overlay-signup-btn:after, .is--hover.title_overlay-login-btn:after, .is--hover.game_overlay-endGame-confirmBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -632,23 +671,23 @@ label {
   cursor: default; }
 
 /* OPTIONS PANEL --------------*/
-.help_content-topics, .rulesSelect_content-rules, .userSettings_content-settings, .roomSelect_content-settings {
+.help_content-topics, .rulesSelect_content-rules, .roomSelect_content-settings {
   display: flex; }
-  .help_content-topics .col, .rulesSelect_content-rules .col, .userSettings_content-settings .col, .roomSelect_content-settings .col {
+  .help_content-topics .col, .rulesSelect_content-rules .col, .roomSelect_content-settings .col {
     width: 50%;
     margin-right: 1em; }
-  .help_content-topics .col:last-child, .rulesSelect_content-rules .col:last-child, .userSettings_content-settings .col:last-child, .roomSelect_content-settings .col:last-child {
+  .help_content-topics .col:last-child, .rulesSelect_content-rules .col:last-child, .roomSelect_content-settings .col:last-child {
     margin-right: 0; }
 
-.help_content-topics-topic, .rulesSelect_content-rules-rule, .userSettings_content-settings-setting, .roomSelect_content-settings-setting {
+.help_content-topics-topic, .title_overlay-signup-form-field, .title_overlay-login-form-field, .rulesSelect_content-rules-rule, .userSettings_content-settings-setting, .roomSelect_content-settings-setting {
   display: flex;
   height: 50px;
   line-height: 50px;
   margin-bottom: 1em; }
-  .is--on.help_content-topics-topic, .is--on.rulesSelect_content-rules-rule, .is--on.userSettings_content-settings-setting, .is--on.roomSelect_content-settings-setting, .is--off.help_content-topics-topic, .is--off.rulesSelect_content-rules-rule, .is--off.userSettings_content-settings-setting, .is--off.roomSelect_content-settings-setting {
+  .is--on.help_content-topics-topic, .is--on.title_overlay-signup-form-field, .is--on.title_overlay-login-form-field, .is--on.rulesSelect_content-rules-rule, .is--on.userSettings_content-settings-setting, .is--on.roomSelect_content-settings-setting, .is--off.help_content-topics-topic, .is--off.title_overlay-signup-form-field, .is--off.title_overlay-login-form-field, .is--off.rulesSelect_content-rules-rule, .is--off.userSettings_content-settings-setting, .is--off.roomSelect_content-settings-setting {
     cursor: pointer; }
 
-.help_content-topics-topic-label, .rulesSelect_content-rules-rule-label, .userSettings_content-settings-setting-label, .roomSelect_content-settings-setting-label {
+.help_content-topics-topic-label, .title_overlay-signup-form-field-label, .title_overlay-login-form-field-label, .rulesSelect_content-rules-rule-label, .userSettings_content-settings-setting-label, .roomSelect_content-settings-setting-label {
   text-transform: none;
   flex: 1;
   padding-left: 1em;
@@ -663,12 +702,12 @@ label {
   -webkit-transition: -webkit-background .2s;
   -ms-transition: -ms-background .2s;
   transition: background .2s; }
-  .is--on.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--on.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--on.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
+  .is--on.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--on.title_overlay-signup-form-field .rulesSelect_content-rules-rule-toggle, .is--on.title_overlay-login-form-field .rulesSelect_content-rules-rule-toggle, .is--on.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--on.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--on.title_overlay-signup-form-field .userSettings_content-settings-setting-toggle, .is--on.title_overlay-login-form-field .userSettings_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--on.title_overlay-signup-form-field .roomSelect_content-settings-setting-toggle, .is--on.title_overlay-login-form-field .roomSelect_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
     background: rgba(40, 51, 120, 0.5); }
-  .is--off.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--off.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--off.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
+  .is--off.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--off.title_overlay-signup-form-field .rulesSelect_content-rules-rule-toggle, .is--off.title_overlay-login-form-field .rulesSelect_content-rules-rule-toggle, .is--off.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--off.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--off.title_overlay-signup-form-field .userSettings_content-settings-setting-toggle, .is--off.title_overlay-login-form-field .userSettings_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--off.title_overlay-signup-form-field .roomSelect_content-settings-setting-toggle, .is--off.title_overlay-login-form-field .roomSelect_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
     background: rgba(235, 53, 71, 0.5); }
 
-.help_content-guide-contents, .rulesSelect_content-rules-rule-select, .userSettings_content-settings-setting-select, .roomSelect_content-settings-setting-select {
+.help_content-guide-scroll, .rulesSelect_content-rules-rule-select, .userSettings_content-settings-scroll, .userSettings_content-settings-setting-select, .roomSelect_content-settings-setting-select {
   text-transform: none;
   flex: 1;
   padding-left: 1em;
@@ -679,7 +718,7 @@ label {
   -webkit-transition: -webkit-height .2s .2s;
   -ms-transition: -ms-height .2s .2s;
   transition: height .2s .2s; }
-  .help_content-guide-contents li.is--disabled, .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled, .roomSelect_content-settings-setting-select li.is--disabled {
+  .help_content-guide-scroll li.is--disabled, .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-scroll li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled, .roomSelect_content-settings-setting-select li.is--disabled {
     color: #000; }
 
 .rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty, .userSettings_content-settings-setting.setting-placingMode, .roomSelect_content-settings-setting.setting-mode, .roomSelect_content-settings-setting.setting-difficulty {
@@ -700,7 +739,7 @@ label {
       -webkit-transition: -webkit-transform .2s .2s;
       -ms-transition: -ms-transform .2s .2s;
       transition: transform .2s .2s; }
-  .rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]) {
+  .rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .title_overlay-signup-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .title_overlay-signup-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .title_overlay-signup-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .title_overlay-login-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .title_overlay-login-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .title_overlay-login-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .title_overlay-login-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .title_overlay-login-form-field:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]) {
     -webkit-transition: -webkit-opacity .2s .4s;
     -ms-transition: -ms-opacity .2s .4s;
     transition: opacity .2s .4s; }
@@ -719,16 +758,16 @@ label {
         -webkit-transition: -webkit-transform .2s;
         -ms-transition: -ms-transform .2s;
         transition: transform .2s; }
-    .is--active.rulesSelect_content-rules-rule.rule-trade .help_content-guide-contents, .is--active.userSettings_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.userSettings_content-settings-setting.setting-placingMode .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-mode .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select {
+    .is--active.rulesSelect_content-rules-rule.rule-trade .help_content-guide-scroll, .is--active.userSettings_content-settings-setting.setting-difficulty .help_content-guide-scroll, .is--active.userSettings_content-settings-setting.setting-placingMode .help_content-guide-scroll, .is--active.roomSelect_content-settings-setting.setting-mode .help_content-guide-scroll, .is--active.roomSelect_content-settings-setting.setting-difficulty .help_content-guide-scroll, .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-scroll, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-scroll, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-scroll, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-scroll, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-scroll, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select {
       overflow-y: scroll;
       height: 100px; }
-    .is--active.rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting {
+    .is--active.rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.rulesSelect_content-rules-rule.rule-trade + .title_overlay-signup-form-field, .is--active.userSettings_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field, .is--active.userSettings_content-settings-setting.setting-placingMode + .title_overlay-signup-form-field, .is--active.roomSelect_content-settings-setting.setting-mode + .title_overlay-signup-form-field, .is--active.roomSelect_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field, .is--active.rulesSelect_content-rules-rule.rule-trade + .title_overlay-login-form-field, .is--active.userSettings_content-settings-setting.setting-difficulty + .title_overlay-login-form-field, .is--active.userSettings_content-settings-setting.setting-placingMode + .title_overlay-login-form-field, .is--active.roomSelect_content-settings-setting.setting-mode + .title_overlay-login-form-field, .is--active.roomSelect_content-settings-setting.setting-difficulty + .title_overlay-login-form-field, .is--active.rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting {
       opacity: 0;
       -webkit-transition: -webkit-opacity .2s;
       -ms-transition: -ms-opacity .2s;
       transition: opacity .2s; }
 
-.userSettings_content-settings-setting-input, .roomSelect_content-settings-setting-input {
+.title_overlay-signup-form-field-input, .title_overlay-login-form-field-input, .userSettings_content-settings-setting-input, .roomSelect_content-settings-setting-input {
   border: none;
   outline: none;
   padding: 1em;
@@ -742,9 +781,9 @@ label {
   -webkit-transition: -webkit-background .2s;
   -ms-transition: -ms-background .2s;
   transition: background .2s; }
-  .userSettings_content-settings-setting-input:focus, .roomSelect_content-settings-setting-input:focus {
+  .title_overlay-signup-form-field-input:focus, .title_overlay-login-form-field-input:focus, .userSettings_content-settings-setting-input:focus, .roomSelect_content-settings-setting-input:focus {
     background: rgba(40, 51, 120, 0.5); }
-  .is--invalid.userSettings_content-settings-setting-input, .is--invalid.roomSelect_content-settings-setting-input {
+  .is--invalid.title_overlay-signup-form-field-input, .is--invalid.title_overlay-login-form-field-input, .is--invalid.userSettings_content-settings-setting-input, .is--invalid.roomSelect_content-settings-setting-input {
     background: rgba(235, 53, 71, 0.5); }
 
 /* AVATAR --------------*/
@@ -1177,7 +1216,7 @@ label {
   height: calc(100% - 25px);
   top: 100px; }
 
-.help_content-guide-contents {
+.help_content-guide-scroll {
   cursor: inherit;
   height: 100%;
   background: none;
@@ -1185,11 +1224,11 @@ label {
   overflow-y: auto;
   padding-left: 0;
   padding-right: 2em; }
-  .help_content-guide-contents figure {
+  .help_content-guide-scroll figure {
     display: flex; }
-    .help_content-guide-contents figure:not(:last-of-type) {
+    .help_content-guide-scroll figure:not(:last-of-type) {
       margin-bottom: 2em; }
-    .help_content-guide-contents figure figcaption {
+    .help_content-guide-scroll figure figcaption {
       vertical-align: top;
       padding: 2em;
       flex: 1;
@@ -1198,9 +1237,9 @@ label {
       line-height: 1.5em;
       padding-left: 4em;
       text-indent: -2em; }
-      .help_content-guide-contents figure figcaption span {
+      .help_content-guide-scroll figure figcaption span {
         margin-right: 0.5em; }
-    .help_content-guide-contents figure img {
+    .help_content-guide-scroll figure img {
       border: 1px solid rgba(255, 255, 255, 0.25); }
 
 /*=======================*/
@@ -1236,6 +1275,36 @@ label {
   .title_account-welcome {
     margin-right: 1em;
     position: relative; }
+
+.title_overlay-signup-form, .title_overlay-login-form {
+  width: 500px;
+  margin-top: 2em;
+  text-align: center;
+  overflow: hidden; }
+.title_overlay-login-form {
+  margin-bottom: 1em; }
+.title_overlay-signup-form .field-email, .title_overlay-login-form .field-password, .title_overlay-login-form .field-email {
+  margin-bottom: 3em; }
+.title_overlay-signup-form-field, .title_overlay-login-form-field {
+  text-align: initial; }
+.title_overlay-signup-btn, .title_overlay-login-btn {
+  position: relative;
+  display: inline-block; }
+  .title_overlay-signup-btn:not(:last-of-type), .title_overlay-login-btn:not(:last-of-type) {
+    margin-right: .5em; }
+.title_overlay-signup-message, .title_overlay-login-message, .title_overlay-login-forgotPwd {
+  text-transform: none;
+  margin-top: 1em;
+  min-height: 1em;
+  text-align: center;
+  line-height: 1.25em; }
+.title_overlay-login-forgotPwd {
+  cursor: pointer;
+  -webkit-transition: -webkit-letter-spacing .2s ease-in;
+  -ms-transition: -ms-letter-spacing .2s ease-in;
+  transition: letter-spacing .2s ease-in; }
+  .title_overlay-login-forgotPwd:hover {
+    letter-spacing: .1em; }
 
 /*=======================*/
 /* RULES SCREEN
@@ -1684,6 +1753,25 @@ label {
 /* CONTENT --------------*/
 .userSettings_content-load {
   background: rgba(40, 51, 120, 0.5); }
+
+.userSettings_content-settings {
+  height: calc(100% - 25px);
+  top: 100px; }
+
+.userSettings_content-settings-scroll {
+  cursor: inherit;
+  height: 100%;
+  background: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-left: 0;
+  padding-right: 2em;
+  display: flex; }
+  .userSettings_content-settings-scroll .col {
+    width: 50%;
+    margin-right: 1em; }
+  .userSettings_content-settings-scroll .col:last-child {
+    margin-right: 0; }
 
 /*=======================*/
 /* ROOM SELECTION SCREEN

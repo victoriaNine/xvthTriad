@@ -27,11 +27,14 @@ define([
                 _$.audio.audioEngine.playSFX("menuOpen");
                 _$.ui.footer.toggleMainMenu(null, false);
             },
-            "mouseenter .title_startBtn,.title_account-element" : function () {
+            "mouseenter .title_startBtn,.title_account-element,.title_overlay-signup-btn,.title_overlay-login-btn" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .title_account-element" : function () {
+            "click .title_account-element,.title_overlay-signup-btn,.title_overlay-login-btn" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "focus .title_overlay-signup-form-field-input,title_overlay-login-form-field-input" : function () {
+                _$.audio.audioEngine.playSFX("uiInput");
             },
             "click .title_account-signupBtn" : function () {
                 this.openOverlay("signup");
@@ -40,51 +43,85 @@ define([
                 this.openOverlay("login");
             },
             "click .title_account-logoutBtn" : function () {
-                this.openOverlay("logout");
-            }
+                this.$(".title_account-logoutBtn").text("Signing out...");
+
+                _$.comm.sessionManager.on("logout", (event, message) => {
+                    this.$(".title_account-logoutBtn").text("Success!");
+                    _$.audio.audioEngine.playSFX("gameGain");
+                });
+
+                _$.comm.sessionManager.logout();
+            },
+            "click .title_overlay-signup-closeBtn" : function (e) {
+                e.preventDefault();
+                this.closeOverlay("signup");
+            },
+            "click .title_overlay-login-closeBtn" : function (e) {
+                e.preventDefault();
+                this.closeOverlay("login");
+            },
+            "submit .title_overlay-signup-form"      : "doSignup",
+            "submit .title_overlay-login-form"       : "loginConfirmAction",
+            "click .title_overlay-login-forgotPwd"   : "toForgotPassword"
         },
 
         initialize,
         playIntro,
         transitionIn,
         transitionOut,
-        openOverlay
+        openOverlay,
+        closeOverlay,
+        doSignup,
+        doLogin,
+        updateAccountLayout,
+        toForgotPassword,
+        sendPasswordMail
     });
 
     function initialize (options = {}) {
-        this.introTL         = null;
-        this.accountTemplate = _.template(Templ_TitleAccount);
+        this.introTL            = null;
+        this.accountTemplate    = _.template(Templ_TitleAccount);
+        this.loginConfirmAction = this.doLogin;
 
         if (options.setup) {
             _$.state.user = new Model_User();
 
-            if (_$.utils.getLocalStorage(_$.app.name) && !options.resetUser) {
+            if ((_$.comm.sessionManager.getSession() || _$.utils.getLocalStorage(_$.app.name)) && !options.resetUser) {
                 _$.app.loadData();
             } else {
                 _$.state.user.setup();
             }
         }
 
-        this.$el.html(this.template()).append(this.accountTemplate({
-            isLoggedIn : !!_$.state.user.get("_id"),
-            userName   : _$.state.user.get("name")
-        }));
-
+        this.$el.html(this.template());
         var logo = $(_$.assets.get("svg.ui.logo"));
         this.$(".title_logo").append(logo);
 
-        _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
-        _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
-        _$.audio.audioEngine.setBGM("bgm.menus");
-        _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
-        
-        if (options.fullIntro) {
-            _$.utils.addDomObserver(this.$el, this.playIntro.bind(this), true);
+        if (_$.state.user.dataLoaded) {
+            proceed.call(this);
         } else {
-            _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
+            _$.events.once("userDataLoaded", () => {
+                proceed.call(this);
+            });
         }
 
-        this.add();
+        function proceed () {
+            this.updateAccountLayout();
+
+            _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
+            _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
+            _$.audio.audioEngine.setBGM("bgm.menus");
+
+            _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
+            
+            if (options.fullIntro) {
+                _$.utils.addDomObserver(this.$el, this.playIntro.bind(this), true);
+            } else {
+                _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
+            }
+
+            this.add();
+        }
     }
 
     function playIntro () {
@@ -117,6 +154,7 @@ define([
         this.introTL.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=1");
         this.introTL.set(_$.ui.footer.text, { clearProps:"display" }, "enterFooter+=2.5");
         this.introTL.from(_$.ui.footer.text, 1, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
+        this.introTL.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
         this.introTL.call(function () {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
@@ -161,6 +199,7 @@ define([
         tl.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=1");
         tl.set(_$.ui.footer.text, { clearProps: "display" }, "enterFooter+=2.5");
         tl.to(_$.ui.footer.text, 1, { opacity: 1, x: 0, clearProps: "all" }, "enterFooter+=2.5");
+        tl.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
         tl.call(function () {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
@@ -190,8 +229,9 @@ define([
         tl.add(_$.ui.footer.toggleSocial("hide"));
         tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
         tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");
-        tl.to(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25 }, 0);
-        tl.to(this.$(".title_logo"), 1, { opacity : 0, scale: 1.25 }, 0.5);
+        tl.to(this.$(".title_account"), 0.5, { opacity: 0, x: 20 }, 0);
+        tl.to(this.$(".title_startBtn"), 0.5, { opacity: 0, scale: 1.25 }, 0);
+        tl.to(this.$(".title_logo"), 1, { opacity: 0, scale: 1.25 }, 0.5);
         tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); }, [], null, 0.5);
         tl.call(this.changeScreen.bind(this, nextScreen, options));
 
@@ -203,24 +243,247 @@ define([
         var overlaySelector = ".title_overlay-" + overlayName;
         var overlay         = this.$(overlaySelector);
 
-        var tl = new TimelineMax();
-        tl.call(() => { overlay.addClass("is--active"); });
-
-        if (overlayName !== "signout") {
-            tl.call(() => {
-                this.$(overlaySelector + "-confirmBtn").slideDown(400);
-            }, [], null, "+=0.8");
+        if (overlayName === "signup") {
+            this.$(".title_overlay-signup-form .field-name input").val(_$.state.user.get("name"));
         }
 
+        var tl = new TimelineMax();
+        tl.call(() => { overlay.addClass("is--active"); });
+        tl.call(() => { this.$(overlaySelector + "-confirmBtn," + overlaySelector + "-closeBtn").slideDown(400); }, [], null, "+=0.8");
+        if (overlayName === "login") {
+            tl.from(this.$(".title_overlay-login-forgotPwd"), 0.4, { opacity: 0, y: 20, clearProps: "all" }, "+=0.2");
+        }
         tl.call(() => { _$.events.trigger("startUserEvents"); });
+    }
 
-        if (overlayName === "signout") {
-            tl.call(() => { overlay.removeClass("is--active"); }, [], null, "+=1");
+    function closeOverlay (overlayName) {
+        _$.events.trigger("stopUserEvents");
+        var overlaySelector = ".title_overlay-" + overlayName;
+        var overlay         = this.$(overlaySelector);
+
+        var tl = new TimelineMax();
+        if (overlayName === "login") {
+            tl.to(this.$(".title_overlay-login-forgotPwd"), 0.4, { opacity: 0, y: 20 });
+        }
+        tl.call(() => {
+            this.$(overlaySelector + "-confirmBtn," + overlaySelector + "-closeBtn").slideUp(400);
+            this.$(overlaySelector + " input").blur();
+        }, [], null, "-=0.2");
+        tl.call(() => { overlay.removeClass("is--active"); }, [], null, "+=0.4");
+        tl.call(() => {
+            this.$(overlaySelector + " input").each(function () {
+                $(this).val($(this).attr("value") || "");
+                $(this).removeClass("is--invalid");
+            });
+
+            this.$(overlaySelector + "-message").text("");
+            if (overlayName === "login") {
+                TweenMax.set(this.$(".title_overlay-login-forgotPwd"), { clearProps: "all" });
+
+                if (this.loginConfirmAction !== this.doLogin) {
+                    this.toForgotPassword();
+                }
+            }
+
+            _$.events.trigger("startUserEvents");
+        }, [], null, "+=0.8");
+    }
+
+    function doSignup () {
+        var data = {
+            name            : this.$(".title_overlay-signup-form .field-name input").val(),
+            username        : this.$(".title_overlay-signup-form .field-login input").val(),
+            email           : this.$(".title_overlay-signup-form .field-email input").val(),
+            password        : this.$(".title_overlay-signup-form .field-password input").val(),
+            confirmPassword : this.$(".title_overlay-signup-form .field-password input").val(),
+            profile         : _.omit(_$.utils.getUserData(), ["version", "userId", "name"])
+        };
+        
+        this.$(".title_overlay-signup-form-field-input").removeClass("is--invalid");
+        this.$(".title_overlay-signup-message").text("");
+        this.$(".title_overlay-signup-confirmBtn").text("Signing up...");
+
+        _$.comm.sessionManager.register(data).then((response) => {
+            console.log(response);
+            _$.audio.audioEngine.playSFX("gameGain");
+            this.$(".title_overlay-signup-confirmBtn").text("Success!");
+            this.$(".title_overlay-signup-message").text("Thank you! A confirmation mail was sent to " + data.email + ".");
+        }).catch((error) => {
+            console.log(error);
+            var errorString = _.map(_.omit(error.validationErrors, "confirmPassword"), (error) => { return error.join(". "); }).join("<br>");
+            errorString = errorString.replace("username", "login").replace("Username", "Login");
+
+            _$.audio.audioEngine.playSFX("uiError");
+            this.$(".title_overlay-signup-confirmBtn").text("Error!");
+            setTimeout(() => { this.$(".title_overlay-signup-confirmBtn").text("Confirm"); }, 1000);
+
+            if (_.has(error.validationErrors, "name")) {
+                this.$(".title_overlay-signup-form .field-name input").addClass("is--invalid");
+            }
+
+            if (_.has(error.validationErrors, "username")) {
+                this.$(".title_overlay-signup-form .field-login input").addClass("is--invalid");
+            }
+
+            if (_.has(error.validationErrors, "password")) {
+                this.$(".title_overlay-signup-form .field-password input").addClass("is--invalid");
+            }
+
+            if (_.has(error.validationErrors, "email")) {
+                this.$(".title_overlay-signup-form .field-email input").addClass("is--invalid");
+            }
+            
+            this.$(".title_overlay-signup-message").html(errorString);
+        });
+
+        return false;
+    }
+
+    function doLogin () {
+        this.$(".title_overlay-login-form-field-input").removeClass("is--invalid");
+        this.$(".title_overlay-login-message").text("");
+        this.$(".title_overlay-login-confirmBtn").text("Signing in...");
+
+        _$.comm.sessionManager.login({
+            username: this.$(".title_overlay-login-form .field-login input").val(),
+            password: this.$(".title_overlay-login-form .field-password input").val()
+        }).then((session) => {
+            _$.audio.audioEngine.playSFX("gameGain");
+            this.$(".title_overlay-login-confirmBtn").text("Success!");
+
+            this.$(".title_overlay-login-message").text("Welcome back, " + session.name + "!");
+            this.closeOverlay("login");
+
+            _$.events.once("userDataLoaded", () => { this.updateAccountLayout(); });
+            _$.app.loadData();
+
+            _$.comm.sessionManager.logoutOthers();
+        }).catch((error) => {
+            _$.audio.audioEngine.playSFX("uiError");
+            this.$(".title_overlay-login-confirmBtn").text("Error!");
+            setTimeout(() => { this.$(".title_overlay-login-confirmBtn").text("Confirm"); }, 1000);
+
+            this.$(".title_overlay-login-form-field-input").addClass("is--invalid");
+            this.$(".title_overlay-login-message").text(error.message || error.error);
+        });
+
+        return false;
+    }
+
+    function toForgotPassword () {
+        _$.events.trigger("stopUserEvents");
+
+        var direction = (this.loginConfirmAction === this.doLogin) ? "sendMail" : "login";
+        var fromField;
+        var toField;
+        var messageTxt;
+        var forgotPwdTxt;
+        var confirmBtnTxt;
+        var fromPos;
+        var toPos;
+
+        if (direction === "sendMail") {
+            this.loginConfirmAction = this.sendPasswordMail;
+
+            fromField     = ".field-password";
+            toField       = ".field-email";
+            messageTxt    = "Enter your login or the email address linked to your account.";
+            forgotPwdTxt  = "I remember!";
+            confirmBtnTxt = "Send";
+            fromPos       = "-100%";
+            toPos         = "100%";
+        } else {
+            this.loginConfirmAction = this.doLogin;
+
+            fromField     = ".field-email";
+            toField       = ".field-password";
+            messageTxt    = "";
+            forgotPwdTxt  = "Forgot your password?";
+            confirmBtnTxt = "Confirm";
+            fromPos       = "100%";
+            toPos         = "-100%";
+        }
+
+        this.$(".title_overlay-login-form .field-login input").val("");
+        this.$(".title_overlay-login-form-field-input").removeClass("is--invalid");
+
+        var tl = new TimelineMax();
+        tl.to(this.$(".title_overlay-login-message, .title_overlay-login-forgotPwd, .title_overlay-login-confirmBtn"), 0.4, { opacity: 0 });
+        tl.to(this.$(".title_overlay-login-form " + fromField), 0.2, { opacity: 0, x: fromPos }, 0);
+        tl.set(this.$(".title_overlay-login-form " + fromField), { display:"none", clearProps:"opacity, x" });
+        tl.set(this.$(".title_overlay-login-form " + toField), { clearProps:"display, x" });
+        tl.from(this.$(".title_overlay-login-form " + toField), 0.2, { opacity: 0, x: toPos, clearProps:"all" });
+        tl.call(() => {
+            this.$(".title_overlay-login-message").text(messageTxt);
+            this.$(".title_overlay-login-forgotPwd").text(forgotPwdTxt);
+            this.$(".title_overlay-login-confirmBtn").text(confirmBtnTxt);
+        });
+        tl.to(this.$(".title_overlay-login-message, .title_overlay-login-forgotPwd, .title_overlay-login-confirmBtn"), 0.4, { opacity: 1, clearProps:"opacity" });
+        tl.call(() => { _$.events.trigger("startUserEvents"); });
+    }
+
+    function sendPasswordMail () {
+        this.$(".title_overlay-login-form-field-input").removeClass("is--invalid");
+        this.$(".title_overlay-login-confirmBtn").text("Sending mail...");
+        var userId = this.$(".title_overlay-login-form .field-login input").val();
+        var email  = this.$(".title_overlay-login-form .field-email input").val();
+
+        if (email || !userId) {
+            proceed.call(this);
+        } else {
+            _$.comm.sessionManager.getUser(userId).then((user) => {
+                email = user.email;
+                proceed.call(this);
+            }).catch((error) => {
+                onError.call(this, error.message || error.error);
+            });
+        }
+
+        function proceed () {
+            _$.comm.sessionManager.forgotPassword(email).then((response) => {
+                _$.audio.audioEngine.playSFX("gameGain");
+                this.$(".title_overlay-login-confirmBtn").text("Success!");
+                this.$(".title_overlay-login-message").text("Password recovery email sent to " + email + ".");
+            }).catch((error) => {
+                onError.call(this, error.message || error.error);
+            });
+        }
+
+        function onError (message) {
+            _$.audio.audioEngine.playSFX("uiError");
+            this.$(".title_overlay-login-confirmBtn").text("Error!");
+            setTimeout(() => { this.$(".title_overlay-login-confirmBtn").text("Send"); }, 1000);
+
+            this.$(".title_overlay-login-form-field-input").addClass("is--invalid");
+            this.$(".title_overlay-login-message").text(message);
+        }
+
+        return false;
+    }
+
+    function updateAccountLayout () {
+        var accountLayout = $(this.accountTemplate({
+            isLoggedIn : !!_$.state.user.get("userId"),
+            userName   : _$.state.user.get("name")
+        }));
+
+        if (this.$(".title_account").length) {
+            var tl = new TimelineMax();
+            tl.to(this.$(".title_account"), 0.5, { opacity: 0, x: 20 });
             tl.call(() => {
-                this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
-                TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
-                _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
-            }, [], null, "+=0.8");
+                _$.utils.addDomObserver(this.$(".title_account"), proceed.bind(this), true, "remove");
+                this.$(".title_account, .title_overlay-signup, .title_overlay-login").remove();
+            });
+        } else {
+            proceed.call(this);
+        }
+
+        function proceed () {
+            _$.utils.addDomObserver(accountLayout, () => {
+                TweenMax.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" });
+            }, true);
+
+            this.$el.append(accountLayout);
         }
     }
 });

@@ -1,7 +1,7 @@
 define(["underscore", "backbone", "global", "collections/coll_album"], function Model_User (_, Backbone, _$, Coll_Album) {
     return Backbone.Model.extend({
         defaults : {
-            _id         : null,
+            userId      : null,
             name        : null,
             avatar      : null,
             album       : new Coll_Album(),
@@ -16,9 +16,14 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
             sfxVolume   : 0.5
         },
 
+        initialize,
         setup,
         setAvatarPath
     });
+
+    function initialize () {
+        this.dataLoaded = false;
+    }
 
     function setup (options) {
         var name          = _$.utils.getRandomName();
@@ -33,6 +38,7 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
 
         this.set({ name, album: initialAlbum });
         this.setAvatarPath(avatarUrl);
+        this.dataLoaded = true;
     }
 
     function setAvatarPath (url) {

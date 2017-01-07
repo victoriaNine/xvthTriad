@@ -92,6 +92,37 @@ define([
         this.eventsDisabled = false;
         this.promptOverlay  = new Elem_PromptOverlay();
 
+        if (_$.comm.sessionManager) {
+            _$.comm.sessionManager.on("logout", (event, message) => {
+                if (event !== "Logged out") {
+                    this.error(event, {
+                        msg    : event,
+                        btnMsg : "Close",
+                        action : this.closePrompt.bind(this, doLogout.bind(this))
+                    });
+                } else {
+                    doLogout.call(this);
+                }
+
+                function doLogout () {
+                    _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+                    TweenMax.to(_$.dom, 1, { opacity: 0,
+                        onComplete: () => {
+                            if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
+                                proceed.call(this);
+                            } else {
+                                _$.events.once("bgmEnded", proceed.bind(this));
+                            }
+                        }
+                    });
+
+                    function proceed () {
+                        this.changeScreen("title", { setup: true, resetUser: true, fullIntro: true });
+                    }   
+                }                
+            });
+        }
+
         _$.utils.addDomObserver(this.$el, this.updateControlsState.bind(this), true);
         _$.events.on("startUserEvents", _delegate, this);
         _$.events.on("stopUserEvents", _undelegate, this);
@@ -178,8 +209,8 @@ define([
         _showPrompt.call(this, _.extend(options, { type: "choice" }));
     }
 
-    function closePrompt () {
-        this.promptOverlay.close();
+    function closePrompt (callback) {
+        this.promptOverlay.close(callback);
     }
 
     function _showPrompt (options) {

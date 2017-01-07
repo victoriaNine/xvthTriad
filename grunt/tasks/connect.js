@@ -19,14 +19,14 @@ module.exports = function (grunt, options) {
         var ip;
 
         app.set("port", port);
-        app.use(logger("dev"));
+        //app.use(logger("dev"));
 
         // Setup SuperLogin
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: false }));
  
         // Redirect to https except on localhost
-        //app.use(httpsRedirect);
+        app.use(httpsRedirect);
 
         var config = {
             dbServer: {
@@ -77,43 +77,6 @@ module.exports = function (grunt, options) {
         
         // Mount SuperLogin's routes to our app 
         app.use("/auth", superlogin.router);
-
-        var Profile = require("../parsers/profile");
-        var profile = new Profile(superlogin);
-
-        app.get("/user/profile", superlogin.requireAuth, function(req, res, next) {
-          profile.get(req.user._id)
-            .then(function(userProfile) {
-              res.status(200).json(userProfile);
-            }, function(err) {
-              return next(err);
-            });
-        });
-
-        app.post("/user/change-name", superlogin.requireAuth, function(req, res, next) {
-          if(!req.body.newName) {
-            return next({
-              error: "Field \"newName\" is required",
-              status: 400
-            });
-          }
-          profile.changeName(req.user._id, req.body.newName)
-            .then(function(userProfile) {
-              res.status(200).json(userProfile);
-            }, function(err) {
-              return next(err);
-            });
-        });
-
-        app.post("/user/destroy", superlogin.requireAuth, function(req, res, next) {
-          superlogin.removeUser(req.user._id, true)
-            .then(function() {
-              console.log("User destroyed!");
-              res.status(200).json({ok: true, success: "User: " + req.user._id + " destroyed."});
-            }, function(err) {
-              return next(err);
-            });
-        });
 
         app.use(compression());
         if (target === "livereload") { app.use(lrSnippet); }
