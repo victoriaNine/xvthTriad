@@ -45,25 +45,20 @@ module.exports = function (grunt, options) {
                 }
             },
             mailer: {
-                fromEmail: process.env.MAILER_NAME + "<" + process.env.MAILER_EMAIL + ">",
+                fromEmail: process.env.MAILER_NAME + " <" + process.env.MAILER_EMAIL + ">",
                 options: "smtps://" + encodeURIComponent(process.env.MAILER_EMAIL) + ":" + process.env.MAILER_PASSWORD + "@" + process.env.MAILER_SMTP
             },
             security: {
                 maxFailedLogins: 3,
                 lockoutTime: 600,
-                tokenLife: 86400
+                tokenLife: 86400,
+                loginOnRegistration: false
             },
             local: {
                 sendConfirmEmail: true,
-                requireEmailConfirm: false,
-                loginOnRegistration: true,
+                requireEmailConfirm: true,
                 confirmEmailRedirectURL: "/confirm-email"
             },
-            /*userDBs: {
-                defaultDBs: {
-                    private: ["user"]
-                }
-            },*/
             providers: { 
                 local: true
             }

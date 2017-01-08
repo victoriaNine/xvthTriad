@@ -14,7 +14,6 @@ require.config({
         socketIO          : "libs/socket.io-client/dist/socket.io",
         stats             : "libs/stats.js/build/stats",
         superlogin        : "libs/superlogin-client/superlogin",
-        pouchdb           : "libs/pouchdb/dist/pouchdb-6.1.1",
 
         text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
@@ -51,7 +50,6 @@ require([
     "socketIO",
     "stats",
     "superlogin",
-    "pouchdb",
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
@@ -76,7 +74,7 @@ require([
     "views/screen_userSettings",
     "jqueryNearest",
     "jsonPrune"
-], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, PouchDB, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");
     var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp];
@@ -188,11 +186,24 @@ require([
             e.src="//www.google-analytics.com/analytics.js";
             r.parentNode.insertBefore(e,r);
         }(window,document,"script","ga"));
-        ga("create","UA-89445990-1");
-        ga("send","pageview");
+        window.ga("create","UA-89445990-1");
+        window.ga("send","pageview");
     }
 
-    if (window.location.pathname !== "/") {
+    var location = window.location;
+    if (location.pathname !== "/") {
+        if (location.pathname === "/confirm-email" && location.search) {
+            var confirmEmailMsg = location.search.match("success=true") ? "Email verified, thanks! You can now login." : window.unescape(location.search.match(/=(.*?)$/)[1]);
+            _$.events.once("initialized", () => {
+                _$.audio.audioEngine.playSFX("gameGain");
+                _$.ui.screen.info(null, {
+                    titleBold    : "Email",
+                    titleRegular : "confirmation",
+                    msg          : confirmEmailMsg
+                });
+            });
+        }
+        
         window.history.replaceState({}, "", "/");
     }
     
@@ -228,7 +239,6 @@ require([
 
     _$.events.once("launch", function () {
         _$.comm.sessionManager = new Superlogin(_$.app.sessionConfig);
-        _$.comm.dbManager      = new PouchDB(_$.app.dbURL.concat("/users"));
         _$.comm.socketManager  = new SocketManager();
         _$.ui.footer           = new Elem_Footer();
         _$.ui.screen           = new Screen_Title({ setup: true, fullIntro: true });
@@ -255,8 +265,3 @@ require([
 
     _$.app.assetLoader.load(loaders);
 });
-
-
-(function () {
-
-})();

@@ -43,10 +43,23 @@ define([
                 this.openOverlay("login");
             },
             "click .title_account-logoutBtn" : function () {
+                _$.app.track("set", {
+                    "dimension0" : "difficulty",
+                    "metric0"    : "albumSize",
+                    "metric1"    : "gameStats"
+                });
+                _$.app.track("send", "event", {
+                    eventCategory : "accountEvent",
+                    eventAction   : "logout",
+                    dimension1    : _$.state.user.get("difficulty"),
+                    metric0       : _$.state.user.get("album").length,
+                    metric1       : JSON.stringify(_$.state.user.get("gameStats"))
+                });
+
                 this.$(".title_account-logoutBtn").text("Signing out...");
 
-                _$.comm.sessionManager.on("logout", (event, message) => {
-                    this.$(".title_account-logoutBtn").text("Success!");
+                _$.comm.sessionManager.once("logout", (event, message) => {
+                    this.$(".title_account-logoutBtn").text("See you!");
                     _$.audio.audioEngine.playSFX("gameGain");
                 });
 
@@ -66,6 +79,7 @@ define([
         },
 
         initialize,
+        remove,
         playIntro,
         transitionIn,
         transitionOut,
@@ -82,16 +96,34 @@ define([
         this.introTL            = null;
         this.accountTemplate    = _.template(Templ_TitleAccount);
         this.loginConfirmAction = this.doLogin;
+        this.signedUp           = false;
 
         if (options.setup) {
             _$.state.user = new Model_User();
 
-            if ((_$.comm.sessionManager.getSession() || _$.utils.getLocalStorage(_$.app.name)) && !options.resetUser) {
+            if (_$.utils.getLocalStorage(_$.app.name)) {
                 _$.app.loadData();
             } else {
                 _$.state.user.setup();
             }
         }
+
+        _$.comm.sessionManager.on("login", () => {
+            _$.events.once("userDataLoaded", () => {
+                if (this.$(".title_overlay-login").hasClass("is--active")) {
+                    this.$(".title_overlay-login-message").text("Welcome back, " + _$.state.user.get("name") + "!");
+                    _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
+                    _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
+                    
+                    this.closeOverlay("login");
+                }
+
+                this.updateAccountLayout();
+                _$.comm.sessionManager.logoutOthers();
+            });
+
+            _$.app.loadData();
+        });
 
         this.$el.html(this.template());
         var logo = $(_$.assets.get("svg.ui.logo"));
@@ -122,6 +154,11 @@ define([
 
             this.add();
         }
+    }
+
+    function remove () {
+        _$.comm.sessionManager.removeAllListeners("login");
+        Screen.prototype.remove.call(this);
     }
 
     function playIntro () {
@@ -162,6 +199,7 @@ define([
             $(window).off("click touchstart", skipIntro.bind(this));
             _$.events.off("gamepad", skipIntro, this);
             _$.events.trigger("startUserEvents");
+            _$.events.trigger("initialized");
         });
 
         _.each(logoPaths, function (logoPath) {
@@ -245,6 +283,7 @@ define([
 
         if (overlayName === "signup") {
             this.$(".title_overlay-signup-form .field-name input").val(_$.state.user.get("name"));
+            this.signedUp = false;
         }
 
         var tl = new TimelineMax();
@@ -271,17 +310,21 @@ define([
         }, [], null, "-=0.2");
         tl.call(() => { overlay.removeClass("is--active"); }, [], null, "+=0.4");
         tl.call(() => {
-            this.$(overlaySelector + " input").each(function () {
-                $(this).val($(this).attr("value") || "");
-                $(this).removeClass("is--invalid");
-            });
+            if (_$.comm.sessionManager.getSession()) {
+                overlay.remove();
+            } else {
+                this.$(overlaySelector + " input").each(function () {
+                    $(this).val($(this).attr("value") || "");
+                    $(this).removeClass("is--invalid");
+                });
 
-            this.$(overlaySelector + "-message").text("");
-            if (overlayName === "login") {
-                TweenMax.set(this.$(".title_overlay-login-forgotPwd"), { clearProps: "all" });
+                this.$(overlaySelector + "-message").text("");
+                if (overlayName === "login") {
+                    TweenMax.set(this.$(".title_overlay-login-forgotPwd"), { clearProps: "all" });
 
-                if (this.loginConfirmAction !== this.doLogin) {
-                    this.toForgotPassword();
+                    if (this.loginConfirmAction !== this.doLogin) {
+                        this.toForgotPassword();
+                    }
                 }
             }
 
@@ -289,7 +332,20 @@ define([
         }, [], null, "+=0.8");
     }
 
-    function doSignup () {
+    function doSignup (e) {
+        if (this.signedUp) {
+            e.preventDefault();
+            return false;
+        }
+
+        _$.app.track("send", "event", {
+            eventCategory : "accountEvent",
+            eventAction   : "register",
+            dimension1    : _$.state.user.get("difficulty"),
+            metric0       : _$.state.user.get("album").length,
+            metric1       : JSON.stringify(_$.state.user.get("gameStats"))
+        });
+
         var data = {
             name            : this.$(".title_overlay-signup-form .field-name input").val(),
             username        : this.$(".title_overlay-signup-form .field-login input").val(),
@@ -304,12 +360,14 @@ define([
         this.$(".title_overlay-signup-confirmBtn").text("Signing up...");
 
         _$.comm.sessionManager.register(data).then((response) => {
-            console.log(response);
             _$.audio.audioEngine.playSFX("gameGain");
             this.$(".title_overlay-signup-confirmBtn").text("Success!");
             this.$(".title_overlay-signup-message").text("Thank you! A confirmation mail was sent to " + data.email + ".");
+            this.$(".title_overlay-signup-confirmBtn, .title_overlay-signup-closeBtn").slideUp(200);
+            setTimeout(() => { this.$(".title_overlay-signup-closeBtn").slideDown(200); }, 1000);
+
+            this.signedUp = true;
         }).catch((error) => {
-            console.log(error);
             var errorString = _.map(_.omit(error.validationErrors, "confirmPassword"), (error) => { return error.join(". "); }).join("<br>");
             errorString = errorString.replace("username", "login").replace("Username", "Login");
 
@@ -340,6 +398,14 @@ define([
     }
 
     function doLogin () {
+        _$.app.track("send", "event", {
+            eventCategory : "accountEvent",
+            eventAction   : "login",
+            dimension1    : _$.state.user.get("difficulty"),
+            metric0       : _$.state.user.get("album").length,
+            metric1       : JSON.stringify(_$.state.user.get("gameStats"))
+        });
+
         this.$(".title_overlay-login-form-field-input").removeClass("is--invalid");
         this.$(".title_overlay-login-message").text("");
         this.$(".title_overlay-login-confirmBtn").text("Signing in...");
@@ -350,14 +416,6 @@ define([
         }).then((session) => {
             _$.audio.audioEngine.playSFX("gameGain");
             this.$(".title_overlay-login-confirmBtn").text("Success!");
-
-            this.$(".title_overlay-login-message").text("Welcome back, " + session.name + "!");
-            this.closeOverlay("login");
-
-            _$.events.once("userDataLoaded", () => { this.updateAccountLayout(); });
-            _$.app.loadData();
-
-            _$.comm.sessionManager.logoutOthers();
         }).catch((error) => {
             _$.audio.audioEngine.playSFX("uiError");
             this.$(".title_overlay-login-confirmBtn").text("Error!");
@@ -371,6 +429,14 @@ define([
     }
 
     function toForgotPassword () {
+        _$.app.track("send", "event", {
+            eventCategory : "accountEvent",
+            eventAction   : "forgotPassword",
+            dimension1    : _$.state.user.get("difficulty"),
+            metric0       : _$.state.user.get("album").length,
+            metric1       : JSON.stringify(_$.state.user.get("gameStats"))
+        });
+
         _$.events.trigger("stopUserEvents");
 
         var direction = (this.loginConfirmAction === this.doLogin) ? "sendMail" : "login";
@@ -463,7 +529,7 @@ define([
 
     function updateAccountLayout () {
         var accountLayout = $(this.accountTemplate({
-            isLoggedIn : !!_$.state.user.get("userId"),
+            isLoggedIn : _$.comm.sessionManager.getSession(),
             userName   : _$.state.user.get("name")
         }));
 
@@ -472,7 +538,7 @@ define([
             tl.to(this.$(".title_account"), 0.5, { opacity: 0, x: 20 });
             tl.call(() => {
                 _$.utils.addDomObserver(this.$(".title_account"), proceed.bind(this), true, "remove");
-                this.$(".title_account, .title_overlay-signup, .title_overlay-login").remove();
+                this.$(".title_account").remove();
             });
         } else {
             proceed.call(this);

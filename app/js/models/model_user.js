@@ -3,8 +3,9 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
         defaults : {
             userId      : null,
             name        : null,
+            email       : null,
             avatar      : null,
-            album       : new Coll_Album(),
+            album       : null,
             difficulty  : "easy",
             placingMode : "dragDrop",
             gameStats   : {
@@ -22,21 +23,19 @@ define(["underscore", "backbone", "global", "collections/coll_album"], function 
     });
 
     function initialize () {
+        var avatarUrl = _$.assets.get("img.avatars.user_default").src;
+        this.setAvatarPath(avatarUrl);
+        this.set("album", new Coll_Album());
+        
         this.dataLoaded = false;
     }
 
     function setup (options) {
         var name          = _$.utils.getRandomName();
         var characterName = name.match(/[^\_\d]/g).join("");
-        var avatarUrl     = "./assets/img/avatars/user_" + characterName.toLowerCase() + ".jpg";
+        var avatarUrl     = _$.assets.get("img.avatars.user_" + characterName.toLowerCase()).src;
 
-        var initialAlbum = new Coll_Album(_$.utils.getRandomCards({
-            amount : 7,
-            level  : 1,
-            unique : true
-        }));
-
-        this.set({ name, album: initialAlbum });
+        this.set({ name });
         this.setAvatarPath(avatarUrl);
         this.dataLoaded = true;
     }

@@ -192,19 +192,19 @@ define([
         switch (this.get("difficulty")) {
             case "easy":
                 config.name   = "Carbuncle";
-                config.avatar = "./assets/img/avatars/computer_carbuncle.jpg";
+                config.avatar = _$.assets.get("img.avatars.computer_carbuncle").src;
                 cardMinLevel  = 1;
                 cardMaxLevel  = 1;
                 break;
             case "normal":
                 config.name   = "Gentiana";
-                config.avatar = "./assets/img/avatars/computer_gentiana.jpg";
+                config.avatar = _$.assets.get("img.avatars.computer_gentiana").src;
                 cardMinLevel  = 1;
                 cardMaxLevel  = 2;
                 break;
             case "hard":
                 config.name   = "Bahamut";
-                config.avatar = "./assets/img/avatars/computer_bahamut.jpg";
+                config.avatar = _$.assets.get("img.avatars.computer_bahamut").src;
                 cardMinLevel  = 1;
                 cardMaxLevel  = 3;
                 break;

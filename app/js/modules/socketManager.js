@@ -7,25 +7,27 @@ define(["underscore", "global"], function socketManager (_, _$) {
             this.client = this.socket.io;
 
             this.client.on("connect_timeout", () => {
-                 _$.events.trigger("showServerError", {
+                _$.comm.sessionManager.logout("Connection lost", true);
+                _$.events.trigger("showError", {
                     type   : "error",
                     msg    : "Connection timed out.",
                     btnMsg : "Refresh",
                     action : window.location.reload.bind(window.location)
-                 });
+                });
             });
 
             this.socket.on("disconnect", () => {
-                 _$.events.trigger("showServerError", {
+                _$.comm.sessionManager.logout("Connection lost", true);
+                _$.events.trigger("showError", {
                     type   : "error",
                     msg    : "Connection lost.",
                     btnMsg : "Refresh",
                     action : window.location.reload.bind(window.location)
-                 });
+                });
             });
 
             this.socket.on("in:otherPlayerLeft", (msgFromServer) => {
-                _$.events.trigger("showServerError", msgFromServer);
+                _$.events.trigger("showError", msgFromServer);
             });
 
             this.socket.on("in:emitEventToClient", (msgFromServer) => {

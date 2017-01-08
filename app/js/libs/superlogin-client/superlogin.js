@@ -1,8 +1,9 @@
 define([
     "axios",
     "eventemitter2",
+    "underscore",
     "global"
-], function global (axios, EventEmitter2, _$) {
+], function global (axios, EventEmitter2, _, _$) {
     const debug = {
         log: _$.debug.log.bind(null, 'superlogin:log'),
         info: _$.debug.log.bind(null, 'superlogin:info'),
@@ -66,7 +67,7 @@ define([
             this._config = config;
 
             // Setup the new session
-            this._session = JSON.parse(this.storage.getItem('superlogin.session'));
+            this._session = _$.app.decodeData(JSON.parse(this.storage.getItem(_$.app.name)), "session");
 
             this._httpInterceptor();
 
@@ -85,19 +86,16 @@ define([
 
         _httpInterceptor() {
             const request = req => {
-                console.log("_httpInterceptor 1", req);
                 const config = this.getConfig();
                 const session = this.getSession();
                 if (!session || !session.token) {
                     return Promise.resolve(req);
                 }
 
-                console.log("_httpInterceptor 2", req);
                 if (req.skipRefresh) {
                     return Promise.resolve(req);
                 }
 
-                console.log("_httpInterceptor 3", req);
                 return this.checkRefresh().then(() => {
                     if (checkEndpoint(req.url, config.endpoints)) {
                         req.headers.Authorization = `Bearer ${session.token}:${session.password}`;
@@ -152,19 +150,19 @@ define([
 
         getSession() {
             if (!this._session) {
-                this._session = JSON.parse(this.storage.getItem('superlogin.session'));
+                this._session = _$.app.decodeData(JSON.parse(this.storage.getItem(_$.app.name)), "session");
             }
             return this._session ? Object.assign(this._session) : null;
         }
 
         setSession(session) {
             this._session = session;
-            this.storage.setItem('superlogin.session', JSON.stringify(this._session));
+            this.storage.setItem(_$.app.name, JSON.stringify(_$.app.encodeData(this._session, "session")));
             debug.info('New session set');
         }
 
         deleteSession() {
-            this.storage.removeItem('superlogin.session');
+            this.storage.removeItem(_$.app.name);
             this._session = null;
         }
 
@@ -309,6 +307,10 @@ define([
         register(registration) {
             return this._http.post(`${this._config.baseUrl}/register`, registration, { skipRefresh: true })
                 .then(res => {
+                    if (res.data.error) {
+                        throw parseError(res.data);
+                    }
+
                     if (res.data.user_id && res.data.token) {
                         res.data.serverTimeDiff = res.data.issued - Date.now();
                         this.setSession(res.data);
@@ -322,29 +324,37 @@ define([
                 });
         }
 
-        logout(msg) {
+        logout(msg, silent) {
             return this._http.post(`${this._config.baseUrl}/logout`, {})
                 .then(res => {
-                    this._onLogout(msg || 'Logged out');
+                    if (!silent) {
+                        this._onLogout(msg || 'Logged out');
+                    }
                     return res.data;
                 })
                 .catch(err => {
-                    this._onLogout(msg || 'Logged out');
-                    if (err.data.status !== 401) {
+                    if (!silent) {
+                        this._onLogout(msg || 'Logged out');
+                    }
+                    if (err.data && err.data.status !== 401) {
                         throw parseError(err);
                     }
                 });
         }
 
-        logoutAll(msg) {
+        logoutAll(msg, silent) {
             return this._http.post(`${this._config.baseUrl}/logout-all`, {})
                 .then(res => {
-                    this._onLogout(msg || 'Logged out');
+                    if (!silent) {
+                        this._onLogout(msg || 'Logged out');
+                    }
                     return res.data;
                 })
                 .catch(err => {
-                    this._onLogout(msg || 'Logged out');
-                    if (err.data.status !== 401) {
+                    if (!silent) {
+                        this._onLogout(msg || 'Logged out');
+                    }
+                    if (err.data && err.data.status !== 401) {
                         throw parseError(err);
                     }
                 });
@@ -454,8 +464,8 @@ define([
                 });
         }
 
-        getUser(login) {
-            return this._http.get(`${this._config.baseUrl}/getUser/${login}`)
+        getUser() {
+            return this._http.get(`${this._config.baseUrl}/get-user`)
                 .then(res => {
                     if (res.data.error) {
                         throw parseError(res.data);
@@ -511,17 +521,16 @@ define([
 
             const checkEmail  = () => { return this.validateEmail(form.newEmail); };
             const updateEmail = () => { return this.changeEmail(form.newEmail); };
-            const doRefresh   = () => { return this.refresh(); };
 
             if (this.authenticated()) {
                 if (form.newPassword && form.newEmail) {
-                    return checkEmail().then(updatePassword).then(updateEmail).then(doUpdate).then(doRefresh);
+                    return checkEmail().then(updatePassword).then(updateEmail).then(doUpdate);
                 } else if (form.newPassword) {
-                    return updatePassword().then(doUpdate).then(doRefresh);
+                    return updatePassword().then(doUpdate);
                 } else if (form.newEmail) {
-                    return checkEmail().then(updateEmail).then(doUpdate).then(doRefresh);
+                    return checkEmail().then(updateEmail).then(doUpdate);
                 } else {
-                    return doUpdate().then(doRefresh);
+                    return doUpdate();
                 }
             }
             return Promise.reject({ error: 'Authentication required' });
@@ -530,6 +539,10 @@ define([
         resetPassword(form) {
             return this._http.post(`${this._config.baseUrl}/password-reset`, form, { skipRefresh: true })
                 .then(res => {
+                    if (res.data.error) {
+                        throw parseError(res.data);
+                    }
+
                     if (res.data.user_id && res.data.token) {
                         this.setSession(res.data);
                         this._onLogin(res.data);
@@ -544,7 +557,13 @@ define([
         changePassword(form) {
             if (this.authenticated()) {
                 return this._http.post(`${this._config.baseUrl}/password-change`, form)
-                    .then(res => res.data)
+                    .then(res => {
+                        if (res.data.error) {
+                            throw parseError(res.data);
+                        } else {
+                            return res.data;
+                        }
+                    })
                     .catch(err => {
                         throw parseError(err);
                     });
@@ -555,7 +574,13 @@ define([
         changeEmail(newEmail) {
             if (this.authenticated()) {
                 return this._http.post(`${this._config.baseUrl}/change-email`, { newEmail })
-                    .then(res => res.data)
+                    .then(res => {
+                        if (res.data.error) {
+                            throw parseError(res.data);
+                        } else {
+                            return res.data;
+                        }
+                    })
                     .catch(err => {
                         throw parseError(err);
                     });

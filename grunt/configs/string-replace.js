@@ -16,12 +16,6 @@ module.exports = function (grunt, options) {
                 {
                     pattern: "{{ VERSION_FLAG }}",
                     replacement: "<%= pkg.versionFlag %>"
-                },
-                {
-                    pattern: "{{ DB_URL }}",
-                    replacement: function () {
-                        return "//" + process.env.DB_HOST;
-                    }
                 }
               ]
             }
@@ -46,12 +40,6 @@ module.exports = function (grunt, options) {
                 {
                     pattern: "{{ VERSION_FLAG }}",
                     replacement: "<%= pkg.versionFlag %>"
-                },
-                {
-                    pattern: "{{ DB_URL }}",
-                    replacement: function () {
-                        return "//" + process.env.DB_HOST;
-                    }
                 }
               ]
             }

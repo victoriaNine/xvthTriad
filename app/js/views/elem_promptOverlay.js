@@ -70,7 +70,7 @@ define([
                 this.$(".prompt_overlay-title").html(this.span).append(" occured");
 
                 confirmText        = options.btnMsg || ((_$.ui.screen.id === "screen_title") ? "Close" : "Return to title screen");
-                this.confirmAction = options.action || this.toTitleScreen;
+                this.confirmAction = options.action === "close" ? this.close : options.action || this.toTitleScreen;
             } else if (options.type === "info") {
                 this.span.text(options.titleBold);
                 this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);

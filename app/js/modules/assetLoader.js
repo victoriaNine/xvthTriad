@@ -28,7 +28,7 @@ define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_,
                 });
 
                 Promise.all(promises).then(function (responses) {
-                    that.complete = true;
+                    that.completed = true;
                     _$.events.trigger("allLoadersComplete");
                 });
             }

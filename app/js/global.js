@@ -47,7 +47,8 @@ define([
         loadData     : { value: loadData },
         importSave   : { value: importSave },
         exportSave   : { value: exportSave },
-        dbURL        : { value: window.location.protocol + "{{ DB_URL }}" },
+        encodeData   : { value: getEncodedData },
+        decodeData   : { value: getDecodedData },
         track        : { value: sendGAevent },
         env          : { value : {
             deviceType       : "browser",
@@ -117,7 +118,8 @@ define([
     };
 
     var saveSettings = {
-        prefix        : app.name + ":save//",
+        savePrefix    : app.name + ":save//",
+        sessionPrefix : app.name + ":session//",
         extension     : app.saveExt,
         charOffset    : 1,
         charSeparator : "x"
@@ -459,57 +461,61 @@ define([
     //===============================
     // SAVE/LOAD MANAGEMENT
     //===============================
-    function saveData (credentials) {
+    function saveData (credentials, onError) {
         if (_$.comm.sessionManager.getSession()) {
-            saveToDb(credentials);
-        } else if (_$.utils.getLocalStorage(_$.app.name)) {
+            saveToDb(credentials, onError);
+        } else {
             saveToStorage();
         }
     }
 
-    function loadData () {
-        var sessionData = _$.comm.sessionManager.getSession();
-        var storageData = _$.utils.getLocalStorage(_$.app.name);
+    function loadData (data) {
+        data = data || _$.utils.getLocalStorage(_$.app.name);
+        var type = getSaveDataType(data);
 
-        if (sessionData) {
-            loadFromDb(sessionData);
-        } else if (storageData) {
-            loadFromStorage(storageData);
+        if (type === "session") {
+            loadFromDb();
+        } else if (type === "save") {
+            loadFromStorage(data);
         }
     }
 
-    function saveToDb (form = {}) {
+    function saveToDb (form = {}, onError = _$.debug.log) {
         var data    = _$.utils.getUserData();
-        var profile = _.omit(data, ["version", "userId", "name"]);
+        var profile = _.omit(data, ["version", "userId", "name", "email"]);
         var newData = _.extend(form, {
             name    : data.name,
             profile : profile
         });
 
-        _$.comm.sessionManager.updateProfile(form).then(() => {
-            _$.events.trigger("userDataSaved:toDatabase");
-        });
+        _$.comm.sessionManager.updateProfile(form).then((response) => {
+            if (response.data && response.data.error) {
+                throw response.data.error;
+            } else {
+                _$.comm.sessionManager.refresh();
+                _$.events.trigger("userDataSaved:toDatabase");
+                return response;
+            }
+        }).catch(onError);
     }
 
-    function loadFromDb (sessionData) {
-         if (!sessionData) {
-            _$.debug.error("loadFromDb: No data");
-            return;
-        }
+    function loadFromDb () {
+        _$.comm.sessionManager.getUser().then((userData) => {
+            _$.state.user.set({
+                userId : userData._id,
+                name   : userData.name,
+                email  : userData.email
+            });
 
-        _$.state.user.set({
-            userId : sessionData.user_id,
-            name   : sessionData.name
+            _.each(_.omit(userData.profile, "album"), function (value, key) {
+                _$.state.user.set(key, value);
+            });
+
+            _$.state.user.get("album").reset(userData.profile.album);
+
+            _$.state.user.dataLoaded = true;
+            _$.events.trigger("userDataLoaded:fromDatabase");
         });
-
-        _.each(_.omit(sessionData.profile, "album"), function (value, key) {
-            _$.state.user.set(key, value);
-        });
-
-        _$.state.user.get("album").reset(sessionData.profile.album);
-
-        _$.state.user.dataLoaded = true;
-        _$.events.trigger("userDataLoaded:fromDatabase");
     }
 
     function saveToStorage () {
@@ -523,7 +529,7 @@ define([
             return;
         }
 
-        var JSONdata = _decodeSaveData(storageData);
+        var JSONdata = _decodeSaveData(storageData, "save");
         _$.app.checkUpdates(JSONdata, (updatedData) => {
             _.each(_.omit(updatedData, ["album", "version", "userId"]), function (value, key) {
                 _$.state.user.set(key, value);
@@ -597,10 +603,11 @@ define([
         a.dispatchEvent(e);
     }
 
-    function _encodeSaveData (JSONdata) {
-        var encodedData = saveSettings.prefix;
-        JSONdata = JSON.stringify(JSONdata);
+    function _encodeSaveData (JSONdata, type = "save") {
+        var prefix      = (type === "save") ? saveSettings.savePrefix : saveSettings.sessionPrefix;
+        var encodedData = prefix;
 
+        JSONdata = JSON.stringify(JSONdata);
         JSONdata.split("").forEach(function (char) {
             encodedData += saveSettings.charSeparator + (char.codePointAt(0) + saveSettings.charOffset);
         });
@@ -608,18 +615,42 @@ define([
         return encodedData;
     }
 
-    function _decodeSaveData (encodedData) {
-        if (encodedData.indexOf(saveSettings.prefix) !== 0) {
-            _$.debug.error("DecodeSave: Invalid save file");
+    function _decodeSaveData (encodedData, type = "save") {
+        var prefix = (type === "save") ? saveSettings.savePrefix : saveSettings.sessionPrefix;
+
+        if (encodedData.indexOf(prefix) !== 0) {
+            var recognizedType = getSaveDataType(encodedData);
+            if (recognizedType) {
+                _$.debug.warn("DecodeSave: Data is of " + recognizedType + " type");
+            } else {
+                _$.debug.error("DecodeSave: Invalid " + type + " data");
+                _$.events.trigger("showError", {
+                    msg    : "Invalid " + type + " data",
+                    action : "close"
+                });
+            }
+
             return "";
         }
 
         var JSONdata = "";
-        encodedData.replace(saveSettings.prefix, "").match(new RegExp(saveSettings.charSeparator + "\\d+", "g")).forEach(function (chunk) {
+        encodedData.replace(prefix, "").match(new RegExp(saveSettings.charSeparator + "\\d+", "g")).forEach(function (chunk) {
             JSONdata += String.fromCodePoint(chunk.match(/\d+/) - saveSettings.charOffset);
         });
 
         return JSON.parse(JSONdata);
+    }
+
+    function getEncodedData (data, type) { return data ? _encodeSaveData(data, type) : null; }
+    function getDecodedData (data, type) { return data ? _decodeSaveData(data, type) : null; }
+    function getSaveDataType (data) {
+        if (data.indexOf(saveSettings.savePrefix) === 0) {
+            return "save";
+        } else if (data.indexOf(saveSettings.sessionPrefix) === 0) {
+            return "session";
+        } else {
+            return null;
+        }
     }
 
     function checkUpdates (saveData, onUpdateCallback) {
@@ -635,6 +666,6 @@ define([
     //===============================
     // LOCAL STORAGE
     //===============================
-    function setLocalStorage (key, value) { window.localStorage.setItem(key, JSON.stringify(value)); }
-    function getLocalStorage (key)        { return JSON.parse(window.localStorage.getItem(key)); }
+    function setLocalStorage    (key, value) { window.localStorage.setItem(key, JSON.stringify(value)); }
+    function getLocalStorage    (key)        { return JSON.parse(window.localStorage.getItem(key)); }
 });

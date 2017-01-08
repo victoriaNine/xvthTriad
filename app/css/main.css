@@ -163,6 +163,9 @@ input:not([type]) {
   input:not([type]):focus {
     letter-spacing: .5em; }
 
+input[type=file] {
+  cursor: pointer; }
+
 input[type=password] {
   -webkit-transition: -webkit-letter-spacing .2s ease-in;
   -ms-transition: -ms-letter-spacing .2s ease-in;
@@ -324,7 +327,7 @@ button {
     position: relative;
     display: flex;
     justify-content: flex-end; }
-  .help_header-help, .rulesSelect_header-help, .cardSelect_header-help, .roomSelect_header-help {
+  .help_header-help, .rulesSelect_header-help, .cardSelect_header-help, .userSettings_header-help, .roomSelect_header-help {
     text-transform: none;
     position: absolute;
     left: 0;
@@ -346,7 +349,7 @@ button {
   left: 0;
   padding: 0 50px; }
 
-.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .roomSelect_content-screenNav {
+.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .userSettings_content-confirm, .roomSelect_content-screenNav {
   position: absolute;
   width: 100%;
   top: 0;
@@ -355,29 +358,29 @@ button {
   padding: 0 50px;
   background: rgba(0, 0, 0, 0.5); }
 
-.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .roomSelect_content-screenNav {
+.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .userSettings_content-confirm, .roomSelect_content-screenNav {
   display: flex;
   align-items: center; }
-  .help_content-confirm-choice, .help_content-screenNav-choice, .rulesSelect_content-confirm-choice, .rulesSelect_content-screenNav-choice, .cardSelect_content-confirm-choice, .cardSelect_content-screenNav-choice, .userSettings_content-save-choice, .userSettings_content-load-choice, .roomSelect_content-screenNav-choice {
+  .help_content-confirm-choice, .help_content-screenNav-choice, .rulesSelect_content-confirm-choice, .rulesSelect_content-screenNav-choice, .cardSelect_content-confirm-choice, .cardSelect_content-screenNav-choice, .userSettings_content-save-choice, .userSettings_content-load-choice, .userSettings_content-confirm-choice, .roomSelect_content-screenNav-choice {
     display: flex;
     align-items: center;
     margin-right: 1em;
     height: 100%; }
-    .help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element {
+    .help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .userSettings_content-confirm-choice-element, .roomSelect_content-screenNav-choice-element {
       position: relative;
       display: inline-block;
       margin-right: .5em; }
 
 /* BUTTONS ------------*/
-.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .userSettings_content-confirm-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
   cursor: pointer;
   font-size: 16px; }
 
-.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn {
+.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .userSettings_content-confirm-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_account-element, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .help_content-confirm-choice-element:after, .help_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .footer_menu-element:after, .prompt_overlay-confirmBtn:after, .prompt_overlay-confirm2Btn:after, .about_credits:after, .title_account-element:after, .title_overlay-signup-btn:after, .title_overlay-login-btn:after, .game_overlay-endGame-confirmBtn:after {
+  .help_content-confirm-choice-element:after, .help_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .userSettings_content-confirm-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .footer_menu-element:after, .prompt_overlay-confirmBtn:after, .prompt_overlay-confirm2Btn:after, .about_credits:after, .title_account-element:after, .title_overlay-signup-btn:after, .title_overlay-login-btn:after, .game_overlay-endGame-confirmBtn:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -392,12 +395,12 @@ button {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .help_content-confirm-choice-element:hover, .help_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .footer_menu-element:hover, .prompt_overlay-confirmBtn:hover, .prompt_overlay-confirm2Btn:hover, .about_credits:hover, .title_account-element:hover, .title_overlay-signup-btn:hover, .title_overlay-login-btn:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.help_content-confirm-choice-element, .is--active.help_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.prompt_overlay-confirmBtn, .is--active.prompt_overlay-confirm2Btn, .is--active.about_credits, .is--active.title_account-element, .is--active.title_overlay-signup-btn, .is--active.title_overlay-login-btn, .is--active.game_overlay-endGame-confirmBtn, .is--hover.help_content-confirm-choice-element, .is--hover.help_content-screenNav-choice-element, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.footer_menu-element, .is--hover.prompt_overlay-confirmBtn, .is--hover.prompt_overlay-confirm2Btn, .is--hover.about_credits, .is--hover.title_account-element, .is--hover.title_overlay-signup-btn, .is--hover.title_overlay-login-btn, .is--hover.game_overlay-endGame-confirmBtn {
+  .help_content-confirm-choice-element:hover, .help_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .userSettings_content-confirm-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .footer_menu-element:hover, .prompt_overlay-confirmBtn:hover, .prompt_overlay-confirm2Btn:hover, .about_credits:hover, .title_account-element:hover, .title_overlay-signup-btn:hover, .title_overlay-login-btn:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.help_content-confirm-choice-element, .is--active.help_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.userSettings_content-confirm-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.prompt_overlay-confirmBtn, .is--active.prompt_overlay-confirm2Btn, .is--active.about_credits, .is--active.title_account-element, .is--active.title_overlay-signup-btn, .is--active.title_overlay-login-btn, .is--active.game_overlay-endGame-confirmBtn, .is--hover.help_content-confirm-choice-element, .is--hover.help_content-screenNav-choice-element, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.userSettings_content-confirm-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.footer_menu-element, .is--hover.prompt_overlay-confirmBtn, .is--hover.prompt_overlay-confirm2Btn, .is--hover.about_credits, .is--hover.title_account-element, .is--hover.title_overlay-signup-btn, .is--hover.title_overlay-login-btn, .is--hover.game_overlay-endGame-confirmBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .help_content-confirm-choice-element:hover:after, .help_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .prompt_overlay-confirmBtn:hover:after, .prompt_overlay-confirm2Btn:hover:after, .about_credits:hover:after, .title_account-element:hover:after, .title_overlay-signup-btn:hover:after, .title_overlay-login-btn:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.help_content-confirm-choice-element:after, .is--active.help_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.prompt_overlay-confirmBtn:after, .is--active.prompt_overlay-confirm2Btn:after, .is--active.about_credits:after, .is--active.title_account-element:after, .is--active.title_overlay-signup-btn:after, .is--active.title_overlay-login-btn:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.help_content-confirm-choice-element:after, .is--hover.help_content-screenNav-choice-element:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.prompt_overlay-confirmBtn:after, .is--hover.prompt_overlay-confirm2Btn:after, .is--hover.about_credits:after, .is--hover.title_account-element:after, .is--hover.title_overlay-signup-btn:after, .is--hover.title_overlay-login-btn:after, .is--hover.game_overlay-endGame-confirmBtn:after {
+    .help_content-confirm-choice-element:hover:after, .help_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .userSettings_content-confirm-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .prompt_overlay-confirmBtn:hover:after, .prompt_overlay-confirm2Btn:hover:after, .about_credits:hover:after, .title_account-element:hover:after, .title_overlay-signup-btn:hover:after, .title_overlay-login-btn:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.help_content-confirm-choice-element:after, .is--active.help_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.userSettings_content-confirm-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.prompt_overlay-confirmBtn:after, .is--active.prompt_overlay-confirm2Btn:after, .is--active.about_credits:after, .is--active.title_account-element:after, .is--active.title_overlay-signup-btn:after, .is--active.title_overlay-login-btn:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.help_content-confirm-choice-element:after, .is--hover.help_content-screenNav-choice-element:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.userSettings_content-confirm-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.prompt_overlay-confirmBtn:after, .is--hover.prompt_overlay-confirm2Btn:after, .is--hover.about_credits:after, .is--hover.title_account-element:after, .is--hover.title_overlay-signup-btn:after, .is--hover.title_overlay-login-btn:after, .is--hover.game_overlay-endGame-confirmBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -1327,8 +1330,7 @@ button {
 
 /* HEADER --------------*/
 .cardSelect_header-help {
-  position: relative;
-  padding: 0; }
+  margin-top: 2em; }
 
 .cardSelect_header-ownedCards,
 .cardSelect_header-uniqueCopies {
@@ -1730,6 +1732,9 @@ button {
   flex-direction: column; }
 
 /* HEADER --------------*/
+.userSettings_header-help {
+  margin-top: 2em; }
+
 .userSettings_header-countWon,
 .userSettings_header-countLost,
 .userSettings_header-countDraw {
@@ -1751,7 +1756,7 @@ button {
   width: 200px; }
 
 /* CONTENT --------------*/
-.userSettings_content-load {
+.userSettings_content-load, .userSettings_content-confirm {
   background: rgba(40, 51, 120, 0.5); }
 
 .userSettings_content-settings {
@@ -1772,6 +1777,9 @@ button {
     margin-right: 1em; }
   .userSettings_content-settings-scroll .col:last-child {
     margin-right: 0; }
+
+.userSettings_content-settings-setting-input[type=range] {
+  width: calc(75% - 50px); }
 
 /*=======================*/
 /* ROOM SELECTION SCREEN

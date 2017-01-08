@@ -226,6 +226,10 @@ input:not([type]) {
     }
 }
 
+input[type=file] {
+    cursor: pointer;
+}
+
 input[type=password] {
     @include transition("letter-spacing .2s ease-in");
     letter-spacing: .5em;
@@ -1675,8 +1679,7 @@ button {
 
     &-help {
         @extend %header-help;
-        position: relative;
-        padding: 0;
+        margin-top: 2em;
     }
 }
 
@@ -2182,6 +2185,11 @@ button {
     &-rightCol {
         @extend %header-rightCol;
     }
+
+    &-help {
+        @extend %header-help;
+        margin-top: 2em;
+    }
 }
 
 .userSettings_header-countWon,
@@ -2225,7 +2233,7 @@ button {
     @extend %content
 }
 
-.userSettings_content-save, .userSettings_content-load {
+.userSettings_content-save, .userSettings_content-load, .userSettings_content-confirm {
     @extend %content-promptChoice;
 
     &-choice {
@@ -2237,7 +2245,7 @@ button {
     }
 }
 
-.userSettings_content-load {
+.userSettings_content-load, .userSettings_content-confirm {
     background: transparentize($color_blue, 0.5);
 }
 
@@ -2290,6 +2298,10 @@ button {
 
 .userSettings_content-settings-setting-input {
     @extend %options-option-input;
+
+    &[type=range] {
+        width: calc(75% - 50px);
+    }
 }
 
 

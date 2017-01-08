@@ -93,48 +93,24 @@ define([
         this.promptOverlay  = new Elem_PromptOverlay();
 
         if (_$.comm.sessionManager) {
-            _$.comm.sessionManager.on("logout", (event, message) => {
-                if (event !== "Logged out") {
-                    this.error(event, {
-                        msg    : event,
-                        btnMsg : "Close",
-                        action : this.closePrompt.bind(this, doLogout.bind(this))
-                    });
-                } else {
-                    doLogout.call(this);
-                }
-
-                function doLogout () {
-                    _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
-                    TweenMax.to(_$.dom, 1, { opacity: 0,
-                        onComplete: () => {
-                            if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
-                                proceed.call(this);
-                            } else {
-                                _$.events.once("bgmEnded", proceed.bind(this));
-                            }
-                        }
-                    });
-
-                    function proceed () {
-                        this.changeScreen("title", { setup: true, resetUser: true, fullIntro: true });
-                    }   
-                }                
-            });
+            _$.comm.sessionManager.on("logout", _onLogout.bind(this));
         }
 
         _$.utils.addDomObserver(this.$el, this.updateControlsState.bind(this), true);
         _$.events.on("startUserEvents", _delegate, this);
         _$.events.on("stopUserEvents", _undelegate, this);
-        _$.events.on("showServerError", this.error, this);
+        _$.events.on("showError", this.error, this);
         _$.dom.find("#screen").append(this.$el);
     }
 
     function remove () {
+        if (_$.comm.sessionManager) {
+            _$.comm.sessionManager.off("logout", _onLogout);
+        }
         _$.events.off("startUserEvents", _delegate, this);
         _$.events.off("stopUserEvents", _undelegate, this);
         _$.events.off("gamepad", this.triggerGamepadAction, this);
-        _$.events.off("showServerError", this.error, this);
+        _$.events.off("showError", this.error, this);
         Backbone.View.prototype.remove.call(this);
     }
 
@@ -374,5 +350,34 @@ define([
                 }
             }
         }
+    }
+
+    function _onLogout (event, message) {
+        if (event === "Logged out" || event.success === "User deleted" || event === "Connection lost") {
+            doLogout.call(this);
+        } else {
+            this.error(event, {
+                msg    : event,
+                btnMsg : "Close",
+                action : this.closePrompt.bind(this, doLogout.bind(this))
+            });
+        }
+
+        function doLogout () {
+            _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+            TweenMax.to(_$.dom, 1, { opacity: 0,
+                onComplete: () => {
+                    if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
+                        proceed.call(this);
+                    } else {
+                        _$.events.once("bgmEnded", proceed.bind(this));
+                    }
+                }
+            });
+
+            function proceed () {
+                this.changeScreen("title", { setup: true, fullIntro: true });
+            }   
+        }                
     }
 });
