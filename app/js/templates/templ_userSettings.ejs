@@ -69,16 +69,33 @@
                 </div>
                 <div class="userSettings_content-settings-setting setting-difficulty">
                     <ul class="userSettings_content-settings-setting-select">
-                        <li class="difficultySetting-easy">Difficulty level -- Easy</li>
-                        <li class="difficultySetting-normal">Difficulty level -- Normal</li>
-                        <li class="difficultySetting-hard">Difficulty level -- Hard</li>
+                        <li class="difficultySetting-easy">AI: Difficulty level -- Easy</li>
+                        <li class="difficultySetting-normal">AI: Difficulty level -- Normal</li>
+                        <li class="difficultySetting-hard">AI: Difficulty level -- Hard</li>
                     </ul>
                     <div class="userSettings_content-settings-setting-toggle"></div>
                 </div>
                 <div class="userSettings_content-settings-setting setting-placingMode">
                     <ul class="userSettings_content-settings-setting-select">
-                        <li class="placingModeSetting-dragDrop">Cards placing mode -- Drag and drop</li>
-                        <li class="placingModeSetting-click">Cards placing mode -- Click</li>
+                        <li class="placingModeSetting-dragDrop">Cards: Placing mode -- Drag and drop</li>
+                        <li class="placingModeSetting-click">Cards: Placing mode -- Click</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-notifyMode">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="notifyModeSetting-always">Messages: Notification mode -- Always</li>
+                        <li class="notifyModeSetting-onlyMentions">Messages: Notification mode -- Only when I'm mentioned</li>
+                        <li class="notifyModeSetting-onlyInactive">Messages: Notification mode -- Only if the window is inactive</li>
+                        <li class="notifyModeSetting-never">Messages: Notification mode -- Never</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-inactiveAudio">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="inactiveAudioSetting-muteAll">Inactive window: Audio -- Mute all sounds</li>
+                        <li class="inactiveAudioSetting-onlyNotifs">Inactive window: Audio -- Only play notifications</li>
+                        <li class="inactiveAudioSetting-playAll">Inactive window: Audio  -- Play all sounds</li>
                     </ul>
                     <div class="userSettings_content-settings-setting-toggle"></div>
                 </div>
@@ -106,6 +123,11 @@
                     <input id="sfxVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= sfxVolume %>" step="1"></input>
                     <label for="sfxVolume"><%= sfxVolume %></label>
                 </div>
+                <div class="userSettings_content-settings-setting setting-notif">
+                    <div class="userSettings_content-settings-setting-label">Notifications</div>
+                    <input id="notifVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= notifVolume %>" step="1"></input>
+                    <label for="notifVolume"><%= sfxVolume %></label>
+                </div>
             </div>
             <% } else { %>
             <div class="col">
@@ -123,9 +145,9 @@
                 </div>
                 <div class="userSettings_content-settings-setting setting-difficulty">
                     <ul class="userSettings_content-settings-setting-select">
-                        <li class="difficultySetting-easy">Difficulty level -- Easy</li>
-                        <li class="difficultySetting-normal">Difficulty level -- Normal</li>
-                        <li class="difficultySetting-hard">Difficulty level -- Hard</li>
+                        <li class="difficultySetting-easy">AI: Difficulty level -- Easy</li>
+                        <li class="difficultySetting-normal">AI: Difficulty level -- Normal</li>
+                        <li class="difficultySetting-hard">AI: Difficulty level -- Hard</li>
                     </ul>
                     <div class="userSettings_content-settings-setting-toggle"></div>
                 </div>
@@ -143,8 +165,15 @@
                 </div>
                 <div class="userSettings_content-settings-setting setting-placingMode">
                     <ul class="userSettings_content-settings-setting-select">
-                        <li class="placingModeSetting-dragDrop">Cards placing mode -- Drag and drop</li>
-                        <li class="placingModeSetting-click">Cards placing mode -- Click</li>
+                        <li class="placingModeSetting-dragDrop">Cards: Placing mode -- Drag and drop</li>
+                        <li class="placingModeSetting-click">Cards: Placing mode -- Click</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-inactiveAudio">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="inactiveAudioSetting-muteAll">Inactive window: Audio -- Mute all sounds</li>
+                        <li class="inactiveAudioSetting-playAll">Inactive window: Audio  -- Play all sounds</li>
                     </ul>
                     <div class="userSettings_content-settings-setting-toggle"></div>
                 </div>

@@ -47,8 +47,9 @@ define([
     });
 
     function initialize (options) {
-        this.$el.html(this.template());
+        Screen.prototype.initialize.call(this);
 
+        this.$el.html(this.template());
         this.currentGuide   = null;
         this.guideTemplates = {
             basicRules  : Templ_HelpBasicRules,
@@ -137,11 +138,7 @@ define([
         });
 
         var tl = new TimelineMax();
-        if (_$.ui.footer.isOpen) {
-            tl.add(_$.ui.footer.toggleFooter());
-        }
-        tl.add(_$.ui.footer.toggleLogo("hide"), "-=1.5");
-        tl.to(this.$(".help_content-topics"), 0.5, { opacity: 0 }, 0);
+        tl.to(this.$(".help_content-topics"), 0.5, { opacity: 0 });
         tl.set(this.$(".help_content-topics"), { display: "none", clearProps: "opacity" });
         tl.set(this.$(".help_content-guide"), { clearProps: "display" });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 0 });
@@ -174,8 +171,6 @@ define([
         });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 1, clearProps: "opacity" });
         tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
-        tl.add(_$.ui.footer.toggleFooter(), "-=1.5");
-        tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");
         tl.call(() => {
             _$.events.trigger("startUserEvents");
         });

@@ -1,13 +1,16 @@
 define(["underscore", "global"], function audioEngine (_, _$) {
     const ALIASES     = {
-        bgm: {
-            menus   : "inDreams",
-            game    : "starlitWaltz",
-            win     : "daysEndFanfare",
-            postWin : "relaxReflect",
-            lose    : "relaxReflectPensive"
+        bgm   : {
+            menus       : "inDreams",
+            game        : "starlitWaltz",
+            lounge      : "safeHaven",
+            loungeMenus : "impendingPeril",
+            loungeGame  : "huntOrBeHunted",
+            win         : "daysEndFanfare",
+            postWin     : "relaxReflect",
+            lose        : "relaxReflectPensive"
         },
-        sfx: {}
+        sfx   : {}
     };
 
     //===============================
@@ -32,7 +35,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         }
 
         setVolume (gain) {
-            this.volume              = gain;
+            this.volume              = this.parseVolume(gain);
             this.gainNode.gain.value = this.volume;
         }
 
@@ -43,9 +46,13 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 type      : "ramp",
                 duration  : 2,
                 delay     : 0,
-                ease      : (options.type === "fadeIn") ? Circ.easeIn : (options.type === "fadeOut") ? Circ.easeIn : Power2.easeOut,
                 clearGain : false
             });
+
+            options.from = this.parseVolume(options.from);
+            options.to   = this.parseVolume(options.to);
+
+            options.ease = (options.type === "fadeIn" || options.type === "fadeOut") ? Circ.easeIn : options.ease ? Ease.map[options.ease] : Power2.easeOut;
 
             this.fade.options = options;
             this.fade.tween   = new TimelineMax();
@@ -86,6 +93,30 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         fadeOut (options = {}) {
             return this.rampToVolume(_.extend(options, { to: 0, type: "fadeOut" }));
         }
+
+        parseVolume (volume) {
+            var relativeValue = _.isString(volume) ? volume.match(/(\+|\-)=(\d+(?:.\d+)?)/) : false;
+            var result;
+
+            if (relativeValue) {
+                var operation = relativeValue[1];
+                var value     = relativeValue[2];
+                result        = this.volume;
+
+                switch (operation) {
+                    case "+":
+                        result += parseFloat(value);
+                        break;
+                    case "-":
+                        result -= parseFloat(value);
+                        break;
+                }
+            } else {
+                result = _.isFinite(parseFloat(volume)) ? parseFloat(volume) : this.volume;
+            }
+
+            return _.clamp(result, 0, 1);
+        }
     }
 
 
@@ -110,8 +141,8 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         constructor (audioEngine, fileInfo, audioBuffer) {
             super(audioEngine);
             this.name          = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
+            this.type          = fileInfo.type.slice(fileInfo.type.indexOf(".") + 1);
             this.meta          = fileInfo.meta || {};
-            this.events        = fileInfo.events || {};
             this.buffer        = audioBuffer;
             this.duration      = this.buffer.duration;
             this.volume        = this.meta.volume || 1;
@@ -119,6 +150,9 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             this.source        = null;
             this.gainNode      = null;
+
+            this._eventNameBase = "audio:" + this.type + ":" + this.name + ":";
+            this.events         = fileInfo.events || {};
         }
 
         createSource () {
@@ -181,6 +215,11 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.hasEnded    = false;
             this.isPaused    = false;
 
+            // Events
+            this.events = _.extend({}, this.events, {
+                ended: this._eventNameBase + "ended"
+            });
+
             this.createSource();
         }
 
@@ -200,12 +239,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 this.hasEnded  = true;
                 this.isPlaying = false;
 
-                if (this.events.ended) {
-                    _$.events.trigger(this.events.ended, this);
-                }
-
-                _$.events.trigger("bgmEnded:" + this.name, this);
-
+                _$.events.trigger(this.events.ended, this);
                 this.createSource(); // Regenerate a source
             });
         }
@@ -233,14 +267,15 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.createSource();
         }
 
-        createSource () {
+        createSource (channel = "sfx") {
             super.createSource();
-            this.gainNode.connect(this.audioEngine.channels.sfx.gainNode);
+            this.gainNode.connect(this.audioEngine.channels[channel].gainNode);
 
             this.source.addEventListener("ended", (e) => {
                 if (this.events.ended) {
                     _$.events.trigger(this.events.ended, this);
                 }
+
                 this.createSource(); // Regenerate a source
             });
         }
@@ -267,6 +302,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.createChannel("master");
             this.createChannel("bgm");
             this.createChannel("sfx", 0.5);
+            this.createChannel("notif", 0.5);
         }
 
         decode (arrayBuffer, onDecode, onError) {
@@ -537,8 +573,8 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         }
 
         crossfadeBGM (options = {}) {
-            var fromBGM = options.from ? this.getBGM(options.from) : this.currentBGM;
-            var toBGM   = this.getBGM(options.to);
+            var fromBGM     = options.from ? this.getBGM(options.from) : this.currentBGM;
+            var toBGM       = this.getBGM(options.to);
 
             if (!fromBGM) {
                 _$.debug.error("BGM", options.from, "not found.");
@@ -554,14 +590,25 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             TweenMax.lagSmoothing(0);
             this.crossfade.tween = new TimelineMax({
-                onComplete: () => {
-                    if (options.callback) {
-                        if (_.isString(options.callback)) {
+                onStart    : () => {
+                    if (options.onStart) {
+                        if (_.isString(options.onStart)) {
                             // Event
-                            _$.events.trigger(options.callback, this.crossfade);
+                            _$.events.trigger(options.onStart, this.crossfade);
                         } else {
                             // Callback
-                            options.callback(this.crossfade);
+                            options.onStart(this.crossfade);
+                        }
+                    }
+                },
+                onComplete : () => {
+                    if (options.onComplete) {
+                        if (_.isString(options.onComplete)) {
+                            // Event
+                            _$.events.trigger(options.onComplete, this.crossfade);
+                        } else {
+                            // Callback
+                            options.onComplete(this.crossfade);
                         }
                     }
 
@@ -573,8 +620,8 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 }
             });
 
-            this.crossfade.tween.add(this.crossfade.from.fadeOut(_.omit(options, "callback")).tween, 0);
-            this.crossfade.tween.add(this.crossfade.to.fadeIn(_.omit(options, "callback")).tween, 0);
+            this.crossfade.tween.add(this.crossfade.from.fadeOut(_.omit(options, ["from", "to"])).tween, 0);
+            this.crossfade.tween.add(this.crossfade.to.fadeIn(_.omit(options, ["from", "to"])).tween, 0);
 
             return this.crossfade;
         }
@@ -598,6 +645,27 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 sfx.setVolume(options.volume);
             }
             sfx.source.start(startTime);
+        }
+
+        getNotif (name) {
+            return this.SFXs[this.getInstanceAlias(name)];
+        }
+
+        playNotif (name, options = {}) {
+            var notif = this.getNotif(name);
+            if (!notif) {
+                _$.debug.error("Notif", name, "not found.");
+                return;
+            }
+
+            var delay     = options.delay || 0;
+            var startTime = this.audioCtx.currentTime + delay;
+            
+            notif.createSource("notif"); // Regenerate a source for the Notif
+            if (options.volume) {
+                notif.setVolume(options.volume);
+            }
+            notif.source.start(startTime);
         }
     }
 

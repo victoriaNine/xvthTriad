@@ -82,12 +82,37 @@ define([
                     // ignoring
                 });
             }
+
+            this.on("login", () => {
+                this.setValidateInterval();
+            });
+
+            this.on("logout", (...args) => {
+                this.clearValidateInterval();
+            });
+        }
+
+        setValidateInterval () {
+            if (!this.validateInterval) {
+                this.validateInterval = setInterval(() => {
+                    this.validateSession().catch((error) => {
+                        this._onLogout(error);
+                    });
+                }, 5000);
+            }
+        }
+
+        clearValidateInterval () {
+            if (this.validateInterval) {
+                clearInterval(this.validateInterval);
+            }
         }
 
         _httpInterceptor() {
             const request = req => {
                 const config = this.getConfig();
                 const session = this.getSession();
+
                 if (!session || !session.token) {
                     return Promise.resolve(req);
                 }
@@ -115,7 +140,7 @@ define([
 
                 // If there is an unauthorized error from one of our endpoints and we are logged in...
                 if (checkEndpoint(error.config.url, config.endpoints) &&
-                    error.response.status === 401 && this.authenticated()) {
+                    error.response && error.response.status === 401 && this.authenticated()) {
                     debug.warn('Not authorized');
                     this._onLogout('Session expired');
                 }
@@ -142,8 +167,14 @@ define([
                 return Promise.reject();
             }
             return this._http.get(`${this._config.baseUrl}/session`)
+            .then(res => {
+                if (res.data.error) {
+                    throw parseError(res.data.error);
+                } else {
+                    return res.data;
+                }
+            })
             .catch(err => {
-                this._onLogout('Session expired');
                 throw parseError(err);
             });
         }
@@ -162,6 +193,7 @@ define([
         }
 
         deleteSession() {
+            this.clearValidateInterval();
             this.storage.removeItem(_$.app.name);
             this._session = null;
         }
@@ -324,36 +356,28 @@ define([
                 });
         }
 
-        logout(msg, silent) {
+        logout(msg) {
             return this._http.post(`${this._config.baseUrl}/logout`, {})
                 .then(res => {
-                    if (!silent) {
-                        this._onLogout(msg || 'Logged out');
-                    }
+                    this._onLogout(msg || 'logout');
                     return res.data;
                 })
                 .catch(err => {
-                    if (!silent) {
-                        this._onLogout(msg || 'Logged out');
-                    }
+                    this._onLogout(msg || 'logout');
                     if (err.data && err.data.status !== 401) {
                         throw parseError(err);
                     }
                 });
         }
 
-        logoutAll(msg, silent) {
+        logoutAll(msg) {
             return this._http.post(`${this._config.baseUrl}/logout-all`, {})
                 .then(res => {
-                    if (!silent) {
-                        this._onLogout(msg || 'Logged out');
-                    }
+                    this._onLogout(msg || 'logout');
                     return res.data;
                 })
                 .catch(err => {
-                    if (!silent) {
-                        this._onLogout(msg || 'Logged out');
-                    }
+                    this._onLogout(msg || 'logout');
                     if (err.data && err.data.status !== 401) {
                         throw parseError(err);
                     }
@@ -485,7 +509,7 @@ define([
                         if (res.data.error) {
                             throw parseError(res.data);
                         } else {
-                            this._onLogout(res.data);
+                            this._onLogout("userDeleted");
                             return res.data;
                         }
                     })
@@ -513,10 +537,10 @@ define([
 
             const updatePassword = () => {
                 return this.changePassword({
-                        currentPassword : form.currentPassword,
-                        newPassword     : form.newPassword,
-                        confirmPassword : form.confirmPassword
-                    });
+                    currentPassword : form.currentPassword,
+                    newPassword     : form.newPassword,
+                    confirmPassword : form.confirmPassword
+                });
             };
 
             const checkEmail  = () => { return this.validateEmail(form.newEmail); };

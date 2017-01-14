@@ -15,7 +15,7 @@ $boardHeight    : 675px;
 $cardWidth      : 150px;
 $cardHeight     : 190px;
 
-$color_darkGrey  : #3d4043;
+$color_darkGrey  : #666;
 $color_red       : rgba(235, 53, 71, 1);
 $color_blue      : rgba(40, 51, 120, 1);
 $color_lightBlue : #6d87fa;
@@ -218,8 +218,17 @@ h1 {
 ::-moz-placeholder          { letter-spacing: 0; }
 :-ms-input-placeholder      { letter-spacing: 0; }
 
-input:not([type]) {
-    @include transition("letter-spacing .2s ease-in");
+::selection {
+  background: #000;
+  color: #FFF;
+  text-shadow: none; }
+::-moz-selection {
+  background: #000;
+  color: #FFF;
+  text-shadow: none; }
+
+input:not([type]):not(.lounge_log-chatbar-input) {
+    @include transition("letter-spacing .2s ease-in, background .2s");
 
     &:focus {
         letter-spacing: .5em;
@@ -231,7 +240,7 @@ input[type=file] {
 }
 
 input[type=password] {
-    @include transition("letter-spacing .2s ease-in");
+    @include transition("letter-spacing .2s ease-in, background .2s");
     letter-spacing: .5em;
 
     &:focus {
@@ -331,6 +340,7 @@ button {
 
 .color-darkGrey     { color: $color_darkGrey; }
 .color-lightBlue    { color: $color_lightBlue; }
+.color-red          { color: $color_red; }
 .weight-medium      { font-weight: 500; }
 .weight-bold        { font-weight: 700; }
 .flex-justify-sb    { justify-content: space-between; }
@@ -803,8 +813,15 @@ button {
     line-height: $globalPadding;
     margin-bottom: 1em;
 
-    &.is--on, &.is--off {
+    &:not(.is--disabled):not(.is--readOnly).is--on,
+    &:not(.is--disabled):not(.is--readOnly).is--off,
+    &:not(.is--readOnly) &-select li:not(.is--disabled) {
         cursor:pointer;
+    }
+
+    &.is--disabled &-label {
+        background: rgba(0, 0, 0, 0.5);
+        color: $color_darkGrey;
     }
 }
 
@@ -843,34 +860,15 @@ button {
 
     @include transition("height .2s .2s");
 
-    & li.is--disabled {
-        color: #000;
+    & li {
+        &.is--disabled {
+            color: #000;
+        }
     }
 }
 
 %options-option-list {
-    cursor: pointer;
     position: relative;
-
-    & %options-option-toggle {
-        @include transition("width .2s, opacity .2s");
-
-        &:after {
-            content: "";
-            position: absolute;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid #FFF;
-            left:calc(50% - 4.5px);
-            top:calc(50% - 4.5px);
-
-            @include transition("transform .2s .2s");
-        }
-    }
-
-    & + %options-option:not([style*=opacity]) {
-        @include transition("opacity .2s .4s");
-    }
 
     &.is--active {
         z-index: 1000;
@@ -895,6 +893,26 @@ button {
             opacity: 0;
             @include transition("opacity .2s");
         }
+    }
+
+    & %options-option-toggle {
+        @include transition("width .2s, opacity .2s");
+
+        &:after {
+            content: "";
+            position: absolute;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #FFF;
+            left:calc(50% - 4.5px);
+            top:calc(50% - 4.5px);
+
+            @include transition("transform .2s .2s");
+        }
+    }
+
+    & + %options-option:not([style*=opacity]) {
+        @include transition("opacity .2s .4s");
     }
 }
 
@@ -1071,18 +1089,23 @@ button {
 /*=======================*/
 #footer {
     width: 100%;
-    height: 190px;
+    height: 100px;
     bottom: 0;
     padding: 0px $globalPadding $globalPadding $globalPadding;
     position: absolute;
     display: flex;
     align-items: flex-end;
     z-index: 2;
+
+    &.is--inactive {
+        pointer-events: none;
+    }
 }
 
 .footer_logo {
     @extend %smallLogo;
     margin-right: 1em;
+    margin-bottom: -1.25em;
 }
 
 .footer_menu {
@@ -1213,7 +1236,7 @@ button {
 
 .menu_soloMode     .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_noctis.jpg"}); }
 .menu_versusMode   .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_gladiolus.jpg"}); }
-.menu_networkMode  .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_prompto.jpg"}); }
+.menu_loungeRoom   .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_prompto.jpg"}); }
 .menu_cardAlbum    .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_ignis.jpg"}); }
 .menu_userSettings .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_luna.jpg"}); }
 
@@ -1310,7 +1333,7 @@ button {
             width      : 0;
             height     : 1px;
             background : currentColor;
-            top        : 50%;
+            top        : 1.25em;
             z-index    : -1;
             opacity    : 0.5;
 
@@ -1512,19 +1535,29 @@ button {
     align-items: center;
 
     &-element {
-        @extend %btn-rect;
-
         position: relative;
-        display: inline-block;
+        background: rgba(0, 0, 0, 0.5);
+        padding: .5em;
+        cursor: pointer;
+        @include transition("background .2s");
 
-        &:not(:last-of-type) {
-            margin-right: .5em;
+        &:hover {
+            background: transparentize($color_blue, 0.5);
         }
     }
 
-    &-welcome {
-        margin-right: 1em;
-        position: relative;
+    &-info {
+        display: flex;
+        background: rgba(255, 255, 255, 0.25);
+
+        &-welcome, &-playerCount {
+            position: relative;
+            padding: .5em;
+        }
+
+        &-playerCount-onlineLabel, &-playerCount-loungeLabel {
+            font-size: .75em;
+        }
     }
 }
 
@@ -2167,6 +2200,425 @@ button {
 
 
 /*=======================*/
+/* LOUNGE SCREEN
+/*=======================*/
+.lounge_main {
+    position: absolute;
+    width: calc(100% - #{ $globalPadding * 2 });
+    height: calc(100% - #{ $globalPadding * 3.5 });
+    left: calc(50% - (100% - #{ $globalPadding * 2 }) / 2);
+    top: $globalPadding;
+    display: flex;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+    padding: 12px;
+    flex-wrap: wrap;
+    align-content: space-between;
+    justify-content: space-between;
+    z-index: 1;
+
+    &:before {
+        content: "";
+        position: absolute;
+        background: rgba(0, 0, 0, 0.75);
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        left: 5px;
+        top: 5px;
+        z-index: -1;
+    }
+}
+
+.lounge_log {
+    position: relative;
+    width: calc(100% - 307.5px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &-logo {
+        width: 630px;
+        height: 485px;
+        position: absolute;
+        left: calc(50% - 630px / 2);
+        top: 12.5%;
+        opacity: 0.015;
+        pointer-events:none;
+
+        & .svg-logo {
+            fill: rgba(255, 255, 255, 1);
+        }
+    }
+
+    &-messages {
+        width: 100%;
+        height: calc(100% - 80px);
+
+        &-scroll {
+            @extend %options-option-select;
+            cursor: inherit;
+            height: 100%;
+            background: none;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        &-message a {
+            position: relative;
+            color: $color_lightBlue;
+            z-index: 0;
+            @include transition("color .4s");
+
+            &:before {
+                content    : "";
+                position   : absolute;
+                width      : 0;
+                height     : 1px;
+                background : currentColor;
+                top        : 1.25em;
+                z-index    : -1;
+                opacity    : 0.5;
+
+                @include transition("width .2s .2s");
+            }
+
+            &:hover, &.is--hover {
+                color: $color_red;
+
+                &:before { width: 100%; }
+            }
+        }
+    }
+
+    &-chatbar {
+        display: flex;
+        border:1px solid rgba(255, 255, 255, 0.25);
+
+        &-label {
+            @extend %options-option-label;
+            background: transparentize($color_blue, 0.25);
+            line-height: 70px;
+            cursor: pointer;
+            text-transform: uppercase;
+            @include transition("all .2s");
+
+            &:hover {
+                background: transparentize($color_red, 0.25);
+            }
+
+            &:active {
+                background: #FFF;
+                color: #000;
+            }
+        }
+
+        &-input {
+            @extend %options-option-input;
+            width: 95%;
+            resize: none;
+        }
+    }
+}
+
+%chat-list {
+    &-scroll {
+        @extend %options-option-select;
+        cursor: inherit;
+        height: 100%;
+        background: none;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 25px;
+    }
+
+    &-element {
+        &-user {
+            display: flex;
+            position: relative;
+
+            &-avatar {
+                @extend %avatar;
+                position: relative;
+                width: 50px;
+                height: 50px;
+
+                &-img {
+                    @extend %avatar-img;
+                }
+            }
+        }
+    }
+}
+
+.lounge_log-messages, .lounge_userlist {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
+                url(#{ $uiAssetsPath + "board_cornerTR.png"}) no-repeat 100% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBL.png"}) no-repeat 0% 100%,
+                url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
+}
+
+.lounge_userlist {
+    width: 300px;
+    position: relative;
+
+    &-scroll { @extend %chat-list-scroll; }
+    &-element {
+        height: 50px;
+
+        &-group {
+            text-transform: uppercase;
+            line-height: 50px;
+
+            &-count {
+                margin-left: 1em;
+            }
+        }
+
+        &-user {
+            @extend %chat-list-element-user;
+            cursor: pointer;
+
+            &:not(:last-of-type) {
+                margin-bottom: 1em;
+            }
+
+            &-avatar {
+                @extend %chat-list-element-user-avatar;
+
+                &-img {
+                    @extend %chat-list-element-user-avatar-img;
+                }
+            }
+
+            &-label {
+                flex: 1;
+                padding-left: 1em;
+                width: calc(100% - 50px);
+                justify-content: center;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    width: calc(100% - 1em);
+                    height: 100%;
+                    background: transparentize($color_blue, 0.75);
+                    z-index: -1;
+                    filter: blur(10px);
+                    opacity: 0;
+                    left: 1em;
+                    @include transition("opacity .2s");
+                }
+
+                &-name {
+                    font-weight:500; 
+                    @include transition("color .2s");
+                }
+
+                &-action {
+                    @extend .fontsize-small;
+                    margin: 0.5em 0 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    opacity: 0;
+                }
+            }
+
+            &.is--currentUser &-label-name {
+                color: $color_lightBlue;
+            }
+
+            &.is--active &-label-action {
+                @include animation("extendText 4s ease-in-out infinite");
+            }
+
+            &:hover &-avatar, &.is--selected &-avatar, &.is--currentUser &-avatar {
+                @extend %avatar-blue;
+            }
+
+            &:hover &-label:after, &.is--selected &-label:after, &.is--currentUser &-label:after {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.lounge_log-messages {
+    cursor: auto;
+
+    & * {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        user-select: text;
+    }
+
+    &-scroll { @extend %chat-list-scroll; }
+    &-message {
+        &:not(:first-of-type) {
+            padding-top: 1em;
+            margin-top: 1em;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        &-user {
+            @extend %chat-list-element-user;
+
+            &-avatar {
+                @extend %chat-list-element-user-avatar;
+
+                &-img {
+                    @extend %chat-list-element-user-avatar-img;
+                }
+            }
+
+            &-content {
+                flex: 1;
+                padding-left: 1em;
+                width: calc(100% - 50px);
+                justify-content: center;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+
+                &-name { font-weight:500; }
+                &-date {
+                    @extend .fontsize-small;
+                    color: #666;
+                    margin: 0 0 0 1em;
+                    text-transform: uppercase;
+                }
+
+                &-text {
+                    color: #ccc;
+                    margin: 0.5em 0 0;
+                    line-height: 1.25em;
+                }
+            }
+
+            &.is--currentUser &-content-name {
+                color: $color_lightBlue;
+            }
+        }
+    }
+}
+
+.lounge_userlist-userCard {
+    position: fixed;
+    width: 225px;
+    display: flex;
+    flex-direction: column;
+    border:1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25);
+    z-index: 1;
+    transform: translateX(-95%);
+    top: 0;
+    margin-top: -15px;
+
+    &-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 1;
+        flex-direction: column;
+        text-transform: none;
+        line-height: 1.25em;
+        padding: 1.5em 0;
+        position: relative;
+
+        &:before {
+            @include fullSizeAbs("");
+            top: 0;
+            left: 0;
+            background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
+            opacity: .25;
+            z-index: -1;
+        }
+
+        &-avatar {
+            @extend %avatar, %avatar-blue;
+            position: relative;
+            width: 150px;
+            height: 150px;
+
+            &-img {
+                @extend %avatar-img;
+            }
+        }
+
+        &-name {
+            margin-top: 1.5em;
+            font-weight: 500;
+        }
+
+        &-userId {
+            color: #666;
+        }
+    }
+
+    &-content {
+        padding: .5em;
+        background: rgba(0, 0, 0, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, .25);
+        flex: 1;
+
+        &-menu {
+            text-align: center;
+
+            &-element {
+                @extend %btn-rect;
+                position: relative;
+
+                &:not(:last-of-type) {
+                    margin-bottom: .5em;
+                }
+            }
+        }
+    }
+}
+
+.lounge_notLoggedIn {
+    &-message {
+        text-transform: none;
+        margin-top: 2em;
+        text-align: center;
+        line-height: 1.25em;
+    }
+
+    &-confirmBtn {
+        @extend %btn-rect;
+        position: relative;
+        margin-top: 50px;
+    }
+}
+
+.lounge_challenge {
+    &-message {
+        text-transform: none;
+        margin-top: 1em;
+    }
+
+    &-acceptBtn, &-declineBtn {
+        @extend %btn-rect;
+        position: relative;
+        margin-top: 50px;
+        display: inline-block;
+    }
+
+    &-declineBtn {
+        margin-left: 1em;
+    }
+}
+
+
+/*=======================*/
 /* USER SETTINGS SCREEN
 /*=======================*/
 #screen_userSettings {
@@ -2279,7 +2731,7 @@ button {
 .userSettings_content-settings-setting {
     @extend %options-option;
 
-    &.setting-difficulty, &.setting-placingMode {
+    &.setting-difficulty, &.setting-placingMode, &.setting-notifyMode, &.setting-inactiveAudio {
         @extend %options-option-list;
     }
 }

@@ -17,20 +17,27 @@ define([
             this.name               = _.camelCase(this.selector);
             this.onUpdate           = options.onUpdate || _.noop;
             this.currentOption      = null;
+            this.isDisabled         = false;
 
             this.dom.click(this.toggle.bind(this));
             this.reset(true);
         }
 
         toggle (e) {
-            var closestValidOption = $(e.target).hasClass("is--disabled") ? $(e.target).parent().children(":not(.is--disabled)").eq(0) : $(e.target);
+            if (this.isDisabled) {
+                e.preventDefault();
+                return false;
+            }
+
+            var closestValidOption = this.getClosestValidOption(e.target);
             var index              = _$.utils.getNodeIndex(closestValidOption);
+            var callback           = closestValidOption === this.currentOption ? _.noop : this.onUpdate;
 
             if (this.dom.hasClass("is--active")) {
                 $(window).off("click." + this.name);
                 this.dom.removeClass("is--active");
 
-                TweenMax.to(this.dropdownDOM[0], 0.4, { scrollTop: index * this.height, delay: 0.6, onComplete: this.onUpdate });
+                TweenMax.to(this.dropdownDOM[0], 0.4, { scrollTop: index * this.height, delay: 0.6, onComplete: callback });
                 this.currentOption = closestValidOption;
             } else {
                 this.dom.addClass("is--active");
@@ -39,20 +46,22 @@ define([
                     if (!$(clickEvent.target).parents(this.selector).length) {
                         $(window).off("click." + this.name);
                         this.dom.removeClass("is--active");
-                        this.reset();
+                        this.scrollTo(this.currentOption, true);
                     }
                 });
             }
         }
 
-        scrollTo (optionSelector) {
-            var option = this.dropdownDOM.find(optionSelector);
-            var index  = _$.utils.getNodeIndex(option);
+        scrollTo (optionSelector, noCallback, checkValidity) {
+            var selectedOption = this.dropdownDOM.find(optionSelector);
+            var option         = checkValidity ? this.getClosestValidOption(selectedOption) : selectedOption;
+            var index          = _$.utils.getNodeIndex(option);
+            var callback       = noCallback ? _.noop : this.onUpdate;
 
             if (index === -1) {
                 this.reset();
             } else {
-                TweenMax.to(this.dropdownDOM[0], 0.4, { scrollTop: index * this.height, delay: 0.6, onComplete: this.onUpdate });
+                TweenMax.to(this.dropdownDOM[0], 0.4, { scrollTop: index * this.height, delay: 0.6, onComplete: callback });
                 this.currentOption = option;
             }
         }
@@ -63,8 +72,24 @@ define([
             this.currentOption = this.defaultOption;
         }
 
-        remove () {
-            $(window).off("click." + this.name);
+        remove  () { $(window).off("click." + this.name); }
+        disable () { this.isDisabled = true; }
+        enable  () { this.isDisabled = false; }
+
+        getClosestValidOption (option) {
+            var validOption = $(option).parent().children(":not(.is--disabled)").eq(0);
+            return $(option).hasClass("is--disabled") ? validOption : $(option);
+        }
+
+        validitateCurrentOption (noUpdate) {
+            var closestValidOption = this.getClosestValidOption(this.currentOption);
+            var isValid            = this.currentOption === closestValidOption;
+
+            if (!isValid && !noUpdate) {
+                this.scrollTo(closestValidOption);
+            }
+
+            return isValid;
         }
     }
 
@@ -72,11 +97,13 @@ define([
         tagName   : "section",
         className : "screen",
 
+        initialize,
         add,
         remove,
         updateControlsState,
         triggerGamepadAction,
         createDropdown,
+        toggleSetting,
         error,
         info,
         choice,
@@ -85,28 +112,28 @@ define([
         showAutoSavePrompt,
         toGame,
         waitForOpponent,
-        changeScreen
+        changeScreen,
+        checkBGMCrossfade,
+        checkFooterUpdate,
+        onLogout
     });
 
-    function add () {
+    function initialize (options = {}) {
         this.eventsDisabled = false;
         this.promptOverlay  = new Elem_PromptOverlay();
 
-        if (_$.comm.sessionManager) {
-            _$.comm.sessionManager.on("logout", _onLogout.bind(this));
-        }
-
-        _$.utils.addDomObserver(this.$el, this.updateControlsState.bind(this), true);
         _$.events.on("startUserEvents", _delegate, this);
         _$.events.on("stopUserEvents", _undelegate, this);
         _$.events.on("showError", this.error, this);
+        Backbone.View.prototype.initialize.call(this);
+    }
+
+    function add () {
+        _$.utils.addDomObserver(this.$el, this.updateControlsState.bind(this), true);
         _$.dom.find("#screen").append(this.$el);
     }
 
     function remove () {
-        if (_$.comm.sessionManager) {
-            _$.comm.sessionManager.off("logout", _onLogout);
-        }
         _$.events.off("startUserEvents", _delegate, this);
         _$.events.off("stopUserEvents", _undelegate, this);
         _$.events.off("gamepad", this.triggerGamepadAction, this);
@@ -173,15 +200,31 @@ define([
         return new Dropdown(_.defaults(options, { screen: this }));
     }
 
-    function error (eventName, options) {
+    function toggleSetting (selector, toggleSelector, state) {
+        var dom = this.$(selector);
+
+        if (state === "toggle") {
+            state = dom.hasClass("is--on") ? false : true;
+        }
+
+        if (state) {
+            dom.removeClass("is--off").addClass("is--on");
+            dom.find(toggleSelector).text("ON");
+        } else {
+            dom.removeClass("is--on").addClass("is--off");
+            dom.find(toggleSelector).text("OFF");
+        }
+    }
+
+    function error (event, options) {
         _showPrompt.call(this, _.extend(options, { type: "error" }));
     }
 
-    function info (eventName, options) {
+    function info (event, options) {
         _showPrompt.call(this, _.extend(options, { type: "info" }));
     }
 
-    function choice (eventName, options) {
+    function choice (event, options) {
         _showPrompt.call(this, _.extend(options, { type: "choice" }));
     }
 
@@ -205,11 +248,11 @@ define([
     }
 
     function showSavePrompt (e = {}) {
-        if (_$.state.inGame) {
+        if (_$.state.user.isInGame) {
             this.info(null, {
                 titleBold    : "Currently",
                 titleRegular : "in-game",
-                msg          : "All unsaved progress will be lost. Do you really wish to leave?",
+                msg          : "All unsaved progress will be lost.",
                 btnMsn       : "Cancel"
             });
 
@@ -230,18 +273,17 @@ define([
         });
     }
 
-    function toGame (deck) {
+    function toGame (userDeck) {
         if (_$.state.room) {
-            this.waitForOpponent({
-                deck: _.map(deck, "attributes"),
-            }, proceed.bind(this));
+            // We send the user's selected deck to the opponent
+            this.waitForOpponent(_.map(userDeck, "attributes"), proceed.bind(this));
         } else {
             proceed.call(this);
         }
 
         function proceed () {
             var gameInfo = {
-                userDeck : deck,
+                userDeck : userDeck,
                 rules    : _$.state.rules,
                 room     : _$.state.room,
                 opponent : _$.state.opponent
@@ -253,26 +295,20 @@ define([
         }
     }
 
-    function waitForOpponent (userData, callback) {
-        userData = _.extend(userData, {
-            name      : _$.state.user.get("name"),
-            avatar    : _$.state.user.get("avatar"),
-            albumSize : _$.state.user.get("album").length
-        });
-
-        _$.comm.socketManager.emit("confirmReady", userData, onResponse.bind(this));
+    function waitForOpponent (userDeck, callback) {
+        _$.comm.socketManager.emit("confirmReady", userDeck, onResponse.bind(this));
         
         this.info(null, {
             titleBold    : "Please",
             titleRegular : "wait",
-            msg          : "Waiting for the other player to confirm",
+            msg          : "Waiting for the other player to confirm...",
             btnMsg       : "Cancel",
             action       : onCancel.bind(this)
         });
 
         function onResponse (response) {
-            _$.state.opponent = response;
-            fetch(_$.state.opponent.avatar); // Pre-load the opponent's avatar
+            _$.state.opponent = response.msg.opponent; // Update the final opponent info with the deck info received
+            fetch(_$.state.opponent.avatar);           // Pre-load the opponent's avatar
             this.closePrompt();
             callback();
         }
@@ -283,6 +319,35 @@ define([
         }
     }
 
+    function checkFooterUpdate (nextScreen) {
+        var tl = new TimelineMax();
+
+        if (_$.ui.screen.id === "screen_game") {
+            if (nextScreen === "title") {
+                tl.to(_$.ui.footer.text, 1, { opacity: 0, x: 20 });
+                tl.add(_$.ui.footer.toggleLogo("hide"), "-=0.5");
+                tl.call(() => { _$.ui.footer.isOpen = false; });
+            } else if (nextScreen === "lounge") {
+                tl.add(_$.ui.footer.toggleLogo("hide"));
+                tl.add(_$.ui.footer.toggleMenu("show"), "-=1.5");
+                tl.add(_$.ui.footer.toggleSocial("show"), "-=1.5");
+                tl.call(() => { _$.ui.footer.isOpen = true; });
+            }
+        } else if (nextScreen === "title") {
+            tl.to(_$.ui.footer.text, 1, { opacity: 0, x: 20 });
+            tl.add(_$.ui.footer.toggleSocial("hide"), "-=0.5");
+            tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
+            tl.call(() => { _$.ui.footer.isOpen = false; });
+        } else if (nextScreen === "game") {
+            tl.add(_$.ui.footer.toggleSocial("hide"));
+            tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
+            tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");
+            tl.call(() => { _$.ui.footer.isOpen = false; });
+        }
+
+        return tl.timeScale(2);
+    }
+
     function changeScreen (nextScreen, options = {}) {
         _$.app.track("set", {
             "dimension0" : "currentScreenId",
@@ -291,19 +356,19 @@ define([
         _$.app.track("send", "event", {
             eventCategory : "screenChange",
             eventAction   : nextScreen,
-            dimension0    : _$.ui.screen.id.replace("screen_", ""),  // fromScreen
-            dimension1    : !!options.fromMenu                       // fromMenu
+            dimension0    : _$.ui.screen.id.replace("screen_", ""),
+            dimension1    : !!options.fromMenu
         });
 
-        if (nextScreen === "title" || nextScreen === "userSettings" || options.fromMenu) {
+        if (nextScreen === "title" || nextScreen === "userSettings" || nextScreen === "lounge" || options.fromMenu) {
             if (_$.state.room) {
+                if (_$.state.user.isInLounge && nextScreen !== "lounge") {
+                    _$.comm.socketManager.emit("leaveLounge");
+                    _$.state.user.isInLounge = false;
+                }
+
                 _$.comm.socketManager.emit("playerReset");
             }
-
-            delete _$.state.opponent;
-            delete _$.state.room;
-            delete _$.state.rules;
-            delete _$.state.game;
             
             _$.utils.addDomObserver(this.$el, () => {
                 _$.events.trigger("startUserEvents");
@@ -311,6 +376,9 @@ define([
                 if (nextScreen === "title") {
                     var Screen_Title = require("views/screen_title");
                     _$.ui.screen     = new Screen_Title(options);
+                } else if (nextScreen === "lounge") {
+                    var Screen_Lounge = require("views/screen_lounge");
+                    _$.ui.screen      = new Screen_Lounge(options);
                 } else if (nextScreen === "userSettings") {
                     var Screen_UserSettings = require("views/screen_userSettings");
                     _$.ui.screen            = new Screen_UserSettings(options);
@@ -352,11 +420,61 @@ define([
         }
     }
 
-    function _onLogout (event, message) {
-        if (event === "Logged out" || event.success === "User deleted" || event === "Connection lost") {
+    function checkBGMCrossfade (nextScreen) {
+        if (_$.ui.screen.id === "screen_game") {
+            _$.events.once("startUserEvents", () => {
+                if (nextScreen === "menus") {
+                    _$.audio.audioEngine.setBGM("bgm.menus");
+                } else if (nextScreen === "lounge") {
+                    _$.audio.audioEngine.setBGM("bgm.lounge");
+                }
+
+                _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
+            });
+        } else if (_$.ui.screen.id === "screen_lounge") {
+            var bgmName = _$.state.room ? "bgm.loungeMenus" : "bgm.menus";
+
+            _$.audio.audioEngine.crossfadeBGM({
+                to          : bgmName,
+                duration    : 2,
+                onStart     : () => {
+                    _$.audio.audioEngine.channels.bgm.rampToVolume({ to: _$.state.user.get("bgmVolume"), delay: 1, duration: 1 });
+                    _$.audio.audioEngine.playBGM({ name: bgmName });
+                },
+                onComplete : () => {
+                    _$.audio.audioEngine.stopBGM();
+                    _$.audio.audioEngine.setBGM(bgmName);
+                }
+            });
+        } else if (nextScreen === "lounge") {
+            _$.audio.audioEngine.crossfadeBGM({
+                to          : "bgm.lounge",
+                duration    : 2,
+                onStart     : () => {
+                    _$.audio.audioEngine.channels.bgm.rampToVolume({ to: 0.15, delay: 1, duration: 1 });
+                    _$.audio.audioEngine.playBGM({name: "bgm.lounge"});
+                },
+                onComplete : () => {
+                    _$.audio.audioEngine.stopBGM();
+                    _$.audio.audioEngine.setBGM("bgm.lounge");
+                }
+            });
+        }
+    }
+
+    function onLogout (event, message) {
+        // Connection errors are already handled by the socket manager
+        if (!_.isString(event) || event.match("disconnect|connect_timeout|kick")) {
+            return;
+        } else if (_$.state.user.get("userId")) {
+            // If it's a valid event, we notify the socket manager the user should be logged out on the game server
+            _$.comm.socketManager.emit("logout");
+        }
+
+        if (event.match("logout|userDeleted")) {
             doLogout.call(this);
         } else {
-            this.error(event, {
+            this.error(null, {
                 msg    : event,
                 btnMsg : "Close",
                 action : this.closePrompt.bind(this, doLogout.bind(this))
@@ -370,7 +488,7 @@ define([
                     if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
                         proceed.call(this);
                     } else {
-                        _$.events.once("bgmEnded", proceed.bind(this));
+                        _$.events.once(_$.audio.audioEngine.currentBGM.events.ended, proceed.bind(this));
                     }
                 }
             });

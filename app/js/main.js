@@ -14,6 +14,7 @@ require.config({
         socketIO          : "libs/socket.io-client/dist/socket.io",
         stats             : "libs/stats.js/build/stats",
         superlogin        : "libs/superlogin-client/superlogin",
+        pouchdb           : "libs/pouchdb/dist/pouchdb-6.1.1",
 
         text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
@@ -50,6 +51,7 @@ require([
     "socketIO",
     "stats",
     "superlogin",
+    "pouchdb",
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
@@ -68,13 +70,14 @@ require([
     "views/screen_cardSelect",
     "views/screen_game",
     "views/screen_loading",
+    "views/screen_lounge",
     "views/screen_roomSelect",
     "views/screen_rulesSelect",
     "views/screen_title",
     "views/screen_userSettings",
     "jqueryNearest",
     "jsonPrune"
-], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, PouchDB, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");
     var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp];
@@ -229,26 +232,41 @@ require([
         _$.app.env.mobileDeviceType = "tablet";
     }
 
-    _$.events.on("all", function (eventName, ...data) {
+    _$.events.on("all", function (event, ...data) {
         /*if (data.length) {
-            _$.debug.log("event triggered:", eventName, data);
+            _$.debug.log("event triggered:", event.name, event, data);
         } else {
-            _$.debug.log("event triggered:", eventName);
+            _$.debug.log("event triggered:", event.name, event);
         }*/
     });
 
     _$.events.once("launch", function () {
-        _$.comm.sessionManager = new Superlogin(_$.app.sessionConfig);
         _$.comm.socketManager  = new SocketManager();
+        _$.comm.sessionManager = new Superlogin(_$.app.sessionConfig);
+        _$.comm.dbManager      = new PouchDB(_$.app.dbURL.concat("/users"));
         _$.ui.footer           = new Elem_Footer();
         _$.ui.screen           = new Screen_Title({ setup: true, fullIntro: true });
 
         $(window).on("beforeunload", function (e) {
             return _$.ui.screen.showSavePrompt(e);
         }).on("blur", function() {
-            _$.audio.audioEngine.channels.master.fadeOut();
+            if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
+                return;
+            } else if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {
+                _$.audio.audioEngine.channels.bgm.fadeOut();
+                _$.audio.audioEngine.channels.sfx.fadeOut();
+            } else {
+                _$.audio.audioEngine.channels.master.fadeOut();
+            }
         }).on("focus", function() {
-            _$.audio.audioEngine.channels.master.fadeIn({ to: 1 });
+            if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
+                return;
+            } if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {
+                _$.audio.audioEngine.channels.bgm.fadeIn({ to: (_$.ui.screen.$(".setting-bgm input").val() / 100) || _$.state.user.get("bgmVolume") });
+                _$.audio.audioEngine.channels.sfx.fadeIn({ to: (_$.ui.screen.$(".setting-sfx input").val() / 100) || _$.state.user.get("sfxVolume") });
+            } else {
+                _$.audio.audioEngine.channels.master.fadeIn({ to: _$.audio.audioEngine.channels.master.defaultVolume });
+            }
         });
     });
 

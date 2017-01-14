@@ -20,8 +20,8 @@ define([
         events           : {
             "click .title_startBtn" : function () {
                 _$.app.track("send", "event", {
-                    eventCategory: "titleEvent",
-                    eventAction: "clickStart"
+                    eventCategory : "titleEvent",
+                    eventAction   : "clickStart"
                 });
 
                 _$.audio.audioEngine.playSFX("menuOpen");
@@ -33,7 +33,7 @@ define([
             "click .title_account-element,.title_overlay-signup-btn,.title_overlay-login-btn" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
             },
-            "focus .title_overlay-signup-form-field-input,title_overlay-login-form-field-input" : function () {
+            "focus .title_overlay-signup-form-field-input,.title_overlay-login-form-field-input" : function () {
                 _$.audio.audioEngine.playSFX("uiInput");
             },
             "click .title_account-signupBtn" : function () {
@@ -59,8 +59,9 @@ define([
                 this.$(".title_account-logoutBtn").text("Signing out...");
 
                 _$.comm.sessionManager.once("logout", (event, message) => {
-                    this.$(".title_account-logoutBtn").text("See you!");
+                    _$.audio.audioEngine.playSFX("logout");
                     _$.audio.audioEngine.playSFX("gameGain");
+                    this.$(".title_account-logoutBtn").text("See you!");
                 });
 
                 _$.comm.sessionManager.logout();
@@ -73,9 +74,9 @@ define([
                 e.preventDefault();
                 this.closeOverlay("login");
             },
-            "submit .title_overlay-signup-form"      : "doSignup",
-            "submit .title_overlay-login-form"       : "loginConfirmAction",
-            "click .title_overlay-login-forgotPwd"   : "toForgotPassword"
+            "submit .title_overlay-signup-form"    : "doSignup",
+            "submit .title_overlay-login-form"     : "loginConfirmAction",
+            "click .title_overlay-login-forgotPwd" : "toForgotPassword"
         },
 
         initialize,
@@ -93,71 +94,143 @@ define([
     });
 
     function initialize (options = {}) {
+        Screen.prototype.initialize.call(this);
+        
         this.introTL            = null;
         this.accountTemplate    = _.template(Templ_TitleAccount);
         this.loginConfirmAction = this.doLogin;
         this.signedUp           = false;
 
-        if (options.setup) {
-            _$.state.user = new Model_User();
-
-            if (_$.utils.getLocalStorage(_$.app.name)) {
-                _$.app.loadData();
-            } else {
-                _$.state.user.setup();
-            }
-        }
-
-        _$.comm.sessionManager.on("login", () => {
-            _$.events.once("userDataLoaded", () => {
-                if (this.$(".title_overlay-login").hasClass("is--active")) {
-                    this.$(".title_overlay-login-message").text("Welcome back, " + _$.state.user.get("name") + "!");
-                    _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
-                    _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
-                    
-                    this.closeOverlay("login");
-                }
-
-                this.updateAccountLayout();
-                _$.comm.sessionManager.logoutOthers();
-            });
-
-            _$.app.loadData();
-        });
-
         this.$el.html(this.template());
         var logo = $(_$.assets.get("svg.ui.logo"));
         this.$(".title_logo").append(logo);
 
-        if (_$.state.user.dataLoaded) {
-            proceed.call(this);
+        // If the flag for the initialization flow is on
+        if (options.setup) {
+            // We create a new user
+            _$.state.user = new Model_User();
+
+            // If there is game data in the storage
+            if (_$.utils.getLocalStorage(_$.app.name)) {
+                // If that data is session data
+                if (_$.comm.sessionManager.getSession()) {
+                    // We check whether the session is still valid
+                    _$.comm.sessionManager.validateSession().then(() => {
+                        // If the session is still valid
+                        // We start checking its validity routinely
+                        _$.comm.sessionManager.setValidateInterval();
+
+                        // We setup a listener to catch when the data is done loading from the database
+                        _$.events.once("userDataLoaded", () => {
+                            // We logout the user from other potential sessions
+                            _$.comm.sessionManager.logoutOthers().then(() => {
+                                // And we emit the login event to the game server
+                                _$.comm.socketManager.emit("login", _$.comm.sessionManager.getSession().user_id);
+                            }).catch(_$.debug.error);
+
+                            // We go on with the initialization flow
+                            proceed.call(this);
+                        });
+
+                        // We start loading the data
+                        _$.app.loadData();
+                    }).catch((error) => {
+                        _$.debug.error(error);
+                        // Otherwise there is no data to load, so we create a new user profile
+                        setupNewUser.call(this);
+                    });
+                } else {
+                    // Otherwise it's savefile data
+                    // We setup a listener to catch when the data from the savefile is done loading
+                    _$.events.once("userDataLoaded", () => {
+                        // We go on with the initialization flow
+                        proceed.call(this);
+                    });
+
+                    // We start loading the data
+                    _$.app.loadData();
+                }
+            } else {
+                // Otherwise there is no data to load, so we create a new user profile
+                setupNewUser.call(this);
+            }
         } else {
+            // If the data has already been loaded before, just continue
+            proceed.call(this);
+        }
+
+        function setupNewUser () {
+            // Otherwise there is no data to load, so we create a new user profile
+            // We setup a listener to catch when the profile has been created
             _$.events.once("userDataLoaded", () => {
+                // We go on with the initialization flow
                 proceed.call(this);
             });
+
+            // We setup the profile
+            _$.state.user.setup();
         }
 
         function proceed () {
-            this.updateAccountLayout();
+            if (options.setup) {
+                _$.comm.sessionManager.on("logout", (...args) => {
+                    _$.ui.screen.onLogout(...args);
+                });
 
-            _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
-            _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
-            _$.audio.audioEngine.setBGM("bgm.menus");
+                _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
+                _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
+                _$.audio.audioEngine.setBGM("bgm.menus");
+                _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
+            }
 
-            _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
-            
+            // Everytime we login outside of the initialization flow (manually, from the login form)
+            _$.comm.sessionManager.on("login", (...args) => {
+                // We setup a listener to catch when the data is done loading from the database
+                _$.events.once("userDataLoaded", (...args) => {
+                    // We update the interface
+                    this.$(".title_overlay-login-message").text("Welcome back, " + _$.state.user.get("name") + "!");
+                    this.closeOverlay("login");
+                    this.updateAccountLayout();
+
+                    // We update the audio levels to the user's saved settings
+                    _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
+                    _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
+                    _$.audio.audioEngine.channels.notif.setVolume(_$.state.user.get("notifVolume"));
+                    
+                    // We logout the user from other potential sessions
+                    _$.comm.sessionManager.logoutOthers().then((...args) => {
+                        // And we emit the login event to the game server
+                        _$.comm.socketManager.emit("login", _$.comm.sessionManager.getSession().user_id);
+                    }).catch(_$.debug.error);
+                });
+
+                // We start loading the data
+                _$.app.loadData();
+            });
+
+            _$.events.on("updateOnlineCount", (event, data) => {
+                this.$(".title_account-info-playerCount-onlineCount").text(data.msg);
+            });
+
+            _$.events.on("updateLoungeCount", (event, data) => {
+                this.$(".title_account-info-playerCount-loungeCount").text(data.msg);
+            });
+
             if (options.fullIntro) {
                 _$.utils.addDomObserver(this.$el, this.playIntro.bind(this), true);
             } else {
                 _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
             }
 
+            this.updateAccountLayout();
             this.add();
         }
     }
 
     function remove () {
         _$.comm.sessionManager.removeAllListeners("login");
+        _$.events.off("updateOnlineCount");
+        _$.events.off("updateLoungeCount");
         Screen.prototype.remove.call(this);
     }
 
@@ -178,7 +251,6 @@ define([
         var logoTl   = new TimelineMax();
 
         this.introTL.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });
-        this.introTL.add(_$.ui.footer.toggleLogo("hide"), 0);
         this.introTL.set(_.map(logoPaths, "path"), { attr: { fill: "rgba(255, 255, 255, 0)", stroke: "rgba(255, 255, 255, 0)", strokeWidth: 0 } }, 0);
         this.introTL.to(_.map(logoPaths, "path"), 2, { attr: { stroke: "rgba(255, 255, 255, 1)" } }, 1);
         this.introTL.call(() => { _$.audio.audioEngine.playSFX("titleLogo", { volume: 0.5 }); }, [], null, 0);
@@ -228,17 +300,16 @@ define([
         _$.events.once("gamepad", skipTransition, this);
 
         var tl = new TimelineMax();
-        tl.add(_$.ui.footer.toggleLogo("hide"));
-        tl.to(_$.ui.footer.text, 1, { opacity: 0, x: 20 }, 0);
         tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); });
         tl.from(this.$(".title_logo"), 1, { opacity : 0, scale: 1.25, clearProps: "all" });
         tl.from(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
+        tl.addLabel("enterFooter", "-=1");
         tl.add(_$.ui.footer.toggleMenu("show"), "enterFooter");
         tl.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=1");
         tl.set(_$.ui.footer.text, { clearProps: "display" }, "enterFooter+=2.5");
         tl.to(_$.ui.footer.text, 1, { opacity: 1, x: 0, clearProps: "all" }, "enterFooter+=2.5");
-        tl.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
-        tl.call(function () {
+        tl.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=3");
+        tl.call(() => {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
         }, [], null, "enterFooter+=3.5");
         tl.call(() => {
@@ -258,18 +329,17 @@ define([
 
     function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
+        this.checkBGMCrossfade(nextScreen);
         
         var tl = new TimelineMax();
         tl.call(() => {
             _$.audio.audioEngine.playSFX("titleStart");
             _$.ui.footer.menu.find(".footer_menu-element").removeClass("is--active");
         });
-        tl.add(_$.ui.footer.toggleSocial("hide"));
-        tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
-        tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");
+        
         tl.to(this.$(".title_account"), 0.5, { opacity: 0, x: 20 }, 0);
         tl.to(this.$(".title_startBtn"), 0.5, { opacity: 0, scale: 1.25 }, 0);
-        tl.to(this.$(".title_logo"), 1, { opacity: 0, scale: 1.25 }, 0.5);
+        tl.to(this.$(".title_logo"), 0.75, { opacity: 0, scale: 1.25 }, 0.5);
         tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); }, [], null, 0.5);
         tl.call(this.changeScreen.bind(this, nextScreen, options));
 
@@ -292,7 +362,10 @@ define([
         if (overlayName === "login") {
             tl.from(this.$(".title_overlay-login-forgotPwd"), 0.4, { opacity: 0, y: 20, clearProps: "all" }, "+=0.2");
         }
-        tl.call(() => { _$.events.trigger("startUserEvents"); });
+        tl.call(() => {
+            _$.events.trigger("startUserEvents");
+            overlay.find("input").eq(0).focus();
+        });
     }
 
     function closeOverlay (overlayName) {
@@ -360,7 +433,13 @@ define([
         this.$(".title_overlay-signup-confirmBtn").text("Signing up...");
 
         _$.comm.sessionManager.register(data).then((response) => {
+            _$.events.once(_$.audio.audioEngine.getBGM("bgm.win").events.ended, () => {
+                _$.audio.audioEngine.currentBGM.rampToVolume({ to: _$.audio.audioEngine.currentBGM.defaultVolume, duration: 1 });
+            });
+            _$.audio.audioEngine.currentBGM.rampToVolume({ to: "-=0.75", duration: 0.5 });
+            _$.audio.audioEngine.playBGM({ name: "bgm.win" });
             _$.audio.audioEngine.playSFX("gameGain");
+
             this.$(".title_overlay-signup-confirmBtn").text("Success!");
             this.$(".title_overlay-signup-message").text("Thank you! A confirmation mail was sent to " + data.email + ".");
             this.$(".title_overlay-signup-confirmBtn, .title_overlay-signup-closeBtn").slideUp(200);
@@ -414,11 +493,12 @@ define([
             username: this.$(".title_overlay-login-form .field-login input").val(),
             password: this.$(".title_overlay-login-form .field-password input").val()
         }).then((session) => {
-            _$.audio.audioEngine.playSFX("gameGain");
+            _$.audio.audioEngine.playSFX("login");
+            _$.audio.audioEngine.playSFX("gameGain", { delay: 0.1 });
             this.$(".title_overlay-login-confirmBtn").text("Success!");
         }).catch((error) => {
             _$.audio.audioEngine.playSFX("uiError");
-            this.$(".title_overlay-login-confirmBtn").text("Error!");
+            this.$(".title_overlay-login-confirmBtn").text("Error");
             setTimeout(() => { this.$(".title_overlay-login-confirmBtn").text("Confirm"); }, 1000);
 
             this.$(".title_overlay-login-form-field-input").addClass("is--invalid");
@@ -517,7 +597,7 @@ define([
 
         function onError (message) {
             _$.audio.audioEngine.playSFX("uiError");
-            this.$(".title_overlay-login-confirmBtn").text("Error!");
+            this.$(".title_overlay-login-confirmBtn").text("Error");
             setTimeout(() => { this.$(".title_overlay-login-confirmBtn").text("Send"); }, 1000);
 
             this.$(".title_overlay-login-form-field-input").addClass("is--invalid");
@@ -529,7 +609,7 @@ define([
 
     function updateAccountLayout () {
         var accountLayout = $(this.accountTemplate({
-            isLoggedIn : _$.comm.sessionManager.getSession(),
+            isLoggedIn : !!_$.state.user.get("userId"),
             userName   : _$.state.user.get("name")
         }));
 
@@ -549,6 +629,13 @@ define([
                 TweenMax.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" });
             }, true);
 
+            _$.comm.socketManager.emit("getOnlineCount", null, (data) => {
+                this.$(".title_account-info-playerCount-onlineCount").text(data.msg);
+            });
+
+            _$.comm.socketManager.emit("getLoungeCount", null, (data) => {
+                this.$(".title_account-info-playerCount-loungeCount").text(data.msg);
+            });
             this.$el.append(accountLayout);
         }
     }

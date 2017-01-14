@@ -39,7 +39,8 @@ define(["underscore", "backbone", "global"], function Model_Card (_, Backbone, _
     }
 
     function setImagePath () {
-        this.set("image", _$.assets.get("img.cards." + _.camelCase(this.get("name"))).src);
+        var url = new URL(_$.assets.get("img.cards." + _.camelCase(this.get("name"))).src).pathname;
+        this.set("image", "." + url);
     }
 
     function getRanksSum () {

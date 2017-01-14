@@ -25,6 +25,7 @@ define([
             },
             "click .menu_soloMode"     : "toSoloMode",
             "click .menu_versusMode"   : "toVersusMode",
+            "click .menu_loungeRoom"   : "toLoungeRoom",
             "click .menu_userSettings" : "toUserSettings"
         },
 
@@ -33,10 +34,13 @@ define([
         transitionOut,
         toSoloMode,
         toVersusMode,
+        toLoungeRoom,
         toUserSettings
     });
 
     function initialize (options) {
+        Screen.prototype.initialize.call(this);
+        
         this.$el.html(this.template());
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
@@ -87,6 +91,11 @@ define([
     function toVersusMode () {
         this.$(".menu_versusMode").css({ pointerEvents: "none" });
         _$.ui.footer.toggleMainMenu("roomSelect");
+    }
+
+    function toLoungeRoom () {
+        this.$(".menu_loungeRoom").css({ pointerEvents: "none" });
+        _$.ui.footer.toggleMainMenu("lounge");
     }
 
     function toUserSettings () {

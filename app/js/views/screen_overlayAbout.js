@@ -55,7 +55,7 @@ define([
                     eventAction: "clickCredits"
                 });
             },
-            "click .about_credits" : function () {
+            "click .about_legal" : function () {
                 _$.app.track("send", "event", {
                     eventCategory: "aboutEvent",
                     eventAction: "clickLegal"
@@ -71,6 +71,8 @@ define([
     });
 
     function initialize (options) {
+        Screen.prototype.initialize.call(this);
+
         this.$el.html(this.template({ appVersion: _$.app.version, appVersionFlag: _$.app.versionFlag }));
         this.line = this.$(".about_line");
         this.logo = this.$(".about_logo");

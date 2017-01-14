@@ -1,3 +1,7 @@
+process.on("uncaughtException", function (error) {
+    console.log(error.stack);
+});
+
 var path  = require("path");
 
 // # Globbing
@@ -8,34 +12,36 @@ var path  = require("path");
 // templateFramework: 'lodash'
 
 module.exports = function (grunt, options) {
-  // Automatically load required Grunt tasks
-  require("load-grunt-tasks")(grunt);
+    grunt.option("stack", true);
 
-  // show elapsed time at the end
-  require("time-grunt")(grunt);
+    // Automatically load required Grunt tasks
+    require("load-grunt-tasks")(grunt);
 
-  // configurable paths
-  var pkgFile      = grunt.file.readJSON("package.json");
-  var yeomanConfig = {
-    app   : "app",
-    dist  : "dist",
-    tmp   : ".tmp",
-    beta  : "beta",
-    prod  : "html"
-  };
+    // show elapsed time at the end
+    require("time-grunt")(grunt);
 
-  require("load-grunt-config")(grunt, {
-    configPath : path.join(process.cwd(), "grunt/configs"),
-    init       : true,
-    data       : {
-      pkg            : pkgFile,
-      yeoman         : yeomanConfig,
-      hostname       : "localhost",
-      serverPort     : 9000,
-      livereloadPort : 35729
-    }
-  });
+    // configurable paths
+    var pkgFile      = grunt.file.readJSON("package.json");
+    var yeomanConfig = {
+        app  : "app",
+        dist : "dist",
+        tmp  : ".tmp",
+        beta : "beta",
+        prod : "html"
+    };
 
-  grunt.loadTasks(path.join(process.cwd(), "grunt/tasks"));
-  grunt.registerTask("default", ["serve"]);
+    require("load-grunt-config")(grunt, {
+        configPath : path.join(process.cwd(), "grunt/configs"),
+        init       : true,
+        data       : {
+            pkg            : pkgFile,
+            yeoman         : yeomanConfig,
+            hostname       : "localhost",
+            serverPort     : 9000,
+            livereloadPort : 35729
+        }
+    });
+
+    grunt.loadTasks(path.join(process.cwd(), "grunt/tasks"));
+    grunt.registerTask("default", ["serve"]);
 };

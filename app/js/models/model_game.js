@@ -119,13 +119,15 @@ define([
             }
         }
 
-        if (this.get("role") === "transmitter") {
+        if (this.get("role") === "emitter") {
             _$.comm.socketManager.emit("roundReset");
         } else if (this.get("role") === "receiver") {
-            _$.events.on("getFirstPlayer", (eventName, response) => {
-                if (response.msg) {
+            _$.events.on("getFirstPlayer", (event, data) => {
+                var playerRole = data.msg;
+
+                if (playerRole) {
                     _$.events.off("getFirstPlayer");
-                    var firstPlayer = (response.msg === "transmitter") ? this.get("players").opponent : this.get("players").user;
+                    var firstPlayer = (playerRole === "emitter") ? this.get("players").opponent : this.get("players").user;
                     this.set("playing", firstPlayer);
                     _$.events.trigger("firstPlayerSet");
                 }
@@ -227,7 +229,7 @@ define([
 
     function setRules (rules = {}) {
         if (rules.trade && !rules.trade.match("none|one|difference|direct|all")) {
-            throw new Error("Invalid trade rule: " + rules.trade);
+            _$.debug.error("Invalid trade rule: " + rules.trade);
         }
 
         return _.defaults(rules, {
@@ -395,7 +397,7 @@ define([
             if (!isSimulatedTurn) {
                 _$.events.trigger(eventName, options);
             } else if (eventName !== "flipCard") {
-                simulation = _.extend(simulation, { endGame: !!options.endGame });
+                _.extend(simulation, { endGame: !!options.endGame });
                 simulationCallback(simulation);
             }
         }
@@ -410,8 +412,8 @@ define([
             } else {
                 this.set("playing", (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent);
 
-                if (this.get("role") === "transmitter") {
-                    var firstPlayer = (this.get("playing") === this.get("players").user) ? "transmitter" : "receiver";
+                if (this.get("role") === "emitter") {
+                    var firstPlayer = (this.get("playing") === this.get("players").user) ? "emitter" : "receiver";
                     _$.comm.socketManager.emit("setFirstPlayer", firstPlayer);
                 }
 
@@ -491,7 +493,7 @@ define([
             action.deckIndex = action.card.get("deckIndex");
             proceed.call(this);
         } else {
-            _$.events.on("getPlayerAction", (eventName, response) => {
+            _$.events.on("getPlayerAction", (event, response) => {
                 if (response.msg) {
                     _$.events.off("getPlayerAction");
                     action = response.msg;

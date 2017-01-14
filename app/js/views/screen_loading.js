@@ -16,6 +16,8 @@ define([
     });
 
     function initialize (options) {
+        Screen.prototype.initialize.call(this);
+        
         this.loadPercentage = 0;
         this.canvasAssets   = 0;
         this.$el.html(this.template());
@@ -29,11 +31,11 @@ define([
         });
 
         var that = this;
-        _$.events.on("fileLoaded:imgUI", function (eventName, originalEventName) {
-            if (originalEventName === "fileLoaded:imgUI:bg" ||
-                originalEventName === "fileLoaded:imgUI:bgDepthMap" ||
-                originalEventName === "fileLoaded:imgUI:bgPattern" ||
-                originalEventName === "fileLoaded:imgUI:bgFlare") {
+        _$.events.on("fileLoaded:imgUI", function (event) {
+            if (event.originEventName === "fileLoaded:imgUI:bg" ||
+                event.originEventName === "fileLoaded:imgUI:bgDepthMap" ||
+                event.originEventName === "fileLoaded:imgUI:bgPattern" ||
+                event.originEventName === "fileLoaded:imgUI:bgFlare") {
                 that.canvasAssets++;
                 _checkCanvasAssets.call(that);
             }
@@ -54,14 +56,10 @@ define([
             _$.events.off("loadProgress");
             $(".preloadFont").remove();
 
-            TweenMax.to(this.$el, 1, { opacity: 0, scale: "1.25", delay: 1,
-                onStart    : () => {
-                    _$.events.trigger("launch");
-                },
-                onComplete : () => {
-                    this.remove();
-                }
-            });
+            var tl = new TimelineMax();
+            tl.call(() => { _$.events.trigger("launch"); }, [], null, 0.5);
+            tl.to(this.$el, 0.5, { opacity: 0, scale: 1.25 }, "+=0.5");
+            tl.call(() => { this.remove(); });
         });
 
         TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });

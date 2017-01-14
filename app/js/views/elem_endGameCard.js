@@ -43,10 +43,15 @@ define([
         }, true);
     }
 
-    function selectCard () {
+    function selectCard (event, removingExcess) {
         this.selected = !this.selected;
-        TweenMax.set(this.$(".card"), { scale: "1" });
-        this.cardView.flip();
-        _$.events.trigger("endGameCardSelected", { endGameCardView: this, selected: this.selected });
+
+        var tl = new TimelineMax({ delay: removingExcess ? 0.15 : 0 });
+        tl.set(this.$(".card"), { scale: "1" });
+        tl.add(this.cardView.flip());
+
+        if (!removingExcess) {
+            _$.events.trigger("endGameCardSelected", { endGameCardView: this, selected: this.selected });
+        }
     }
 });

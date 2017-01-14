@@ -74,17 +74,24 @@ define([
         this.$el.html(this.template());
         _$.dom.append(this.$el);
 
-        this.isOpen = false;
+        this.isOpen = true;
         this.logo   = this.$(".footer_logo");
         this.menu   = this.$(".footer_menu");
         this.social = this.$(".footer_social");
         this.text   = this.$(".footer_text");
 
+        this.queuedAnimations = {
+            logo   : [],
+            menu   : [],
+            social : [],
+            text   : []
+        };
+
         var logo = $(_$.assets.get("svg.ui.logo"));
         this.logo.append(logo);
     }
 
-    function toggleMainMenu (nextScreen, noTracking) {
+    function toggleMainMenu (nextScreen, noTracking, toSection) {
         if (_$.ui.menu) {
             if (!noTracking) {
                 _$.app.track("send", "event", {
@@ -93,14 +100,16 @@ define([
                 });
             }
 
-            if (_$.ui.screen.id === "screen_title") {
-                this.toggleLogo("hide");
-                this.isOpen = false;
-            }
+            this.toggleLogo("hide");
+
+
             _$.events.once("mainMenuClosed", () => {
                 delete _$.ui.menu;
                 this.$(".footer_menu-menuBtn").removeClass("is--active");
-                if (_$.ui.screen.id === "screen_title") {
+
+                if (_$.ui.help || toSection === "toHelp") {
+                    this.$(".footer_menu-helpBtn").addClass("is--active");
+                } else if (_$.ui.screen.id === "screen_title") {
                     this.$(".footer_menu-homeBtn").addClass("is--active");
                 }
             });
@@ -120,7 +129,7 @@ define([
                      proceed.call(this);
                 });
 
-                this.toggleHelpPage();
+                this.toggleHelpPage(null, false, "toMenu");
             } else {
                 proceed.call(this);
             }
@@ -128,12 +137,9 @@ define([
 
         function proceed () {
             this.$(".footer_menu-element").removeClass("is--active");
-            _$.events.once("mainMenuOpen", () => {
-                if (_$.ui.screen.id === "screen_title") {
-                    this.toggleLogo("show");
-                    this.isOpen = true;
-                }
+            this.toggleLogo("show");
 
+            _$.events.once("mainMenuOpen", () => {
                 this.$(".footer_menu-element").removeClass("is--active");
                 this.$(".footer_menu-menuBtn").addClass("is--active");
             });
@@ -143,7 +149,7 @@ define([
         }
     }
 
-    function toggleHelpPage (nextScreen, noTracking) {
+    function toggleHelpPage (nextScreen, noTracking, toSection) {
         if (_$.ui.help) {
             if (!noTracking) {
                 _$.app.track("send", "event", {
@@ -151,17 +157,12 @@ define([
                     eventAction: "closeHelp"
                 });
             }
-
-            if (_$.ui.screen.id === "screen_title") {
-                this.toggleLogo("hide");
-                this.isOpen = false;
-            }
             
             _$.events.once("helpPageClosed", () => {
                 delete _$.ui.help;
                 this.$(".footer_menu-helpBtn").removeClass("is--active");
 
-                if (_$.ui.menu) {
+                if (_$.ui.menu || toSection === "toMenu") {
                     this.$(".footer_menu-menuBtn").addClass("is--active");
                 } else if (_$.ui.screen.id === "screen_title") {
                     this.$(".footer_menu-homeBtn").addClass("is--active");
@@ -182,7 +183,7 @@ define([
                      proceed.call(this);
                 });
 
-                this.toggleMainMenu();
+                this.toggleMainMenu(null, false, "toHelp");
             } else {
                 proceed.call(this);
             }
@@ -190,12 +191,8 @@ define([
 
         function proceed () {
             this.$(".footer_menu-element").removeClass("is--active");
-            _$.events.once("helpPageOpen", () => {
-                if (_$.ui.screen.id === "screen_title") {
-                    this.toggleLogo("show");
-                    this.isOpen = true;
-                }
 
+            _$.events.once("helpPageOpen", () => {
                 this.$(".footer_menu-element").removeClass("is--active");
                 this.$(".footer_menu-helpBtn").addClass("is--active");
             });
@@ -211,11 +208,6 @@ define([
                     eventCategory: "footerEvent",
                     eventAction: "closeAbout"
                 });
-            }
-
-            if (_$.ui.screen.id === "screen_title") {
-                this.toggleLogo("hide");
-                this.isOpen = false;
             }
             
             _$.events.once("aboutPageClosed", () => {
@@ -241,11 +233,8 @@ define([
             }
 
             this.$(".footer_menu-element").removeClass("is--active");
+
             _$.events.once("aboutPageOpen", () => {
-                if (_$.ui.screen.id === "screen_title") {
-                    this.toggleLogo("show");
-                    this.isOpen = true;
-                }
                 this.$(".footer_menu-aboutBtn").addClass("is--active");
             });
 
@@ -309,19 +298,28 @@ define([
         return tl;
     }
 
-    function toggleLogo (state) {
+    function toggleLogo (state, fromQueue) {
         var el = this.logo;
-        var tl = new TimelineMax();
 
-        el.addClass("is--tweening");
-        if (state === "show") {
-            tl.add(_showElement(el));
-        } else if (state === "hide") {
-            tl.add(_hideElement(el));
+        if (el.hasClass("is--tweening") && !fromQueue) {
+            this.queuedAnimations.logo.push(state);
+            return;
+        } else if (fromQueue) {
+            this.queuedAnimations.logo.splice(0, 1);
         }
 
-        tl.call(function () {
+        var tl = new TimelineMax();
+        tl.call(() => { el.addClass("is--tweening"); });
+
+        if (state === "show") { tl.add(_showElement(el)); }
+        else if (state === "hide") { tl.add(_hideElement(el)); }
+
+        tl.call(() => {
             el.removeClass("is--tweening");
+
+            if (this.queuedAnimations.logo.length) {
+                this.toggleLogo(this.queuedAnimations.logo[0], true);
+            }
         });
 
         return tl;
@@ -353,7 +351,7 @@ define([
     function _showElement (element) {
         var tl = new TimelineMax();
 
-        tl.set(element, { clearProps: "display" });
+        tl.set(element, { clearProps: "all" });
         tl.set(element, { overflow: "hidden" });
         tl.from(element, 0.5, { width: 0, borderWidth: 0 }, 0);
         tl.from(element, 1.5, { opacity: 0 });

@@ -17,12 +17,23 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
-            "click .rulesSelect_content-rules-rule:not(.rule-trade)" : function (e) {
-                this.toggleRule(e.currentTarget.className.match(RULES)[0], "toggle");
+            "click .rulesSelect_content-rules-rule:not(.rule-trade):not(.is--disabled)" : function (e) {
+                if (this.readOnly) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                var ruleName = e.currentTarget.className.match(RULES)[0];
+                this.toggleRule(ruleName, "toggle");
+                this.updateRules();
             },
             "click .rulesSelect_content-screenNav-choice-backBtn" : function () {
-                if (_$.ui.roomSelect) {
-                    this.transitionOut("roomSelect");
+                if (_$.state.room) {
+                    if (_$.state.user.isInLounge) {
+                        this.transitionOut("lounge");
+                    } else {
+                        this.transitionOut("roomSelect");
+                    }
                 } else {
                     this.transitionOut("title");
                 }
@@ -32,6 +43,7 @@ define([
             "click .rulesSelect_content-confirm-choice-noBtn"     : function () { 
                 this.toggleConfirm("hide");
                 this.toggleRule("random", false);
+                this.updateRules();
             },
             "mouseenter .rulesSelect_content-rules-rule:not(.rule-trade)" : function (e) {
                 this.showHelp(e.currentTarget.className.match(RULES)[0]);
@@ -45,7 +57,15 @@ define([
             "mouseenter .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element,.rulesSelect_content-rules-rule" : function () {
+            "click .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "click .rulesSelect_content-rules-rule:not(.is--disabled)" : function (e) {
+                if (this.readOnly) {
+                    e.preventDefault();
+                    return false;
+                }
+
                 _$.audio.audioEngine.playSFX("uiConfirm");
             }
         },
@@ -57,6 +77,7 @@ define([
         toggleConfirm,
         updateRules,
         setOpponentRules,
+        setAvailableRules,
 
         toNextStep,
         transitionIn,
@@ -65,34 +86,27 @@ define([
     });
 
     function initialize (options = {}) {
-        _$.ui.rulesSelect = this;
-        this.rules        = null;
-        this.randomDeck   = null;
-        this.readOnly     = options.readOnly;
-
-        this.$el.html(this.template());
-        this.toggleRule("open", true, true);
-        this.toggleRule("random", false, true);
-        this.toggleRule("elemental", false, true);
-        this.toggleRule("suddenDeath", false, true);
-
+        Screen.prototype.initialize.call(this);
+        
+        _$.ui.rulesSelect  = this;
+        this.readOnly      = options.readOnly;
+        this.rules         = null;
+        this.randomDeck    = null;
         this.tradeDropdown = null;
+        this.initialized   = false;
+
+        this.$el.html(this.template({
+            isReadOnly: !!this.readOnly
+        }));
+
+        this.toggleRule("open", true);
+        this.toggleRule("random", false);
+        this.toggleRule("elemental", false);
+        this.toggleRule("suddenDeath", false);
+        this.setAvailableRules(_$.state.opponent);
 
         if (this.readOnly) {
-            this.$(".rulesSelect_content-rules").css({ pointerEvents: "none" });
-            this.$(".rulesSelect_content-confirm-choice-noBtn").hide();
-        }
-
-        if (!_$.state.room) {
-            this.$(".rulesSelect_content-screenNav-choice-backBtn").hide();
-        }
-
-        if (_$.state.user.get("album").length < 6) {
-            this.$(".tradeRule-one").addClass("is--disabled");
-        }
-
-        if (_$.state.user.get("album").length < 11) {
-            this.$(".tradeRule-difference, .tradeRule-direct, .tradeRule-all").addClass("is--disabled");
+            this.$(".rulesSelect_content-rules-rule").addClass("is--readOnly");
         }
 
         this.showHelp();
@@ -118,8 +132,8 @@ define([
         }
     }
 
-    function setOpponentRules (eventName, response) {
-        var opponentRules = response.msg;
+    function setOpponentRules (event, data) {
+        var opponentRules = data.msg;
 
         if (opponentRules) {
             _.each(opponentRules, (ruleState, ruleName) => {
@@ -129,35 +143,52 @@ define([
                     this.toggleRule(ruleName, ruleState);
                 }
             });
+
+            if (_$.ui.screen.id !== this.id) {
+                _$.audio.audioEngine.playSFX("gameGain");
+                _$.ui.screen.info(null, {
+                    titleBold    : "Rules",
+                    titleRegular : "updated",
+                    msg          : _$.state.opponent.name + " has updated the rules.",
+                    autoClose    : true
+                });
+            }
         }
     }
 
-    function toggleRule (rule, state, auto) {
-        var ruleDOM = this.$(".rule-" + rule);
-        
-        if (state === "toggle") {
-            state = ruleDOM.hasClass("is--on") ? false : true;
+    function setAvailableRules (opponent) {
+        var albumSize    = _$.state.user.get("album").length;
+        var albumSizeMin = opponent ? _.min([albumSize, opponent.albumSize]) : albumSize;
+        var albumSizeMax = opponent ? _.max([albumSize, opponent.albumSize]) : albumSize;
+
+        if (albumSizeMin < 6) {
+            this.$(".tradeRule-one").addClass("is--disabled");
         }
 
-        if (state) {
-            ruleDOM.removeClass("is--off").addClass("is--on");
-            ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("ON");
-        } else {
-            ruleDOM.removeClass("is--on").addClass("is--off");
-            ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("OFF");
+        if (albumSizeMin < 11) {
+            this.$(".tradeRule-difference, .tradeRule-direct, .tradeRule-all").addClass("is--disabled");
         }
 
-        if (rule === "random") {
+        if (this.initialized) {
+            this.tradeDropdown.validitateCurrentOption();
+        }
+    }
+
+    function toggleRule (ruleName, state) {
+        this.toggleSetting(".rule-" + ruleName, ".rulesSelect_content-rules-rule-toggle", state);
+
+        if (ruleName === "random") {
+            var state = this.$(".rule-random").hasClass("is--on");
             if (state && !this.$(".rulesSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("show");
                 _$.audio.audioEngine.playSFX("gameGain");
+
+                if (_$.ui.screen.id === "screen_cardSelect") {
+                    _$.ui.screen.transitionOut("rulesSelect");
+                }
             } else if (!state && this.$(".rulesSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("hide");
             }
-        }
-
-        if (!auto) {
-            this.updateRules();
         }
     }
 
@@ -198,11 +229,18 @@ define([
 
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
-        this.tradeDropdown = this.createDropdown({
-            selector         : ".rule-trade",
-            dropdownSelector : ".rulesSelect_content-rules-rule-select",
-            onUpdate         : this.updateRules.bind(this)
-        });
+
+        if (!this.initialized) {
+            this.tradeDropdown = this.createDropdown({
+                selector         : ".rule-trade",
+                dropdownSelector : ".rulesSelect_content-rules-rule-select",
+                onUpdate         : this.updateRules.bind(this)
+            });
+
+            if (this.readOnly) {
+                this.tradeDropdown.disable();
+            }
+        }
 
         var tl = new TimelineMax();
         tl.set(this.$el, { clearProps: "display" });
@@ -213,14 +251,20 @@ define([
         });
         tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
         tl.call(() => {
-            this.$(".rulesSelect_content-screenNav").slideDown(500);
-            _$.events.trigger("startUserEvents");
-            this.updateRules();
-            
-            if (this.readOnly) {
-                _$.events.on("getRules", this.setOpponentRules, this);
-                _$.comm.socketManager.emit("getRules");
+            if (!this.initialized) {
+                this.initialized = true;
+                if (this.readOnly) {
+                    _$.events.on("getRules", this.setOpponentRules, this);
+                    _$.comm.socketManager.emit("getRules");
+                }
+                this.updateRules();
             }
+
+            if (!this.$(".rule-random").hasClass("is--on")) {
+                this.$(".rulesSelect_content-screenNav").slideDown(500);
+            }
+            
+            _$.events.trigger("startUserEvents");
         });
 
         return this;
@@ -228,11 +272,9 @@ define([
 
     function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
+        this.checkBGMCrossfade(nextScreen);
 
         var tl = new TimelineMax();
-        if (_$.ui.footer.isOpen) {
-            tl.add(_$.ui.footer.toggleFooter(), 0);
-        }
         tl.call(() => {
             this.$(".rulesSelect_content-screenNav, .rulesSelect_content-confirm").slideUp(500);
         }, null, [], "-=1.5");
@@ -240,11 +282,12 @@ define([
         tl.call(() => {
             this.$(".rulesSelect_header").slideUp(500);
         });
+        tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             TweenMax.set(this.$el, { display: "none" });
             this.changeScreen(nextScreen, options);
-        }, null, [], tl.recent().endTime() + 0.5);
-
+        }, null, [], "+=0.5");
+    
         return this;
     }
 
@@ -260,7 +303,7 @@ define([
 
     function showHelp (msgName, asIs) {
         var defaultMsg = "Choose the game's rules.";
-        if (_$.ui.roomSelect) {
+        if (_$.state.room) {
             defaultMsg += " Only the player who created the room can set them.";
         }
 
@@ -307,11 +350,11 @@ define([
                     break;
                 case "one":
                     text  = "The winner chooses a card from the loser's deck.<br>";
-                    text += "You must have at least 6 cards to choose this trade mode.";
+                    text += "You and your opponent must have at least 6 cards to choose this trade mode.";
                     break;
                 case "difference":
                     text = "The winner chooses one card per score difference (2, 4, or 5).<br>";
-                    text += "You must have at least 11 cards to choose this trade mode.";
+                    text += "You and your opponent must have at least 11 cards to choose this trade mode.";
                     break;
                 case "direct":
                     text  = "The players take the cards they have captured at the end of the game.<br>";
@@ -319,7 +362,7 @@ define([
                     break;
                 case "all":
                     text  = "The winner takes the loser's deck.<br>";
-                    text += "You must have at least 11 cards to choose this trade mode.";
+                    text += "You and your opponent must have at least 11 cards to choose this trade mode.";
                     break;
             }
         }

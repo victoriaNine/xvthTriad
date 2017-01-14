@@ -15,9 +15,9 @@ define([
 
         // Delegated events for creating new items, and clearing completed ones.
         events    : {
-            "click .userSettings_content-save-choice-saveBtn"    : "saveGame",
-            "click .userSettings_content-save-choice-cancelBtn"  : "resetChanges",
-            "click .userSettings_content-save-choice-exportBtn"  : "exportSaveFile",
+            "click .userSettings_content-save-choice-saveBtn"       : "saveGame",
+            "click .userSettings_content-save-choice-cancelBtn"     : "resetChanges",
+            "click .userSettings_content-save-choice-exportBtn"     : "exportSaveFile",
             "click .userSettings_content-save-choice-resetAlbumBtn" : function () {
                 this.confirmAction = this.resetAlbum;
                 this.toggleConfirm("show");
@@ -36,12 +36,12 @@ define([
             "click .userSettings_content-confirm-choice-cancelBtn"  : function () {this.toggleConfirm("hide"); },
             "keyup .setting-name input,.setting-email input,.setting-newPassword input,.setting-confirmPassword input" : _.debounce(function (e) { this.validateInput(e.target); }, 250),
             "change .setting-avatar input,.setting-import input"    : function (e) { this.validateInput(e.target); },
-            "change .setting-bgm input,.setting-sfx input"          : "updateVolume",
-            "input .setting-bgm input,.setting-sfx input"           : "updateVolume",
+            "change .setting-bgm input,.setting-sfx input,.setting-notif"          : "updateVolume",
+            "input .setting-bgm input,.setting-sfx input,.setting-notif"           : "updateVolume",
             "mouseenter .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element,.setting-difficulty,.setting-placingMode,.setting-avatar,.setting-import" : function () {
+            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element,.setting-difficulty,.setting-placingMode,.setting-notifyMode,.setting-inactiveAudio,.setting-avatar,.setting-import" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
             },
             "focus .setting-name input,.setting-email input,.setting-newPassword input,.setting-confirmPassword input" : function () {
@@ -78,21 +78,26 @@ define([
     });
 
     function initialize (options) {
+        Screen.prototype.initialize.call(this);
+        
         this.$el.html(this.template({
-            isLoggedIn : _$.comm.sessionManager.getSession(),
-            userName   : _$.state.user.get("name"),
-            email      : _$.state.user.get("email"),
-            avatarSrc  : _$.state.user.get("avatar"),
-            wonCount   : _$.state.user.get("gameStats").won,
-            lostCount  : _$.state.user.get("gameStats").lost,
-            drawCount  : _$.state.user.get("gameStats").draw,
-            bgmVolume  : Math.floor(_$.audio.audioEngine.channels.bgm.volume * 100),
-            sfxVolume  : Math.floor(_$.audio.audioEngine.channels.sfx.volume * 100)
+            isLoggedIn  : _$.comm.sessionManager.getSession(),
+            userName    : _$.state.user.get("name"),
+            email       : _$.state.user.get("email"),
+            avatarSrc   : _$.state.user.get("avatar"),
+            wonCount    : _$.state.user.get("gameStats").won,
+            lostCount   : _$.state.user.get("gameStats").lost,
+            drawCount   : _$.state.user.get("gameStats").draw,
+            bgmVolume   : _$.state.user.get("bgmVolume") * 100,
+            sfxVolume   : _$.state.user.get("sfxVolume") * 100,
+            notifVolume : _$.state.user.get("notifVolume") * 100
         }));
 
-        this.difficultyDropdown  = null;
-        this.placingModeDropdown = null;
-        this.confirmAction       = null;
+        this.difficultyDropdown    = null;
+        this.placingModeDropdown   = null;
+        this.notifyModeDropdown    = null;
+        this.inactiveAudioDropdown = null;
+        this.confirmAction         = null;
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
@@ -102,24 +107,39 @@ define([
         Screen.prototype.remove.call(this);
         this.difficultyDropdown.remove();
         this.placingModeDropdown.remove();
+        this.inactiveAudioDropdown.remove();
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.notifyModeDropdown.remove();
+        }
     }
 
     function saveGame () {
         var settings = {};
         var difficultySetting;
         var placingModeSetting;
+        var notifyModeSetting;
+        var inactiveAudioSetting;
 
         settings.name          = this.$(".setting-name input").val().trim();
         settings.avatar        = this.$(".setting-avatar input")[0].files[0];
-        settings.email         = this.$(".setting-email input").val().trim();
 
         difficultySetting      = this.difficultyDropdown.currentOption[0].className.replace("difficultySetting-", "");
         settings.difficulty    = difficultySetting;
         placingModeSetting     = this.placingModeDropdown.currentOption[0].className.replace("placingModeSetting-", "");
         settings.placingMode   = placingModeSetting;
+        inactiveAudioSetting   = this.inactiveAudioDropdown.currentOption[0].className.replace("inactiveAudioSetting-", "");
+        settings.inactiveAudio = inactiveAudioSetting;
 
         settings.bgmVolume     = this.$(".setting-bgm input").val() / 100;
         settings.sfxVolume     = this.$(".setting-sfx input").val() / 100;
+
+        if (_$.comm.sessionManager.getSession()) {
+            settings.email       = this.$(".setting-email input").val().trim();
+            notifyModeSetting    = this.notifyModeDropdown.currentOption[0].className.replace("notifyModeSetting-", "");
+            settings.notifyMode  = notifyModeSetting;
+            settings.notifVolume = this.$(".setting-notif input").val() / 100;
+        }
 
         this.$(".userSettings_header-help").text("");
 
@@ -135,17 +155,26 @@ define([
         }
 
         function proceed () {
-            _$.state.user.set({
-                name        : settings.name,
-                difficulty  : settings.difficulty,
-                placingMode : settings.placingMode,
-                bgmVolume   : settings.bgmVolume,
-                sfxVolume   : settings.sfxVolume
-            });
+            var newSettings = {
+                name          : settings.name,
+                difficulty    : settings.difficulty,
+                placingMode   : settings.placingMode,
+                inactiveAudio : settings.inactiveAudio,
+                bgmVolume     : settings.bgmVolume,
+                sfxVolume     : settings.sfxVolume
+            };
+
+            if (_$.comm.sessionManager.getSession()) {
+                _.extend(newSettings, { notifyMode : settings.notifyMode });
+            }
+
+            _$.state.user.set(newSettings);
             
             _$.app.track("set", {
                 "dimension0" : "difficulty",
                 "dimension1" : "placingMode",
+                "dimension2" : "notifyMode",
+                "dimension3" : "inactiveAudio",
                 "metric0"    : "albumSize",
                 "metric1"    : "gameStats"
             });
@@ -155,13 +184,15 @@ define([
                 eventAction   : "saveGame",
                 dimension0    : _$.state.user.get("difficulty"),
                 dimension1    : _$.state.user.get("placingMode"),
+                dimension2    : _$.state.user.get("notifyMode"),
+                dimension3    : _$.state.user.get("inactiveAudio"),
                 metric0       : _$.state.user.get("album").length,
                 metric1       : JSON.stringify(_$.state.user.get("gameStats"))
             });
             
             _$.events.on("userDataSaved", () => {
                 _$.audio.audioEngine.playSFX("gameGain");
-                this.$(".userSettings_header-help").text("Changes saved!");
+                this.$(".userSettings_header-help").text("Changes successfully saved!");
 
                 if (_$.comm.sessionManager.getSession()) {
                     _$.state.user.set("email", settings.email);
@@ -199,12 +230,18 @@ define([
 
     function resetChanges () {
         this.$(".setting-name input").val(_$.state.user.get("name"));
-        this.$(".setting-email input").val(_$.state.user.get("email"));
         this.$(".setting-avatar input, .setting-import input").val("");
         this.$(".setting-bgm input").val(_$.state.user.get("bgmVolume") * 100).change();
         this.$(".setting-sfx input").val(_$.state.user.get("sfxVolume") * 100).change();
         this.difficultyDropdown.reset();
         this.placingModeDropdown.reset();
+        this.inactiveAudioDropdown.reset();
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.$(".setting-email input").val(_$.state.user.get("email"));
+            this.$(".setting-notif input").val(_$.state.user.get("notifVolume") * 100).change();
+            this.notifyModeDropdown.reset();
+        }
     }
 
     function loadGame () {
@@ -223,7 +260,7 @@ define([
                     if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
                         proceed.call(this);
                     } else {
-                        _$.events.once("bgmEnded", proceed.bind(this));
+                        _$.events.once(_$.audio.audioEngine.currentBGM.events.ended, proceed.bind(this));
                     }
                 }
             });
@@ -316,7 +353,7 @@ define([
                         if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
                             proceed.call(this);
                         } else {
-                            _$.events.once("bgmEnded", proceed.bind(this));
+                            _$.events.once(_$.audio.audioEngine.currentBGM.events.ended, proceed.bind(this));
                         }
                     }
                 });
@@ -339,6 +376,11 @@ define([
             if (event.type === "change") {
                 _$.audio.audioEngine.playSFX("cardFlip");
             }
+        } else if (id === "notifVolume") {
+            _$.audio.audioEngine.channels.notif.setVolume(value / 100);
+            if (event.type === "change") {
+                _$.audio.audioEngine.playNotif("loungeMsg");
+            }
         }
 
         this.$("label[for=\"" + id + "\"]").html(value);
@@ -352,12 +394,32 @@ define([
             defaultOptionSelector : ".difficultySetting-" + _$.state.user.get("difficulty")
         });
 
-
         this.placingModeDropdown = this.createDropdown({
             selector              : ".setting-placingMode",
             dropdownSelector      : ".userSettings_content-settings-setting-select",
             defaultOptionSelector : ".placingModeSetting-" + _$.state.user.get("placingMode")
         });
+
+        this.inactiveAudioDropdown = this.createDropdown({
+            selector              : ".setting-inactiveAudio",
+            dropdownSelector      : ".userSettings_content-settings-setting-select",
+            defaultOptionSelector : ".inactiveAudioSetting-" + _$.state.user.get("inactiveAudio")
+        });
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.notifyModeDropdown = this.createDropdown({
+                selector              : ".setting-notifyMode",
+                dropdownSelector      : ".userSettings_content-settings-setting-select",
+                defaultOptionSelector : ".notifyModeSetting-" + _$.state.user.get("notifyMode"),
+                onUpdate              : () => {
+                    var inactiveAudioSetting = this.inactiveAudioDropdown.currentOption[0].className.replace("inactiveAudioSetting-", "");
+                    var notifyModeSetting    = this.notifyModeDropdown.currentOption[0].className.replace("notifyModeSetting-", "");
+                    if (notifyModeSetting === "onlyInactive" && inactiveAudioSetting === "muteAll") {
+                        this.inactiveAudioDropdown.scrollTo(".inactiveAudioSetting-onlyNotifs");
+                    }
+                }
+            });
+        }
 
         this.resetChanges();
 
@@ -379,11 +441,9 @@ define([
 
     function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
+        this.checkBGMCrossfade(nextScreen);
 
         var tl = new TimelineMax();
-        if (_$.ui.footer.isOpen) {
-            tl.add(_$.ui.footer.toggleFooter(), 0);
-        }
         tl.call(() => {
             this.$(".userSettings_content-save, .userSettings_content-load").slideUp(500);
         }, null, [], "-=1.5");
@@ -391,9 +451,10 @@ define([
         tl.call(() => {
             this.$(".userSettings_header").slideUp(500);
         });
+        tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             this.changeScreen(nextScreen, options);
-        }, null, [], tl.recent().endTime() + 0.5);
+        }, null, [], "+=0.5");
 
         return this;
     }

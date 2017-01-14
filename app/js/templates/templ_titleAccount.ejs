@@ -1,8 +1,24 @@
 <div class="title_account">
     <% if (isLoggedIn) { %>
-    <div class="title_account-welcome"><span class="fontsize-small">Welcome back,</span><%= userName %>!</div>
+    <div class="title_account-info">
+        <div class="title_account-info-welcome"><span class="fontsize-small">Connected as</span><%= userName %></div>
+        <div class="title_account-info-playerCount">
+            <span class="title_account-info-playerCount-onlineLabel">Online:</span>
+            <span class="title_account-info-playerCount-onlineCount">0</span>
+            <span class="title_account-info-playerCount-loungeLabel">Lounge:</span>
+            <span class="title_account-info-playerCount-loungeCount">0</span>
+        </div>
+    </div>
     <div class="title_account-logoutBtn title_account-element">Log out</div>
     <% } else { %>
+    <div class="title_account-info">
+        <div class="title_account-info-playerCount">
+            <span class="title_account-info-playerCount-onlineLabel">Online:</span>
+            <span class="title_account-info-playerCount-onlineCount">0</span>
+            <span class="title_account-info-playerCount-loungeLabel">Lounge:</span>
+            <span class="title_account-info-playerCount-loungeCount">0</span>
+        </div>
+    </div>
     <div class="title_account-signupBtn title_account-element">Sign up</div>
     <div class="title_account-loginBtn title_account-element">Log in</div>
     <% }%>

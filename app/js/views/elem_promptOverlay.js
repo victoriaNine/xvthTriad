@@ -29,7 +29,8 @@ define([
         initialize,
         show,
         close,
-        toTitleScreen
+        toTitleScreen,
+        toLounge
     });
 
     function initialize (attributes) {
@@ -50,8 +51,20 @@ define([
             });
         }
 
-        if (this.$el.hasClass("is--active") && options.type !== "error") {
+        if (this.$el.hasClass("is--active") && options.type !== "error" && !options.updatePrompt) {
             return;
+        }
+
+        switch (options.action) {
+            case "close":
+                options.action = this.close;
+                break;
+            case "title" :
+                options.action = this.toTitleScreen;
+                break;
+            case "lounge" :
+                options.action = this.toLounge;
+                break;
         }
         
         _$.events.trigger("stopUserEvents");
@@ -70,7 +83,7 @@ define([
                 this.$(".prompt_overlay-title").html(this.span).append(" occured");
 
                 confirmText        = options.btnMsg || ((_$.ui.screen.id === "screen_title") ? "Close" : "Return to title screen");
-                this.confirmAction = options.action === "close" ? this.close : options.action || this.toTitleScreen;
+                this.confirmAction = options.action || this.toTitleScreen;
             } else if (options.type === "info") {
                 this.span.text(options.titleBold);
                 this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
@@ -92,7 +105,7 @@ define([
             this.$(".prompt_overlay-message").text(options.msg);
             this.$(".prompt_overlay-confirmBtn").text(confirmText);
         });
-        tl.call(() => { this.$el.addClass("is--active"); });
+        tl.call(() => { this.$el.addClass("is--active"); }, [], null, "+=0.1");
         if (options.type === "choice") {
             tl.call(() => { this.$(".prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn").slideDown(400); }, [], null, "+=0.8");
         } else if (!options.autoClose) {
@@ -136,6 +149,12 @@ define([
                      _$.ui.screen.transitionOut("title");
                 }
             }   
+        });
+    }
+
+    function toLounge () {
+        this.close(() => {
+            _$.ui.screen.transitionOut("lounge");
         });
     }
 });

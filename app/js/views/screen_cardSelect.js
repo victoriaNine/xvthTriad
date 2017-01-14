@@ -50,6 +50,8 @@ define([
     });
 
     function initialize (options) {
+        Screen.prototype.initialize.call(this);
+        
         _$.ui.cardSelect = this;
 
         var cardList         = _$.utils.getCardList();
@@ -59,11 +61,12 @@ define([
         this.currentPage     = 1;
         this.userDeck        = [];
         this.holders         = null;
+        this.initialized     = false;
 
         this.$el.html(this.template({
-            ownedCardsCount: this.userAlbum.length,
-            totalCardsCount: cardList.length,
-            uniqueCopiesCount: this.uniqueCopies.length
+            ownedCardsCount   : this.userAlbum.length,
+            totalCardsCount   : cardList.length,
+            uniqueCopiesCount : this.uniqueCopies.length
         }));
 
         var cardBG = $(_$.assets.get("svg.ui.cardBG"));
@@ -71,11 +74,10 @@ define([
 
         this.createAlbumCardViews();
 
-        _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
-
         _$.events.on("resize", this.onResize, this);
         _$.events.on("resizeStart", this.emptyAlbumCardViews, this);
         _$.events.on("updateDeck", this.updateDeck, this);
+        _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
     }
 
@@ -115,28 +117,16 @@ define([
             TweenMax.to(this.$(".cardSelect_content-scroll"), 0.4, { opacity: 1, clearProps: "opacity" });
             _$.events.trigger("startUserEvents");
 
-            this.holders = {
-                holder1 : {
-                    dom  : this.$("#holder1"),
-                    card : null
-                },
-                holder2 : {
-                    dom  : this.$("#holder2"),
-                    card : null
-                },
-                holder3 : {
-                    dom  : this.$("#holder3"),
-                    card : null
-                },
-                holder4 : {
-                    dom  : this.$("#holder4"),
-                    card : null
-                },
-                holder5 : {
-                    dom  : this.$("#holder5"),
-                    card : null
-                }
-            };
+            if (!this.initialized) {
+                this.initialized = true;
+                this.holders     = {
+                    holder1 : { dom  : this.$("#holder1"), card : null },
+                    holder2 : { dom  : this.$("#holder2"), card : null },
+                    holder3 : { dom  : this.$("#holder3"), card : null },
+                    holder4 : { dom  : this.$("#holder4"), card : null },
+                    holder5 : { dom  : this.$("#holder5"), card : null }
+                };
+            }
         }, null, [], "+=0.5");
 
         return this;
@@ -146,9 +136,6 @@ define([
         _$.events.trigger("stopUserEvents");
 
         var tl = new TimelineMax();
-        if (_$.ui.footer.isOpen) {
-            tl.add(_$.ui.footer.toggleFooter(), 0);
-        }
         tl.call(() => {
             this.$(".cardSelect_content-screenNav, .cardSelect_content-confirm").slideUp(500);
         }, null, [], "-=1.5");
@@ -157,10 +144,11 @@ define([
             TweenMax.to(this.$(".cardCopy"), 0.4, { opacity: 0 });
             this.$(".cardSelect_header").slideUp(500);
         });
+        tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             TweenMax.set(this.$el, { display: "none" });
             this.changeScreen(nextScreen, fromMenu);
-        }, null, [], tl.recent().endTime() + 0.5);
+        }, null, [], "+=0.5");
 
         return this;
     }

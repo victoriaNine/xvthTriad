@@ -39,6 +39,7 @@ define([
         version      : { value: "{{ VERSION }}" },
         versionName  : { value: "{{ VERSION_NAME }}" },
         versionFlag  : { value: "{{ VERSION_FLAG }}" },
+        dbURL        : { value: window.location.protocol + "{{ DB_URL }}" },
         name         : { value: "xvthTriad" },
         saveExt      : { value: "xvtsave" },
         currentTime  : { get: getCurrentTime },
@@ -79,7 +80,7 @@ define([
     var dom       = $("#app");
     var assets    = new AssetManager();
     var events    = _.clone(Backbone.Events);
-    var state     = { inGame: false };
+    var state     = {};
     var ui        = {};
     var controls  = {};
     var audio     = {};
@@ -152,13 +153,13 @@ define([
     };
 
     $(window).resize(function() {
-        if (_.isNil(window.resizedFinished)) {
+        if (_.isNil(window.resizeTiemout)) {
             _$.events.trigger("resizeStart");
         }
 
-        clearTimeout(window.resizedFinished);
-        window.resizedFinished = setTimeout(function () {
-            window.resizedFinished = null;
+        clearTimeout(window.resizeTiemout);
+        window.resizeTiemout = setTimeout(function () {
+            window.resizeTiemout = null;
             _$.events.trigger("resize");
         }, 500);
     });
@@ -373,14 +374,16 @@ define([
         return data;
     }
 
-    function getUID (length = 8, usedList = {}) {
-        var hex    = "0123456789ABCDEF";
-        var string = "";
+    function getUID (length = 16, usedList = {}, base = "") {
+        var chars      = "0123456789abcdefghijklmnopqrstuvwxyz_";
+        var string     = "";
+        var charsCount = chars.length;
 
-        for (let i = 0; i < length; i++) {
-            string += hex[parseInt(Math.random() * 16)];
+        for (var i = 0; i < length; i++) {
+            string += chars[parseInt(Math.random() * charsCount)];
         }
 
+        string = base + string;
         return usedList[string] ? getUID(length, usedList) : string;
     }
 
@@ -423,7 +426,7 @@ define([
         return cards;
     }
 
-    function getDestinationCoord (card, destination, options = {}) {
+    function getDestinationCoord (card, destination) {
         // Offset the card slightly to compensate for drop shadow
         var cardOffsetX = -2;
         var cardOffsetY = 0;
@@ -480,27 +483,24 @@ define([
         }
     }
 
-    function saveToDb (form = {}, onError = _$.debug.log) {
+    function saveToDb (form = {}, onError = _$.debug.error) {
         var data    = _$.utils.getUserData();
         var profile = _.omit(data, ["version", "userId", "name", "email"]);
-        var newData = _.extend(form, {
-            name    : data.name,
-            profile : profile
-        });
+        _.extend(form, { name: data.name, profile: profile });
 
         _$.comm.sessionManager.updateProfile(form).then((response) => {
             if (response.data && response.data.error) {
                 throw response.data.error;
             } else {
-                _$.comm.sessionManager.refresh();
+                _$.comm.sessionManager.refresh().catch(onError);
                 _$.events.trigger("userDataSaved:toDatabase");
                 return response;
             }
         }).catch(onError);
     }
 
-    function loadFromDb () {
-        _$.comm.sessionManager.getUser().then((userData) => {
+    function loadFromDb (onError = _$.debug.error) {
+        _$.comm.sessionManager.getUser.call(_$.comm.sessionManager).then((userData) => {
             _$.state.user.set({
                 userId : userData._id,
                 name   : userData.name,
@@ -515,7 +515,7 @@ define([
 
             _$.state.user.dataLoaded = true;
             _$.events.trigger("userDataLoaded:fromDatabase");
-        });
+        }).catch(onError);
     }
 
     function saveToStorage () {
