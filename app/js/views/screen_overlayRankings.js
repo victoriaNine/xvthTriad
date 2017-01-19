@@ -13,6 +13,7 @@ define([
         template : _.template(Templ_OverlayRankings),
         events   : {
             "click .rankings_rankinglist-element-ranking" : function (e) {
+                _$.audio.audioEngine.playSFX("uiConfirm");
                 var rankingName = e.currentTarget.className.match(RANKINGS.join("|"))[0];
                 if (rankingName !== this.currentRanking) { this.showRanking(rankingName); }
             }
@@ -34,7 +35,7 @@ define([
         this.$(".rankings_leaderboard-logo").append(logo);
 
         this.defaultRanking = RANKINGS[0];
-        this.currentRanking = this.defaultRanking;
+        this.currentRanking = null;
         this.rankingData    = {};
         this.ranksDom       = {};
 
@@ -62,7 +63,6 @@ define([
                 this.setupRanking(this.rankingData[response.msg.name]);
             });
 
-            this.$(".ranking-" + this.currentRanking).addClass("is--selected");
             this.$(".rankings_leaderboard-ranks-scroll").append(this.ranksDom[this.currentRanking]);
             this.add();
         });
@@ -110,24 +110,25 @@ define([
 
     function showRanking (rankingName) {
         _$.app.track("send", "event", {
-            eventCategory: "rankingEvent",
-            eventAction: rankingName
+            eventCategory : "rankingEvent",
+            eventAction   : rankingName
         });
 
          _$.events.trigger("stopUserEvents");
         var tl = new TimelineMax();
 
         tl.call(() => {
-            this.$(".ranking-" + this.currentRanking + ",.ranking-" + rankingName).toggleClass("is--selected");
-            this.currentRanking = rankingName;
+            console.log(rankingName, this.currentRanking);
+            this.$(".ranking-" + this.currentRanking + ", .ranking-" + rankingName).toggleClass("is--selected");
         });
         tl.to(this.$(".rankings_leaderboard-ranks-scroll"), 0.5, { opacity : 0 });
         tl.call(() => {
-            this.$(".rankings_leaderboard-ranks-scroll").html(this.ranksDom[this.currentRanking]);
+            this.$(".rankings_leaderboard-ranks-scroll").html(this.ranksDom[rankingName]);
         });
         tl.to(this.$(".rankings_leaderboard-ranks-scroll"), 0.5, { opacity : 1, clearProps: "all" });
         tl.call(() => {
             _$.events.trigger("startUserEvents");
+            this.currentRanking = rankingName;
         });
     }
 
@@ -136,16 +137,29 @@ define([
     }
 
     function setupRanking (rankingData) {
+        var leader        = rankingData.ranks[0];
+        var defaultAvatar = _$.assets.get("img.avatars.user_default").src;
+
         // We add the ranking to the list of rankings
-        var rankingListDom = $(this.rankingListTmpl).addClass(".ranking-" + rankingData.name);
+        var rankingListDom = $(this.rankingListTmpl).addClass("ranking-" + rankingData.name);
+        var leaderAvatar   = rankingListDom.find(".rankings_rankinglist-element-ranking-avatar-img");
+        var leaderLabel    = rankingListDom.find(".rankings_rankinglist-element-ranking-label-leader");
+
         rankingListDom.find(".rankings_rankinglist-element-ranking-label-name").text(rankingData.title);
 
-        var leaderAvatar   = rankingListDom.find(".rankings_rankinglist-element-ranking-avatar-img");
-        leaderAvatar.css("backgroundImage", "url(" + rankingData.ranks[0].avatar + ")");
+        if (rankingData.name === this.defaultRanking) {
+            rankingListDom.addClass("is--selected");
+            this.currentRanking = rankingData.name;
+        }
 
-        var leaderLabel    = rankingListDom.find(".rankings_rankinglist-element-ranking-label-leader");
-        leaderLabel.find("span").eq(0).text(rankingData.ranks[0].name);
-        leaderLabel.find(".weight-bold").text(rankingData.ranks[0][rankingData.sortBy]);
+        if (leader.filler) {
+            leaderAvatar.css("backgroundImage", "url(" + defaultAvatar + ")");
+        } else {
+            leaderAvatar.css("backgroundImage", "url(" + leader.avatar + ")");
+            leaderLabel.find("span").eq(0).text(leader.name);
+            leaderLabel.find(".weight-bold").text(leader[rankingData.sortBy]);
+        }
+
         this.$(".rankings_rankinglist-scroll").append(rankingListDom);
 
         // We create the ranking's table
@@ -161,7 +175,7 @@ define([
             statsLabel = "Wins / Total";
             rateLabel  = "Win rate";
         } else if (rankingData.name === "theCollector") {
-            statsLabel = "Total";
+            statsLabel = "Total cards";
             rateLabel  = "Unique";
         }
 
@@ -187,7 +201,7 @@ define([
             rankRankerDom.find(".rank-number").text(rankNb);
 
             if (rank.filler) {
-                rankRankerDom.find(".rankings_leaderboard-ranks-rank-ranker-avatar-img").css("backgroundImage", "url(" + _$.assets.get("img.avatars.user_default").src + ")");
+                rankRankerDom.find(".rankings_leaderboard-ranks-rank-ranker-avatar-img").css("backgroundImage", "url(" + defaultAvatar + ")");
             } else {
                 rankRankerDom.find(".rankings_leaderboard-ranks-rank-ranker-avatar-img").css("backgroundImage", "url(" + rank.avatar + ")");
                 rankRankerDom.find(".rank-rankerInfo-name").text(rank.name);
