@@ -4,17 +4,12 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "collections/coll_album",
     "text!templates/templ_userSettings.ejs"
-], function Screen_UserSettings ($, _, Backbone, _$, Screen, Coll_Album, Templ_UserSettings) {
+], function Screen_UserSettings ($, _, Backbone, _$, Screen, Templ_UserSettings) {
     return Screen.extend({
-        id        : "screen_userSettings",
-
-        // Our template for the line of statistics at the bottom of the app.
-        template  : _.template(Templ_UserSettings),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events    : {
+        id       : "screen_userSettings",
+        template : _.template(Templ_UserSettings),
+        events   : {
             "click .userSettings_content-save-choice-saveBtn"       : "saveGame",
             "click .userSettings_content-save-choice-cancelBtn"     : "resetChanges",
             "click .userSettings_content-save-choice-exportBtn"     : "exportSaveFile",
@@ -41,7 +36,7 @@ define([
             "mouseenter .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element,.setting-difficulty,.setting-placingMode,.setting-notifyMode,.setting-inactiveAudio,.setting-avatar,.setting-import" : function () {
+            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element,.setting-difficulty,.setting-placingMode,.setting-notifyMode,.setting-inactiveAudio,.setting-country,.setting-avatar,.setting-import" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
             },
             "focus .setting-name input,.setting-email input,.setting-newPassword input,.setting-confirmPassword input" : function () {
@@ -71,6 +66,7 @@ define([
         resetAlbum,
         deleteAccount,
         updateVolume,
+        buildCountryList,
 
         transitionIn,
         transitionOut,
@@ -81,23 +77,34 @@ define([
         Screen.prototype.initialize.call(this);
         
         this.$el.html(this.template({
-            isLoggedIn  : _$.comm.sessionManager.getSession(),
-            userName    : _$.state.user.get("name"),
-            email       : _$.state.user.get("email"),
-            avatarSrc   : _$.state.user.get("avatar"),
-            wonCount    : _$.state.user.get("gameStats").won,
-            lostCount   : _$.state.user.get("gameStats").lost,
-            drawCount   : _$.state.user.get("gameStats").draw,
-            bgmVolume   : _$.state.user.get("bgmVolume") * 100,
-            sfxVolume   : _$.state.user.get("sfxVolume") * 100,
-            notifVolume : _$.state.user.get("notifVolume") * 100
+            isLoggedIn      : _$.comm.sessionManager.getSession(),
+            userName        : _$.state.user.get("name"),
+            email           : _$.state.user.get("email"),
+            avatarSrc       : _$.state.user.get("avatar"),
+            wonCount        : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").won),
+            wonRankedCount  : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").wonRanked),
+            lostCount       : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").lost),
+            lostRankedCount : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").lostRanked),
+            drawCount       : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").draw),
+            drawRankedCount : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").drawRanked),
+            rankPoints      : _$.utils.getFormattedNumber(_$.state.user.get("rankPoints")),
+            bgmVolume       : _$.state.user.get("bgmVolume") * 100,
+            sfxVolume       : _$.state.user.get("sfxVolume") * 100,
+            notifVolume     : _$.state.user.get("notifVolume") * 100
         }));
 
         this.difficultyDropdown    = null;
         this.placingModeDropdown   = null;
         this.notifyModeDropdown    = null;
         this.inactiveAudioDropdown = null;
+        this.countryDropdown       = null;
         this.confirmAction         = null;
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.countryTempl = this.$(".countrySetting-COUNTRY_CODE")[0].outerHTML;
+            this.$(".countrySetting-COUNTRY_CODE").remove();
+            this.buildCountryList();
+        }
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
@@ -111,6 +118,7 @@ define([
 
         if (_$.comm.sessionManager.getSession()) {
             this.notifyModeDropdown.remove();
+            this.countryDropdown.remove();
         }
     }
 
@@ -120,6 +128,7 @@ define([
         var placingModeSetting;
         var notifyModeSetting;
         var inactiveAudioSetting;
+        var countrySetting;
 
         settings.name          = this.$(".setting-name input").val().trim();
         settings.avatar        = this.$(".setting-avatar input")[0].files[0];
@@ -139,6 +148,8 @@ define([
             notifyModeSetting    = this.notifyModeDropdown.currentOption[0].className.replace("notifyModeSetting-", "");
             settings.notifyMode  = notifyModeSetting;
             settings.notifVolume = this.$(".setting-notif input").val() / 100;
+            countrySetting       = this.countryDropdown.currentOption[0].className.replace("countrySetting-", "");
+            settings.country     = countrySetting === "unset" ? null : countrySetting;
         }
 
         this.$(".userSettings_header-help").text("");
@@ -165,7 +176,7 @@ define([
             };
 
             if (_$.comm.sessionManager.getSession()) {
-                _.extend(newSettings, { notifyMode : settings.notifyMode });
+                _.extend(newSettings, { notifyMode : settings.notifyMode, country: settings.country });
             }
 
             _$.state.user.set(newSettings);
@@ -175,6 +186,7 @@ define([
                 "dimension1" : "placingMode",
                 "dimension2" : "notifyMode",
                 "dimension3" : "inactiveAudio",
+                "dimension4" : "country",
                 "metric0"    : "albumSize",
                 "metric1"    : "gameStats"
             });
@@ -186,6 +198,7 @@ define([
                 dimension1    : _$.state.user.get("placingMode"),
                 dimension2    : _$.state.user.get("notifyMode"),
                 dimension3    : _$.state.user.get("inactiveAudio"),
+                dimension4    : _$.state.user.get("country"),
                 metric0       : _$.state.user.get("album").length,
                 metric1       : JSON.stringify(_$.state.user.get("gameStats"))
             });
@@ -241,6 +254,7 @@ define([
             this.$(".setting-email input").val(_$.state.user.get("email"));
             this.$(".setting-notif input").val(_$.state.user.get("notifVolume") * 100).change();
             this.notifyModeDropdown.reset();
+            this.countryDropdown.reset();
         }
     }
 
@@ -254,20 +268,7 @@ define([
 
         var file = this.$(".setting-import input")[0].files[0];
         _$.app.importSave(file, () => {
-            _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
-            TweenMax.to(_$.dom, 1, { opacity: 0,
-                onComplete: () => {
-                    if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
-                        proceed.call(this);
-                    } else {
-                        _$.events.once(_$.audio.audioEngine.currentBGM.events.ended, proceed.bind(this));
-                    }
-                }
-            });
-
-            function proceed () {
-                this.transitionOut("title", { fullIntro: true });
-            }
+            this.fadeOut(this.transitionOut.bind(this, "title", { fullIntro: true }));
         });
     }
 
@@ -304,7 +305,7 @@ define([
 
         this.confirmAction = null;
         this.toggleConfirm("hide");
-        _$.state.user.set("album", new Coll_Album());
+        _$.state.user.resetAlbum();
 
         _$.events.on("userDataSaved", () => {
             _$.audio.audioEngine.playSFX("gameGain");
@@ -347,22 +348,9 @@ define([
                 _$.comm.sessionManager.removeUser();
             } else {
                 window.localStorage.removeItem(_$.app.name);
-                _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
-                TweenMax.to(_$.dom, 1, { opacity: 0,
-                    onComplete: () => {
-                        if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
-                            proceed.call(this);
-                        } else {
-                            _$.events.once(_$.audio.audioEngine.currentBGM.events.ended, proceed.bind(this));
-                        }
-                    }
-                });
+                this.fadeOut(this.transitionOut.bind(this, "title", { setup: true, fullIntro: true }));
             }
-        }, 400);
-
-        function proceed () {
-            this.transitionOut("title", { setup: true, fullIntro: true });
-        }
+        }, 500);
     }
 
     function updateVolume (event) {
@@ -384,6 +372,22 @@ define([
         }
 
         this.$("label[for=\"" + id + "\"]").html(value);
+    }
+
+    function buildCountryList () {
+        var countryList = _$.utils.getCountryList();
+        var dom;
+        var className;
+        var text;
+
+        _.each(countryList, (country) => {
+            dom       = $(this.countryTempl).clone();
+            className = dom[0].className.replace("COUNTRY_CODE", country.code);
+            text      = dom.text().replace("COUNTRY_NAME", country.name);
+
+            dom.removeClass().addClass(className).text(text);
+            this.$(".setting-country .userSettings_content-settings-setting-select").append(dom);
+        });
     }
 
     function transitionIn () {
@@ -419,6 +423,16 @@ define([
                     }
                 }
             });
+
+            this.countryDropdown = this.createDropdown({
+                selector              : ".setting-country",
+                dropdownSelector      : ".userSettings_content-settings-setting-select",
+                defaultOptionSelector : _$.state.user.get("country") ? ".countrySetting-" + _$.state.user.get("country") : ".countrySetting-unset",
+                onOpen                : (dropdown) => {
+                    var scrollValue = dropdown.dropdownDOM.offset().top + dropdown.dropdownDOM.height();
+                    TweenMax.to(this.$(".userSettings_content-settings-scroll")[0], 0.2, { scrollTop: scrollValue });
+                }
+            });
         }
 
         this.resetChanges();
@@ -429,12 +443,13 @@ define([
         tl.call(() => {
             this.$(".userSettings_header").slideDown(500);
         });
-        tl.to(this.$(".userSettings_header-avatar"), 0.5, { opacity: 1, clearProps:"all" }, tl.recent().endTime() + 0.5);
+        tl.to(this.$(".userSettings_header-avatar"), 0.5, { opacity: 1, clearProps:"all" }, "+=0.5");
+        tl.fromTo(this.$(".userSettings_content-settings-scroll"), 0.5, { height: 0, opacity: 0 }, { height: "100%", opacity: 1, clearProps: "all" }, "-=0.5");
         tl.staggerTo(this.$(".userSettings_content-settings-setting"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() - 0.5);
         tl.call(() => {
             this.$(".userSettings_content-save").slideDown(500);
             _$.events.trigger("startUserEvents");
-        });
+        }, null, [], "-=0.5");
 
         return this;
     }
@@ -446,7 +461,7 @@ define([
         var tl = new TimelineMax();
         tl.call(() => {
             this.$(".userSettings_content-save, .userSettings_content-load").slideUp(500);
-        }, null, [], "-=1.5");
+        });
         tl.to(this.$(".userSettings_content-settings, .userSettings_header-avatar"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
         tl.call(() => {
             this.$(".userSettings_header").slideUp(500);

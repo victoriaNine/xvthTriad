@@ -14,7 +14,7 @@ require.config({
         socketIO          : "libs/socket.io-client/dist/socket.io",
         stats             : "libs/stats.js/build/stats",
         superlogin        : "libs/superlogin-client/superlogin",
-        pouchdb           : "libs/pouchdb/dist/pouchdb-6.1.1",
+        elo               : "libs/elo/elo",
 
         text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
@@ -34,6 +34,7 @@ require.config({
         jsonPrune         : "libs/jsonPrune/json.prune",
         axios             : "libs/axios/dist/axios",
         eventemitter2     : "libs/eventemitter2/lib/eventemitter2",
+        tablesortNumber   : "libs/tablesort/tablesort.number",
 
         global            : "global"
     },
@@ -51,7 +52,7 @@ require([
     "socketIO",
     "stats",
     "superlogin",
-    "pouchdb",
+    "elo",
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
@@ -61,12 +62,14 @@ require([
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
     "json!data/loader_imgCards.json",
+    "json!data/loader_imgFlags.json",
     "json!data/loader_imgHelp.json",
     "json!data/loader_audioBGM.json",
     "json!data/loader_audioSFX.json",
     "global",
     "views/elem_footer",
     "views/screen",
+    "views/screen_cardAlbum",
     "views/screen_cardSelect",
     "views/screen_game",
     "views/screen_loading",
@@ -77,10 +80,10 @@ require([
     "views/screen_userSettings",
     "jqueryNearest",
     "jsonPrune"
-], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, PouchDB, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, Elo, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgFlags, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");
-    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp];
+    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgFlags, loaderImgHelp];
 
     function setupScale () {
         var ORIGINAL_SIZE = {
@@ -199,7 +202,7 @@ require([
             var confirmEmailMsg = location.search.match("success=true") ? "Email verified, thanks! You can now login." : window.unescape(location.search.match(/=(.*?)$/)[1]);
             _$.events.once("initialized", () => {
                 _$.audio.audioEngine.playSFX("gameGain");
-                _$.ui.screen.info(null, {
+                _$.ui.screen.info({
                     titleBold    : "Email",
                     titleRegular : "confirmation",
                     msg          : confirmEmailMsg
@@ -232,20 +235,17 @@ require([
         _$.app.env.mobileDeviceType = "tablet";
     }
 
-    _$.events.on("all", function (event, ...data) {
-        /*if (data.length) {
+    /*_$.events.on("all", function (event, ...data) {
+        if (data.length) {
             _$.debug.log("event triggered:", event.name, event, data);
         } else {
             _$.debug.log("event triggered:", event.name, event);
-        }*/
-    });
+        }
+    });*/
 
     _$.events.once("launch", function () {
-        _$.comm.socketManager  = new SocketManager();
-        _$.comm.sessionManager = new Superlogin(_$.app.sessionConfig);
-        _$.comm.dbManager      = new PouchDB(_$.app.dbURL.concat("/users"));
-        _$.ui.footer           = new Elem_Footer();
-        _$.ui.screen           = new Screen_Title({ setup: true, fullIntro: true });
+        _$.ui.footer = new Elem_Footer();
+        _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
 
         $(window).on("beforeunload", function (e) {
             return _$.ui.screen.showSavePrompt(e);
@@ -278,6 +278,8 @@ require([
     _$.app.updateManager       = new UpdateManager();
     _$.app.assetLoader         = new AssetLoader();
     _$.audio.audioEngine       = new AudioEngine();
+    _$.comm.socketManager      = new SocketManager();
+    _$.comm.sessionManager     = new Superlogin(_$.app.sessionConfig, true);
     _$.ui.canvas               = new CanvasWebGL();
     _$.ui.screen               = new Screen_Loading();
 

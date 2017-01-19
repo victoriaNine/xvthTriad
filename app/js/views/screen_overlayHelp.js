@@ -9,16 +9,12 @@ define([
     "text!templates/templ_helpStartSolo.ejs",
     "text!templates/templ_helpStartVersus.ejs"
 ], function Screen_OverlayHelp ($, _, Backbone, _$, Screen, Templ_OverlayHelp, Templ_HelpBasicRules, Templ_HelpStartSolo, Templ_HelpStartVersus) {
-    var HELP_TOPICS = "basicRules|startSolo|startVersus";
+    const HELP_TOPICS = "basicRules|startSolo|startVersus";
 
     return Screen.extend({
-        tagName : "section",
-        id      : "screen_overlayHelp",
-
+        id       : "screen_overlayHelp",
         template : _.template(Templ_OverlayHelp),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
+        events   : {
             "click .help_content-screenNav-choice-backBtn" : "showTopics",
             "click .help_content-topics-topic[class*=topic-]" : function (e) {
                 this.showGuide(e.currentTarget.className.match(HELP_TOPICS)[0]);
@@ -68,11 +64,11 @@ define([
 
         var tl = new TimelineMax();
         tl.to(_$.ui.screen.$el, 0.5, { opacity: 0 });
-        tl.from(this.$el, 0.4, { opacity: 0, clearProps: "all" });
+        tl.from(this.$el, 0.5, { opacity: 0, clearProps: "all" });
         tl.call(() => {
             this.$(".help_header").slideDown(500);
         });
-        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
+        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1, "+=0.5");
         tl.call(() => {
             _$.events.trigger("startUserEvents");
             _$.events.trigger("helpPageOpen");
@@ -87,12 +83,12 @@ define([
         var tl = new TimelineMax();
         tl.call(() => {
             this.$(".help_content-screenNav").slideUp(500);
-        }, null, [], "-=1.5");
-        tl.to(this.$(".help_content-topics, .help_content-guide"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        });
+        tl.to(this.$(".help_content-topics, .help_content-guide"), 0.5, { opacity: 0 }, "+=0.5");
         tl.call(() => {
             this.$(".help_header").slideUp(500);
         });
-        tl.to(this.$el, 0.4, { opacity: 0 }, "-=0.2");
+        tl.to(this.$el, 0.5, { opacity: 0 });
         tl.to(_$.ui.screen.$el, 0.5, { opacity: 1, clearProps: "opacity" });
         tl.call(onTransitionComplete.bind(this));
 
@@ -148,7 +144,7 @@ define([
             this.showHelp(topicName);
         });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 1, clearProps: "opacity" });
-        tl.from(this.$(".help_content-guide-scroll"), 0.5, { height: 0, opacity: 0, clearProps: "all" });
+        tl.fromTo(this.$(".help_content-guide-scroll"), 0.5, { height: 0, opacity: 0 }, { height: "100%", opacity: 1, clearProps: "all" });
         tl.call(() => {
             this.$(".help_content-screenNav").slideDown(500);
             _$.events.trigger("startUserEvents");
@@ -161,7 +157,7 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => { this.$(".help_content-screenNav").slideUp(500); });
-        tl.to(this.$(".help_content-guide"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        tl.to(this.$(".help_content-guide"), 0.5, { opacity: 0 }, "+=0.5");
         tl.set(this.$(".help_content-guide"), { display: "none", clearProps: "opacity" });
         tl.set(this.$(".help_content-topics"), { clearProps: "display" });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 0 });
@@ -170,7 +166,7 @@ define([
             this.showHelp();
         });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 1, clearProps: "opacity" });
-        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
+        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1);
         tl.call(() => {
             _$.events.trigger("startUserEvents");
         });

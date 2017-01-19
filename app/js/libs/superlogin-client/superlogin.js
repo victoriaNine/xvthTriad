@@ -3,7 +3,7 @@ define([
     "eventemitter2",
     "underscore",
     "global"
-], function global (axios, EventEmitter2, _, _$) {
+], function superlogin (axios, EventEmitter2, _, _$) {
     const debug = {
         log: _$.debug.log.bind(null, 'superlogin:log'),
         info: _$.debug.log.bind(null, 'superlogin:info'),
@@ -36,7 +36,7 @@ define([
     }
 
     class Superlogin extends EventEmitter2 {
-        constructor(config = {}) {
+        constructor(config = {}, noInit = false) {
             super();
 
             this._oauthComplete = false;
@@ -44,10 +44,13 @@ define([
             this._refreshInProgress = false;
             this._http = axios.create();
 
-            this.configure(this._config);
+            if (!noInit) {
+                this.configure(this._config);
+            }
         }
 
-        configure(config = {}) {
+        configure(config) {
+            config         = this._config || {};
             config.baseUrl = config.baseUrl || '/auth';
             config.baseUrl = config.baseUrl.replace(/\/$/, ''); // remove trailing /
             if (!config.endpoints || !(config.endpoints instanceof Array)) {
@@ -64,37 +67,51 @@ define([
                 this.storage = window.localStorage;
             }
 
-            this._config = config;
+            this._config          = config;
+            this._session         = null;
+            this.hasBeenActive    = false;
+            this.refreshScheduled = false;
+            this.initialized      = false;
 
-            // Setup the new session
-            this._session = _$.app.decodeData(JSON.parse(this.storage.getItem(_$.app.name)), "session");
+            _$.app.decodeData(JSON.parse(this.storage.getItem(_$.app.name)), "session").then((sessionData) => {
+                this._session = sessionData;
+                this._httpInterceptor();
 
-            this._httpInterceptor();
+                // Check expired
+                if (config.checkExpired) {
+                    this.checkExpired();
+                    this.validateSession()
+                    .then(() => {
+                        this._onLogin(this._session);
+                    })
+                    .catch(() => {
+                        // ignoring
+                    });
+                }
 
-            // Check expired
-            if (config.checkExpired) {
-                this.checkExpired();
-                this.validateSession()
-                .then(() => {
-                    this._onLogin(this._session);
-                })
-                .catch(() => {
-                    // ignoring
-                });
-            }
+                $(window).on("mousemove mousedown touchstart touchmove keydown", _.debounce(() => {
+                    if (this.authenticated() && !this.hasBeenActive) {
+                        this.hasBeenActive = true;
+                    }
+                }, 250, { maxWait: 5000 }));
 
-            this.on("login", () => {
-                this.setValidateInterval();
-            });
-
-            this.on("logout", (...args) => {
-                this.clearValidateInterval();
+                this.initialized = true;
+                this.emit("initialized");
+            }).catch((error) => {
+                debug.error("superlogin.js@101");
             });
         }
 
         setValidateInterval () {
             if (!this.validateInterval) {
                 this.validateInterval = setInterval(() => {
+                    if (this.checkExpired()) {
+                        debug.log("checkExpired");
+                        this._onLogout('sessionExpired');
+                        return;
+                    }
+
+                    debug.log("validateInterval");
                     this.validateSession().catch((error) => {
                         this._onLogout(error);
                     });
@@ -105,13 +122,14 @@ define([
         clearValidateInterval () {
             if (this.validateInterval) {
                 clearInterval(this.validateInterval);
+                this.validateInterval = null;
             }
         }
 
         _httpInterceptor() {
             const request = req => {
-                const config = this.getConfig();
-                const session = this.getSession();
+                const config    = this.getConfig();
+                const session   = this.getSession();
 
                 if (!session || !session.token) {
                     return Promise.resolve(req);
@@ -142,7 +160,7 @@ define([
                 if (checkEndpoint(error.config.url, config.endpoints) &&
                     error.response && error.response.status === 401 && this.authenticated()) {
                     debug.warn('Not authorized');
-                    this._onLogout('Session expired');
+                    this._onLogout('sessionExpired');
                 }
                 return Promise.reject(error);
             };
@@ -169,27 +187,30 @@ define([
             return this._http.get(`${this._config.baseUrl}/session`)
             .then(res => {
                 if (res.data.error) {
+                    this.deleteSession();
                     throw parseError(res.data.error);
                 } else {
                     return res.data;
                 }
             })
             .catch(err => {
+                this.deleteSession();
                 throw parseError(err);
             });
         }
 
         getSession() {
-            if (!this._session) {
-                this._session = _$.app.decodeData(JSON.parse(this.storage.getItem(_$.app.name)), "session");
-            }
             return this._session ? Object.assign(this._session) : null;
         }
 
         setSession(session) {
             this._session = session;
-            this.storage.setItem(_$.app.name, JSON.stringify(_$.app.encodeData(this._session, "session")));
-            debug.info('New session set');
+
+            return _$.app.encodeData(this._session, "session").then((encodedData) => {
+                this.storage.setItem(_$.app.name, JSON.stringify(encodedData));
+                debug.info('New session set');
+                return session;
+            });
         }
 
         deleteSession() {
@@ -238,6 +259,7 @@ define([
             if (!this._session || !this._session.user_id) {
                 return Promise.reject();
             }
+
             const issued = this._session.issued;
             const expires = this._session.expires;
             const threshold = isNaN(this._config.refreshThreshold) ? 0.5 : this._config.refreshThreshold;
@@ -249,17 +271,16 @@ define([
             const estimatedServerTime = Date.now() + timeDiff;
             const elapsed = estimatedServerTime - issued;
             const ratio = elapsed / duration;
-            if (ratio > threshold) {
-                debug.info('Refreshing session');
-                return this.refresh()
-                    .then(session => {
-                        debug.log('Refreshing session sucess', session);
-                        return session;
-                    })
-                    .catch(err => {
-                        debug.error('Refreshing session failed', err);
-                        throw err;
-                    });
+            //debug.log("checkRefresh -- ratio:", ratio, "-- hasBeenActive:", this.hasBeenActive, "-- refreshScheduled:", this.refreshScheduled);
+            if (this.hasBeenActive && !this.refreshScheduled) {
+                this.hasBeenActive    = false;
+                this.refreshScheduled = true;
+                //debug.log("checkRefresh -- the user has been active. scheduling a lease renewal.");
+            }
+
+            if (ratio > threshold && this.refreshScheduled) {
+                //debug.log("checkRefresh -- the user has been active during the session lifetime. renewing the session's lease.");
+                return this.refresh(true);
             }
             return Promise.resolve();
         }
@@ -276,26 +297,33 @@ define([
                 timeDiff = 0;
             }
             const estimatedServerTime = Date.now() + timeDiff;
-            if (estimatedServerTime > expires) {
-                this._onLogout('Session expired');
-            }
+            return estimatedServerTime > expires;
         }
 
-        refresh() {
+        refresh(renewLease) {
             const session = this.getSession();
             this._refreshInProgress = true;
-            return this._http.post(`${this._config.baseUrl}/refresh`, {})
+            debug.info('Refreshing session -- renewLease:', renewLease);
+            return this._http.post(`${this._config.baseUrl}/refresh`, { renewLease })
                 .then(res => {
                     this._refreshInProgress = false;
+                    if (renewLease) {
+                        this.refreshScheduled = false;
+                    }
+                    debug.log('Refreshing session sucess', session);
                     if (res.data.token && res.data.expires) {
                         Object.assign(session, res.data);
-                        this.setSession(session);
-                        this._onRefresh(session);
+                        return this.setSession(session).then(() => {
+                            this._onRefresh(session);
+                            return session;
+                        });
+                    } else {
+                        return session;
                     }
-                    return session;
                 })
                 .catch(err => {
                     this._refreshInProgress = false;
+                    debug.error('Refreshing session failed', err);
                     throw parseError(err);
                 });
         }
@@ -325,9 +353,10 @@ define([
                         throw parseError(res.data);
                     } else {
                         res.data.serverTimeDiff = res.data.issued - Date.now();
-                        this.setSession(res.data);
-                        this._onLogin(res.data);
-                        return res.data;
+                        return this.setSession(res.data).then(() => {
+                            this._onLogin(res.data);
+                            return res.data;
+                        });
                     }
                 })
                 .catch(err => {
@@ -345,8 +374,11 @@ define([
 
                     if (res.data.user_id && res.data.token) {
                         res.data.serverTimeDiff = res.data.issued - Date.now();
-                        this.setSession(res.data);
-                        this._onLogin(res.data);
+                        this.setSession(res.data).then(() => {
+                            this._onLogin(res.data);
+                            this._onRegister(registration);
+                            return res.data;
+                        });
                     }
                     this._onRegister(registration);
                     return res.data;
@@ -410,8 +442,10 @@ define([
                 .then(res => {
                     if (res.data.user_id && res.data.token) {
                         res.data.serverTimeDiff = res.data.issued - Date.now();
-                        this.setSession(res.data);
-                        this._onLogin(res.data);
+                        this.setSession(res.data).then(() => {
+                            this._onLogin(res.data);
+                            return res.data;
+                        });
                     }
                     return res.data;
                 })
@@ -509,7 +543,7 @@ define([
                         if (res.data.error) {
                             throw parseError(res.data);
                         } else {
-                            this._onLogout("userDeleted");
+                            this._onLogout('userDeleted');
                             return res.data;
                         }
                     })
@@ -568,8 +602,10 @@ define([
                     }
 
                     if (res.data.user_id && res.data.token) {
-                        this.setSession(res.data);
-                        this._onLogin(res.data);
+                        this.setSession(res.data).then(() => {
+                            this._onLogin(res.data);
+                            return res.data;
+                        });
                     }
                     return res.data;
                 })
@@ -648,9 +684,10 @@ define([
                 window.superlogin.oauthSession = (error, session, link) => {
                     if (!error && session) {
                         session.serverTimeDiff = session.issued - Date.now();
-                        this.setSession(session);
-                        this._onLogin(session);
-                        return resolve(session);
+                        this.setSession(session).then(() => {
+                            this._onLogin(session);
+                            return resolve(session);
+                        });
                     } else if (!error && link) {
                         this._onLink(link);
                         return resolve(`${capitalizeFirstLetter(link)} successfully linked.`);

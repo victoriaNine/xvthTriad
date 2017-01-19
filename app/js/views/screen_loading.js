@@ -7,10 +7,8 @@ define([
     "text!templates/templ_loading.ejs"
 ], function Screen_Loading ($, _, Backbone, _$, Screen, Templ_Loading) {
     return Screen.extend({
-        id        : "screen_loading",
-
-        // Our template for the line of statistics at the bottom of the app.
-        template  : _.template(Templ_Loading),
+        id       : "screen_loading",
+        template : _.template(Templ_Loading),
 
         initialize
     });
@@ -56,10 +54,26 @@ define([
             _$.events.off("loadProgress");
             $(".preloadFont").remove();
 
-            var tl = new TimelineMax();
-            tl.call(() => { _$.events.trigger("launch"); }, [], null, 0.5);
-            tl.to(this.$el, 0.5, { opacity: 0, scale: 1.25 }, "+=0.5");
-            tl.call(() => { this.remove(); });
+            _$.events.once("socketReady", (event, data) => {
+                _$.comm.sessionManager.once("initialized", () => {
+                    var tl = new TimelineMax();
+                    tl.call(() => { _$.events.trigger("launch"); }, [], null, 0.5);
+                    tl.to(this.$el, 0.5, { opacity: 0, scale: 1.25 }, "+=0.5");
+                    tl.call(() => { this.remove(); });
+                });
+
+                _$.app.playersCount = data.msg;
+                _$.comm.sessionManager.configure();
+            });
+
+            _$.comm.socketManager.init();
+
+            function proceed () {
+                var tl = new TimelineMax();
+                tl.call(() => { _$.events.trigger("launch"); }, [], null, 0.5);
+                tl.to(this.$el, 0.5, { opacity: 0, scale: 1.25 }, "+=0.5");
+                tl.call(() => { this.remove(); });
+            }
         });
 
         TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });

@@ -11,12 +11,12 @@ define([
 ], function Screen_Game ($, _, Backbone, _$, Model_Game, Screen, Elem_EndGameCard, Elem_Card, Templ_Game) {
     return Screen.extend({
         id       : "screen_game",
-
         template : _.template(Templ_Game),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
-            "mouseenter #cardsContainer .card-blue:not(.is--played)" : function (e) { TweenMax.set(e.currentTarget, { scale: "1.1" }); },
+        events   : {
+            "mouseenter #cardsContainer .card-blue:not(.is--played)" : function (e) {
+                _$.audio.audioEngine.playSFX("cardSort");
+                TweenMax.set(e.currentTarget, { scale: "1.1" });
+            },
             "mouseleave #cardsContainer .card-blue"                  : function (e) { TweenMax.set(e.currentTarget, { scale: "1" }); },
             "click .game_overlay-endGame-confirmBtn" : function ()  {
                 this.postGameAction();
@@ -59,11 +59,13 @@ define([
         Screen.prototype.initialize.call(this);
 
         var that               = this;
+        this.isRanked          = !!_$.state.user.isInLounge && options.rules.trade !== "none";
         _$.state.user.isInGame = true;
         _$.state.game          = new Model_Game({
             difficulty : _$.state.user.get("difficulty"),
             type       : _$.state.opponent ? "versus" : "solo",
-            role       : _$.state.room ? ((_$.state.room.mode === "create") ? "emitter" : "receiver") : null
+            role       : _$.state.room ? ((_$.state.room.mode === "create") ? "emitter" : "receiver") : null,
+            isRanked   : this.isRanked
         }, options);
 
         this.players = _$.state.game.get("players");
@@ -640,6 +642,7 @@ define([
             "metric1"    : "scoreUser",
             "metric2"    : "scoreOpponent"
         });
+
         _$.app.track("send", "event", {
             eventCategory : "gameEvent",
             eventAction   : "endGame",
@@ -664,6 +667,13 @@ define([
 
         if (_$.state.room) {
             _$.comm.socketManager.emit("playerReset");
+
+            if (this.isRanked) {
+                _$.state.user.set("lastRankedGame", Date.now());
+                if (_$.state.user.get("isDecaying")) {
+                    _$.state.user.set("isDecaying", false);
+                }
+            }
         }
 
         var tl = new TimelineMax();
@@ -674,28 +684,33 @@ define([
 
         function onTransitionComplete () {
             _$.utils.addDomObserver(this.$el, () => {
-                _$.events.trigger("startUserEvents");
-                if (nextScreen === "lounge") {
-                    var Screen_Lounge = require("views/screen_lounge");
-                    _$.ui.screen      = new Screen_Lounge();
-                } else {
-                    // Re-enable lag smoothing
-                    TweenMax.lagSmoothing(1000, 16);
-                    var Screen_Title = require("views/screen_title");
-                    _$.ui.screen     = new Screen_Title();
-                }
-
                 if (this.gameResult) {
-                    if (!_$.comm.sessionManager.getSession()) {
-                        _$.events.once("userDataSaved", () => {
+                    _$.events.once("userDataSaved", () => {
+                        proceed.call(this);
+                        if (!_$.comm.sessionManager.getSession()) {
                             _$.ui.screen.showAutoSavePrompt();
-                        });
-                    }
+                        }
+                    });
 
                     _$.app.saveData();
+                } else {
+                    proceed.call(this);
                 }
             }, true, "remove");
             this.remove();
+        }
+
+        function proceed () {
+            _$.events.trigger("startUserEvents");
+            if (nextScreen === "lounge") {
+                var Screen_Lounge = require("views/screen_lounge");
+                _$.ui.screen      = new Screen_Lounge();
+            } else {
+                // Re-enable lag smoothing
+                TweenMax.lagSmoothing(1000, 16);
+                var Screen_Title = require("views/screen_title");
+                _$.ui.screen     = new Screen_Title();
+            }
         }
     }
 

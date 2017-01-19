@@ -1,5 +1,6 @@
 process.on("uncaughtException", function (error) {
-    console.log(error.stack);
+    console.trace(error);
+    console.trace(error.stack);
 });
 
 var path  = require("path");
@@ -13,6 +14,7 @@ var path  = require("path");
 
 module.exports = function (grunt, options) {
     grunt.option("stack", true);
+    grunt.loadNpmTasks("grunt-keepalive");
 
     // Automatically load required Grunt tasks
     require("load-grunt-tasks")(grunt);

@@ -18,11 +18,11 @@ define(["underscore", "backbone", "global"], function Model_AI (_, Backbone, _$)
     });
 
     function initialize (options) {
-        this.worker = new Worker("./js/aiWorker.js");
+        /*this.worker = new Worker("./js/aiWorker.js");
         this.worker.onmessage = function (e) {
             console.log("Message received from worker", e.data);
         };
-        /*this.worker.postMessage({
+        this.worker.postMessage({
             global : _$,
             data   :[10, 5]
         });*/

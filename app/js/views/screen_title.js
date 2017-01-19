@@ -8,16 +8,12 @@ define([
     "text!templates/templ_title.ejs",
     "text!templates/templ_titleAccount.ejs"
 ], function Screen_Title ($, _, Backbone, _$, Model_User, Screen, Templ_Title, Templ_TitleAccount) {
+    var self;
+
     return Screen.extend({
-        // Instead of generating a new element, bind to the existing skeleton of
-        // the App already present in the HTML.
-        id        : "screen_title",
-
-        // Our template for the line of statistics at the bottom of the app.
+        id       : "screen_title",
         template : _.template(Templ_Title),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
+        events   : {
             "click .title_startBtn" : function () {
                 _$.app.track("send", "event", {
                     eventCategory : "titleEvent",
@@ -94,6 +90,8 @@ define([
     });
 
     function initialize (options = {}) {
+        self = this;
+
         Screen.prototype.initialize.call(this);
         
         this.introTL            = null;
@@ -110,8 +108,8 @@ define([
             // We create a new user
             _$.state.user = new Model_User();
 
-            // If there is game data in the storage
-            if (_$.utils.getLocalStorage(_$.app.name)) {
+            // If there is game data in the storage and the data is valid
+            if (_$.utils.getLocalStorage(_$.app.name) && _$.app.checkDataType(_$.utils.getLocalStorage(_$.app.name))) {
                 // If that data is session data
                 if (_$.comm.sessionManager.getSession()) {
                     // We check whether the session is still valid
@@ -122,20 +120,39 @@ define([
 
                         // We setup a listener to catch when the data is done loading from the database
                         _$.events.once("userDataLoaded", () => {
-                            // We logout the user from other potential sessions
-                            _$.comm.sessionManager.logoutOthers().then(() => {
+                            // We logout the user from other potential sessions and refresh the current one
+                            _$.comm.sessionManager.logoutOthers().then(_$.comm.sessionManager.refresh.bind( _$.comm.sessionManager)).then(() => {
+                                // We add the logout event listener
+                                _$.comm.sessionManager.once("logout", (...args) => {
+                                    _$.ui.screen.onLogout(...args);
+                                });
+
                                 // And we emit the login event to the game server
                                 _$.comm.socketManager.emit("login", _$.comm.sessionManager.getSession().user_id);
-                            }).catch(_$.debug.error);
+                            }).catch((error) => {
+                                _$.debug.error("screen_title.js@133", error);
+                            });
 
                             // We go on with the initialization flow
                             proceed.call(this);
                         });
 
                         // We start loading the data
-                        _$.app.loadData();
+                        _$.app.loadData().catch((error) => {
+                            _$.debug.error("screen_title.js@142", error);
+                            setupNewUser.call(this);
+                        });
                     }).catch((error) => {
-                        _$.debug.error(error);
+                        _$.debug.error("screen_title.js@146", error);
+                        _$.events.once("initialized", () => {
+                            _$.audio.audioEngine.playSFX("menuOpen");
+                            this.info({
+                                titleBold    : "Session",
+                                titleRegular : "expired",
+                                msg          : "You have been logged out."
+                            });
+                        });
+
                         // Otherwise there is no data to load, so we create a new user profile
                         setupNewUser.call(this);
                     });
@@ -148,9 +165,22 @@ define([
                     });
 
                     // We start loading the data
-                    _$.app.loadData();
+                    _$.app.loadData().catch((error) => {
+                        _$.debug.error("screen_title.js@169", error);
+                        setupNewUser.call(this);
+                    });
                 }
             } else {
+                if (_$.utils.getLocalStorage(_$.app.name) && !_$.app.checkDataType(_$.utils.getLocalStorage(_$.app.name))) {
+                    _$.events.once("initialized", () => {
+                        _$.audio.audioEngine.playSFX("menuOpen");
+                        this.error({
+                            msg    : "Invalid save data",
+                            action : "close"
+                        });
+                    });
+                }
+
                 // Otherwise there is no data to load, so we create a new user profile
                 setupNewUser.call(this);
             }
@@ -160,6 +190,9 @@ define([
         }
 
         function setupNewUser () {
+            // We remove any previous listener
+            _$.events.off("userDataLoaded");
+
             // Otherwise there is no data to load, so we create a new user profile
             // We setup a listener to catch when the profile has been created
             _$.events.once("userDataLoaded", () => {
@@ -173,40 +206,14 @@ define([
 
         function proceed () {
             if (options.setup) {
-                _$.comm.sessionManager.on("logout", (...args) => {
-                    _$.ui.screen.onLogout(...args);
-                });
-
                 _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
                 _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
                 _$.audio.audioEngine.setBGM("bgm.menus");
                 _$.audio.audioEngine.playBGM({ fadeDuration: 2 });
             }
 
-            // Everytime we login outside of the initialization flow (manually, from the login form)
-            _$.comm.sessionManager.on("login", (...args) => {
-                // We setup a listener to catch when the data is done loading from the database
-                _$.events.once("userDataLoaded", (...args) => {
-                    // We update the interface
-                    this.$(".title_overlay-login-message").text("Welcome back, " + _$.state.user.get("name") + "!");
-                    this.closeOverlay("login");
-                    this.updateAccountLayout();
-
-                    // We update the audio levels to the user's saved settings
-                    _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
-                    _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
-                    _$.audio.audioEngine.channels.notif.setVolume(_$.state.user.get("notifVolume"));
-                    
-                    // We logout the user from other potential sessions
-                    _$.comm.sessionManager.logoutOthers().then((...args) => {
-                        // And we emit the login event to the game server
-                        _$.comm.socketManager.emit("login", _$.comm.sessionManager.getSession().user_id);
-                    }).catch(_$.debug.error);
-                });
-
-                // We start loading the data
-                _$.app.loadData();
-            });
+            // We add a listener to the login event
+            _$.comm.sessionManager.once("login", _onLogin);
 
             _$.events.on("updateOnlineCount", (event, data) => {
                 this.$(".title_account-info-playerCount-onlineCount").text(data.msg);
@@ -228,10 +235,46 @@ define([
     }
 
     function remove () {
-        _$.comm.sessionManager.removeAllListeners("login");
+        _$.comm.sessionManager.off("login", _onLogin);
         _$.events.off("updateOnlineCount");
         _$.events.off("updateLoungeCount");
         Screen.prototype.remove.call(this);
+    }
+
+    function _onLogin (...args) {
+        // We start checking its validity routinely
+        _$.comm.sessionManager.setValidateInterval();
+
+        // We add the logout event listner
+        _$.comm.sessionManager.once("logout", (...args) => {
+            _$.ui.screen.onLogout(...args);
+        });
+
+        // We setup a listener to catch when the data is done loading from the database
+        _$.events.once("userDataLoaded", (...args) => {
+            // We update the interface
+            self.$(".title_overlay-login-message").text("Welcome back, " + _$.state.user.get("name") + "!");
+            self.closeOverlay("login");
+            self.updateAccountLayout();
+
+            // We update the audio levels to the user's saved settings
+            _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
+            _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
+            _$.audio.audioEngine.channels.notif.setVolume(_$.state.user.get("notifVolume"));
+            
+            // We logout the user from other potential sessions
+            _$.comm.sessionManager.logoutOthers().then((...args) => {
+                // And we emit the login event to the game server
+                _$.comm.socketManager.emit("login", _$.comm.sessionManager.getSession().user_id);
+            }).catch((error) => {
+                _$.debug.error("screen_title.js@263", error);
+            });
+        });
+
+        // We start loading the data
+        _$.app.loadData().catch((error) => {
+            _$.debug.error("screen_title.js@276", error);
+        });
     }
 
     function playIntro () {
@@ -258,15 +301,15 @@ define([
         this.introTL.to(_.map(logoPaths, "path"), 2, { attr: { fill: "rgba(255, 255, 255, 1)" } }, 4);
         this.introTL.call(() => { _$.audio.audioEngine.playSFX("titleIntro"); }, [], null, 4);
         this.introTL.from(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" }, "-=2");
-        this.introTL.addLabel("enterFooter", "-=6");
+        this.introTL.addLabel("enterFooter", "-=5");
         this.introTL.add(_$.ui.footer.toggleMenu("show"), "enterFooter");
-        this.introTL.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=1");
-        this.introTL.set(_$.ui.footer.text, { clearProps:"display" }, "enterFooter+=2.5");
-        this.introTL.from(_$.ui.footer.text, 1, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
-        this.introTL.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
+        this.introTL.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=0.5");
+        this.introTL.set(_$.ui.footer.text, { clearProps:"display" }, "enterFooter+=2");
+        this.introTL.from(_$.ui.footer.text, 1, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2");
+        this.introTL.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2");
         this.introTL.call(function () {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
-        }, [], null, "enterFooter+=3.5");
+        }, [], null, "enterFooter+=3");
         this.introTL.call(() => {
             $(window).off("click touchstart", skipIntro.bind(this));
             _$.events.off("gamepad", skipIntro, this);
@@ -305,13 +348,13 @@ define([
         tl.from(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
         tl.addLabel("enterFooter", "-=1");
         tl.add(_$.ui.footer.toggleMenu("show"), "enterFooter");
-        tl.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=1");
-        tl.set(_$.ui.footer.text, { clearProps: "display" }, "enterFooter+=2.5");
-        tl.to(_$.ui.footer.text, 1, { opacity: 1, x: 0, clearProps: "all" }, "enterFooter+=2.5");
-        tl.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=3");
+        tl.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=0.5");
+        tl.set(_$.ui.footer.text, { clearProps: "display" }, "enterFooter+=2");
+        tl.to(_$.ui.footer.text, 1, { opacity: 1, x: 0, clearProps: "all" }, "enterFooter+=2");
+        tl.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
         tl.call(() => {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
-        }, [], null, "enterFooter+=3.5");
+        }, [], null, "enterFooter+=3");
         tl.call(() => {
             $(window).off("click touchstart", skipTransition.bind(this));
             _$.events.off("gamepad", skipTransition, this);
@@ -341,6 +384,7 @@ define([
         tl.to(this.$(".title_startBtn"), 0.5, { opacity: 0, scale: 1.25 }, 0);
         tl.to(this.$(".title_logo"), 0.75, { opacity: 0, scale: 1.25 }, 0.5);
         tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); }, [], null, 0.5);
+        tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(this.changeScreen.bind(this, nextScreen, options));
 
         return this;

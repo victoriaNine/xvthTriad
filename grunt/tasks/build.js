@@ -2,9 +2,10 @@ module.exports = function (grunt, options) {
     grunt.registerTask("build", [
         "clean:wipe",
         "sass:server",
-        "buildCardImgLoader",
+        "buildImgLoaders",
         "copy:build",
         "cssmin",
+        "setupEnv:prod",
         "string-replace:build",
         "requirejs",
         "babel",

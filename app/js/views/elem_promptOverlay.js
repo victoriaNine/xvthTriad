@@ -6,13 +6,10 @@ define([
     "text!templates/templ_promptOverlay.ejs"
 ], function Elem_PromptOverlay ($, _, Backbone, _$, Templ_PromptOverlay) {
     return Backbone.View.extend({
-        tagName               : "div",
-        className             : "prompt_overlay screen overlay",
-
-        template : _.template(Templ_PromptOverlay),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
+        tagName   : "div",
+        className : "prompt_overlay screen overlay",
+        template  : _.template(Templ_PromptOverlay),
+        events    : {
             "click .prompt_overlay-confirmBtn"      : function () {
                 this.confirmAction();
                 _$.audio.audioEngine.playSFX("uiConfirm");
@@ -65,13 +62,14 @@ define([
             case "lounge" :
                 options.action = this.toLounge;
                 break;
+            case "refresh" :
+                options.action = window.location.reload.bind(window.location);
+                break;
         }
         
         _$.events.trigger("stopUserEvents");
         this.undelegateEvents();
         var tl = new TimelineMax();
-        var confirmText, confirmText2;
-
         if (this.$el.hasClass("is--active")) {
             tl.call(() => { this.$el.removeClass("is--active"); });
             tl.call(() => { this.$(".prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn").slideUp(400); }, [], null, "+=0.8");
@@ -79,31 +77,25 @@ define([
 
         tl.call(() => {
             if (options.type === "error") {
-                this.span.text("An error");
-                this.$(".prompt_overlay-title").html(this.span).append(" occured");
-
-                confirmText        = options.btnMsg || ((_$.ui.screen.id === "screen_title") ? "Close" : "Return to title screen");
-                this.confirmAction = options.action || this.toTitleScreen;
+                options.titleBold    = options.titleBold || "An error";
+                options.titleRegular = options.titleRegular || "occured";
+                options.btnMsg       = options.btnMsg || ((_$.ui.screen.id === "screen_title") ? "Close" : "Return to title screen");
+                this.confirmAction   = options.action || this.toTitleScreen;
             } else if (options.type === "info") {
-                this.span.text(options.titleBold);
-                this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
-
-                confirmText        = options.btnMsg || "Close";
+                options.btnMsg     = options.btnMsg || "Close";
                 this.confirmAction = options.action || this.close;
             } else if (options.type === "choice") {
-                this.span.text(options.titleBold);
-                this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
-
-                confirmText         = options.btn1Msg;
+                options.btnMsg      = options.btn1Msg;
                 this.confirmAction  = options.action1;
-                confirmText2        = options.btn2Msg;
                 this.confirmAction2 = options.action2;
 
-                this.$(".prompt_overlay-confirm2Btn").text(confirmText2);
+                this.$(".prompt_overlay-confirm2Btn").text(options.btn2Msg);
             }
 
+            this.span.text(options.titleBold);
+            this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
             this.$(".prompt_overlay-message").text(options.msg);
-            this.$(".prompt_overlay-confirmBtn").text(confirmText);
+            this.$(".prompt_overlay-confirmBtn").text(options.btnMsg);
         });
         tl.call(() => { this.$el.addClass("is--active"); }, [], null, "+=0.1");
         if (options.type === "choice") {

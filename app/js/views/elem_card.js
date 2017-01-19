@@ -6,13 +6,10 @@ define([
     "text!templates/templ_card.ejs"
 ], function Elem_Card ($, _, Backbone, _$, Templ_Card) {
     return Backbone.View.extend({
-        tagName               : "div",
-        className             : "card",
-
-        template : _.template(Templ_Card),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {},
+        tagName   : "div",
+        className : "card",
+        template  : _.template(Templ_Card),
+        events    : {},
 
         initialize,
         flip

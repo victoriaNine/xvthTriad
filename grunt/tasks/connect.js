@@ -10,12 +10,18 @@ module.exports = function (grunt, options) {
     var logger           = require("morgan");
     var SuperLogin       = require("superlogin");
     var FacebookStrategy = require("passport-facebook").Strategy;
+    var PouchDB          = require("pouchdb");
+    var CronJob          = require("cron").CronJob;
+    var moment           = require("moment-timezone");
     
     grunt.registerTask("connect", function (target) {
-        var port     = grunt.config("serverPort");
-        var app      = express();
-        var folder   = (target === "beta" || target === "dist") ? grunt.config("yeoman")[target] : grunt.config("yeoman").tmp;
-        var protocol = process.env.NODE_ENV === "prod" ? "https://" : "http://";
+        var port       = grunt.config("serverPort");
+        var app        = express();
+        var folder     = (target === "prod" || target === "beta") ? grunt.config("yeoman")[target] : grunt.config("yeoman").tmp;
+        var protocol   = "http://"; //process.env.NODE_ENV === "prod" ? "https://" : "http://";
+        var db         = new PouchDB(protocol + process.env.DB_USER + ":" + process.env.DB_PASS + "@" + process.env.DB_HOST + "/users");
+        var saveConfig = { charOffset: process.env.SAVE_CHAR_OFFSET, charSeparator: process.env.SAVE_CHAR_SEPARATOR };
+        var cronJobs   = {};
         var server;
         var ip;
 
@@ -27,11 +33,11 @@ module.exports = function (grunt, options) {
         app.use(bodyParser.urlencoded({ extended: false }));
  
         // Redirect to https except on localhost
-        app.use(httpsRedirect);
+        //app.use(httpsRedirect);
 
         var config = {
             dbServer: {
-                protocol: process.env.NODE_ENV === "prod" ? "https://" : "http://",
+                protocol: protocol,
                 host: process.env.DB_HOST,
                 user: process.env.DB_USER,
                 password: process.env.DB_PASS,
@@ -52,7 +58,8 @@ module.exports = function (grunt, options) {
             security: {
                 maxFailedLogins: 3,
                 lockoutTime: 600,
-                tokenLife: 86400,
+                tokenLife: 24 * 60 * 60,
+                sessionLife: 30 * 60,
                 loginOnRegistration: false
             },
             local: {
@@ -95,6 +102,162 @@ module.exports = function (grunt, options) {
         server.listen(app.get("port"), function () {
             grunt.log.ok("Server listening on port", app.get("port"));
             setupSockets(server);
+
+            var K_FACTOR       = 32;
+            var DAY_IN_MINUTES = 1440;
+            var DAY_IN_SECONDS = 86400;
+            var DAY_IN_MS      = 86400000;
+            var DECAY_RATES    = [
+                { days: 7, dailyPenalty: 1 },
+                { days: 14, dailyPenalty: 2 },
+                { days: 28, dailyPenalty: 5 },
+                { days: 56, dailyPenalty: 10 }
+            ];
+
+            function findRate (daysSinceRG) {
+                return _.find(_.reverse(DECAY_RATES.slice(0)), (rate) => { return rate.days <= daysSinceRG; });
+            }
+
+            var lastRankedGame, timeElapsed, userDoc, daysSinceRG, daysElapsed, decayRate, rankPoints, needsUpdate, i, ii;
+            cronJobs.inactivityPenalty     = { job:null, result: null };
+            cronJobs.inactivityPenalty.job = new CronJob({
+                cronTime : "00 00 7 * * *", // Everyday at 7am (Paris)
+                onTick   : function () {
+                    var now = new Date();
+                    db.query("auth/verifiedUsers", { include_docs: true }).then(function (result) {
+                        _.each(result.rows, (user) => {
+                            userDoc        = user.doc;
+                            lastRankedGame = userDoc.profile.lastRankedGame;
+                            daysSinceRG    = userDoc.profile.daysSinceRG;
+                            rankPoints     = userDoc.profile.rankPoints;
+                            timeElapsed    = now - lastRankedGame;
+                            needsUpdate    = false;
+
+                            //console.log(userDoc._id, lastRankedGame, daysSinceRG, rankPoints, timeElapsed);
+
+                            if (lastRankedGame && timeElapsed >= DAY_IN_MS) {
+                                daysElapsed = Math.floor(timeElapsed / DAY_IN_MS);
+
+                                for (i = 0, ii = daysElapsed; i < ii; i++) {
+                                    if (rankPoints < 0) {
+                                        rankPoints = 0;
+                                        break;
+                                    }
+
+                                    decayRate = findRate(++daysSinceRG);
+
+                                    if (decayRate) {
+                                        rankPoints -= decayRate.dailyPenalty * K_FACTOR;
+                                    }
+                                }
+
+                                userDoc.profile.rankPoints  = rankPoints;
+                                userDoc.profile.daysSinceRG = daysSinceRG;
+                                needsUpdate = true;
+                            } else if (daysSinceRG !== 0) {
+                                userDoc.profile.daysSinceRG = 0;
+                                needsUpdate = true;
+                            }
+
+                            if (needsUpdate) {
+                                db.put(userDoc);
+                            }
+                        });
+                    }).catch((error) => {
+                        console.error("connect.js@167", error);
+                    });
+                },
+                start    : true,
+                timeZone : "Europe/Paris"
+            });
+
+            cronJobs.rankings     = { job: null, result: {} };
+            cronJobs.rankings.job = new CronJob({
+                cronTime : "00 00 7 * * *", // Every day at 7am (Paris)
+                onTick   : function () {
+                    /* TODO: Weekly update?
+                    var from = moment().tz("Europe/Paris").day("monday").startOf("day");
+                    var to   = moment().tz("Europe/Paris").day(+7).day("sunday").endOf("day");*/
+                    var from = moment().tz("Europe/Paris").startOf("day").add(7, "hours");
+                    var to   = moment().tz("Europe/Paris").startOf("day").add(1, "day").add(6, "hours").endOf("hour");
+
+                    db.query("auth/verifiedUsers", { include_docs: true }).then((users) => {
+                        var userDocs = _.map(users.rows, "doc");
+                        var tenBest;
+
+                        // "Ace of Cards" ranking
+                        var sortedByElo = _.orderBy(userDocs, (userDoc) => { return userDoc.profile.rankPoints; }, "desc");
+                        tenBest         = _.take(sortedByElo, 10);
+
+                        var ranking_aceOfCards = _.map(tenBest, (userDoc) => {
+                            var totalGames = userDoc.profile.gameStats.wonRanked + userDoc.profile.gameStats.lostRanked + userDoc.profile.gameStats.drawRanked;
+                            var stats      = userDoc.profile.gameStats.wonRanked + " / " + totalGames;
+                            var rate       = userDoc.profile.gameStats.wonRanked * 100 / totalGames;
+                            return {
+                                name       : userDoc.name,
+                                avatar     : userDoc.profile.avatar,
+                                country    : userDoc.profile.country,
+                                gameStats  : userDoc.profile.gameStats,
+                                points     : userDoc.profile.rankPoints,
+                                stats      : stats,
+                                rate       : rate
+                            };
+                        });
+                        
+                        while (ranking_aceOfCards.length < 10) {
+                            ranking_aceOfCards.push({ filler: true });
+                        }
+
+                        cronJobs.rankings.result.aceOfCards = {
+                            name   : "aceOfCards",
+                            title  : "Ace of Cards",
+                            date   : { from: from, to: to },
+                            ranks  : ranking_aceOfCards,
+                            sortBy : "points"
+                        };
+
+                        // "The Collector" ranking
+                        var sortedByUnique = _.orderBy(userDocs, (userDoc) => { return _.uniqBy(userDoc.profile.album, "cardId").length; }, "desc");
+                        tenBest            = _.take(sortedByUnique, 10);
+
+                        var ranking_theCollector = _.map(tenBest, (userDoc) => {
+                            return {
+                                name       : userDoc.name,
+                                avatar     : userDoc.profile.avatar,
+                                country    : userDoc.profile.country,
+                                albumSize  : userDoc.profile.album.length,
+                                uniqueSize : _.uniqBy(userDoc.profile.album, "cardId").length
+                            };
+                        });
+
+                        _.each(ranking_theCollector, (ranker) => {
+                            var uniqueRate = ranker.uniqueSize * 100 / ranker.albumSize;
+                            ranker.points  = Math.floor(ranker.uniqueSize * (100 - uniqueRate / 100));
+                            ranker.stats   = ranker.albumSize;
+                            ranker.rate    = ranker.uniqueSize;
+                        });
+
+                        ranking_theCollector = _.orderBy(ranking_theCollector, "points", "desc");
+
+                        while (ranking_theCollector.length < 10) {
+                            ranking_theCollector.push({ filler: true });
+                        }
+
+                        cronJobs.rankings.result.theCollector = {
+                            name   : "theCollector",
+                            title  : "The Collector",
+                            date   : { from: from, to: to },
+                            ranks  : ranking_theCollector,
+                            sortBy : "points"
+                        };
+                    }).catch((error) => {
+                        console.error("connect.js@254", error);
+                    });
+                },
+                start     : true,
+                timeZone  : "Europe/Paris",
+                runOnInit : true
+            });
         });
 
         // Force HTTPS redirect unless we are using localhost
@@ -148,6 +311,15 @@ module.exports = function (grunt, options) {
                 console.log("A user connected (" + getClientName(socket) + "). Players online:", CLIENT_COUNT);
                 console.log("=======");
 
+                db.query("auth/verifiedUsers").then(function (result) {
+                    socket.emit("in:socketReady", {
+                        status : "ok",
+                        msg    : result.total_rows
+                    });
+                }).catch((error) => {
+                        console.error("connect.js@320", error);
+                    });
+
                 socket.on("disconnect", function () {
                     io.emit("in:updateOnlineCount", {
                         status : "ok",
@@ -185,7 +357,7 @@ module.exports = function (grunt, options) {
                     }
 
                     if (socket.isInLounge) {
-                        onLoungeLeave();
+                        onLoungeLeave(socket);
                     }
                 });
 
@@ -211,7 +383,7 @@ module.exports = function (grunt, options) {
                             });
                         });
 
-                        console.log("User", socket.ip, " was refused connection with userId:", userId);
+                        console.log("User", socket.ip, "was refused connection with userId:", userId);
                         socket.emit("in:kick", {
                             status : "error",
                             msg    : {
@@ -270,40 +442,48 @@ module.exports = function (grunt, options) {
                 });
 
                 socket.on("out:joinLounge", function (userInfo) {
-                    socket.join(LOUNGE_ROOM.name);
-                    socket.isInLounge        = true;
-                    socket.playerInfo        = _.clone(userInfo);
-                    socket.canReceiveRequest = true;
-                    delete socket.playerInfo.isTyping;
-                    delete socket.playerInfo.opponentId;
-                    console.log(socket.userId, "(" + socket.ip + ") joined the lounge room. Players in the lounge:", LOUNGE_ROOM.length);
+                    socket.join(LOUNGE_ROOM.name, proceed);
 
-                    socket.broadcast.to(LOUNGE_ROOM.name).emit("in:updateUserlist", {
-                        status : "ok",
-                        msg  : {
-                            type     : "userJoined",
-                            userInfo : userInfo
-                        }
-                    });
+                    function proceed () {
+                        socket.isInLounge        = true;
+                        socket.playerInfo        = _.clone(userInfo);
+                        socket.canReceiveRequest = true;
+                        delete socket.playerInfo.isTyping;
+                        delete socket.playerInfo.opponentId;
+                        console.log(socket.userId, "(" + socket.ip + ") joined the lounge room. Players in the lounge:", LOUNGE_ROOM.length);
 
-                    sendServiceMessage({
-                        roomName   : LOUNGE_ROOM.name,
-                        date       : new Date().toJSON(),
-                        type       : "userJoined",
-                        data       : {
-                            userId: socket.userId
-                        }
-                    });
+                        socket.broadcast.to(LOUNGE_ROOM.name).emit("in:updateUserlist", {
+                            status : "ok",
+                            msg  : {
+                                type        : "userJoined",
+                                userId      : socket.userId,
+                                userInfo    : userInfo,
+                                onlineCount : LOUNGE_ROOM.length
+                            }
+                        });
 
-                    io.emit("in:updateLoungeCount", {
-                        status : "ok",
-                        msg    : LOUNGE_ROOM.length
-                    });
+                        sendServiceMessage({
+                            roomName   : LOUNGE_ROOM.name,
+                            date       : new Date().toJSON(),
+                            type       : "userJoined",
+                            data       : {
+                                userId: socket.userId
+                            }
+                        });
 
-                    socket.emit("in:joinLounge", {
-                        status : "ok",
-                        msg  : LOUNGE_ROOM.name
-                    });
+                        io.emit("in:updateLoungeCount", {
+                            status : "ok",
+                            msg    : LOUNGE_ROOM.length
+                        });
+
+                        socket.emit("in:joinLounge", {
+                            status : "ok",
+                            msg    : {
+                                name        : LOUNGE_ROOM.name,
+                                onlineCount : LOUNGE_ROOM.length
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:rejoinLounge", function (userInfo) {
@@ -317,6 +497,7 @@ module.exports = function (grunt, options) {
                         status : "ok",
                         msg  : {
                             type     : "userUpdate",
+                            userId   : socket.userId,
                             userInfo : userInfo
                         }
                     });
@@ -327,7 +508,9 @@ module.exports = function (grunt, options) {
                     });
                 });
 
-                socket.on("out:leaveLounge", onLoungeLeave);
+                socket.on("out:leaveLounge", function () {
+                    onLoungeLeave(socket);
+                });
 
                 socket.on("out:startedTyping", function (roomName) {
                     socket.typingInRoom = roomName;
@@ -495,58 +678,62 @@ module.exports = function (grunt, options) {
                 });
 
                 socket.on("out:setupChallengeRoom", function (data) {
-                    var opponent = getClientByUserId(data.with);
-                    var roomName = getUID(16, ROOM_LIST, LOUNGE_ROOM.name + "-");
+                    var opponent  = getClientByUserId(data.with);
+                    var roomName  = getUID(16, ROOM_LIST, LOUNGE_ROOM.name + "-");
+                    var joinCount = 0;
 
                     leaveAllRooms(socket, function () {
                         leaveAllRooms(opponent, function () {
-                            socket.join(roomName);
-                            opponent.join(roomName);
-                            socket.currentRoomName     = roomName;
-                            opponent.currentRoomName   = roomName;
-                            socket.opponent            = opponent;
-                            opponent.opponent          = socket;
+                            socket.join(roomName, function () { if (++joinCount === 2) { proceed(); } });
+                            opponent.join(roomName, function () { if (++joinCount === 2) { proceed(); } });
 
-                            ROOM_LIST[roomName].emitter  = socket;
-                            ROOM_LIST[roomName].receiver = opponent;
-                            ROOM_LIST[roomName].hasEnded = false;
-                            ROOM_LIST[roomName].rounds   = 0;
+                            function proceed () {
+                                socket.currentRoomName     = roomName;
+                                opponent.currentRoomName   = roomName;
+                                socket.opponent            = opponent;
+                                opponent.opponent          = socket;
 
-                            console.log("Room", roomName, "-- emitter --", socket.userId, "do setupChallengeRoom");
-                            console.log("Room", roomName, "-- receiver --", opponent.userId, "do setupChallengeRoom");
+                                ROOM_LIST[roomName].emitter  = socket;
+                                ROOM_LIST[roomName].receiver = opponent;
+                                ROOM_LIST[roomName].hasEnded = false;
+                                ROOM_LIST[roomName].rounds   = 0;
 
-                            LOUNGE_ROOM.playingUsers[socket.userId]   = opponent.userId;
-                            LOUNGE_ROOM.playingUsers[opponent.userId] = socket.userId;
-                            io.to(LOUNGE_ROOM.name).emit("in:updatePlayingUsers", {
-                                status : "ok",
-                                msg    : LOUNGE_ROOM.playingUsers
-                            });
+                                console.log("Room", roomName, "-- emitter --", socket.userId, "do setupChallengeRoom");
+                                console.log("Room", roomName, "-- receiver --", opponent.userId, "do setupChallengeRoom");
 
-                            sendServiceMessage({
-                                roomName   : LOUNGE_ROOM.name,
-                                date       : new Date().toJSON(),
-                                type       : "gameStart",
-                                data       : {
-                                    emitterId  : socket.userId,
-                                    receiverId : opponent.userId
-                                }
-                            });
+                                LOUNGE_ROOM.playingUsers[socket.userId]   = opponent.userId;
+                                LOUNGE_ROOM.playingUsers[opponent.userId] = socket.userId;
+                                io.to(LOUNGE_ROOM.name).emit("in:updatePlayingUsers", {
+                                    status : "ok",
+                                    msg    : LOUNGE_ROOM.playingUsers
+                                });
 
-                            socket.emit("in:setupChallengeRoom", {
-                                status : "ok",
-                                msg    : {
-                                    roomName : roomName,
-                                    mode     : "create"
-                                }
-                            });
+                                sendServiceMessage({
+                                    roomName   : LOUNGE_ROOM.name,
+                                    date       : new Date().toJSON(),
+                                    type       : "gameStart",
+                                    data       : {
+                                        emitterId  : socket.userId,
+                                        receiverId : opponent.userId
+                                    }
+                                });
 
-                            opponent.emit("in:setupChallengeRoom", {
-                                status : "ok",
-                                msg    : {
-                                    roomName : roomName,
-                                    mode     : "join"
-                                }
-                            });
+                                socket.emit("in:setupChallengeRoom", {
+                                    status : "ok",
+                                    msg    : {
+                                        roomName : roomName,
+                                        mode     : "create"
+                                    }
+                                });
+
+                                opponent.emit("in:setupChallengeRoom", {
+                                    status : "ok",
+                                    msg    : {
+                                        roomName : roomName,
+                                        mode     : "join"
+                                    }
+                                });
+                            }
                         });
                     });
                 });
@@ -654,9 +841,9 @@ module.exports = function (grunt, options) {
                 socket.on("out:setRules", function (data) {
                     ROOM_LIST[socket.currentRoomName].rules = data;
 
-                    console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "set rules:", data);
+                    console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "set rules");
                     if (socket.opponent) {
-                        console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "send rules:", data);
+                        console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "send rules");
                         socket.to(socket.opponent.id).emit("in:getRules", {
                             status : "ok",
                             msg    : data
@@ -669,7 +856,7 @@ module.exports = function (grunt, options) {
                 });
 
                 socket.on("out:getRules", function (data) {
-                    console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "get rules:", ROOM_LIST[socket.currentRoomName].rules);
+                    console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "get rules");
                     socket.emit("in:getRules", {
                         status : "ok",
                         msg    : ROOM_LIST[socket.currentRoomName].rules
@@ -702,7 +889,7 @@ module.exports = function (grunt, options) {
                     ROOM_LIST[socket.currentRoomName].currentTurn = data.turnNumber;
                     socket.playerActions[data.turnNumber]     = data;
 
-                    console.log("Room", socket.currentRoomName, "-- turn", data.turnNumber,"-- playing:", getClientName(socket), "set and send playerAction:", data);
+                    console.log("Room", socket.currentRoomName, "-- turn", data.turnNumber,"-- playing:", getClientName(socket), "set and send playerAction");
                     socket.to(socket.opponent.id).emit("in:getPlayerAction", {
                         status : "ok",
                         msg    : data
@@ -716,7 +903,7 @@ module.exports = function (grunt, options) {
                 socket.on("out:getPlayerAction", function (data) {
                     var currentTurn = ROOM_LIST[socket.currentRoomName].currentTurn;
 
-                    console.log("Room", socket.currentRoomName, "-- turn", currentTurn,"-- waiting:", getClientName(socket), "get playerAction:", socket.opponent.playerActions[currentTurn]);
+                    console.log("Room", socket.currentRoomName, "-- turn", currentTurn,"-- waiting:", getClientName(socket), "get playerAction");
                     socket.emit("in:getPlayerAction", {
                          status : "ok",
                          msg    : socket.opponent.playerActions[currentTurn]
@@ -726,7 +913,7 @@ module.exports = function (grunt, options) {
                 socket.on("out:setSelectedCards", function (data) {
                     socket.selectedCards = data;
 
-                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "set and send selected cards:", data);
+                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "set and send selected cards");
                     socket.to(socket.opponent.id).emit("in:getSelectedCards", {
                         status : "ok",
                         msg    : data
@@ -738,7 +925,7 @@ module.exports = function (grunt, options) {
                 });
 
                 socket.on("out:getSelectedCards", function (data) {
-                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "get selected cards:", socket.opponent.selectedCards);
+                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "get selected cards");
                     socket.emit("in:getSelectedCards", {
                         status : "ok",
                         msg    : socket.opponent.selectedCards
@@ -774,6 +961,10 @@ module.exports = function (grunt, options) {
                     }
 
                     playerReset(socket);
+
+                    socket.emit("in:playerReset", {
+                        status : "ok"
+                    });
                 });
 
                 socket.on("out:roundReset", function () {
@@ -818,6 +1009,10 @@ module.exports = function (grunt, options) {
                 socket.on("out:cancelReady", function (data) {
                     console.log("Room", socket.currentRoomName, "--", getClientName(socket), "do cancelReady");
                     socket.isReady = false;
+
+                    socket.emit("in:cancelReady", {
+                        status : "ok"
+                    });
                 });
 
                 socket.on("out:confirmEnd", function (points) {
@@ -849,10 +1044,70 @@ module.exports = function (grunt, options) {
                         socket.emit("in:confirmEnd", {
                             status : "ok"
                         });
+
                         socket.to(socket.opponent.id).emit("in:confirmEnd", {
                             status : "ok"
                         });
                     }
+                });
+
+                socket.on("out:getUser", function (data) {
+                    db.get(data.msg).then((userDoc) => {
+                        socket.emit("in:getUser", {
+                            status     : "ok",
+                            callbackId : data.callbackId,
+                            msg        : userDoc
+                        });
+                    }).catch((error) => {
+                        console.error("connect.js@1062", error);
+                    });
+                });
+
+                socket.on("out:encodeSaveData", function (data) {
+                    var JSONdata    = JSON.stringify(data.JSONdata);
+                    var prefix      = data.prefix;
+                    var encodedData = prefix;
+
+                    JSONdata.split("").forEach(function (char) {
+                        encodedData += saveConfig.charSeparator + (char.codePointAt(0) + parseFloat(saveConfig.charOffset));
+                    });
+
+                    socket.emit("in:encodeSaveData", {
+                        status : "ok",
+                        msg    : encodedData
+                    });
+                });
+
+                socket.on("out:decodeSaveData", function (data) {
+                    var encodedData = data.encodedData;
+                    var prefix      = data.prefix;
+                    var JSONdata    = "";
+
+                    encodedData.replace(prefix, "").match(new RegExp(saveConfig.charSeparator + "\\d+", "g")).forEach(function (chunk) {
+                        JSONdata += String.fromCodePoint(chunk.match(/\d+/) - parseFloat(saveConfig.charOffset));
+                    });
+
+                    socket.emit("in:decodeSaveData", {
+                        status : "ok",
+                        msg    : JSON.parse(JSONdata)
+                    });
+                });
+
+                socket.on("out:getRanking", function (data) {
+                    var name    = data.msg.name;
+                    var ranking = null;
+
+                    if (name === "aceOfCards") {
+                        ranking = cronJobs.rankings.result.aceOfCards;
+                    } else if (name === "theCollector") {
+                        ranking = cronJobs.rankings.result.theCollector;
+                    }
+
+                    socket.emit("in:getRanking", {
+                        status     : "ok",
+                        callbackId : data.callbackId,
+                        msg        : ranking
+                    });
                 });
 
                 function playerReset (client) {
@@ -876,49 +1131,62 @@ module.exports = function (grunt, options) {
 
                 function onLogout (client) {
                     if (client.isInLounge) {
-                        onLoungeLeave();
+                        onLoungeLeave(client, proceed);
+                    } else {
+                        proceed();
                     }
-                    console.log(client.userId + " (" + client.ip + ") logged out.");
-                    console.log("=======");
 
-                    client.userId = null;
-                    client.emit("in:logout", {
-                        status : "ok"
-                    });
+                    function proceed () {
+                        console.log(client.userId + " (" + client.ip + ") logged out.");
+                        console.log("=======");
+
+                        client.userId = null;
+                        client.emit("in:logout", {
+                            status : "ok"
+                        });
+                    }
                 }
 
-                function onLoungeLeave () {
-                    socket.leave(LOUNGE_ROOM.name);
-                    socket.isInLounge        = false;
-                    socket.hasPendingRequest = false;
-                    socket.canReceiveRequest = false;
-                    console.log(socket.userId, "(" + socket.ip + ") left the lounge room. Players in the lounge:", LOUNGE_ROOM.length);
+                function onLoungeLeave (client, callback) {
+                    client.leave(LOUNGE_ROOM.name, proceed);
 
-                    sendServiceMessage({
-                        roomName   : LOUNGE_ROOM.name,
-                        date       : new Date().toJSON(),
-                        type       : "userLeft",
-                        data       : {
-                            userId: socket.userId
+                    function proceed () {
+                        client.isInLounge        = false;
+                        client.hasPendingRequest = false;
+                        client.canReceiveRequest = false;
+                        console.log(client.userId, "(" + client.ip + ") left the lounge room. Players in the lounge:", LOUNGE_ROOM.length);
+
+                        sendServiceMessage({
+                            roomName   : LOUNGE_ROOM.name,
+                            date       : new Date().toJSON(),
+                            type       : "userLeft",
+                            data       : {
+                                userId: client.userId
+                            }
+                        });
+
+                        client.broadcast.to(LOUNGE_ROOM.name).emit("in:updateUserlist", {
+                            status : "ok",
+                            msg    : {
+                                type        : "userLeft",
+                                userId      : client.userId,
+                                onlineCount : LOUNGE_ROOM.length
+                            }
+                        });
+
+                        io.emit("in:updateLoungeCount", {
+                            status : "ok",
+                            msg    : LOUNGE_ROOM.length
+                        });
+
+                        client.emit("in:leaveLounge", {
+                            status : "ok"
+                        });
+
+                        if (callback) {
+                            callback();
                         }
-                    });
-
-                    socket.broadcast.to(LOUNGE_ROOM.name).emit("in:updateUserlist", {
-                        status : "ok",
-                        msg    : {
-                            type   : "userLeft",
-                            userId : socket.userId
-                        }
-                    });
-
-                    io.emit("in:updateLoungeCount", {
-                        status : "ok",
-                        msg    : LOUNGE_ROOM.length
-                    });
-
-                    socket.emit("in:leaveLounge", {
-                        status : "ok"
-                    });
+                    }
                 }
 
                 function onLoungeGameEnd (player1Id, player2Id) {

@@ -7,14 +7,14 @@ define([
     "text!templates/templ_endGameCard.ejs"
 ], function Elem_EndGameCard ($, _, Backbone, _$, Elem_Card, Templ_EndGameCard) {
     return Backbone.View.extend({
-        tagName               : "li",
-        className             : "game_overlay-endGame-album-card",
-
-        template : _.template(Templ_EndGameCard),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
-            "mouseenter .card-red" : function (e) { TweenMax.set(e.currentTarget, { scale: "1.1" }); },
+        tagName   : "li",
+        className : "game_overlay-endGame-album-card",
+        template  : _.template(Templ_EndGameCard),
+        events    : {
+            "mouseenter .card-red" : function (e) {
+                _$.audio.audioEngine.playSFX("cardSort");
+                TweenMax.set(e.currentTarget, { scale: "1.1" });
+            },
             "mouseleave .card-red" : function (e) { TweenMax.set(e.currentTarget, { scale: "1" }); },
             "click .card"          : "selectCard"
         },
@@ -34,13 +34,13 @@ define([
 
         this.$(".game_overlay-endGame-album-card-visual").append(this.cardView.$el);
 
-        _$.utils.addDomObserver(this.$el, () => {
-            if (!_$.state.game.get("cardsToTrade") ||
-                _$.state.game.get("winner") !== _$.state.game.get("players").user ||
-                this.cardView.model.get("owner") !== _$.state.game.get("players").opponent) {
-                this.undelegateEvents();
-            }
-        }, true);
+        if (!_$.state.game.get("cardsToTrade") ||
+            _$.state.game.get("winner") !== _$.state.game.get("players").user ||
+            this.cardView.model.get("owner") !== _$.state.game.get("players").opponent) {
+            this.events = {};
+            TweenMax.set(this.$el, { pointerEvents: "none" });
+            this.undelegateEvents();
+        }
     }
 
     function selectCard (event, removingExcess) {

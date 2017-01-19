@@ -4,23 +4,22 @@ define([
     "backbone",
     "global",
     "views/screen_overlayMenu",
+    "views/screen_overlayRankings",
     "views/screen_overlayHelp",
     "views/screen_overlayAbout",
     "text!templates/templ_footer.ejs"
-], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Screen_OverlayHelp, Screen_OverlayAbout, Templ_Footer) {
+], function Elem_Footer ($, _, Backbone, _$, Screen_OverlayMenu, Screen_OverlayRankings, Screen_OverlayHelp, Screen_OverlayAbout, Templ_Footer) {
     return Backbone.View.extend({
-        tagName : "footer",
-        id      : "footer",
-
+        tagName  : "footer",
+        id       : "footer",
         template : _.template(Templ_Footer),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
-            "click .footer_logo"          : "toggleFooter",
-            "click .footer_menu-homeBtn"  : "toTitleScreen",
-            "click .footer_menu-menuBtn"  : function (e) { this.toggleMainMenu(); },
-            "click .footer_menu-helpBtn"  : function (e) { this.toggleHelpPage(); },
-            "click .footer_menu-aboutBtn" : function (e) { this.toggleAboutPage(); },
+        events   : {
+            "click .footer_logo"             : "toggleFooter",
+            "click .footer_menu-homeBtn"     : "toTitleScreen",
+            "click .footer_menu-menuBtn"     : function (e) { this.toggleMainMenu(); },
+            "click .footer_menu-rankingsBtn" : function (e) { this.toggleRankings(); },
+            "click .footer_menu-helpBtn"     : function (e) { this.toggleHelpPage(); },
+            "click .footer_menu-aboutBtn"    : function (e) { this.toggleAboutPage(); },
             "click .footer_menu-element,.footer_social-element,.footer_logo" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
             },
@@ -66,6 +65,7 @@ define([
         toggleFooter,
         toTitleScreen,
         toggleMainMenu,
+        toggleRankings,
         toggleHelpPage,
         toggleAboutPage
     });
@@ -95,19 +95,19 @@ define([
         if (_$.ui.menu) {
             if (!noTracking) {
                 _$.app.track("send", "event", {
-                    eventCategory: "footerEvent",
-                    eventAction: "closeMenu"
+                    eventCategory : "footerEvent",
+                    eventAction   : "closeMenu"
                 });
             }
 
             this.toggleLogo("hide");
-
-
             _$.events.once("mainMenuClosed", () => {
                 delete _$.ui.menu;
                 this.$(".footer_menu-menuBtn").removeClass("is--active");
 
-                if (_$.ui.help || toSection === "toHelp") {
+                if (_$.ui.rankings || toSection === "toRankings") {
+                    this.$(".footer_menu-rankingsBtn").addClass("is--active");
+                } else if (_$.ui.help || toSection === "toHelp") {
                     this.$(".footer_menu-helpBtn").addClass("is--active");
                 } else if (_$.ui.screen.id === "screen_title") {
                     this.$(".footer_menu-homeBtn").addClass("is--active");
@@ -119,12 +119,18 @@ define([
         } else {
             if (!noTracking) {
                 _$.app.track("send", "event", {
-                    eventCategory: "footerEvent",
-                    eventAction: "openMenu"
+                    eventCategory : "footerEvent",
+                    eventAction   : "openMenu"
                 });
             }
 
-            if (_$.ui.help) {
+            if (_$.ui.rankings) {
+                _$.events.once("rankingsClosed", () => {
+                     proceed.call(this);
+                });
+
+                this.toggleRankings(null, false, "toMenu");
+            } else if (_$.ui.help) {
                 _$.events.once("helpPageClosed", () => {
                      proceed.call(this);
                 });
@@ -149,12 +155,72 @@ define([
         }
     }
 
+    function toggleRankings (nextScreen, noTracking, toSection) {
+        if (_$.ui.rankings) {
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory : "footerEvent",
+                    eventAction   : "closeRankings"
+                });
+            }
+            
+            _$.events.once("rankingsClosed", () => {
+                delete _$.ui.rankings;
+                this.$(".footer_menu-rankingsBtn").removeClass("is--active");
+
+                if (_$.ui.menu || toSection === "toMenu") {
+                    this.$(".footer_menu-menuBtn").addClass("is--active");
+                } else if (_$.ui.help || toSection === "toHelp") {
+                    this.$(".footer_menu-helpBtn").addClass("is--active");
+                } else if (_$.ui.screen.id === "screen_title") {
+                    this.$(".footer_menu-homeBtn").addClass("is--active");
+                }
+            });
+
+            _$.ui.rankings.transitionOut(nextScreen, { fromMenu: true });
+        } else {
+            if (!noTracking) {
+                _$.app.track("send", "event", {
+                    eventCategory : "footerEvent",
+                    eventAction   : "openRankings"
+                });
+            }
+
+            if (_$.ui.menu) {
+                _$.events.once("mainMenuClosed", () => {
+                     proceed.call(this);
+                });
+
+                this.toggleMainMenu(null, false, "toRankings");
+            } else if (_$.ui.help) {
+                _$.events.once("helpPageClosed", () => {
+                     proceed.call(this);
+                });
+
+                this.toggleHelpPage(null, false, "toRankings");
+            } else {
+                proceed.call(this);
+            }
+        }
+
+        function proceed () {
+            this.$(".footer_menu-element").removeClass("is--active");
+
+            _$.events.once("rankingsOpen", () => {
+                this.$(".footer_menu-element").removeClass("is--active");
+                this.$(".footer_menu-rankingsBtn").addClass("is--active");
+            });
+
+            _$.ui.rankings = new Screen_OverlayRankings();
+        }
+    }
+
     function toggleHelpPage (nextScreen, noTracking, toSection) {
         if (_$.ui.help) {
             if (!noTracking) {
                 _$.app.track("send", "event", {
-                    eventCategory: "footerEvent",
-                    eventAction: "closeHelp"
+                    eventCategory : "footerEvent",
+                    eventAction   : "closeHelp"
                 });
             }
             
@@ -164,6 +230,8 @@ define([
 
                 if (_$.ui.menu || toSection === "toMenu") {
                     this.$(".footer_menu-menuBtn").addClass("is--active");
+                } else if (_$.ui.rankings || toSection === "toRankings") {
+                    this.$(".footer_rankings-menuBtn").addClass("is--active");
                 } else if (_$.ui.screen.id === "screen_title") {
                     this.$(".footer_menu-homeBtn").addClass("is--active");
                 }
@@ -184,6 +252,12 @@ define([
                 });
 
                 this.toggleMainMenu(null, false, "toHelp");
+            } else if (_$.ui.rankings) {
+                _$.events.once("rankingsClosed", () => {
+                     proceed.call(this);
+                });
+
+                this.toggleRankings(null, false, "toHelp");
             } else {
                 proceed.call(this);
             }
@@ -205,8 +279,8 @@ define([
         if (_$.ui.about) {
             if (!noTracking) {
                 _$.app.track("send", "event", {
-                    eventCategory: "footerEvent",
-                    eventAction: "closeAbout"
+                    eventCategory : "footerEvent",
+                    eventAction   : "closeAbout"
                 });
             }
             
@@ -216,6 +290,8 @@ define([
 
                 if (_$.ui.menu) {
                     this.$(".footer_menu-menuBtn").addClass("is--active");
+                } else if (_$.ui.rankings) {
+                    this.$(".footer_menu-rankingsBtn").addClass("is--active");
                 } else if (_$.ui.help) {
                     this.$(".footer_menu-helpBtn").addClass("is--active");
                 } else if (_$.ui.screen.id === "screen_title") {
@@ -227,8 +303,8 @@ define([
         } else {
             if (!noTracking) {
                 _$.app.track("send", "event", {
-                    eventCategory: "footerEvent",
-                    eventAction: "openAbout"
+                    eventCategory : "footerEvent",
+                    eventAction   : "openAbout"
                 });
             }
 
@@ -245,6 +321,8 @@ define([
     function toTitleScreen () {
         if (_$.ui.menu) {
             this.toggleMainMenu("title");
+        } else if (_$.ui.rankings) {
+            this.toggleRankings("title");
         } else if (_$.ui.help) {
             this.toggleHelpPage("title");
         } else if (_$.ui.about) {
@@ -260,7 +338,7 @@ define([
         _$.events.trigger("stopUserEvents");
         var tl = new TimelineMax();
 
-        if (_$.state.inGame) {
+        if (_$.state.user.isInGame) {
             if (this.isOpen) {
                 tl.add(this.toggleSocial("hide"));
             } else {
@@ -339,9 +417,9 @@ define([
 
         $(elements).each(function (i) {
             if (state === "show") {
-                tl.add(_showElement($(this)), i * 0.15);
+                tl.add(_showElement($(this)), i * 0.1);
             } else if (state === "hide") {
-                tl.add(_hideElement($(this)), (nbElement - i) * 0.15);
+                tl.add(_hideElement($(this)), (nbElement - i) * 0.1);
             }
         });
 

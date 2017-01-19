@@ -2,8 +2,10 @@ define([
     "underscore",
     "backbone",
     "jquery",
-    "json!data/cardList.json"
-], function global (_, Backbone, $, cardList) {
+    "elo",
+    "json!data/cardList.json",
+    "json!data/countryList.json"
+], function global (_, Backbone, $, Elo, cardList, countryList) {
     class AssetManager {
         constructor () {
             this.img = {
@@ -36,46 +38,34 @@ define([
 
     var startTime = Date.now();
     var app       = Object.create(null, {
-        version      : { value: "{{ VERSION }}" },
-        versionName  : { value: "{{ VERSION_NAME }}" },
-        versionFlag  : { value: "{{ VERSION_FLAG }}" },
-        dbURL        : { value: window.location.protocol + "{{ DB_URL }}" },
-        name         : { value: "xvthTriad" },
-        saveExt      : { value: "xvtsave" },
-        currentTime  : { get: getCurrentTime },
-        checkUpdates : { value: checkUpdates },
-        saveData     : { value: saveData },
-        loadData     : { value: loadData },
-        importSave   : { value: importSave },
-        exportSave   : { value: exportSave },
-        encodeData   : { value: getEncodedData },
-        decodeData   : { value: getDecodedData },
-        track        : { value: sendGAevent },
-        env          : { value : {
+        name          : { value: "{{ NAME }}" },
+        version       : { value: "{{ VERSION }}" },
+        versionName   : { value: "{{ VERSION_NAME }}" },
+        versionFlag   : { value: "{{ VERSION_FLAG }}" },
+        currentTime   : { get: getCurrentTime },
+        checkUpdates  : { value: checkUpdates },
+        saveData      : { value: saveData },
+        loadData      : { value: loadData },
+        checkDataType : { value: getSaveDataType },
+        importSave    : { value: importSave },
+        exportSave    : { value: exportSave },
+        encodeData    : { value: getEncodedData },
+        decodeData    : { value: getDecodedData },
+        track         : { value: sendGAevent },
+        env           : { value: {
             deviceType       : "browser",
             mobileDeviceType : null
         }},
-        sessionConfig: {
-            // The base URL for the SuperLogin routes with leading and trailing slashes (defaults to '/auth/')
-            //baseUrl: "/auth/",
-            // A list of API endpoints to automatically add the Authorization header to
-            // By default the host the browser is pointed to will be added automatically
-            //endpoints: ["api.example.com"],
-            // Set this to true if you do not want the URL bar host automatically added to the list
-            noDefaultEndpoint: false,
-            // Where to save your session token: localStorage ("local") or sessionStorage ("session"), default: "local"
-            storage: "local",
-            // The authentication providers that are supported by your SuperLogin host
-            providers: ["local"],
-            // Sets when to check if the session is expired during the setup.
-            // false by default.
-            checkExpired: false,
-            // A float that determines the percentage of a session duration, after which SuperLogin will automatically refresh the
-            // token. For example if a token was issued at 1pm and expires at 2pm, and the threshold is 0.5, the token will
-            // automatically refresh after 1:30pm. When authenticated, the token expiration is automatically checked on every
-            // request. You can do this manually by calling superlogin.checkRefresh(). Default: 0.5
-            refreshThreshold: 0.5
-        }
+        sessionConfig: { value : {
+            noDefaultEndpoint  : false,
+            providers          : ["local"],
+            refreshThreshold   : 0.9
+        }},
+        saveConfig: { value: {
+            savePrefix    : "{{ NAME }}:save//",
+            sessionPrefix : "{{ NAME }}:session//",
+            extension     : "xvtsave"
+        }}
     });
     var dom       = $("#app");
     var assets    = new AssetManager();
@@ -89,12 +79,16 @@ define([
         getAppSizeRatio,
         getDragSpeed,
         getCardList,
+        getCountryList,
         getRandomName,
         getRandomCards,
         getAbsoluteOffset,
         getDestinationCoord,
         getPositionFromCaseName,
         getCaseNameFromPosition,
+        getFormattedNumber,
+        getFormattedDate,
+        getElo,
         getUID,
         getUserData,
         addDomObserver,
@@ -112,18 +106,10 @@ define([
     };
 
     var debug = {
-        debugMode : true,
+        debugMode: true,
         log,
         warn,
         error
-    };
-
-    var saveSettings = {
-        savePrefix    : app.name + ":save//",
-        sessionPrefix : app.name + ":session//",
-        extension     : app.saveExt,
-        charOffset    : 1,
-        charSeparator : "x"
     };
 
     var shareSettings = {
@@ -387,9 +373,8 @@ define([
         return usedList[string] ? getUID(length, usedList) : string;
     }
 
-    function getCardList () {
-        return cardList;
-    }
+    function getCardList ()    { return cardList; }
+    function getCountryList () { return countryList; }
 
     function getRandomName () {
         var names = ["Noctis", "Luna", "Ignis", "Prompto", "Gladiolus", "Regis", "Ardyn", "Iedolas"];
@@ -461,14 +446,38 @@ define([
         return "case" + position.x + position.y;
     }
 
+    function getFormattedNumber (number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function getFormattedDate (dateObject, options = {}) {
+        if (_.isString(dateObject)) {
+            dateObject = new Date(dateObject);
+        }
+
+        var date  = dateObject.getFullYear() + "." + (dateObject.getMonth() < 10 ? ("0" + (dateObject.getMonth() + 1)) : dateObject.getMonth() + 1) + "." + (dateObject.getDate() < 10 ? "0" + dateObject.getDate() : dateObject.getDate());
+        var time  = (dateObject.getHours() < 10 && options.hoursHH ? "0" + dateObject.getHours() : dateObject.getHours()) + ":";
+            time += (dateObject.getMinutes() < 10 ? "0" + dateObject.getMinutes() : dateObject.getMinutes());
+
+        if (options.seconds) {
+            time += ":" + (dateObject.getSeconds() < 10 ? "0" + dateObject.getSeconds() : dateObject.getSeconds());
+        }
+
+        return { date, time };
+    }
+
+    function getElo (kFactor = 32, min = 0, max = +Infinity) {
+        return new Elo(kFactor, min, max);
+    }
+
     //===============================
     // SAVE/LOAD MANAGEMENT
     //===============================
     function saveData (credentials, onError) {
         if (_$.comm.sessionManager.getSession()) {
-            saveToDb(credentials, onError);
+            return saveToDb(credentials, onError);
         } else {
-            saveToStorage();
+            return saveToStorage();
         }
     }
 
@@ -477,30 +486,35 @@ define([
         var type = getSaveDataType(data);
 
         if (type === "session") {
-            loadFromDb();
+            return loadFromDb();
         } else if (type === "save") {
-            loadFromStorage(data);
+            return loadFromStorage(data);
         }
     }
 
-    function saveToDb (form = {}, onError = _$.debug.error) {
+    function saveToDb (form = {}) {
         var data    = _$.utils.getUserData();
         var profile = _.omit(data, ["version", "userId", "name", "email"]);
         _.extend(form, { name: data.name, profile: profile });
 
-        _$.comm.sessionManager.updateProfile(form).then((response) => {
+        return _$.comm.sessionManager.updateProfile(form).then((response) => {
             if (response.data && response.data.error) {
                 throw response.data.error;
             } else {
-                _$.comm.sessionManager.refresh().catch(onError);
+                _$.comm.sessionManager.refresh().catch((error) => {
+                    _$.debug.error("global.js@488", error);
+                });
                 _$.events.trigger("userDataSaved:toDatabase");
                 return response;
             }
-        }).catch(onError);
+        }).catch((error) => {
+            _$.debug.error("global.js@494", error);
+            throw error;
+        });
     }
 
-    function loadFromDb (onError = _$.debug.error) {
-        _$.comm.sessionManager.getUser.call(_$.comm.sessionManager).then((userData) => {
+    function loadFromDb () {
+        return _$.comm.sessionManager.getUser.call(_$.comm.sessionManager).then((userData) => {
             _$.state.user.set({
                 userId : userData._id,
                 name   : userData.name,
@@ -511,34 +525,45 @@ define([
                 _$.state.user.set(key, value);
             });
 
-            _$.state.user.get("album").reset(userData.profile.album);
-
+            _$.state.user.setAlbum(userData.profile.album);
             _$.state.user.dataLoaded = true;
             _$.events.trigger("userDataLoaded:fromDatabase");
-        }).catch(onError);
+            return userData;
+        }).catch((error) => {
+            _$.debug.error("global.js@515", error);
+            throw error;
+        });
     }
 
     function saveToStorage () {
-        setLocalStorage(_$.app.name, _encodeSaveData(_$.utils.getUserData()));
-        _$.events.trigger("userDataSaved:toStorage");
+        return _encodeSaveData(_$.utils.getUserData()).then((saveData) => {
+            setLocalStorage(_$.app.name, saveData);
+            _$.events.trigger("userDataSaved:toStorage");
+        }).catch((error) => {
+            _$.debug.error("global.js@523", error);
+            throw error;
+        });
     }
 
     function loadFromStorage (storageData) {
         if (!storageData) {
             _$.debug.error("loadFromStorage: No data");
-            return;
+            return Promise.reject();
         }
 
-        var JSONdata = _decodeSaveData(storageData, "save");
-        _$.app.checkUpdates(JSONdata, (updatedData) => {
-            _.each(_.omit(updatedData, ["album", "version", "userId"]), function (value, key) {
-                _$.state.user.set(key, value);
+        return _decodeSaveData(storageData, "save").then((JSONdata) => {
+            _$.app.checkUpdates(JSONdata, (updatedData) => {
+                _.each(_.omit(updatedData, ["album", "version", "userId"]), function (value, key) {
+                    _$.state.user.set(key, value);
+                });
+
+                _$.state.user.setAlbum(updatedData.album);
+                _$.state.user.dataLoaded = true;
+                _$.events.trigger("userDataLoaded:fromStorage");
             });
-
-            _$.state.user.get("album").reset(updatedData.album);
-
-            _$.state.user.dataLoaded = true;
-            _$.events.trigger("userDataLoaded:fromStorage");
+        }).catch((error) => {
+            _$.debug.error("global.js@545", error);
+            throw error;
         });
     }
 
@@ -571,7 +596,7 @@ define([
         ).replace(/[^\d+-]/g, "");
 
         if (!fileName) {
-            fileName = _$.app.name + "_" + saveTime + "." + saveSettings.extension;
+            fileName = _$.app.name + "_" + saveTime + "." + _$.app.saveExt;
         }
 
         if (typeof data === "object") {
@@ -604,52 +629,46 @@ define([
     }
 
     function _encodeSaveData (JSONdata, type = "save") {
-        var prefix      = (type === "save") ? saveSettings.savePrefix : saveSettings.sessionPrefix;
-        var encodedData = prefix;
+        var prefix = (type === "save") ? _$.app.saveConfig.savePrefix : _$.app.saveConfig.sessionPrefix;
 
-        JSONdata = JSON.stringify(JSONdata);
-        JSONdata.split("").forEach(function (char) {
-            encodedData += saveSettings.charSeparator + (char.codePointAt(0) + saveSettings.charOffset);
+        return new Promise((resolve, reject) => {
+            _$.comm.socketManager.emit("encodeSaveData", { JSONdata, prefix }, (response) => {
+                resolve(response.msg);
+            });
         });
-
-        return encodedData;
     }
 
     function _decodeSaveData (encodedData, type = "save") {
-        var prefix = (type === "save") ? saveSettings.savePrefix : saveSettings.sessionPrefix;
+        var prefix = (type === "save") ? _$.app.saveConfig.savePrefix : _$.app.saveConfig.sessionPrefix;
 
-        if (encodedData.indexOf(prefix) !== 0) {
+        if (!_.isString(encodedData) || encodedData.indexOf(prefix) !== 0) {
             var recognizedType = getSaveDataType(encodedData);
             if (recognizedType) {
                 _$.debug.warn("DecodeSave: Data is of " + recognizedType + " type");
             } else {
                 _$.debug.error("DecodeSave: Invalid " + type + " data");
-                _$.events.trigger("showError", {
-                    msg    : "Invalid " + type + " data",
-                    action : "close"
-                });
             }
 
-            return "";
+            return Promise.resolve("");
         }
 
-        var JSONdata = "";
-        encodedData.replace(prefix, "").match(new RegExp(saveSettings.charSeparator + "\\d+", "g")).forEach(function (chunk) {
-            JSONdata += String.fromCodePoint(chunk.match(/\d+/) - saveSettings.charOffset);
+        return new Promise((resolve, reject) => {
+            _$.comm.socketManager.emit("decodeSaveData", { encodedData, prefix }, (response) => {
+                resolve(response.msg);
+            });
         });
-
-        return JSON.parse(JSONdata);
     }
 
-    function getEncodedData (data, type) { return data ? _encodeSaveData(data, type) : null; }
-    function getDecodedData (data, type) { return data ? _decodeSaveData(data, type) : null; }
+    function getEncodedData  (data, type) { return data ? _encodeSaveData(data, type) : Promise.resolve(null); }
+    function getDecodedData  (data, type) { return data ? _decodeSaveData(data, type) : Promise.resolve(null); }
     function getSaveDataType (data) {
-        if (data.indexOf(saveSettings.savePrefix) === 0) {
+        if (_.isString(data) && data.indexOf(_$.app.saveConfig.savePrefix) === 0) {
             return "save";
-        } else if (data.indexOf(saveSettings.sessionPrefix) === 0) {
+        } else if (_.isString(data) && data.indexOf(_$.app.saveConfig.sessionPrefix) === 0) {
             return "session";
         } else {
-            return null;
+            window.localStorage.removeItem(_$.app.name);
+            return false;
         }
     }
 

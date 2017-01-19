@@ -47,7 +47,7 @@ define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_,
         _.each(loader.files, function (fileInfo) {
             let type      = fileInfo.type.slice(0, fileInfo.type.indexOf("."));
             if (type === "audio" && !fileInfo.name.match(".ogg|.mp3|.wav")) {
-                fileInfo.name += Modernizr.audio.ogg ? ".ogg" : Modernizr.audio.mp3 ? ".mp3" : ".wav";
+                fileInfo.name += window.Modernizr.audio.ogg ? ".ogg" : window.Modernizr.audio.mp3 ? ".mp3" : ".wav";
             }
 
             let assetName = fileInfo.name.slice(0, fileInfo.name.indexOf("."));

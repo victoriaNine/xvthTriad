@@ -1,20 +1,33 @@
 <div class="userSettings_header" style="display:none;">
     <div class="userSettings_header-leftCol">
         <h1 class="userSettings_header-title">
-            <span class="weight-bold">User</span> settings
+            <span class="weight-bold">User</span> profile
         </h1>
         <hr>
         <div class="userSettings_header-countWon">
             <div class="userSettings_header-countWon-label">Games won</div>
-            <div class="userSettings_header-countWon-count"><%= wonCount %></div>
+            <div class="userSettings_header-countWon-count">
+                <%= wonRankedCount %> (ranked)
+                <span class="color-darkGrey"> / <%= wonCount %> (total)</span> 
+            </div>
         </div>
         <div class="userSettings_header-countLost">
             <div class="userSettings_header-countLost-label">Losses</div>
-            <div class="userSettings_header-countLost-count"><%= lostCount %></div>
+            <div class="userSettings_header-countLost-count">
+                <%= lostRankedCount %> (ranked)
+                <span class="color-darkGrey"> / <%= lostCount %> (total)</span> 
+            </div>
         </div>
         <div class="userSettings_header-countDraw">
             <div class="userSettings_header-countDraw-label">Tie games</div>
-            <div class="userSettings_header-countDraw-count"><%= drawCount %></div>
+            <div class="userSettings_header-countDraw-count">
+                <%= drawRankedCount %> (ranked)
+                <span class="color-darkGrey"> / <%= drawCount %> (total)</span> 
+            </div>
+        </div>
+        <div class="userSettings_header-rankPoints">
+            <div class="userSettings_header-rankPoints-label">Rank points</div>
+            <div class="userSettings_header-rankPoints-count"><%= rankPoints %></div>
         </div>
         <p class="userSettings_header-help"></p>
     </div>
@@ -91,11 +104,10 @@
                     </ul>
                     <div class="userSettings_content-settings-setting-toggle"></div>
                 </div>
-                <div class="userSettings_content-settings-setting setting-inactiveAudio">
+                <div class="userSettings_content-settings-setting setting-country">
                     <ul class="userSettings_content-settings-setting-select">
-                        <li class="inactiveAudioSetting-muteAll">Inactive window: Audio -- Mute all sounds</li>
-                        <li class="inactiveAudioSetting-onlyNotifs">Inactive window: Audio -- Only play notifications</li>
-                        <li class="inactiveAudioSetting-playAll">Inactive window: Audio  -- Play all sounds</li>
+                        <li class="countrySetting-unset">Country: Select in the list</li>
+                        <li class="countrySetting-COUNTRY_CODE">Country: COUNTRY_NAME</li>
                     </ul>
                     <div class="userSettings_content-settings-setting-toggle"></div>
                 </div>
@@ -127,6 +139,14 @@
                     <div class="userSettings_content-settings-setting-label">Notifications</div>
                     <input id="notifVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= notifVolume %>" step="1"></input>
                     <label for="notifVolume"><%= sfxVolume %></label>
+                </div>
+                <div class="userSettings_content-settings-setting setting-inactiveAudio">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="inactiveAudioSetting-muteAll">Inactive window: Audio -- Mute all sounds</li>
+                        <li class="inactiveAudioSetting-onlyNotifs">Inactive window: Audio -- Only play notifications</li>
+                        <li class="inactiveAudioSetting-playAll">Inactive window: Audio  -- Play all sounds</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
                 </div>
             </div>
             <% } else { %>

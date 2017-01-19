@@ -6,17 +6,13 @@ define([
     "views/screen",
     "text!templates/templ_rulesSelect.ejs"
 ], function Screen_RulesSelect ($, _, Backbone, _$, Screen, Templ_RulesSelect) {
-    var RULES       = "open|random|elemental|sameWall|same|suddenDeath|plus|trade";
-    var TRADE_RULES = "none|one|difference|direct|all";
+    const RULES       = "open|random|elemental|sameWall|same|suddenDeath|plus|trade";
+    const TRADE_RULES = "none|one|difference|direct|all";
 
     return Screen.extend({
-        id        : "screen_rulesSelect",
-
-        // Our template for the line of statistics at the bottom of the app.
-        template  : _.template(Templ_RulesSelect),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events    : {
+        id       : "screen_rulesSelect",
+        template : _.template(Templ_RulesSelect),
+        events   : {
             "click .rulesSelect_content-rules-rule:not(.rule-trade):not(.is--disabled)" : function (e) {
                 if (this.readOnly) {
                     e.preventDefault();
@@ -103,7 +99,6 @@ define([
         this.toggleRule("random", false);
         this.toggleRule("elemental", false);
         this.toggleRule("suddenDeath", false);
-        this.setAvailableRules(_$.state.opponent);
 
         if (this.readOnly) {
             this.$(".rulesSelect_content-rules-rule").addClass("is--readOnly");
@@ -146,7 +141,7 @@ define([
 
             if (_$.ui.screen.id !== this.id) {
                 _$.audio.audioEngine.playSFX("gameGain");
-                _$.ui.screen.info(null, {
+                _$.ui.screen.info({
                     titleBold    : "Rules",
                     titleRegular : "updated",
                     msg          : _$.state.opponent.name + " has updated the rules.",
@@ -161,17 +156,52 @@ define([
         var albumSizeMin = opponent ? _.min([albumSize, opponent.albumSize]) : albumSize;
         var albumSizeMax = opponent ? _.max([albumSize, opponent.albumSize]) : albumSize;
 
+        if (albumSizeMin < 5) {
+            _$.app.track("send", "event", {
+                eventCategory : "notEnoughCards",
+                dimension0    : _$.state.user.get("difficulty"),
+                metric0       : JSON.stringify(_$.state.user.get("gameStats"))
+            });
+
+            this.disableSetting(".rule-random", ".rulesSelect_content-rules-rule-toggle");
+            _$.audio.audioEngine.playSFX("uiError");
+
+            if (opponent && opponent.albumSize < 5) {
+                _$.ui.screen.info({
+                    titleBold    : "Not enough ",
+                    titleRegular : "cards",
+                    msg          : "Your opponent doesn't have enough cards to play.",
+                    btnMsg       : "Return to title screen",
+                    action       : _$.ui.screen.closePrompt.bind(_$.ui.screen, transitionOut.bind(_$.ui.screen, "title"))
+                });
+            } else {
+                _$.ui.screen.choice({
+                    titleBold    : "Not enough ",
+                    titleRegular : "cards",
+                    msg          : "You must own at least 5 cards to play.",
+                    btn1Msg      : "Reset my album card",
+                    action1      : _$.ui.screen.closePrompt.bind(_$.ui.screen, _$.ui.screen.transitionOut.bind(_$.ui.screen, "userSettings")),
+                    btn2Msg      : "Return to title screen",
+                    action2      : _$.ui.screen.closePrompt.bind(_$.ui.screen, _$.ui.screen.transitionOut.bind(_$.ui.screen, "title"))
+                });
+            }
+        }
+
         if (albumSizeMin < 6) {
-            this.$(".tradeRule-one").addClass("is--disabled");
+            this.tradeDropdown.disableOption(".tradeRule-one");
         }
 
         if (albumSizeMin < 11) {
-            this.$(".tradeRule-difference, .tradeRule-direct, .tradeRule-all").addClass("is--disabled");
+            this.tradeDropdown.disableOption(".tradeRule-difference");
+            this.tradeDropdown.disableOption(".tradeRule-direct");
+            this.tradeDropdown.disableOption(".tradeRule-all");
         }
 
         if (this.initialized) {
-            this.tradeDropdown.validitateCurrentOption();
+            this.tradeDropdown.validitateCurrentOption(false, true);
         }
+
+        this.updateRules();
     }
 
     function toggleRule (ruleName, state) {
@@ -205,6 +235,11 @@ define([
         this.$(".rulesSelect_content-rules-rule.is--off").each(function () {
             ruleName = this.className.match(RULES)[0];
             rules[ruleName] = false;
+        });
+
+        this.$(".rulesSelect_content-rules-rule.is--disabled").each(function () {
+            ruleName = this.className.match(RULES)[0];
+            delete rules[ruleName];
         });
 
         tradeRule      = this.tradeDropdown.currentOption[0].className.replace("tradeRule-", "");
@@ -249,15 +284,17 @@ define([
         tl.call(() => {
             this.$(".rulesSelect_header").slideDown(500);
         });
-        tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
+        tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, "+=0.5");
         tl.call(() => {
             if (!this.initialized) {
                 this.initialized = true;
+
                 if (this.readOnly) {
                     _$.events.on("getRules", this.setOpponentRules, this);
                     _$.comm.socketManager.emit("getRules");
                 }
-                this.updateRules();
+
+                this.setAvailableRules(_$.state.opponent);
             }
 
             if (!this.$(".rule-random").hasClass("is--on")) {
@@ -265,7 +302,7 @@ define([
             }
             
             _$.events.trigger("startUserEvents");
-        });
+        }, null, [], "-=0.5");
 
         return this;
     }
@@ -302,9 +339,9 @@ define([
     }
 
     function showHelp (msgName, asIs) {
-        var defaultMsg = "Choose the game's rules.";
+        var defaultMsg = "Choose the duel's rules.";
         if (_$.state.room) {
-            defaultMsg += " Only the player who created the room can set them.";
+            defaultMsg += " Only the player hosting the duel can set them.";
         }
 
         var text;
@@ -337,7 +374,8 @@ define([
                     break;
                 case "suddenDeath":
                     text  = "Any match that ends in a draw will be restarted.<br>";
-                    text += "Your deck for this new match will consist of the cards you had control over at the end of the previous game.";
+                    text += "Your deck for this new match will consist of the cards you had control over at the end of the previous round.<br>";
+                    text += "The duel will end in a draw after 5 rounds.<br>";
                     break;
                 case "plus":
                     text  = "If the ranks of the card you place have the same total when added to the ranks on the adjacent sides<br>";
@@ -357,7 +395,7 @@ define([
                     text += "You and your opponent must have at least 11 cards to choose this trade mode.";
                     break;
                 case "direct":
-                    text  = "The players take the cards they have captured at the end of the game.<br>";
+                    text  = "The players take the cards they have captured at the end of the duel.<br>";
                     text += "This also applies in case of a draw. You must have at least 11 cards to choose this trade mode.";
                     break;
                 case "all":

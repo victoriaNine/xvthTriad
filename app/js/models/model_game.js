@@ -38,7 +38,8 @@ define([
             computer      : null,
             turnNumber    : -1,
             role          : null,
-            roundNumber   : 0
+            roundNumber   : 0,
+            isRanked      : false
         },
 
         initialize,
@@ -101,18 +102,20 @@ define([
                 this.set({ players :
                     {
                         user     : new Model_Player({
-                            type   : "human",
-                            user   : _$.state.user,
-                            name   : _$.state.user.get("name"),
-                            avatar : _$.state.user.get("avatar"),
-                            deck   : userDeck
+                            type       : "human",
+                            user       : _$.state.user,
+                            name       : _$.state.user.get("name"),
+                            avatar     : _$.state.user.get("avatar"),
+                            rankPoints : _$.state.user.get("rankPoints"),
+                            deck       : userDeck
                         }),
                         opponent : new Model_Player({
-                            type   : "human",
-                            user   : opponent,
-                            name   : opponent.name,
-                            avatar : opponent.avatar,
-                            deck   : opponentDeck
+                            type       : "human",
+                            user       : opponent,
+                            name       : opponent.name,
+                            avatar     : opponent.avatar,
+                            rankPoints : opponent.rankPoints,
+                            deck       : opponentDeck
                         })
                     }
                 });
@@ -436,15 +439,39 @@ define([
             card.set("position", null);
         });
 
+        var userElo, opponentElo, elo, odds;
+        
+        if (this.get("isRanked")) {
+            userElo     = this.get("players").user.get("rankPoints");
+            opponentElo = this.get("players").opponent.get("rankPoints");
+            elo         = _$.utils.getElo();
+            odds        = elo.expectedScore(userElo, opponentElo);
+        }
+
         if (this.get("players").user.get("points") > this.get("players").opponent.get("points")) {
             this.set("winner", this.get("players").user);
             _$.state.user.get("gameStats").won++;
+            if (this.get("isRanked")) {
+                _$.state.user.get("gameStats").wonRanked++;
+                _$.state.user.set("rankPoints", elo.newRating(odds, 1, userElo));
+            }
         } else if (this.get("players").opponent.get("points") > this.get("players").user.get("points")) {
             this.set("winner", this.get("players").opponent);
             _$.state.user.get("gameStats").lost++;
+            if (this.get("isRanked")) {
+                _$.state.user.get("gameStats").lostRanked++;
+                _$.state.user.set("rankPoints", elo.newRating(odds, 0, userElo));
+            }
         } else if (this.get("players").user.get("points") === this.get("players").opponent.get("points")) {
             this.set("winner", "draw");
-            _$.state.user.get("gameStats").draw++;
+
+            if (!this.get("rules").suddenDeath) {
+                _$.state.user.get("gameStats").draw++;
+                if (this.get("isRanked")) {
+                    _$.state.user.get("gameStats").drawRanked++;
+                    _$.state.user.set("rankPoints", elo.newRating(odds, 0.5, userElo));
+                }
+            }
         }
 
         if (this.get("winner") === "draw" && this.get("rules").suddenDeath) {

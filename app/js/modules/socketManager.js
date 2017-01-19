@@ -2,9 +2,18 @@ define(["underscore", "global"], function socketManager (_, _$) {
     var socket = require("socketIO");
 
     class SocketManager {
-        constructor () {
+        init () {
             this.socket = socket({ timeout: 15 * 60 * 1000 });
             this.client = this.socket.io;
+            this.callbackQueue = {};
+
+            this.socket.on("connect", (msgFromServer) => {
+                _$.events.trigger("connect", msgFromServer);
+            });
+
+            this.socket.on("in:socketReady", (msgFromServer) => {
+                _$.events.trigger("socketReady", msgFromServer);
+            });
 
             // Connection errors
             this.socket.on("disconnect", (reason) => {
@@ -14,10 +23,11 @@ define(["underscore", "global"], function socketManager (_, _$) {
                     }
 
                     if (reason === "kick:dblConnection") {
-                        _$.events.trigger("showError", {
+                        _$.audio.audioEngine.playSFX("menuOpen");
+                        _$.ui.screen.error({
                             msg    : "Another connection to this account has been detected.",
                             btnMsg : "Refresh",
-                            action : window.location.reload.bind(window.location)
+                            action : "refresh"
                         });
                     }
 
@@ -28,10 +38,11 @@ define(["underscore", "global"], function socketManager (_, _$) {
                     _$.comm.sessionManager.logout("disconnect");
                 }
 
-                _$.events.trigger("showError", {
+                _$.audio.audioEngine.playSFX("menuOpen");
+                _$.ui.screen.error({
                     msg    : "Connection lost",
                     btnMsg : "Refresh",
-                    action : window.location.reload.bind(window.location)
+                    action : "refresh"
                 });
             });
 
@@ -40,10 +51,11 @@ define(["underscore", "global"], function socketManager (_, _$) {
                     _$.comm.sessionManager.logout("connect_timeout");
                 }
 
-                _$.events.trigger("showError", {
+                _$.audio.audioEngine.playSFX("menuOpen");
+                _$.ui.screen.error({
                     msg    : "Connection timed out",
                     btnMsg : "Refresh",
-                    action : window.location.reload.bind(window.location)
+                    action : "refresh"
                 });
             });
 
@@ -94,7 +106,8 @@ define(["underscore", "global"], function socketManager (_, _$) {
                     msg = "The other player left the game.";
                 }
 
-                _$.events.trigger("showError", {
+                _$.audio.audioEngine.playSFX("menuOpen");
+                _$.ui.screen.error({
                     msg    : msg,
                     btnMsg : _$.state.user.isInLounge ? "Return to the lounge room" : null, // Will use the default value instead
                     action : _$.state.user.isInLounge ? "lounge" : null                     // Will use the defaul value instead
@@ -150,10 +163,43 @@ define(["underscore", "global"], function socketManager (_, _$) {
 
         emit (eventName, data = {}, callback = null) {
             if (_.isFunction(callback)) {
-                this.socket.once("in:" + eventName, callback);
+                this.socket.on("in:" + eventName, callback);
             }
 
             this.socket.emit("out:" + eventName, data);
+        }
+
+        emitBatch (eventName, data = {}, callback = null) {
+            var self = this;
+
+            if (_.isFunction(callback)) {
+                if (!this.callbackQueue["in:" + eventName]) {
+                    this.callbackQueue["in:" + eventName] = {};
+                }
+
+                var callbackId = _$.utils.getUID();
+                this.callbackQueue["in:" + eventName][callbackId] = callback;
+                this.socket.on("in:" + eventName, checkCallback);
+
+                data = { type: "get", callbackId, msg: data };
+            } else {
+                data = { type: "post", callbackID: null, msg: data };
+            }
+
+            this.socket.emit("out:" + eventName, data);
+
+            function checkCallback (response) {
+                if (response.callbackId === callbackId) {
+                    self.socket.off("in:" + eventName, checkCallback);
+                    callback(response);
+
+                    delete self.callbackQueue["in:" + eventName][callbackId];
+
+                    if (!_.keys(self.callbackQueue["in:" + eventName]).length) {
+                        delete self.callbackQueue["in:" + eventName];
+                    }
+                }
+            }
         }
     }
 

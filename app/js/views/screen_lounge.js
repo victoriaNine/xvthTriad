@@ -6,16 +6,12 @@ define([
     "views/screen",
     "text!templates/templ_lounge.ejs"
 ], function Screen_Lounge ($, _, Backbone, _$, Screen, Templ_Lounge) {
-    // https://gist.github.com/dperini/729294
     const URL_REGEXP = /((https?):\/\/)*([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/gi;
 
     return Screen.extend({
         id        : "screen_lounge",
-
-        // Our template for the line of statistics at the bottom of the app.
         template  : _.template(Templ_Lounge),
-
-        events : {
+        events    : {
             "focus .lounge_log-chatbar-input" : function () {
                 _$.audio.audioEngine.playSFX("uiInput");
             },
@@ -123,7 +119,9 @@ define([
         sendChallenge,
         receiveChallenge,
         challengeCancelled,
-        startChallenge
+        startChallenge,
+        addLeaveListener,
+        removeLeaveListener
     });
 
     function initialize (options) {
@@ -143,7 +141,7 @@ define([
         this.sentMessages      = [];
         this.sentMessagesIndex = -1;
         this.userCardId        = null;
-
+        this.onLeaveListeners  = {};
         this.userTempl         = this.$(".lounge_userlist-element-user")[0].outerHTML;
         this.msgTempl          = this.$(".lounge_log-messages-message-user")[0].outerHTML;
         this.serviceMsgTempl   = this.$(".lounge_log-messages-message-info")[0].outerHTML;
@@ -153,6 +151,11 @@ define([
         this.$(".lounge_log-logo").append(logo);
 
         this.writeWelcomeMessage();
+        this.userlist._deletedUser = {
+            userId : "_deletedUser",
+            name   : "Deleted user",
+            avatar : _$.assets.get("img.avatars.user_default").src,
+        };
 
         _$.comm.socketManager.emit("getLoungeUserlist", null, (data) => {
             _$.debug.log(this.userInfo.userId, "getLoungeUserlist", data);
@@ -164,9 +167,11 @@ define([
 
             _$.comm.socketManager.emit("getLoungeMessageHistory", null, (data) => {
                 _$.debug.log(this.userInfo.userId, "getLoungeMessageHistory", data);
-                var messageHistory   = data.msg;
-                var promises         = [];
+                var messageHistory = data.msg;
+                var promises       = [];
+                var promise;
                 var userInfo;
+                var userDoc;
 
                 // Users now gone who have messages in the history will need to have their info loaded from the database;
                 var previousUsersIds = [];
@@ -185,19 +190,24 @@ define([
                 previousUsersIds = _.difference(_.compact(_.uniq(previousUsersIds)), _.keys(this.userlist));
 
                 _.each(previousUsersIds, (userId) => {
-                    promises.push(_$.comm.dbManager.get(userId).then((userDoc) => {
-                        userInfo = {
-                            userId     : userId,
-                            name       : userDoc.name,
-                            avatar     : userDoc.profile.avatar,
-                            albumSize  : userDoc.profile.album.length,
-                            isTyping   : false,
-                            opponentId : null
-                        };
+                    promise = new Promise((resolve, reject) => {
+                        _$.comm.socketManager.emitBatch("getUser", userId, (response) => {
+                            userDoc  = response.msg;
+                            userInfo = {
+                                userId     : userId,
+                                name       : userDoc.name,
+                                avatar     : userDoc.profile.avatar,
+                                albumSize  : userDoc.profile.album.length,
+                                isTyping   : false,
+                                opponentId : null
+                            };
 
-                        this.userlist[userId] = userInfo;
-                        return userInfo;
-                    }));
+                            this.userlist[userId] = userInfo;
+                            resolve(userInfo);
+                        });
+                    });
+
+                    promises.push(promise);
                 });
 
                 // Once we have gathered all necessary information about the users in the lounge
@@ -207,6 +217,10 @@ define([
                         if (message.serviceMsg) {
                             this.writeServiceMessage(message);
                         } else {
+                            if (!this.userlist[message.userId]) {
+                                message.userId = "_deletedUser";
+                            }
+
                             this.writeMessage(message, true);
                         }
                     });
@@ -219,11 +233,12 @@ define([
                         // We notify the game server they should be added to the lounge's userlist
                         if (!_$.state.user.isInLounge) {
                             _$.comm.socketManager.emit("joinLounge", this.userInfo, (data) => {
-                                this.loungeName                     = data.msg;
+                                this.loungeName                     = data.msg.name;
                                 this.userlist[this.userInfo.userId] = this.userInfo;
                                 this.addUserToList(this.userInfo);
                                 _$.state.user.isInLounge = true;
 
+                                this.$(".lounge_userlist-element-group-count").text(data.msg.onlineCount);
                                 // We add the UI
                                 this.add();
                             });
@@ -253,17 +268,39 @@ define([
 
         function setupListeners () {
             _$.events.on("updateUserlist", (event, data) => {
-                var userInfo = data.msg.userInfo;
                 _$.debug.log(this.userInfo.userId, event.name, data);
+                var userInfo = data.msg.userInfo;
+                var userId   = data.msg.userId;
                 
                 if (data.msg.type === "userJoined") {
-                    this.userlist[userInfo.userId] = userInfo;
+                    this.userlist[userId] = userInfo;
                     this.addUserToList(userInfo);
+
+                    this.$(".lounge_userlist-element-group-count").text(data.msg.onlineCount);
                 } else if (data.msg.type === "userLeft") {
-                    this.removeUserFromList(data.msg.userId);
-                    delete this.userlist[data.msg.userId];
+                    // We check for leave listeners for that user
+                    if (this.onLeaveListeners[userId] && this.onLeaveListeners[userId].length) {
+                        var newIndex = 0;
+                        _.each(this.onLeaveListeners[userId], (listener, index) => {
+                            listener.handler.call(listener.context, data);
+                            if (listener.once) {
+                                this.onLeaveListeners[userId].splice(newIndex, 1);
+                            } else {
+                                newIndex++;
+                            }
+                        });
+
+                        if (!this.onLeaveListeners[userId].length) {
+                            delete this.onLeaveListeners[userId];
+                        }
+                    }
+
+                    this.removeUserFromList(userId);
+                    delete this.userlist[userId];
+
+                    this.$(".lounge_userlist-element-group-count").text(data.msg.onlineCount);
                 } else if (data.msg.type === "userUpdate") {
-                    this.userlist[userInfo.userId] = userInfo;
+                    this.userlist[userId] = userInfo;
                 }
             });
 
@@ -308,11 +345,11 @@ define([
         _$.events.trigger("stopUserEvents");
         
         var tl = new TimelineMax();
-        tl.from(this.$(".lounge_main"), 0.75, { opacity : 0, scale: 1.25, clearProps: "all" });
-        tl.from(this.$(".lounge_log-logo"), 1, { opacity : 0, scale: 0.85, clearProps: "all" }, 0);
-        tl.to(this.$(".lounge_log-messages-scroll")[0], 1, { scrollTop: this.$(".lounge_log-messages-scroll")[0].scrollHeight, ease: Expo.easeInOut }, 0.5);
+        tl.from(this.$(".lounge_main"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
+        tl.from(this.$(".lounge_log-logo"), 0.5, { opacity : 0, scale: 0.85, clearProps: "all" }, 0);
+        tl.to(this.$(".lounge_log-messages-scroll")[0], 1, { scrollTop: this.$(".lounge_log-messages-scroll")[0].scrollHeight, ease: Expo.easeInOut }, 0.25);
         if (!_$.comm.sessionManager.getSession()) {
-            tl.call(() => { this.$(".lounge_notLoggedIn").addClass("is--active"); }, [], null, "-=1");
+            tl.call(() => { this.$(".lounge_notLoggedIn").addClass("is--active"); }, [], null, 0.4);
         }
         tl.call(() => {
             if (_$.comm.sessionManager.getSession()) {
@@ -340,8 +377,8 @@ define([
         this.checkBGMCrossfade(nextScreen);
         
         var tl = new TimelineMax();
-        tl.to(this.$(".lounge_log-logo"), 1, { opacity : 0, scale: 0.85 });
-        tl.to(this.$(".lounge_main"), 0.75, { opacity : 0, scale: 1.25 }, 0.25);
+        tl.to(this.$(".lounge_log-logo"), 0.5, { opacity : 0, scale: 0.85 });
+        tl.to(this.$(".lounge_main"), 0.5, { opacity : 0, scale: 1.25 }, 0.25);
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             if (!_$.state.room) {
@@ -388,14 +425,10 @@ define([
         } else {
             this.$(".lounge_userlist-scroll .group-all").after(dom);
         }
-
-        this.$(".lounge_userlist-element-group-count").text(++this.onlineCount);
     }
 
     function removeUserFromList (userId) {
         this.$(".user-" + userId).remove();
-        this.$(".lounge_userlist-element-group-count").text(--this.onlineCount);
-
         if (userId === this.userCardId) {
             this.closeUserCard();
         }
@@ -448,12 +481,8 @@ define([
         }
 
         var dateData   = new Date(msgData.date);
-        var date       = dateData.getFullYear() + "/" +
-                         ((dateData.getMonth() + 1) < 10 ? "0" + (dateData.getMonth() + 1) : (dateData.getMonth() + 1)) + "/" +
-                         (dateData.getDate() < 10 ? "0" + dateData.getDate() : dateData.getDate());
-        var time       = (dateData.getHours() < 10 ? "0" + dateData.getHours() : dateData.getHours()) + ":" +
-                         (dateData.getMinutes() < 10 ? "0" + dateData.getMinutes() : dateData.getMinutes()) + ":" +
-                         (dateData.getSeconds() < 10 ? "0" + dateData.getSeconds() : dateData.getSeconds());
+        var date       = _$.utils.getFormattedDate(msgData.date).date;
+        var time       = _$.utils.getFormattedDate(msgData.date, { seconds: true }).time;
         var parsedDate = date + " @ " + time;
 
         dom.find(".lounge_log-messages-message-user-avatar-img").css("backgroundImage", "url(" + userInfo.avatar + ")");
@@ -464,6 +493,10 @@ define([
         if (isCurrentUser) {
             dom.addClass("is--currentUser");
         } else {
+            if (userInfo.userId === "_deletedUser") {
+                dom.addClass("is--deletedUser");
+            }
+
             if (!isFromHistory && ((_$.state.user.get("notifyMode") === "always") ||
                 (_$.state.user.get("notifyMode") === "onlyMentions" && userMentions) ||
                 (_$.state.user.get("notifyMode") === "onlyInactive" && !window.document.hasFocus()))
@@ -542,11 +575,11 @@ define([
 
         if (msgData.type === "gameStart") {
             if (isEmitter) {
-                domString = "<span class='weight-bold color-lightBlue'>You</span> have started a game with <span class='weight-bold'>" + receiverName + "</span>.";
+                domString = "<span class='weight-bold color-lightBlue'>You</span> have started a duel with <span class='weight-bold'>" + receiverName + "</span>.";
             } else if (isReceiver) {
-                domString = "<span class='weight-bold color-lightBlue'>You</span> have started a game with <span class='weight-bold'>" + emitterName + "</span>.";
+                domString = "<span class='weight-bold color-lightBlue'>You</span> have started a duel with <span class='weight-bold'>" + emitterName + "</span>.";
             } else {
-                domString = "<span class='weight-bold'>" + emitterName + "</span> has challenged <span class='weight-bold'>" + receiverName + "</span> in a game.";
+                domString = "<span class='weight-bold'>" + emitterName + "</span> has challenged <span class='weight-bold'>" + receiverName + "</span> in a duel.";
             }
         }
 
@@ -557,15 +590,15 @@ define([
             if (emitterPoints === receiverPoints) {
                 roundsString = rounds === 1 ? "." : " (" + rounds + " rounds).";
                 if (isEmitter) {
-                    domString = "<span class='weight-bold color-lightBlue'>Your</span> game with <span class='weight-bold'>" + receiverName +
+                    domString = "<span class='weight-bold color-lightBlue'>Your</span> duel with <span class='weight-bold'>" + receiverName +
                                 "</span> has ended in a tie" + roundsString;
                 } else if (isReceiver) {
-                    domString = "<span class='weight-bold color-lightBlue'>Your</span> game with <span class='weight-bold'>" + emitterName +
+                    domString = "<span class='weight-bold color-lightBlue'>Your</span> duel with <span class='weight-bold'>" + emitterName +
                                 "</span> has ended in a tie" + roundsString;
                 } else {
                     domString = "<span class='weight-bold'>" + emitterName + "</span> and <span class='weight-bold'>" +
                                 receiverName + "</span>" + (receiverName.charAt(receiverName.length - 1) === "s" ? "'" : "'s") +
-                                " game has ended in a tie" + roundsString;
+                                " duel has ended in a tie" + roundsString;
                 }
             }
 
@@ -607,19 +640,19 @@ define([
 
             if (isEmitter || isReceiver) {
                 if (isEmitter && emitterHasAborted) {
-                    domString = "<span class='weight-bold color-lightBlue'>You</span> have left the game against <span class='weight-bold'>" + receiverName + "</span>.";
+                    domString = "<span class='weight-bold color-lightBlue'>You</span> have left the duel against <span class='weight-bold'>" + receiverName + "</span>.";
                 } else if (isEmitter && receiverHasAborted) {
-                    domString = "<span class='weight-bold'>" + receiverName + "</span> has left the game <span class='weight-bold color-lightBlue'>you</span> were in.";
+                    domString = "<span class='weight-bold'>" + receiverName + "</span> has left the duel <span class='weight-bold color-lightBlue'>you</span> were in.";
                 } else if (isReceiver && emitterHasAborted) {
-                    domString = "<span class='weight-bold'>" + emitterName + "</span> has left the game <span class='weight-bold color-lightBlue'>you</span> were in.";
+                    domString = "<span class='weight-bold'>" + emitterName + "</span> has left the duel <span class='weight-bold color-lightBlue'>you</span> were in.";
                 } else if (isReceiver && receiverHasAborted) {
-                    domString = "<span class='weight-bold color-lightBlue'>You</span> have left the game against <span class='weight-bold'>" + emitterName + "</span>.";
+                    domString = "<span class='weight-bold color-lightBlue'>You</span> have left the duel against <span class='weight-bold'>" + emitterName + "</span>.";
                 }
             } else {
                 if (emitterHasAborted) {
-                    domString = "<span class='weight-bold'>" + emitterName + "</span> has left the game against <span class='weight-bold'>" + receiverName + "</span>.";
+                    domString = "<span class='weight-bold'>" + emitterName + "</span> has left the duel against <span class='weight-bold'>" + receiverName + "</span>.";
                 } else if (receiverHasAborted) {
-                    domString = "<span class='weight-bold'>" + receiverName + "</span> has left the game against <span class='weight-bold'>" + emitterName + "</span>.";
+                    domString = "<span class='weight-bold'>" + receiverName + "</span> has left the duel against <span class='weight-bold'>" + emitterName + "</span>.";
                 }
             }
 
@@ -685,8 +718,13 @@ define([
 
         this.$(".user-" + userId).addClass("is--selected");
         this.$(".lounge_userlist-userCard-header-avatar-img").css("backgroundImage", "url(" + userInfo.avatar + ")");
-        this.$(".lounge_userlist-userCard-header-name").text(userInfo.name);
-        this.$(".lounge_userlist-userCard-header-userId").text(userId);
+        this.$(".lounge_userlist-userCard-header-info-name").text(userInfo.name);
+        this.$(".lounge_userlist-userCard-header-info-userId").text(userId);
+
+        if (userInfo.country) {
+            this.$(".lounge_userlist-userCard-header-info-flag").addClass("flag-icon flag-icon-" + _.lowerCase(userInfo.country));
+            this.$(".lounge_userlist-userCard-header-info").addClass("has--flag");
+        }
 
         TweenMax.killChildTweensOf(this.$(".lounge_userlist-userCard")); 
         var tl = new TimelineMax();
@@ -720,6 +758,14 @@ define([
                 this.$(".lounge_userlist-userCard-header-avatar-img").css("backgroundImage", "");
                 this.$(".lounge_userlist-userCard-header-name").text("");
                 this.$(".lounge_userlist-userCard-header-userId").text("");
+                if (this.$(".lounge_userlist-userCard-header-info").hasClass("has--flag")) {
+                    this.$(".lounge_userlist-userCard-header-info").removeClass("has--flag");
+                    _.each(this.$(".lounge_userlist-userCard-header-info-flag")[0].classList, (className) => {
+                        if (className.match("flag-icon-")) {
+                            this.$(".lounge_userlist-userCard-header-info-flag").removeClass(className);
+                        }
+                    });
+                }
             }
         });
     }
@@ -738,9 +784,9 @@ define([
             _$.debug.log(this.userInfo.userId, "sendChallenge", response);
             if (response.status === "ok") {
                 _$.audio.audioEngine.playSFX("challengeSent");
-                _$.events.on("updateUserlist", checkOpponentLeft, this);
+                this.addLeaveListener(opponentId, _onOpponentLeft, this);
 
-                this.info(null, {
+                this.info({
                     titleBold    : "Please",
                     titleRegular : "wait",
                     msg          : "Waiting for " + opponentName + " to reply...",
@@ -760,7 +806,7 @@ define([
                     reasonMsg = opponentName + " currently cannot receive requests.";
                 }
 
-                this.info(null, {
+                this.info({
                     titleBold    : "Player",
                     titleRegular : "unavailable",
                     msg          : reasonMsg
@@ -770,14 +816,13 @@ define([
 
         function onReply (event, data) {
             _$.debug.log(this.userInfo.userId, event.name, data);
-            _$.events.off("updateUserlist", checkOpponentLeft, this);
-
             if (data.msg.reply === "accept") {
                 this.userInfo.opponentId = opponentId;
                 _$.state.opponent        = _.pick(this.userlist[this.userInfo.opponentId], _.keys(_$.state.user.getPlayerInfo()));
 
                 _$.events.once("setupChallengeRoom", (event, data) => {
                     _$.debug.log(this.userInfo.userId, event.name, data);
+                    this.removeLeaveListener(opponentId, _onOpponentLeft);
 
                     _$.audio.audioEngine.playNotif("challengeStart");
                     this.closePrompt();
@@ -787,8 +832,9 @@ define([
                 _$.comm.socketManager.emit("setupChallengeRoom", { with: opponentId });
             } else if (data.msg.reply === "decline") {
                 _$.audio.audioEngine.playNotif("gameGain");
+                this.removeLeaveListener(opponentId, _onOpponentLeft);
 
-                this.info(null, {
+                this.info({
                     titleBold    : "Challenge",
                     titleRegular : "declined",
                     msg          : opponentName + " has declined your challenge request.",
@@ -798,10 +844,9 @@ define([
         }
 
         function onCancel () {
+            _$.events.off("receiveChallengeReply");
+            this.removeLeaveListener(opponentId, _onOpponentLeft);
             _$.comm.socketManager.emit("cancelChallenge", { to: opponentId }, (response) => {
-                _$.events.off("receiveChallengeReply");
-                _$.events.off("updateUserlist", checkOpponentLeft, this);
-
                 if (response.status === "ok") {
                     this.closePrompt();
                 } else {
@@ -809,47 +854,41 @@ define([
                 }
             });
         }
-
-        function checkOpponentLeft (event, data) {
-            if (data.msg.type === "userLeft" && data.msg.userId === opponentId) {
-                _$.events.off("updateUserlist", checkOpponentLeft, this);
-                this.challengeCancelled({ reason: "otherPlayerLeft" }, opponentName);
-            }
-        }
     }
 
     function receiveChallenge (challengeData) {
         _$.audio.audioEngine.playNotif("gameStart");
-        var opponentName = this.userlist[challengeData.from].name;
+        var opponentId   = challengeData.from;
+        var opponentName = this.userlist[opponentId].name;
 
-        this.choice(null, {
+        this.choice({
             titleBold    : "Challenge",
             titleRegular : "request!",
-            msg          : opponentName + " challenges you in a game.",
+            msg          : opponentName + " challenges you in a duel.",
             btn1Msg      : "Accept",
             action1      : onAccept.bind(this),
             btn2Msg      : "Decline",
             action2      : onDecline.bind(this)
         });
 
-        _$.events.on("updateUserlist", checkOpponentLeft, this);
+        this.addLeaveListener(opponentId, _onOpponentLeft, this);
         _$.events.once("challengeCancelled", (event, data) => {
             _$.debug.log(this.userInfo.userId, event.name, data);
-            _$.events.off("updateUserlist", checkOpponentLeft, this);
-
+            this.removeLeaveListener(opponentId, _onOpponentLeft);
             this.challengeCancelled(data.msg);
         });
 
         function onAccept () {
-            this.userInfo.opponentId = challengeData.from;
+            this.userInfo.opponentId = opponentId;
             _$.state.opponent        = _.pick(this.userlist[this.userInfo.opponentId], _.keys(_$.state.user.getPlayerInfo()));
 
-            _$.events.off("updateUserlist", checkOpponentLeft, this);
             _$.events.once("setupChallengeRoom", onRoomReady, this);
             _$.comm.socketManager.emit("sendChallengeReply", {
-                to    : challengeData.from,
+                to    : opponentId,
                 reply : "accept"
             }, (response) => {
+                this.removeLeaveListener(opponentId, _onOpponentLeft);
+
                 if (response.status !== "ok") {
                     _$.events.off("setupChallengeRoom", onRoomReady, this);
                     this.challengeCancelled(response.msg);
@@ -858,10 +897,9 @@ define([
         }
 
         function onDecline () {
-            _$.events.off("updateUserlist", checkOpponentLeft, this);
-
+            this.removeLeaveListener(opponentId, _onOpponentLeft);
             _$.comm.socketManager.emit("sendChallengeReply", {
-                to    : challengeData.from,
+                to    : opponentId,
                 reply : "decline"
             }, (response) => {
                 if (response.status === "ok") {
@@ -880,13 +918,6 @@ define([
             this.closePrompt();
             this.startChallenge(data.msg);
         }
-
-        function checkOpponentLeft (event, data) {
-            if (data.msg.type === "userLeft" && data.msg.userId === challengeData.from) {
-                _$.events.off("updateUserlist", checkOpponentLeft, this);
-                this.challengeCancelled({ reason: "otherPlayerLeft" }, opponentName);
-            }
-        }
     }
 
     function challengeCancelled (cancelData, opponentName) {
@@ -904,7 +935,7 @@ define([
             reasonMsg = opponentName + " has disconnected.";
         }
 
-        this.info(null, {
+        this.info({
             titleBold    : "Request",
             titleRegular : "cancelled",
             msg          : reasonMsg,
@@ -915,6 +946,37 @@ define([
     function startChallenge (roomSettings) {
         _$.state.room = roomSettings;
         this.transitionOut("rulesSelect", { readOnly: _$.state.room.mode === "join" });
+    }
+
+    function addLeaveListener (userId, handlerFn, once, context) {
+        if (!this.onLeaveListeners[userId]) {
+            this.onLeaveListeners[userId] = [];
+        }
+
+        this.onLeaveListeners[userId].push({
+            handler : handlerFn,
+            once    : once,
+            context : context || this
+        });
+    }
+
+    function removeLeaveListener (userId, handlerFn) {
+        if (!handlerFn) {
+            delete this.onLeaveListeners[userId];
+        } else {
+            var newIndex = 0;
+            _.each(this.onLeaveListeners[userId], (listener, index) => {
+                if (listener.handler === handlerFn) {
+                    this.onLeaveListeners[userId].splice(newIndex, 1);
+                } else {
+                    newIndex++;
+                }
+            });
+        }
+    }
+
+    function _onOpponentLeft () {
+        this.challengeCancelled({ reason: "otherPlayerLeft" });
     }
 
     function _addPlayingLabel (userId, dom) {

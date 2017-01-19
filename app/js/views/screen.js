@@ -16,6 +16,7 @@ define([
             this.height             = options.height || this.dom.height();
             this.name               = _.camelCase(this.selector);
             this.onUpdate           = options.onUpdate || _.noop;
+            this.onOpen             = options.onOpen;
             this.currentOption      = null;
             this.isDisabled         = false;
 
@@ -41,6 +42,9 @@ define([
                 this.currentOption = closestValidOption;
             } else {
                 this.dom.addClass("is--active");
+                if (this.onOpen) {
+                    setTimeout(() => { this.onOpen(this); }, 200);
+                }
 
                 $(window).on("click." + this.name, (clickEvent) => {
                     if (!$(clickEvent.target).parents(this.selector).length) {
@@ -81,15 +85,23 @@ define([
             return $(option).hasClass("is--disabled") ? validOption : $(option);
         }
 
-        validitateCurrentOption (noUpdate) {
+        validitateCurrentOption (noUpdate, noCallback) {
             var closestValidOption = this.getClosestValidOption(this.currentOption);
             var isValid            = this.currentOption === closestValidOption;
 
             if (!isValid && !noUpdate) {
-                this.scrollTo(closestValidOption);
+                this.scrollTo(closestValidOption, noCallback);
             }
 
             return isValid;
+        }
+
+        disableOption (option) {
+            $(option).addClass("is--disabled");
+        }
+
+        enableOption (option) {
+            $(option).removeClass("is--disabled");
         }
     }
 
@@ -104,6 +116,7 @@ define([
         triggerGamepadAction,
         createDropdown,
         toggleSetting,
+        disableSetting,
         error,
         info,
         choice,
@@ -115,7 +128,8 @@ define([
         changeScreen,
         checkBGMCrossfade,
         checkFooterUpdate,
-        onLogout
+        onLogout,
+        fadeOut
     });
 
     function initialize (options = {}) {
@@ -124,7 +138,6 @@ define([
 
         _$.events.on("startUserEvents", _delegate, this);
         _$.events.on("stopUserEvents", _undelegate, this);
-        _$.events.on("showError", this.error, this);
         Backbone.View.prototype.initialize.call(this);
     }
 
@@ -136,8 +149,9 @@ define([
     function remove () {
         _$.events.off("startUserEvents", _delegate, this);
         _$.events.off("stopUserEvents", _undelegate, this);
-        _$.events.off("gamepad", this.triggerGamepadAction, this);
-        _$.events.off("showError", this.error, this);
+        if (_$.controls.type === "gamepad") {
+            _$.events.off("gamepad", this.triggerGamepadAction, this);
+        }
         Backbone.View.prototype.remove.call(this);
     }
 
@@ -184,14 +198,18 @@ define([
         this.delegateEvents();
         this.eventsDisabled = false;
 
-        _$.controls.gamepadManager.showCursors();
-        _$.controls.gamepadManager.updateCursorTargets();
-        _$.events.on("gamepad", this.triggerGamepadAction, this);
+        if (_$.controls.type === "gamepad") {
+            _$.controls.gamepadManager.showCursors();
+            _$.controls.gamepadManager.updateCursorTargets();
+            _$.events.on("gamepad", this.triggerGamepadAction, this);
+        }
     }
 
     function _undelegate () {
-        _$.controls.gamepadManager.hideCursors();
-        _$.events.off("gamepad", this.triggerGamepadAction, this);
+        if (_$.controls.type === "gamepad") {
+            _$.controls.gamepadManager.hideCursors();
+            _$.events.off("gamepad", this.triggerGamepadAction, this);
+        }
         this.undelegateEvents();
         this.eventsDisabled = true;
     }
@@ -208,23 +226,30 @@ define([
         }
 
         if (state) {
-            dom.removeClass("is--off").addClass("is--on");
+            dom.removeClass("is--off is--disabled").addClass("is--on");
             dom.find(toggleSelector).text("ON");
         } else {
-            dom.removeClass("is--on").addClass("is--off");
+            dom.removeClass("is--on is--disabled").addClass("is--off");
             dom.find(toggleSelector).text("OFF");
         }
     }
 
-    function error (event, options) {
+    function disableSetting (selector, toggleSelector) {
+        var dom = this.$(selector);
+
+        dom.removeClass("is--off is--on").addClass("is--disabled");
+        dom.find(toggleSelector).text("- -");
+    }
+
+    function error (options) {
         _showPrompt.call(this, _.extend(options, { type: "error" }));
     }
 
-    function info (event, options) {
+    function info (options) {
         _showPrompt.call(this, _.extend(options, { type: "info" }));
     }
 
-    function choice (event, options) {
+    function choice (options) {
         _showPrompt.call(this, _.extend(options, { type: "choice" }));
     }
 
@@ -249,7 +274,8 @@ define([
 
     function showSavePrompt (e = {}) {
         if (_$.state.user.isInGame) {
-            this.info(null, {
+            _$.audio.audioEngine.playSFX("menuOpen");
+            this.info({
                 titleBold    : "Currently",
                 titleRegular : "in-game",
                 msg          : "All unsaved progress will be lost.",
@@ -257,15 +283,14 @@ define([
             });
 
             var confirmationMessage = "All unsaved progress will be lost. Do you really wish to leave?";
-            (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
-            return confirmationMessage;                                // Gecko and WebKit
+            (e || window.event).returnValue = confirmationMessage; // Gecko and Trident
+            return confirmationMessage;                            // Gecko and WebKit
         }
     }
 
     function showAutoSavePrompt () {
         _$.audio.audioEngine.playSFX("gameGain");
-
-        this.info(null, {
+        this.info({
             titleBold    : "Autosave",
             titleRegular : "complete",
             msg          : "Your progress was saved.",
@@ -298,7 +323,8 @@ define([
     function waitForOpponent (userDeck, callback) {
         _$.comm.socketManager.emit("confirmReady", userDeck, onResponse.bind(this));
         
-        this.info(null, {
+        _$.audio.audioEngine.playSFX("menuOpen");
+        this.info({
             titleBold    : "Please",
             titleRegular : "wait",
             msg          : "Waiting for the other player to confirm...",
@@ -322,26 +348,32 @@ define([
     function checkFooterUpdate (nextScreen) {
         var tl = new TimelineMax();
 
-        if (_$.ui.screen.id === "screen_game") {
+        if (_$.ui.screen.id === "screen_title") {
+            if (!_$.ui.footer.isOpen) {
+                tl.add(_$.ui.footer.toggleMenu("show"));
+                tl.add(_$.ui.footer.toggleSocial("show"), 0.5);
+                tl.call(() => { _$.ui.footer.isOpen = true; });
+            }
+        } else if (_$.ui.screen.id === "screen_game") {
             if (nextScreen === "title") {
                 tl.to(_$.ui.footer.text, 1, { opacity: 0, x: 20 });
-                tl.add(_$.ui.footer.toggleLogo("hide"), "-=0.5");
+                tl.add(_$.ui.footer.toggleLogo("hide"), 0.5);
                 tl.call(() => { _$.ui.footer.isOpen = false; });
             } else if (nextScreen === "lounge") {
                 tl.add(_$.ui.footer.toggleLogo("hide"));
-                tl.add(_$.ui.footer.toggleMenu("show"), "-=1.5");
-                tl.add(_$.ui.footer.toggleSocial("show"), "-=1.5");
+                tl.add(_$.ui.footer.toggleMenu("show"), 0.5);
+                tl.add(_$.ui.footer.toggleSocial("show"), 1);
                 tl.call(() => { _$.ui.footer.isOpen = true; });
             }
         } else if (nextScreen === "title") {
             tl.to(_$.ui.footer.text, 1, { opacity: 0, x: 20 });
-            tl.add(_$.ui.footer.toggleSocial("hide"), "-=0.5");
-            tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
+            tl.add(_$.ui.footer.toggleSocial("hide"), 0.5);
+            tl.add(_$.ui.footer.toggleMenu("hide"), 1);
             tl.call(() => { _$.ui.footer.isOpen = false; });
         } else if (nextScreen === "game") {
             tl.add(_$.ui.footer.toggleSocial("hide"));
-            tl.add(_$.ui.footer.toggleMenu("hide"), "-=1.5");
-            tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");
+            tl.add(_$.ui.footer.toggleMenu("hide"), 0.5);
+            tl.add(_$.ui.footer.toggleLogo("show"), 1);
             tl.call(() => { _$.ui.footer.isOpen = false; });
         }
 
@@ -379,9 +411,6 @@ define([
                 } else if (nextScreen === "lounge") {
                     var Screen_Lounge = require("views/screen_lounge");
                     _$.ui.screen      = new Screen_Lounge(options);
-                } else if (nextScreen === "userSettings") {
-                    var Screen_UserSettings = require("views/screen_userSettings");
-                    _$.ui.screen            = new Screen_UserSettings(options);
                 } else if (nextScreen === "roomSelect") {
                     var Screen_RoomSelect = require("views/screen_roomSelect");
                     _$.ui.screen          = new Screen_RoomSelect(options);
@@ -391,6 +420,12 @@ define([
                 } else if (nextScreen === "cardsSelect") {
                     var Screen_CardSelect = require("views/screen_cardSelect");
                     _$.ui.screen          = new Screen_CardSelect(options);
+                } else if (nextScreen === "cardAlbum") {
+                    var Screen_CardAlbum  = require("views/screen_cardAlbum");
+                    _$.ui.screen          = new Screen_CardAlbum(options);
+                } else if (nextScreen === "userSettings") {
+                    var Screen_UserSettings = require("views/screen_userSettings");
+                    _$.ui.screen            = new Screen_UserSettings(options);
                 }
             }, true, "remove");
             this.remove();
@@ -423,7 +458,7 @@ define([
     function checkBGMCrossfade (nextScreen) {
         if (_$.ui.screen.id === "screen_game") {
             _$.events.once("startUserEvents", () => {
-                if (nextScreen === "menus") {
+                if (nextScreen === "title") {
                     _$.audio.audioEngine.setBGM("bgm.menus");
                 } else if (nextScreen === "lounge") {
                     _$.audio.audioEngine.setBGM("bgm.lounge");
@@ -463,18 +498,32 @@ define([
     }
 
     function onLogout (event, message) {
+        if (_$.ui.screen.id === "screen_title") {
+            _$.ui.screen.updateAccountLayout();
+        }
+        
         // Connection errors are already handled by the socket manager
         if (!_.isString(event) || event.match("disconnect|connect_timeout|kick")) {
             return;
         } else if (_$.state.user.get("userId")) {
             // If it's a valid event, we notify the socket manager the user should be logged out on the game server
             _$.comm.socketManager.emit("logout");
+            _$.state.user.set("userId", null);
         }
 
         if (event.match("logout|userDeleted")) {
             doLogout.call(this);
+        } else if (event.match("sessionExpired")) {
+            _$.audio.audioEngine.playSFX("menuOpen");
+            this.error({
+                titleBold    : "Session",
+                titleRegular : "expired",
+                msg          : "You have been logged out.",
+                action       : this.closePrompt.bind(this, doLogout.bind(this))
+            });
         } else {
-            this.error(null, {
+            _$.audio.audioEngine.playSFX("menuOpen");
+            this.error({
                 msg    : event,
                 btnMsg : "Close",
                 action : this.closePrompt.bind(this, doLogout.bind(this))
@@ -482,20 +531,22 @@ define([
         }
 
         function doLogout () {
-            _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
-            TweenMax.to(_$.dom, 1, { opacity: 0,
-                onComplete: () => {
+            this.fadeOut(this.changeScreen.bind(this, "title", { setup: true, fullIntro: true })); 
+        }                
+    }
+
+    function fadeOut (callback) {
+        _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+        TweenMax.to(_$.dom, 1, { opacity: 0,
+            onComplete: () => {
+                if (_.isFunction(callback)) {
                     if (_$.audio.audioEngine.currentBGM.getState() === "ended") {
-                        proceed.call(this);
+                        callback();
                     } else {
-                        _$.events.once(_$.audio.audioEngine.currentBGM.events.ended, proceed.bind(this));
+                        _$.events.once(_$.audio.audioEngine.currentBGM.events.ended, callback);
                     }
                 }
-            });
-
-            function proceed () {
-                this.changeScreen("title", { setup: true, fullIntro: true });
-            }   
-        }                
+            }
+        });
     }
 });

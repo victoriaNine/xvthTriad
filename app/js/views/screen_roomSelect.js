@@ -7,13 +7,9 @@ define([
     "text!templates/templ_roomSelect.ejs"
 ], function Screen_RoomSelect ($, _, Backbone, _$, Screen, Templ_RoomSelect) {
     return Screen.extend({
-        id        : "screen_roomSelect",
-
-        // Our template for the line of statistics at the bottom of the app.
-        template  : _.template(Templ_RoomSelect),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events    : {
+        id       : "screen_roomSelect",
+        template : _.template(Templ_RoomSelect),
+        events   : {
             "keyup .setting-roomName input"   : _.debounce(function (e) { this.validateInput(e.target); }, 250),
             "keydown .setting-roomName input" : function (e) {
                 if (e.which === 13 && this.$(".roomSelect_content-screenNav-choice-nextBtn").is(":visible")) {
@@ -67,9 +63,6 @@ define([
 
     function remove () {
         delete _$.ui.roomSelect;
-        if (this.settings.mode === "create") {
-            _$.events.off("opponentJoined");
-        }
 
         this.modeDropdown.remove();
         Screen.prototype.remove.call(this);
@@ -109,11 +102,11 @@ define([
 
         if (settings.mode === "create") {
             // Once both players have joined, the player creating the room can get their opponent's info
-            _$.events.on("opponentJoined", (event, data) => {
+            _$.events.once("opponentJoined", (event, data) => {
                 _$.state.opponent = data.msg.opponent;
 
                 _$.audio.audioEngine.playSFX("gameGain");
-                _$.ui.screen.info(null, {
+                _$.ui.screen.info({
                     titleBold    : "Opponent",
                     titleRegular : "joined",
                     msg          : _$.state.opponent.name + " has entered the room. The available rules have been updated.",
@@ -127,7 +120,7 @@ define([
 
             _$.comm.socketManager.emit("createRoom", { settings, playerInfo }, onResponse.bind(this));
         } else if (settings.mode === "join") {
-            _$.comm.socketManager.emit("joinRoom", { settings, playerInfo}, onResponse.bind(this));
+            _$.comm.socketManager.emit("joinRoom", { settings, playerInfo }, onResponse.bind(this));
         }
 
         function onResponse (response) {
@@ -179,7 +172,7 @@ define([
         tl.call(() => {
             this.$(".roomSelect_header").slideDown(500);
         });
-        tl.staggerTo(this.$(".roomSelect_content-settings-setting"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
+        tl.staggerTo(this.$(".roomSelect_content-settings-setting"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, "+=0.5");
         tl.call(() => {
             if (!this.initialized) {
                 this.initialized = true;
@@ -188,7 +181,7 @@ define([
             this.$(".setting-roomName input").focus();
             this.validateInput(this.$(".setting-roomName input")[0]);
             _$.events.trigger("startUserEvents");
-        });
+        }, null, [], "-=0.5");
 
         return this;
     }
@@ -200,7 +193,7 @@ define([
         var tl = new TimelineMax();
         tl.call(() => {
             this.$(".roomSelect_content-screenNav").slideUp(500);
-        }, null, [], "-=1.5");
+        });
         tl.to(this.$(".roomSelect_content-settings"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
         tl.call(() => {
             this.$(".roomSelect_header").slideUp(500);

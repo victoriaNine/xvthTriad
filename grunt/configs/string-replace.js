@@ -6,6 +6,10 @@ module.exports = function (grunt, options) {
             options: {
               replacements: [
                 {
+                    pattern: /{{ NAME }}/g,
+                    replacement: "<%= pkg.name %>"
+                },
+                {
                     pattern: "{{ VERSION }}",
                     replacement: "<%= pkg.version %>"
                 },
@@ -16,12 +20,6 @@ module.exports = function (grunt, options) {
                 {
                     pattern: "{{ VERSION_FLAG }}",
                     replacement: "<%= pkg.versionFlag %>"
-                },
-                {
-                    pattern: "{{ DB_URL }}",
-                    replacement: function () {
-                        return "//" + process.env.DB_HOST;
-                    }
                 }
               ]
             }
@@ -32,7 +30,11 @@ module.exports = function (grunt, options) {
             options: {
               replacements: [
                 {
-                    pattern: /debugMode\s*?:\s*?.*\,/ig,
+                    pattern: /{{ NAME }}/g,
+                    replacement: "<%= pkg.name %>"
+                },
+                {
+                    pattern: /debugMode\s*?:\s*?.*\,/g,
                     replacement: "debugMode: false,"
                 },
                 {
@@ -46,12 +48,6 @@ module.exports = function (grunt, options) {
                 {
                     pattern: "{{ VERSION_FLAG }}",
                     replacement: "<%= pkg.versionFlag %>"
-                },
-                {
-                    pattern: "{{ DB_URL }}",
-                    replacement: function () {
-                        return "//" + process.env.DB_HOST;
-                    }
                 }
               ]
             }

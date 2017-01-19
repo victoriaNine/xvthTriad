@@ -3,7 +3,8 @@ module.exports = function (grunt, options) {
     if (target === "prod" || target === "beta") {
         return grunt.task.run([
             "setupEnv:prod",
-            "connect:" + target + ":keepalive"
+            "connect:" + target,
+            "keepalive"
         ]);
     }
 
@@ -13,14 +14,15 @@ module.exports = function (grunt, options) {
             "copy:dist",
             "setupEnv:prod",
             "open:server",
-            "connect:dist:keepalive"
+            "connect:dist",
+            "keepalive"
         ]);
     }
 
     var defaultTasks = [
-        "clean:wipe",
+        "clean:tmp",
         "sass:server",
-        "buildCardImgLoader",
+        "buildImgLoaders",
         "copy:server",
         "setupEnv:server",
         "string-replace:server",

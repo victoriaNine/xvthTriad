@@ -5,7 +5,7 @@
 </div>
 <div class="about_content">
     <div class="about_text">
-        <span>Inspired by</span>FINAL FANTASY XV
+        <span class="fontsize-small">Inspired by</span>FINAL FANTASY XV
     </div>
     <div class="about_credits">
         <a href="http://orion9.net/iWantToWork/#!/With/You" target="_blank">Design &amp; development by Victoria Nine</a>
@@ -36,7 +36,7 @@
         <div class="about_prevBtn-hoverFX"></div>
         <div class="arrow-left"></div>
     </div>
-    <div class="about_version">
-        <span>Version</span><%= appVersion %><% if (appVersionFlag) { %> (<%= appVersionFlag %>)<% } %>
+    <div class="about_info">
+        <%= playersCount %> <span class="fontsize-small"><%= playersLabel %> registered</span>| <span class="fontsize-small">Version</span><%= appVersion %><% if (appVersionFlag) { %> (<%= appVersionFlag %>)<% } %>
     </div>
 </div>
