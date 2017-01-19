@@ -25,10 +25,12 @@
                 <span class="color-darkGrey"> / <%= drawCount %> (total)</span> 
             </div>
         </div>
+        <% if (isLoggedIn) { %>
         <div class="userSettings_header-rankPoints">
             <div class="userSettings_header-rankPoints-label">Rank points</div>
             <div class="userSettings_header-rankPoints-count"><%= rankPoints %></div>
         </div>
+        <% } %>
         <p class="userSettings_header-help"></p>
     </div>
     <div class="userSettings_header-rightCol">

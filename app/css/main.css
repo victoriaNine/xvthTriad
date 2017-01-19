@@ -2274,9 +2274,6 @@ button {
   display: inline-block;
   line-height: 1.5em; }
 
-.userSettings_header-rankPoints {
-  margin-right: 0; }
-
 .userSettings_header-avatar {
   position: relative;
   height: 200px;

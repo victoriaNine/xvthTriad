@@ -168,7 +168,8 @@ define([
 
         var dateDom     = rankInfoDom.find(".rank-date");
         dateDom.find("span").eq(0).text(_$.utils.getFormattedDate(rankingData.date.from).date);
-        dateDom.find("span").eq(1).text(_$.utils.getFormattedDate(rankingData.date.from).time);
+        dateDom.find("span").eq(1).text(_$.utils.getFormattedDate(rankingData.date.to).date);
+        dateDom.find("span").eq(2).text(_$.utils.getFormattedDate(rankingData.date.from).time);
 
         var statsLabel, rateLabel;
         if (rankingData.name === "aceOfCards") {

@@ -451,8 +451,8 @@ define([
     }
 
     function getFormattedDate (dateObject, options = {}) {
-        if (_.isString(dateObject)) {
-            dateObject = new Date(dateObject);
+        if (!_.isDate(dateObject)) {
+            dateObject = (new Date(dateObject)).toString() === "Invalid Date" ? new Date() : new Date(dateObject);
         }
 
         var date  = dateObject.getFullYear() + "." + (dateObject.getMonth() < 10 ? ("0" + (dateObject.getMonth() + 1)) : dateObject.getMonth() + 1) + "." + (dateObject.getDate() < 10 ? "0" + dateObject.getDate() : dateObject.getDate());
