@@ -3,8 +3,8 @@ define(["underscore", "global"], function socketManager (_, _$) {
 
     class SocketManager {
         init () {
-            this.socket = socket({ timeout: 15 * 60 * 1000 });
-            this.client = this.socket.io;
+            this.socket        = socket({ timeout: 15 * 60 * 1000 });
+            this.client        = this.socket.io;
             this.callbackQueue = {};
 
             this.socket.on("connect", (msgFromServer) => {
@@ -25,7 +25,7 @@ define(["underscore", "global"], function socketManager (_, _$) {
                     if (reason === "kick:dblConnection") {
                         _$.audio.audioEngine.playSFX("menuOpen");
                         _$.ui.screen.error({
-                            msg    : "Another connection to this account has been detected.",
+                            msg    : "Another connection to this account has been detected",
                             btnMsg : "Refresh",
                             action : "refresh"
                         });
@@ -101,9 +101,9 @@ define(["underscore", "global"], function socketManager (_, _$) {
                 var msg;
 
                 if (reason === "disconnection") {
-                    msg = "Connection with the other player lost.";
+                    msg = "Connection with the other player lost";
                 } else if (reason === "withdrawal") {
-                    msg = "The other player left the game.";
+                    msg = "The other player left the game";
                 }
 
                 _$.audio.audioEngine.playSFX("menuOpen");
@@ -163,7 +163,7 @@ define(["underscore", "global"], function socketManager (_, _$) {
 
         emit (eventName, data = {}, callback = null) {
             if (_.isFunction(callback)) {
-                this.socket.on("in:" + eventName, callback);
+                this.socket.once("in:" + eventName, callback);
             }
 
             this.socket.emit("out:" + eventName, data);

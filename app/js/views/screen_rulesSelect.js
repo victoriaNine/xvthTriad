@@ -144,7 +144,7 @@ define([
                 _$.ui.screen.info({
                     titleBold    : "Rules",
                     titleRegular : "updated",
-                    msg          : _$.state.opponent.name + " has updated the rules.",
+                    msg          : _$.state.opponent.name + " has updated the rules",
                     autoClose    : true
                 });
             }
@@ -170,7 +170,7 @@ define([
                 _$.ui.screen.info({
                     titleBold    : "Not enough ",
                     titleRegular : "cards",
-                    msg          : "Your opponent doesn't have enough cards to play.",
+                    msg          : "Your opponent doesn't have enough cards to play",
                     btnMsg       : "Return to title screen",
                     action       : _$.ui.screen.closePrompt.bind(_$.ui.screen, transitionOut.bind(_$.ui.screen, "title"))
                 });
@@ -178,7 +178,7 @@ define([
                 _$.ui.screen.choice({
                     titleBold    : "Not enough ",
                     titleRegular : "cards",
-                    msg          : "You must own at least 5 cards to play.",
+                    msg          : "You must own at least 5 cards to play",
                     btn1Msg      : "Reset my album card",
                     action1      : _$.ui.screen.closePrompt.bind(_$.ui.screen, _$.ui.screen.transitionOut.bind(_$.ui.screen, "userSettings")),
                     btn2Msg      : "Return to title screen",

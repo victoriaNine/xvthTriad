@@ -799,11 +799,11 @@ define([
 
                 var reasonMsg;
                 if (response.msg.reason === "pendingRequest") {
-                    reasonMsg = opponentName + " already has a pending challenge request.";
+                    reasonMsg = opponentName + " already has a pending challenge request";
                 } else if (response.msg.reason === "alreadyPlaying") {
-                    reasonMsg = opponentName + " is already playing.";
+                    reasonMsg = opponentName + " is already playing";
                 } else if (response.msg.reason === "unavailable") {
-                    reasonMsg = opponentName + " currently cannot receive requests.";
+                    reasonMsg = opponentName + " currently cannot receive requests";
                 }
 
                 this.info({
@@ -821,6 +821,8 @@ define([
                 _$.state.opponent        = _.pick(this.userlist[this.userInfo.opponentId], _.keys(_$.state.user.getPlayerInfo()));
 
                 _$.events.once("setupChallengeRoom", (event, data) => {
+                    _$.comm.socketManager.emit("releasePending");
+
                     _$.debug.log(this.userInfo.userId, event.name, data);
                     this.removeLeaveListener(opponentId, _onOpponentLeft);
 
@@ -837,8 +839,11 @@ define([
                 this.info({
                     titleBold    : "Challenge",
                     titleRegular : "declined",
-                    msg          : opponentName + " has declined your challenge request.",
-                    updatePrompt : true
+                    msg          : opponentName + " has declined your challenge request",
+                    updatePrompt : true,
+                    action       : this.closePrompt.bind(this, () => {
+                        _$.comm.socketManager.emit("releasePending");
+                    })
                 });
             }
         }
@@ -848,6 +853,7 @@ define([
             this.removeLeaveListener(opponentId, _onOpponentLeft);
             _$.comm.socketManager.emit("cancelChallenge", { to: opponentId }, (response) => {
                 if (response.status === "ok") {
+                    _$.comm.socketManager.emit("releasePending");
                     this.closePrompt();
                 } else {
                     this.challengeCancelled(response.msg);
@@ -864,7 +870,7 @@ define([
         this.choice({
             titleBold    : "Challenge",
             titleRegular : "request!",
-            msg          : opponentName + " challenges you in a duel.",
+            msg          : opponentName + " challenges you in a duel",
             btn1Msg      : "Accept",
             action1      : onAccept.bind(this),
             btn2Msg      : "Decline",
@@ -912,6 +918,8 @@ define([
         }
 
         function onRoomReady (event, data) {
+            _$.comm.socketManager.emit("releasePending");
+
             _$.audio.audioEngine.playNotif("challengeStart");
             _$.debug.log(this.userInfo.userId, event.name, data);
 
@@ -926,20 +934,23 @@ define([
 
         if (cancelData.reason === "otherPlayerCancelled") {
             _$.audio.audioEngine.playNotif("gameGain");
-            reasonMsg = opponentName + " has cancelled the challenge request they sent you.";
+            reasonMsg = opponentName + " has cancelled the challenge request they sent you";
         } else if (cancelData.reason === "otherPlayerLeft") {
             _$.audio.audioEngine.playNotif("uiError");
-            reasonMsg = opponentName + " has left the lounge.";
+            reasonMsg = opponentName + " has left the lounge";
         } else if (cancelData.reason === "otherPlayerDisconnected") {
             _$.audio.audioEngine.playNotif("uiError");
-            reasonMsg = opponentName + " has disconnected.";
+            reasonMsg = opponentName + " has disconnected";
         }
 
         this.info({
             titleBold    : "Request",
             titleRegular : "cancelled",
             msg          : reasonMsg,
-            updatePrompt : true
+            updatePrompt : true,
+            action       : this.closePrompt.bind(this, () => {
+                _$.comm.socketManager.emit("releasePending");
+            })
         });
     }
 
@@ -976,6 +987,7 @@ define([
     }
 
     function _onOpponentLeft () {
+        _$.comm.socketManager.emit("releasePending");
         this.challengeCancelled({ reason: "otherPlayerLeft" });
     }
 

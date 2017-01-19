@@ -590,12 +590,9 @@ module.exports = function (grunt, options) {
 
                 socket.on("out:sendChallengeReply", function (data) {
                     var opponent = getClientByUserId(data.to);
-                    socket.hasPendingRequest = false;
 
                     // We check the opponent is still online
                     if (opponent && opponent.isInLounge) {
-                        opponent.hasPendingRequest = false;
-
                         if (data.reply === "accept") {
                             socket.canReceiveRequest   = false;
                             opponent.canReceiveRequest = false;
@@ -637,12 +634,9 @@ module.exports = function (grunt, options) {
 
                 socket.on("out:cancelChallenge", function (data) {
                     var opponent = getClientByUserId(data.to);
-                    socket.hasPendingRequest = false;
-
+                    
                     // We check the opponent is still online
                     if (opponent && opponent.isInLounge) {
-                        opponent.hasPendingRequest = false;
-
                         socket.to(opponent.id).emit("in:challengeCancelled", {
                             status : "ok",
                             msg    : {
@@ -675,6 +669,14 @@ module.exports = function (grunt, options) {
                             msg    : { reason: "otherPlayerDisconnected" }
                         });
                     }
+                });
+
+                socket.on("out:releasePending", function (data) {
+                    socket.hasPendingRequest = false;
+
+                    socket.emit("in:releasePending", {
+                        status : "ok"
+                    });
                 });
 
                 socket.on("out:setupChallengeRoom", function (data) {
@@ -984,13 +986,13 @@ module.exports = function (grunt, options) {
                 socket.on("out:confirmReady", function (userDeck) {
                     socket.playerInfo.deck = userDeck;
                     socket.isReady = true;
-                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "do confirmReady", socket.playerInfo);
+                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "do confirmReady");
 
                     if (socket.opponent && socket.opponent.isReady && ROOM_LIST[socket.currentRoomName].length === 2) {
                         socket.isInGame          = true;
                         socket.opponent.isInGame = true;
 
-                        console.log("Room", socket.currentRoomName, "-- players ready", socket.playerInfo, socket.opponent.playerInfo);
+                        console.log("Room", socket.currentRoomName, "-- players ready");
                         socket.emit("in:confirmReady", {
                             status : "ok",
                             msg    : {

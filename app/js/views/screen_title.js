@@ -149,7 +149,7 @@ define([
                             this.info({
                                 titleBold    : "Session",
                                 titleRegular : "expired",
-                                msg          : "You have been logged out."
+                                msg          : "You have been logged out"
                             });
                         });
 

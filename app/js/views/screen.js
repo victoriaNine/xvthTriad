@@ -278,7 +278,7 @@ define([
             this.info({
                 titleBold    : "Currently",
                 titleRegular : "in-game",
-                msg          : "All unsaved progress will be lost.",
+                msg          : "All unsaved progress will be lost",
                 btnMsn       : "Cancel"
             });
 
@@ -293,7 +293,7 @@ define([
         this.info({
             titleBold    : "Autosave",
             titleRegular : "complete",
-            msg          : "Your progress was saved.",
+            msg          : "Your progress was saved",
             autoClose    : true
         });
     }
@@ -518,7 +518,7 @@ define([
             this.error({
                 titleBold    : "Session",
                 titleRegular : "expired",
-                msg          : "You have been logged out.",
+                msg          : "You have been logged out",
                 action       : this.closePrompt.bind(this, doLogout.bind(this))
             });
         } else {

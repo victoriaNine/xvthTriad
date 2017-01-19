@@ -111,8 +111,8 @@ define([
                         return;
                     }
 
-                    debug.log("validateInterval");
                     this.validateSession().catch((error) => {
+                        debug.log("validateInterval");
                         this._onLogout(error);
                     });
                 }, 5000);
