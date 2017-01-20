@@ -156,7 +156,7 @@ define([
         var albumSizeMin = opponent ? _.min([albumSize, opponent.albumSize]) : albumSize;
         var albumSizeMax = opponent ? _.max([albumSize, opponent.albumSize]) : albumSize;
 
-        if (albumSizeMin < 5) {
+        if (albumSizeMin < _$.state.DECK_SIZE) {
             _$.app.track("send", "event", {
                 eventCategory : "notEnoughCards",
                 dimension0    : _$.state.user.get("difficulty"),
@@ -166,7 +166,7 @@ define([
             this.disableSetting(".rule-random", ".rulesSelect_content-rules-rule-toggle");
             _$.audio.audioEngine.playSFX("uiError");
 
-            if (opponent && opponent.albumSize < 5) {
+            if (opponent && opponent.albumSize < _$.state.DECK_SIZE) {
                 _$.ui.screen.info({
                     titleBold    : "Not enough ",
                     titleRegular : "cards",
@@ -178,7 +178,7 @@ define([
                 _$.ui.screen.choice({
                     titleBold    : "Not enough ",
                     titleRegular : "cards",
-                    msg          : "You must own at least 5 cards to play",
+                    msg          : "You must own at least " + _$.state.DECK_SIZE + " cards to play",
                     btn1Msg      : "Reset my album card",
                     action1      : _$.ui.screen.closePrompt.bind(_$.ui.screen, _$.ui.screen.transitionOut.bind(_$.ui.screen, "userSettings")),
                     btn2Msg      : "Return to title screen",
@@ -255,7 +255,7 @@ define([
 
     function toNextStep () {
         if (this.rules.random) {
-            this.randomDeck = _.sampleSize(_$.state.user.get("album").models, 5);
+            this.randomDeck = _.sampleSize(_$.state.user.get("album").models, _$.state.DECK_SIZE);
             this.toGame(this.randomDeck);
         } else {
             this.transitionOut("cardSelect");

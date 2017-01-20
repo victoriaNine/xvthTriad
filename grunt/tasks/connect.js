@@ -192,7 +192,8 @@ module.exports = function (grunt, options) {
                         var ranking_aceOfCards = _.map(tenBest, (userDoc) => {
                             var totalGames = userDoc.profile.gameStats.wonRanked + userDoc.profile.gameStats.lostRanked + userDoc.profile.gameStats.drawRanked;
                             var stats      = userDoc.profile.gameStats.wonRanked + " / " + totalGames;
-                            var rate       = userDoc.profile.gameStats.wonRanked * 100 / totalGames;
+                            var rate       = ((userDoc.profile.gameStats.wonRanked * 100 / totalGames) || 0).toFixed(2) + "%";
+
                             return {
                                 name       : userDoc.name,
                                 avatar     : userDoc.profile.avatar,

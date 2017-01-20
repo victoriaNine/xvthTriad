@@ -547,7 +547,7 @@ define([
                     });
                     tl.to(this.$(".game_overlay-endGame h1"), 0.4, { opacity: 1, clearProps: "all" });
 
-                    if (_$.state.game.get("cardsToTrade") === 5) {
+                    if (_$.state.game.get("cardsToTrade") === _$.state.DECK_SIZE) {
                         this.gainedCards = this.opponentEndGameCardViews;
                         autoFlipCards(this.gainedCards, true);
                     }

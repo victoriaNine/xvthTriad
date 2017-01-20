@@ -187,7 +187,7 @@ define([
             });
         }
 
-        if (_.compact(this.userDeck).length === 5) {
+        if (_.compact(this.userDeck).length === _$.state.DECK_SIZE) {
             if (!this.$(".cardSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("show");
                 _$.audio.audioEngine.playSFX("gameGain");

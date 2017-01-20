@@ -70,7 +70,7 @@ define([
     var dom       = $("#app");
     var assets    = new AssetManager();
     var events    = _.clone(Backbone.Events);
-    var state     = {};
+    var state     = { DECK_SIZE: 5 };
     var ui        = {};
     var controls  = {};
     var audio     = {};

@@ -6,8 +6,9 @@ define([
     "models/model_player",
     "models/model_ai"
 ], function Model_Game (_, Backbone, _$, Model_Card, Model_Player, Model_AI) {
-    const BOARD_SIZE = 9;
-    const ELEMENTS   = ["fire", "ice", "water", "poison", "light", "thunder", "rock", "wind", "dark"];
+    const BOARD_SIZE   = 9;
+    const MAX_ELEMENTS = 5;
+    const ELEMENTS     = ["fire", "ice", "water", "poison", "light", "thunder", "rock", "wind", "dark"];
 
     return Backbone.Model.extend({
         defaults : {
@@ -140,7 +141,7 @@ define([
         if (this.get("rules").elemental) {
             var randomCase;
             var randomElement;
-            var elementsNb    = _.random(1, 5);
+            var elementsNb    = _.random(1, MAX_ELEMENTS);
             this.set("elementBoard", _.clone(this.get("board")));
 
             for (var i = 0, ii = elementsNb; i < ii; i++) {
@@ -216,7 +217,7 @@ define([
         }
 
         randomCards = _$.utils.getRandomCards({
-            amount   : 5,
+            amount   : _$.state.DECK_SIZE,
             minLevel : cardMinLevel,
             maxLevel : cardMaxLevel
         });
@@ -257,7 +258,7 @@ define([
 
         if (this.get("type") === "versus" && playing === user) {
             _$.comm.socketManager.emit("setPlayerAction", {
-                deckIndex : newCard.get("deckIndex"),
+                deckIndex  : newCard.get("deckIndex"),
                 position,
                 turnNumber : this.get("turnNumber")
             });
@@ -280,6 +281,7 @@ define([
         if (this.get("rules").elemental) {
             let caseName = _$.utils.getCaseNameFromPosition(newCard.get("position"));
             let element  = this.get("elementBoard")[caseName];
+
             if (element && element === newCard.get("element")) {
                 newCard.set("bonus", newCard.get("bonus") + 1);
                 triggerEvent("showElementalBonus", { caseName, bonusType: "bonus" });
@@ -346,26 +348,42 @@ define([
                 }
             }
 
+            // If this is the last card to check in the list of adjacent cards
             if (index === adjacentCardsNb - 1) {
+                // If all of the board's cases have been filled (end of the game)
                 if (playedCards.length === BOARD_SIZE) {
+                    // If this card has been flipped
                     if (flipped) {
+                        // Update the score a last time with the "end game" flag on
                         updateScore(card, { endGame: true });
+
+                    // If it hasn't been flipped, just notify the view to move to the end game
                     } else {
+                        // Do not make the end of game updates to the players' stats if it's just an AI simulation
                         if (!isSimulatedTurn) {
                             that.setupEndGame();
                         }
+
                         triggerEvent("toEndGame", { endGame: true });
                     }
+                // If it's not the end of game yet
                 } else {
+                    // If the card has been flipped
                     if (flipped) {
+                        // Update the score with the "next turn" flag on
+
                         updateScore(card, { nextTurn: true });
+                    // If it hasn't been flipped, just notify the view to move to the next turn
                     } else {
+                        // Do not make the end of turn updates to the players' stats if it's just an AI simulation
                         if (!isSimulatedTurn) {
                             that.setupNextTurn();
                         }
                         triggerEvent("toNextTurn", { nextTurn: true });
                     }
                 }
+
+            // If there are cards yet to be checked for that turn and this card has been flipped, update the score
             } else if (flipped) {
                 updateScore(card);
             }
@@ -500,8 +518,8 @@ define([
         } else if (this.get("rules").trade === "difference") {
             this.set("cardsToTrade", Math.abs(this.get("players").user.get("points") - this.get("players").opponent.get("points")));
 
-            if (this.get("cardsToTrade") > 5) {
-                this.set("cardsToTrade", 5);
+            if (this.get("cardsToTrade") > _$.state.DECK_SIZE) {
+                this.set("cardsToTrade", _$.state.DECK_SIZE);
             }
         }
 
