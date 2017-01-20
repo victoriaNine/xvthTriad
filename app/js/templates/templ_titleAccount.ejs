@@ -1,0 +1,72 @@
+<div class="title_account">
+    <% if (isLoggedIn) { %>
+    <div class="title_account-info">
+        <div class="title_account-info-welcome"><span class="fontsize-small">Connected as</span><%= userName %></div>
+        <div class="title_account-info-playerCount">
+            <span class="title_account-info-playerCount-onlineLabel">Online:</span>
+            <span class="title_account-info-playerCount-onlineCount">0</span>
+            <span class="title_account-info-playerCount-loungeLabel">Lounge:</span>
+            <span class="title_account-info-playerCount-loungeCount">0</span>
+        </div>
+    </div>
+    <div class="title_account-logoutBtn title_account-element">Log out</div>
+    <% } else { %>
+    <div class="title_account-info">
+        <div class="title_account-info-playerCount">
+            <span class="title_account-info-playerCount-onlineLabel">Online:</span>
+            <span class="title_account-info-playerCount-onlineCount">0</span>
+            <span class="title_account-info-playerCount-loungeLabel">Lounge:</span>
+            <span class="title_account-info-playerCount-loungeCount">0</span>
+        </div>
+    </div>
+    <div class="title_account-signupBtn title_account-element">Sign up</div>
+    <div class="title_account-loginBtn title_account-element">Log in</div>
+    <% }%>
+</div>
+<% if (!isLoggedIn) { %>
+<div class="title_overlay-signup screen overlay">
+    <h1><span class="weight-bold">Sign</span> up</h1>
+    <p class="title_overlay-signup-message"></p>
+    <form class="title_overlay-signup-form">
+        <div class="title_overlay-signup-form-field field-name">
+            <div class="title_overlay-signup-form-field-label">Name</div>
+            <input class="title_overlay-signup-form-field-input" value="<%= userName %>">
+        </div>
+        <div class="title_overlay-signup-form-field field-login">
+            <div class="title_overlay-signup-form-field-label">Login</div>
+            <input class="title_overlay-signup-form-field-input" placeholder="(lowercase only, cannot be changed!)">
+        </div>
+        <div class="title_overlay-signup-form-field field-password">
+            <div class="title_overlay-signup-form-field-label">Password</div>
+            <input class="title_overlay-signup-form-field-input" type="password">
+        </div>
+        <div class="title_overlay-signup-form-field field-email">
+            <div class="title_overlay-signup-form-field-label">Email</div>
+            <input class="title_overlay-signup-form-field-input" type="email">
+        </div>
+        <button class="title_overlay-signup-confirmBtn title_overlay-signup-btn" type="submit" style="display:none;">Confirm</button>
+        <button class="title_overlay-signup-closeBtn title_overlay-signup-btn" style="display:none;">Close</button>
+    </form>
+</div>
+<div class="title_overlay-login screen overlay">
+    <h1><span class="weight-bold">Log</span> in</h1>
+    <p class="title_overlay-login-message"></p>
+    <form class="title_overlay-login-form">
+        <div class="title_overlay-login-form-field field-login">
+            <div class="title_overlay-login-form-field-label">Login</div>
+            <input class="title_overlay-login-form-field-input">
+        </div>
+        <div class="title_overlay-login-form-field field-password">
+            <div class="title_overlay-login-form-field-label">Password</div>
+            <input class="title_overlay-login-form-field-input" type="password">
+        </div>
+        <div class="title_overlay-login-form-field field-email" style="display:none;">
+            <div class="title_overlay-login-form-field-label">Email</div>
+            <input class="title_overlay-login-form-field-input" type="email">
+        </div>
+        <button class="title_overlay-login-confirmBtn title_overlay-login-btn" type="submit" style="display:none;">Confirm</button>
+        <button class="title_overlay-login-closeBtn title_overlay-login-btn" style="display:none;">Close</button>
+    </form>
+    <p class="title_overlay-login-forgotPwd">Forgot your password?</p>
+</div>
+<% }%>

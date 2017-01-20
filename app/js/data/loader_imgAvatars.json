@@ -19,6 +19,10 @@
         },
         {
             "type" : "img.avatars",
+            "name" : "user_default.jpg"
+        },
+        {
+            "type" : "img.avatars",
             "name" : "user_gladiolus.jpg"
         },
         {

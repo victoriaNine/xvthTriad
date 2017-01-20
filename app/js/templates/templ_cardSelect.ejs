@@ -1,0 +1,45 @@
+<div class="cardSelect_header" style="display:none;">
+    <div class="cardSelect_header-leftCol">
+        <h1 class="cardSelect_header-title">
+            <span class="weight-bold">Card</span> selection
+        </h1>
+        <hr>
+        <div class="cardSelect_header-uniqueCopies">
+            <div class="cardSelect_header-uniqueCopies-label">Owned cards</div>
+            <div class="cardSelect_header-uniqueCopies-count">
+                <%= uniqueCopiesCount %>
+                <span class="color-darkGrey"> / <%= totalCardsCount %></span> 
+            </div>
+        </div>
+        <div class="cardSelect_header-ownedCards">
+            <div class="cardSelect_header-ownedCards-label">Total cards in the album</div>
+            <div class="cardSelect_header-ownedCards-count"><%= ownedCardsCount %></div>
+        </div>
+        <p class="cardSelect_header-help">Drag and drop your cards into the deck on the right to build it.</p>
+    </div>
+    <div class="cardSelect_header-rightCol">
+        <ul class="cardSelect_header-deck">
+            <li id="holder1" class="cardSelect_header-deck-holder"></li>
+            <li id="holder2" class="cardSelect_header-deck-holder"></li>
+            <li id="holder3" class="cardSelect_header-deck-holder"></li>
+            <li id="holder4" class="cardSelect_header-deck-holder"></li>
+            <li id="holder5" class="cardSelect_header-deck-holder"></li>
+        </ul>
+    </div>
+</div>
+<div class="cardSelect_content">
+    <div class="cardSelect_content-screenNav" style="display:none;">
+        <ul class="cardSelect_content-screenNav-choice">
+            <li class="cardSelect_content-screenNav-choice-backBtn cardSelect_content-screenNav-choice-element">Back</li>
+        </ul>
+    </div>
+    <div class="cardSelect_content-confirm" style="display:none;">
+        <ul class="cardSelect_content-confirm-choice">
+            <li class="cardSelect_content-confirm-choice-yesBtn cardSelect_content-confirm-choice-element is--active">Let's start!</li>
+            <li class="cardSelect_content-confirm-choice-noBtn cardSelect_content-confirm-choice-element">I'm not ready yet</li>
+        </ul>
+    </div>
+    <div class="cardSelect_content-album">
+        <div class="cardSelect_content-album-scroll"></div>
+    </div>
+</div>

@@ -121,15 +121,23 @@ Simulation :
 
 --------------
 
-- Better AI
-- Same, same wall, plus, combo rules
-- Full Tutorial section
-- Network mode
+- Volume, sound on/off options
+- Click or drag option
+- Warn when rules should be locked in challenge (< 6 cards, etc.)
+- Allow for card reset
 - Card album
-- Loading page for updates
+- Same, same wall, plus, combo rules
+- CouchDB
+- Network mode
+ - Chat (needs "registration": data in localstorage)
+ - Can challenge other player
+ - Can send PMs
+- More cards (114)
+- Tutorial section update
+- Loading page, changelog for updates
+
 - Gamepad API? (useful?)
-- Check rules unlocked by both players
-- Allow for card reset when < 5 cards
+- Better AI
 
 -----------
 
@@ -148,3 +156,6 @@ Application Key
 hYtTbA6m6D9n6kOM
 Application Secret
 6a4uQxwETNQjtxUUoXHGb18nXcGJTVL6
+
+-----
+ cd /var/www && pm2 start grunt --name xvthTriad -- serve:beta

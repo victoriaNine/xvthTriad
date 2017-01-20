@@ -6,10 +6,21 @@
             "name" : "inDreams",
             "meta" : {
                 "loop"      : true,
-                "start"     : "0:00:01.512",
+                "start"     : "0:00:01.504",
                 "end"       : "",
-                "loopStart" : "0:00:01.512",
-                "loopEnd"   : "0:01:36.229"
+                "loopStart" : "0:00:01.504",
+                "loopEnd"   : "0:01:36.242"
+            }
+        },
+        {
+            "type" : "audio.bgm",
+            "name" : "safeHaven",
+            "meta" : {
+                "loop"      : true,
+                "start"     : "0:00:01.328",
+                "end"       : "",
+                "loopStart" : "0:00:01.328",
+                "loopEnd"   : "0:02:00.232"
             }
         },
         {
@@ -24,12 +35,31 @@
             }
         },
         {
+            "type" : "audio.bgm",
+            "name" : "impendingPeril",
+            "meta" : {
+                "loop"      : true,
+                "start"     : "0:00:01.223",
+                "end"       : "",
+                "loopStart" : "0:00:38.619",
+                "loopEnd"   : "0:01:16.019"
+            }
+        },
+        {
+            "type" : "audio.bgm",
+            "name" : "huntOrBeHunted",
+            "meta" : {
+                "loop"      : true,
+                "start"     : "0:00:01.65",
+                "end"       : "",
+                "loopStart" : "0:00:15.108",
+                "loopEnd"   : "0:02:36.119"
+            }
+        },
+        {
             "type"   : "audio.bgm",
             "name"   : "daysEndFanfare",
-            "meta"   : {},
-            "events" : {
-                "ended" : "playPostWin"
-            }
+            "meta"   : {}
         },
         {
             "type" : "audio.bgm",
@@ -45,8 +75,7 @@
         {
             "type"   : "audio.bgm",
             "name"   : "relaxReflectPensive",
-            "meta"   : {},
-            "events" : {}
+            "meta"   : {}
         }
     ]
 }

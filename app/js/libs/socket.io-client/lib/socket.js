@@ -354,10 +354,10 @@ Socket.prototype.emitBuffered = function () {
  * @api private
  */
 
-Socket.prototype.ondisconnect = function () {
+Socket.prototype.ondisconnect = function (reason) {
   debug('server disconnect (%s)', this.nsp);
   this.destroy();
-  this.onclose('io server disconnect');
+  this.onclose(reason || 'io server disconnect');
 };
 
 /**

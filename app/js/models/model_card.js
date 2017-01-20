@@ -1,4 +1,4 @@
-define(["underscore", "backbone"], function Model_Card (_, Backbone) {
+define(["underscore", "backbone", "global"], function Model_Card (_, Backbone, _$) {
     return Backbone.Model.extend({
         defaults : {
             name       : "",
@@ -39,7 +39,8 @@ define(["underscore", "backbone"], function Model_Card (_, Backbone) {
     }
 
     function setImagePath () {
-        this.set({ image: "./assets/img/cards/" + _.camelCase(this.get("name")) + ".png" });
+        var url = new URL(_$.assets.get("img.cards." + _.camelCase(this.get("name"))).src).pathname;
+        this.set("image", "." + url);
     }
 
     function getRanksSum () {

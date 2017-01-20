@@ -321,7 +321,7 @@ define(["underscore", "global"], function gamepadManager (_, _$) {
             }
 
             if (update) {
-                states = _.extend(this.activeStates, states);
+                states = _.extend({}, this.activeStates, states);
             }
 
             this.activeStates = _.pickBy(states);

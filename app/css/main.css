@@ -1,5 +1,6 @@
 @import url("./reset.css");
 @import url("./socicon.css");
+@import url("./flag-icon.css");
 /*=======================*/
 /* VARIABLES, FUNCTIONS
 /*=======================*/
@@ -30,53 +31,89 @@
 /*=======================*/
 /* 12 COLUMNS RESPONSIVE GRID
 /*=======================*/
-.row, .cardSelect_header-ownedCards,
+.row, .rankings_leaderboard-ranks-rank, .cardSelect_header-ownedCards,
 .cardSelect_header-uniqueCopies, .userSettings_header-countWon,
 .userSettings_header-countLost,
-.userSettings_header-countDraw {
+.userSettings_header-countDraw,
+.userSettings_header-rankPoints, .cardAlbum_header-ownedCards,
+.cardAlbum_header-uniqueCopies {
   display: flex; }
 
-.col_1 {
-  flex-basis: 8.33333333%; }
+.col_h, .rankings_leaderboard-ranks-rank .rank-flag {
+  width: 4.16667%; }
+
+.col_1, .rankings_leaderboard-ranks-rank .rank-number, .rankings_leaderboard-ranks-rank .rank-avatar, .rankings_leaderboard-ranks-rank .rank-rate, .rankings_leaderboard-ranks-rank .rank-points, .rankings_leaderboard-ranks-rank .rank-insigna {
+  width: 8.33333%; }
+
+.col_1h, .rankings_leaderboard-ranks-rank .rank-stats {
+  width: 12.5%; }
 
 .col_2 {
-  flex-basis: 16.66666667%; }
+  width: 16.66667%; }
 
-.col_3, .cardSelect_header-ownedCards-count,
-.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount, .userSettings_header-countWon-count,
-.userSettings_header-countLost-count,
-.userSettings_header-countDraw-count {
-  flex-basis: 25%; }
+.col_2h {
+  width: 20.83333%; }
+
+.col_3, .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-copiesCount, .cardSelect_header-ownedCards-count,
+.cardSelect_header-uniqueCopies-count, .cardAlbum_header-ownedCards-count,
+.cardAlbum_header-uniqueCopies-count {
+  width: 25%; }
+
+.col_3h {
+  width: 29.16667%; }
 
 .col_4 {
-  flex-basis: 33.33333333%; }
+  width: 33.33333%; }
 
-.col_5 {
-  flex-basis: 41.66666667%; }
+.col_4h {
+  width: 37.5%; }
+
+.col_5, .rankings_leaderboard-ranks-rank .rank-rankerInfo {
+  width: 41.66667%; }
+
+.col_5h {
+  width: 45.83333%; }
 
 .col_6 {
-  flex-basis: 50%; }
+  width: 50%; }
+
+.col_6h {
+  width: 54.16667%; }
 
 .col_7 {
-  flex-basis: 58.33333333%; }
+  width: 58.33333%; }
+
+.col_7h {
+  width: 62.5%; }
 
 .col_8 {
-  flex-basis: 66.66666667%; }
+  width: 66.66667%; }
 
-.col_9, .cardSelect_header-ownedCards-label,
-.cardSelect_header-uniqueCopies-label, .cardSelect_content-album-card-name, .userSettings_header-countWon-label,
-.userSettings_header-countLost-label,
-.userSettings_header-countDraw-label {
-  flex-basis: 75%; }
+.col_8h {
+  width: 70.83333%; }
+
+.col_9, .cardSelect_content-album-card-name, .game_overlay-endGame-album-card-name, .cardAlbum_content-album-card-name, .cardSelect_header-ownedCards-label,
+.cardSelect_header-uniqueCopies-label, .cardAlbum_header-ownedCards-label,
+.cardAlbum_header-uniqueCopies-label {
+  width: 75%; }
+
+.col_9h {
+  width: 79.16667%; }
 
 .col_10 {
-  flex-basis: 83.33333333%; }
+  width: 83.33333%; }
+
+.col_10h {
+  width: 87.5%; }
 
 .col_11 {
-  flex-basis: 91.66666667%; }
+  width: 91.66667%; }
+
+.col_11h {
+  width: 95.83333%; }
 
 .col_12 {
-  flex-basis: 100%; }
+  width: 100%; }
 
 /*=======================*/
 /* GENERAL RULES
@@ -144,6 +181,46 @@ hr:before {
 h1 {
   font-size: 60px; }
 
+::-webkit-input-placeholder {
+  letter-spacing: 0; }
+
+:-moz-placeholder {
+  letter-spacing: 0; }
+
+::-moz-placeholder {
+  letter-spacing: 0; }
+
+:-ms-input-placeholder {
+  letter-spacing: 0; }
+
+::selection {
+  background: #000;
+  color: #FFF;
+  text-shadow: none; }
+
+::-moz-selection {
+  background: #000;
+  color: #FFF;
+  text-shadow: none; }
+
+input:not([type]):not(.lounge_log-chatbar-input) {
+  -webkit-transition: -webkit-letter-spacing .2s ease-in, background .2s;
+  -ms-transition: -ms-letter-spacing .2s ease-in, background .2s;
+  transition: letter-spacing .2s ease-in, background .2s; }
+  input:not([type]):not(.lounge_log-chatbar-input):focus {
+    letter-spacing: .5em; }
+
+input[type=file] {
+  cursor: pointer; }
+
+input[type=password] {
+  -webkit-transition: -webkit-letter-spacing .2s ease-in, background .2s;
+  -ms-transition: -ms-letter-spacing .2s ease-in, background .2s;
+  transition: letter-spacing .2s ease-in, background .2s;
+  letter-spacing: .5em; }
+  input[type=password]:focus {
+    letter-spacing: 1em; }
+
 input[type=range] {
   -webkit-appearance: none;
   margin: 0px 0;
@@ -194,6 +271,18 @@ label {
   text-align: center;
   background: rgba(0, 0, 0, 0.5); }
 
+button {
+  -webkit-appearance: none;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  background: inherit;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  text-align: inherit; }
+
 #canvas {
   position: absolute;
   top: 0;
@@ -218,15 +307,20 @@ label {
   animation: cursorMove 1s ease-in-out infinite; }
 
 .color-darkGrey {
-  color: #3d4043; }
+  color: #666; }
 
 .color-lightBlue {
   color: #6d87fa; }
 
-.weight-medium, .cardSelect_header-ownedCards-count,
-.cardSelect_header-uniqueCopies-count, .cardSelect_content-album-card-copiesCount, .userSettings_header-countWon-count,
+.color-red {
+  color: #eb3547; }
+
+.weight-medium, .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-copiesCount, .cardSelect_header-ownedCards-count,
+.cardSelect_header-uniqueCopies-count, .userSettings_header-countWon-count,
 .userSettings_header-countLost-count,
-.userSettings_header-countDraw-count {
+.userSettings_header-countDraw-count,
+.userSettings_header-rankPoints-count, .cardAlbum_header-ownedCards-count,
+.cardAlbum_header-uniqueCopies-count {
   font-weight: 500; }
 
 .weight-bold {
@@ -237,6 +331,10 @@ label {
 
 .flex-justify-start {
   justify-content: flex-start; }
+
+.fontsize-small, .rankings_rankinglist-element-ranking-label-leader, .lounge_log-messages-message-user-content-date, .lounge_userlist-element-user-label-action {
+  font-size: .75em;
+  margin-right: .5em; }
 
 @media (orientation: portrait) {
   body {
@@ -256,7 +354,7 @@ label {
   top: 0;
   left: 0; }
 
-.help_header, .rulesSelect_header, .cardSelect_header, .userSettings_header, .roomSelect_header {
+.help_header, .rulesSelect_header, .cardSelect_header, .userSettings_header, .roomSelect_header, .cardAlbum_header {
   height: 300px;
   width: 100%;
   padding: 50px;
@@ -264,7 +362,7 @@ label {
   position: relative;
   z-index: 1;
   display: flex; }
-  .help_header:before, .rulesSelect_header:before, .cardSelect_header:before, .userSettings_header:before, .roomSelect_header:before {
+  .help_header:before, .rulesSelect_header:before, .cardSelect_header:before, .userSettings_header:before, .roomSelect_header:before, .cardAlbum_header:before {
     content: "";
     width: 100%;
     height: 100%;
@@ -274,14 +372,14 @@ label {
     background: url(../assets/img/ui/headerPattern.jpg);
     opacity: .25;
     z-index: -1; }
-  .help_header-leftCol, .rulesSelect_header-leftCol, .cardSelect_header-leftCol, .userSettings_header-leftCol, .roomSelect_header-leftCol {
+  .help_header-leftCol, .rulesSelect_header-leftCol, .cardSelect_header-leftCol, .userSettings_header-leftCol, .roomSelect_header-leftCol, .cardAlbum_header-leftCol {
     width: auto; }
-  .help_header-rightCol, .rulesSelect_header-rightCol, .cardSelect_header-rightCol, .userSettings_header-rightCol, .roomSelect_header-rightCol {
+  .help_header-rightCol, .rulesSelect_header-rightCol, .cardSelect_header-rightCol, .userSettings_header-rightCol, .roomSelect_header-rightCol, .cardAlbum_header-rightCol {
     flex: 1;
     position: relative;
     display: flex;
     justify-content: flex-end; }
-  .help_header-help, .rulesSelect_header-help, .cardSelect_header-help, .roomSelect_header-help {
+  .help_header-help, .rulesSelect_header-help, .cardSelect_header-help, .userSettings_header-help, .roomSelect_header-help, .cardAlbum_header-help {
     text-transform: none;
     position: absolute;
     left: 0;
@@ -289,21 +387,21 @@ label {
     margin-top: 1em;
     line-height: 1.25em; }
 
-.help_content, .rulesSelect_content, .cardSelect_content, .userSettings_content, .roomSelect_content {
+.help_content, .rulesSelect_content, .cardSelect_content, .userSettings_content, .roomSelect_content, .cardAlbum_content {
   width: 100%;
   height: calc(100% - 490px);
   position: relative;
   padding: 50px; }
 
-.help_content-topics, .rulesSelect_content-rules, .userSettings_content-settings, .roomSelect_content-settings, .help_content-guide, .cardSelect_content-scroll {
+.help_content-topics, .rulesSelect_content-rules, .roomSelect_content-settings, .help_content-guide, .cardSelect_content-album, .userSettings_content-settings, .cardAlbum_content-album {
   height: 270px;
-  top: calc(50% - 270px / 2);
+  top: calc(50% - 135px);
   position: absolute;
   width: 100%;
   left: 0;
   padding: 0 50px; }
 
-.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .roomSelect_content-screenNav {
+.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .userSettings_content-confirm, .roomSelect_content-screenNav, .cardAlbum_content-screenNav {
   position: absolute;
   width: 100%;
   top: 0;
@@ -312,29 +410,29 @@ label {
   padding: 0 50px;
   background: rgba(0, 0, 0, 0.5); }
 
-.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .roomSelect_content-screenNav {
+.help_content-confirm, .help_content-screenNav, .rulesSelect_content-confirm, .rulesSelect_content-screenNav, .cardSelect_content-confirm, .cardSelect_content-screenNav, .userSettings_content-save, .userSettings_content-load, .userSettings_content-confirm, .roomSelect_content-screenNav, .cardAlbum_content-screenNav {
   display: flex;
   align-items: center; }
-  .help_content-confirm-choice, .help_content-screenNav-choice, .rulesSelect_content-confirm-choice, .rulesSelect_content-screenNav-choice, .cardSelect_content-confirm-choice, .cardSelect_content-screenNav-choice, .userSettings_content-save-choice, .userSettings_content-load-choice, .roomSelect_content-screenNav-choice {
+  .help_content-confirm-choice, .help_content-screenNav-choice, .rulesSelect_content-confirm-choice, .rulesSelect_content-screenNav-choice, .cardSelect_content-confirm-choice, .cardSelect_content-screenNav-choice, .userSettings_content-save-choice, .userSettings_content-load-choice, .userSettings_content-confirm-choice, .roomSelect_content-screenNav-choice, .cardAlbum_content-screenNav-choice {
     display: flex;
     align-items: center;
     margin-right: 1em;
     height: 100%; }
-    .help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element {
+    .help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .userSettings_content-confirm-choice-element, .roomSelect_content-screenNav-choice-element, .cardAlbum_content-screenNav-choice-element {
       position: relative;
       display: inline-block;
       margin-right: .5em; }
 
 /* BUTTONS ------------*/
-.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .game_overlay-endGame-confirmBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element, .cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
+.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .userSettings_content-confirm-choice-element, .roomSelect_content-screenNav-choice-element, .cardAlbum_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn, .lounge_userlist-userCard-content-menu-element, .lounge_notLoggedIn-confirmBtn, .lounge_challenge-acceptBtn, .lounge_challenge-declineBtn, .about_prevBtn, .title_startBtn, .footer_social-element, .about_social-element {
   cursor: pointer;
   font-size: 16px; }
 
-.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .roomSelect_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .game_overlay-endGame-confirmBtn {
+.help_content-confirm-choice-element, .help_content-screenNav-choice-element, .rulesSelect_content-confirm-choice-element, .rulesSelect_content-screenNav-choice-element, .cardSelect_content-confirm-choice-element, .cardSelect_content-screenNav-choice-element, .userSettings_content-save-choice-element, .userSettings_content-load-choice-element, .userSettings_content-confirm-choice-element, .roomSelect_content-screenNav-choice-element, .cardAlbum_content-screenNav-choice-element, .footer_menu-element, .prompt_overlay-confirmBtn, .prompt_overlay-confirm2Btn, .about_credits, .title_overlay-signup-btn, .title_overlay-login-btn, .game_overlay-endGame-confirmBtn, .lounge_userlist-userCard-content-menu-element, .lounge_notLoggedIn-confirmBtn, .lounge_challenge-acceptBtn, .lounge_challenge-declineBtn {
   border: 1px solid #FFF;
   overflow: hidden;
   padding: .3em; }
-  .help_content-confirm-choice-element:after, .help_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .footer_menu-element:after, .prompt_overlay-confirmBtn:after, .prompt_overlay-confirm2Btn:after, .about_credits:after, .game_overlay-endGame-confirmBtn:after {
+  .help_content-confirm-choice-element:after, .help_content-screenNav-choice-element:after, .rulesSelect_content-confirm-choice-element:after, .rulesSelect_content-screenNav-choice-element:after, .cardSelect_content-confirm-choice-element:after, .cardSelect_content-screenNav-choice-element:after, .userSettings_content-save-choice-element:after, .userSettings_content-load-choice-element:after, .userSettings_content-confirm-choice-element:after, .roomSelect_content-screenNav-choice-element:after, .cardAlbum_content-screenNav-choice-element:after, .footer_menu-element:after, .prompt_overlay-confirmBtn:after, .prompt_overlay-confirm2Btn:after, .about_credits:after, .title_overlay-signup-btn:after, .title_overlay-login-btn:after, .game_overlay-endGame-confirmBtn:after, .lounge_userlist-userCard-content-menu-element:after, .lounge_notLoggedIn-confirmBtn:after, .lounge_challenge-acceptBtn:after, .lounge_challenge-declineBtn:after {
     content: "";
     width: 100%;
     height: 100%;
@@ -349,12 +447,12 @@ label {
     -webkit-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0); }
-  .help_content-confirm-choice-element:hover, .help_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .footer_menu-element:hover, .prompt_overlay-confirmBtn:hover, .prompt_overlay-confirm2Btn:hover, .about_credits:hover, .game_overlay-endGame-confirmBtn:hover, .is--active.help_content-confirm-choice-element, .is--active.help_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.prompt_overlay-confirmBtn, .is--active.prompt_overlay-confirm2Btn, .is--active.about_credits, .is--active.game_overlay-endGame-confirmBtn, .is--hover.help_content-confirm-choice-element, .is--hover.help_content-screenNav-choice-element, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.footer_menu-element, .is--hover.prompt_overlay-confirmBtn, .is--hover.prompt_overlay-confirm2Btn, .is--hover.about_credits, .is--hover.game_overlay-endGame-confirmBtn {
+  .help_content-confirm-choice-element:hover, .help_content-screenNav-choice-element:hover, .rulesSelect_content-confirm-choice-element:hover, .rulesSelect_content-screenNav-choice-element:hover, .cardSelect_content-confirm-choice-element:hover, .cardSelect_content-screenNav-choice-element:hover, .userSettings_content-save-choice-element:hover, .userSettings_content-load-choice-element:hover, .userSettings_content-confirm-choice-element:hover, .roomSelect_content-screenNav-choice-element:hover, .cardAlbum_content-screenNav-choice-element:hover, .footer_menu-element:hover, .prompt_overlay-confirmBtn:hover, .prompt_overlay-confirm2Btn:hover, .about_credits:hover, .title_overlay-signup-btn:hover, .title_overlay-login-btn:hover, .game_overlay-endGame-confirmBtn:hover, .lounge_userlist-userCard-content-menu-element:hover, .lounge_notLoggedIn-confirmBtn:hover, .lounge_challenge-acceptBtn:hover, .lounge_challenge-declineBtn:hover, .is--active.help_content-confirm-choice-element, .is--active.help_content-screenNav-choice-element, .is--active.rulesSelect_content-confirm-choice-element, .is--active.rulesSelect_content-screenNav-choice-element, .is--active.cardSelect_content-confirm-choice-element, .is--active.cardSelect_content-screenNav-choice-element, .is--active.userSettings_content-save-choice-element, .is--active.userSettings_content-load-choice-element, .is--active.userSettings_content-confirm-choice-element, .is--active.roomSelect_content-screenNav-choice-element, .is--active.cardAlbum_content-screenNav-choice-element, .is--active.footer_menu-element, .is--active.prompt_overlay-confirmBtn, .is--active.prompt_overlay-confirm2Btn, .is--active.about_credits, .is--active.title_overlay-signup-btn, .is--active.title_overlay-login-btn, .is--active.game_overlay-endGame-confirmBtn, .is--active.lounge_userlist-userCard-content-menu-element, .is--active.lounge_notLoggedIn-confirmBtn, .is--active.lounge_challenge-acceptBtn, .is--active.lounge_challenge-declineBtn, .is--hover.help_content-confirm-choice-element, .is--hover.help_content-screenNav-choice-element, .is--hover.rulesSelect_content-confirm-choice-element, .is--hover.rulesSelect_content-screenNav-choice-element, .is--hover.cardSelect_content-confirm-choice-element, .is--hover.cardSelect_content-screenNav-choice-element, .is--hover.userSettings_content-save-choice-element, .is--hover.userSettings_content-load-choice-element, .is--hover.userSettings_content-confirm-choice-element, .is--hover.roomSelect_content-screenNav-choice-element, .is--hover.cardAlbum_content-screenNav-choice-element, .is--hover.footer_menu-element, .is--hover.prompt_overlay-confirmBtn, .is--hover.prompt_overlay-confirm2Btn, .is--hover.about_credits, .is--hover.title_overlay-signup-btn, .is--hover.title_overlay-login-btn, .is--hover.game_overlay-endGame-confirmBtn, .is--hover.lounge_userlist-userCard-content-menu-element, .is--hover.lounge_notLoggedIn-confirmBtn, .is--hover.lounge_challenge-acceptBtn, .is--hover.lounge_challenge-declineBtn {
     background: #FFF;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     mix-blend-mode: hard-light; }
-    .help_content-confirm-choice-element:hover:after, .help_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .prompt_overlay-confirmBtn:hover:after, .prompt_overlay-confirm2Btn:hover:after, .about_credits:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .is--active.help_content-confirm-choice-element:after, .is--active.help_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.prompt_overlay-confirmBtn:after, .is--active.prompt_overlay-confirm2Btn:after, .is--active.about_credits:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--hover.help_content-confirm-choice-element:after, .is--hover.help_content-screenNav-choice-element:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.prompt_overlay-confirmBtn:after, .is--hover.prompt_overlay-confirm2Btn:after, .is--hover.about_credits:after, .is--hover.game_overlay-endGame-confirmBtn:after {
+    .help_content-confirm-choice-element:hover:after, .help_content-screenNav-choice-element:hover:after, .rulesSelect_content-confirm-choice-element:hover:after, .rulesSelect_content-screenNav-choice-element:hover:after, .cardSelect_content-confirm-choice-element:hover:after, .cardSelect_content-screenNav-choice-element:hover:after, .userSettings_content-save-choice-element:hover:after, .userSettings_content-load-choice-element:hover:after, .userSettings_content-confirm-choice-element:hover:after, .roomSelect_content-screenNav-choice-element:hover:after, .cardAlbum_content-screenNav-choice-element:hover:after, .footer_menu-element:hover:after, .prompt_overlay-confirmBtn:hover:after, .prompt_overlay-confirm2Btn:hover:after, .about_credits:hover:after, .title_overlay-signup-btn:hover:after, .title_overlay-login-btn:hover:after, .game_overlay-endGame-confirmBtn:hover:after, .lounge_userlist-userCard-content-menu-element:hover:after, .lounge_notLoggedIn-confirmBtn:hover:after, .lounge_challenge-acceptBtn:hover:after, .lounge_challenge-declineBtn:hover:after, .is--active.help_content-confirm-choice-element:after, .is--active.help_content-screenNav-choice-element:after, .is--active.rulesSelect_content-confirm-choice-element:after, .is--active.rulesSelect_content-screenNav-choice-element:after, .is--active.cardSelect_content-confirm-choice-element:after, .is--active.cardSelect_content-screenNav-choice-element:after, .is--active.userSettings_content-save-choice-element:after, .is--active.userSettings_content-load-choice-element:after, .is--active.userSettings_content-confirm-choice-element:after, .is--active.roomSelect_content-screenNav-choice-element:after, .is--active.cardAlbum_content-screenNav-choice-element:after, .is--active.footer_menu-element:after, .is--active.prompt_overlay-confirmBtn:after, .is--active.prompt_overlay-confirm2Btn:after, .is--active.about_credits:after, .is--active.title_overlay-signup-btn:after, .is--active.title_overlay-login-btn:after, .is--active.game_overlay-endGame-confirmBtn:after, .is--active.lounge_userlist-userCard-content-menu-element:after, .is--active.lounge_notLoggedIn-confirmBtn:after, .is--active.lounge_challenge-acceptBtn:after, .is--active.lounge_challenge-declineBtn:after, .is--hover.help_content-confirm-choice-element:after, .is--hover.help_content-screenNav-choice-element:after, .is--hover.rulesSelect_content-confirm-choice-element:after, .is--hover.rulesSelect_content-screenNav-choice-element:after, .is--hover.cardSelect_content-confirm-choice-element:after, .is--hover.cardSelect_content-screenNav-choice-element:after, .is--hover.userSettings_content-save-choice-element:after, .is--hover.userSettings_content-load-choice-element:after, .is--hover.userSettings_content-confirm-choice-element:after, .is--hover.roomSelect_content-screenNav-choice-element:after, .is--hover.cardAlbum_content-screenNav-choice-element:after, .is--hover.footer_menu-element:after, .is--hover.prompt_overlay-confirmBtn:after, .is--hover.prompt_overlay-confirm2Btn:after, .is--hover.about_credits:after, .is--hover.title_overlay-signup-btn:after, .is--hover.title_overlay-login-btn:after, .is--hover.game_overlay-endGame-confirmBtn:after, .is--hover.lounge_userlist-userCard-content-menu-element:after, .is--hover.lounge_notLoggedIn-confirmBtn:after, .is--hover.lounge_challenge-acceptBtn:after, .is--hover.lounge_challenge-declineBtn:after {
       top: 0;
       mix-blend-mode: exclusion; }
 
@@ -377,7 +475,7 @@ label {
     -webkit-transition: -webkit-all .2s .2s ease-in;
     -ms-transition: -ms-all .2s .2s ease-in;
     transition: all .2s .2s ease-in; }
-.about_prevBtn:hover .about_prevBtn-hoverFX:after, .title_startBtn:hover .about_prevBtn-hoverFX:after, .footer_social-element:hover .about_prevBtn-hoverFX:after, .about_social-element:hover .about_prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .about_prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .about_prevBtn-hoverFX:after, .about_prevBtn:hover .title_startBtn-hoverFX:after, .title_startBtn:hover .title_startBtn-hoverFX:after, .footer_social-element:hover .title_startBtn-hoverFX:after, .about_social-element:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .title_startBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .title_startBtn-hoverFX:after, .about_prevBtn:hover .footer_social-element-hoverFX:after, .title_startBtn:hover .footer_social-element-hoverFX:after, .footer_social-element:hover .footer_social-element-hoverFX:after, .about_social-element:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .footer_social-element-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .footer_social-element-hoverFX:after, .about_prevBtn:hover .about_social-element-hoverFX:after, .title_startBtn:hover .about_social-element-hoverFX:after, .footer_social-element:hover .about_social-element-hoverFX:after, .about_social-element:hover .about_social-element-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .about_social-element-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .about_social-element-hoverFX:after, .is--hover.about_prevBtn .about_prevBtn-hoverFX:after, .is--hover.title_startBtn .about_prevBtn-hoverFX:after, .is--hover.footer_social-element .about_prevBtn-hoverFX:after, .is--hover.about_social-element .about_prevBtn-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .about_prevBtn-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .about_prevBtn-hoverFX:after, .is--hover.about_prevBtn .title_startBtn-hoverFX:after, .is--hover.title_startBtn .title_startBtn-hoverFX:after, .is--hover.footer_social-element .title_startBtn-hoverFX:after, .is--hover.about_social-element .title_startBtn-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .title_startBtn-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .title_startBtn-hoverFX:after, .is--hover.about_prevBtn .footer_social-element-hoverFX:after, .is--hover.title_startBtn .footer_social-element-hoverFX:after, .is--hover.footer_social-element .footer_social-element-hoverFX:after, .is--hover.about_social-element .footer_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .footer_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .footer_social-element-hoverFX:after, .is--hover.about_prevBtn .about_social-element-hoverFX:after, .is--hover.title_startBtn .about_social-element-hoverFX:after, .is--hover.footer_social-element .about_social-element-hoverFX:after, .is--hover.about_social-element .about_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-prevBtn .about_social-element-hoverFX:after, .is--hover.cardSelect_content-nav-nextBtn .about_social-element-hoverFX:after {
+.about_prevBtn:hover .about_prevBtn-hoverFX:after, .title_startBtn:hover .about_prevBtn-hoverFX:after, .footer_social-element:hover .about_prevBtn-hoverFX:after, .about_social-element:hover .about_prevBtn-hoverFX:after, .about_prevBtn:hover .title_startBtn-hoverFX:after, .title_startBtn:hover .title_startBtn-hoverFX:after, .footer_social-element:hover .title_startBtn-hoverFX:after, .about_social-element:hover .title_startBtn-hoverFX:after, .about_prevBtn:hover .footer_social-element-hoverFX:after, .title_startBtn:hover .footer_social-element-hoverFX:after, .footer_social-element:hover .footer_social-element-hoverFX:after, .about_social-element:hover .footer_social-element-hoverFX:after, .about_prevBtn:hover .about_social-element-hoverFX:after, .title_startBtn:hover .about_social-element-hoverFX:after, .footer_social-element:hover .about_social-element-hoverFX:after, .about_social-element:hover .about_social-element-hoverFX:after, .is--hover.about_prevBtn .about_prevBtn-hoverFX:after, .is--hover.title_startBtn .about_prevBtn-hoverFX:after, .is--hover.footer_social-element .about_prevBtn-hoverFX:after, .is--hover.about_social-element .about_prevBtn-hoverFX:after, .is--hover.about_prevBtn .title_startBtn-hoverFX:after, .is--hover.title_startBtn .title_startBtn-hoverFX:after, .is--hover.footer_social-element .title_startBtn-hoverFX:after, .is--hover.about_social-element .title_startBtn-hoverFX:after, .is--hover.about_prevBtn .footer_social-element-hoverFX:after, .is--hover.title_startBtn .footer_social-element-hoverFX:after, .is--hover.footer_social-element .footer_social-element-hoverFX:after, .is--hover.about_social-element .footer_social-element-hoverFX:after, .is--hover.about_prevBtn .about_social-element-hoverFX:after, .is--hover.title_startBtn .about_social-element-hoverFX:after, .is--hover.footer_social-element .about_social-element-hoverFX:after, .is--hover.about_social-element .about_social-element-hoverFX:after {
   background: #FFF;
   top: 0;
   left: 0;
@@ -442,7 +540,7 @@ label {
   -ms-transform: rotate(180deg);
   transform: rotate(180deg); }
 
-.about_prevBtn:hover .arrow-up, .title_startBtn:hover .arrow-up, .footer_social-element:hover .arrow-up, .about_social-element:hover .arrow-up, .cardSelect_content-nav-prevBtn:hover .arrow-up, .cardSelect_content-nav-nextBtn:hover .arrow-up, .about_prevBtn:hover .arrow-right, .title_startBtn:hover .arrow-right, .footer_social-element:hover .arrow-right, .about_social-element:hover .arrow-right, .cardSelect_content-nav-prevBtn:hover .arrow-right, .cardSelect_content-nav-nextBtn:hover .arrow-right, .about_prevBtn:hover .arrow-down, .title_startBtn:hover .arrow-down, .footer_social-element:hover .arrow-down, .about_social-element:hover .arrow-down, .cardSelect_content-nav-prevBtn:hover .arrow-down, .cardSelect_content-nav-nextBtn:hover .arrow-down, .about_prevBtn:hover .arrow-left, .title_startBtn:hover .arrow-left, .footer_social-element:hover .arrow-left, .about_social-element:hover .arrow-left, .cardSelect_content-nav-prevBtn:hover .arrow-left, .cardSelect_content-nav-nextBtn:hover .arrow-left, .is--hover.about_prevBtn .arrow-up, .is--hover.title_startBtn .arrow-up, .is--hover.footer_social-element .arrow-up, .is--hover.about_social-element .arrow-up, .is--hover.cardSelect_content-nav-prevBtn .arrow-up, .is--hover.cardSelect_content-nav-nextBtn .arrow-up, .is--hover.about_prevBtn .arrow-right, .is--hover.title_startBtn .arrow-right, .is--hover.footer_social-element .arrow-right, .is--hover.about_social-element .arrow-right, .is--hover.cardSelect_content-nav-prevBtn .arrow-right, .is--hover.cardSelect_content-nav-nextBtn .arrow-right, .is--hover.about_prevBtn .arrow-down, .is--hover.title_startBtn .arrow-down, .is--hover.footer_social-element .arrow-down, .is--hover.about_social-element .arrow-down, .is--hover.cardSelect_content-nav-prevBtn .arrow-down, .is--hover.cardSelect_content-nav-nextBtn .arrow-down, .is--hover.about_prevBtn .arrow-left, .is--hover.title_startBtn .arrow-left, .is--hover.footer_social-element .arrow-left, .is--hover.about_social-element .arrow-left, .is--hover.cardSelect_content-nav-prevBtn .arrow-left, .is--hover.cardSelect_content-nav-nextBtn .arrow-left {
+.about_prevBtn:hover .arrow-up, .title_startBtn:hover .arrow-up, .footer_social-element:hover .arrow-up, .about_social-element:hover .arrow-up, .about_prevBtn:hover .arrow-right, .title_startBtn:hover .arrow-right, .footer_social-element:hover .arrow-right, .about_social-element:hover .arrow-right, .about_prevBtn:hover .arrow-down, .title_startBtn:hover .arrow-down, .footer_social-element:hover .arrow-down, .about_social-element:hover .arrow-down, .about_prevBtn:hover .arrow-left, .title_startBtn:hover .arrow-left, .footer_social-element:hover .arrow-left, .about_social-element:hover .arrow-left, .is--hover.about_prevBtn .arrow-up, .is--hover.title_startBtn .arrow-up, .is--hover.footer_social-element .arrow-up, .is--hover.about_social-element .arrow-up, .is--hover.about_prevBtn .arrow-right, .is--hover.title_startBtn .arrow-right, .is--hover.footer_social-element .arrow-right, .is--hover.about_social-element .arrow-right, .is--hover.about_prevBtn .arrow-down, .is--hover.title_startBtn .arrow-down, .is--hover.footer_social-element .arrow-down, .is--hover.about_social-element .arrow-down, .is--hover.about_prevBtn .arrow-left, .is--hover.title_startBtn .arrow-left, .is--hover.footer_social-element .arrow-left, .is--hover.about_social-element .arrow-left {
   mix-blend-mode: exclusion; }
 
 /* CARDS --------------*/
@@ -502,29 +600,55 @@ label {
   transform: rotateX(180deg); }
 
 /* ALBUMS --------------*/
-.cardSelect_content-album-card, .game_overlay-endGame-album-card {
+.cardSelect_content-album-card, .game_overlay-endGame-album-card, .cardAlbum_content-album-card {
   width: 180px;
   height: 100%;
   border: 1px solid rgba(255, 255, 255, 0.25);
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  overflow: hidden; }
+  .cardSelect_content-album-card-visual, .game_overlay-endGame-album-card-visual, .cardAlbum_content-album-card-visual {
+    flex: 1;
+    position: relative; }
+    .cardSelect_content-album-card-visual .card, .game_overlay-endGame-album-card-visual .card, .cardAlbum_content-album-card-visual .card {
+      position: relative;
+      left: calc(50% - 77px);
+      top: calc(50% - 95px); }
+    .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name, .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name, .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name {
+      width: 100%; }
+      .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name + .cardSelect_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardSelect_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .game_overlay-endGame-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardSelect_content-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .game_overlay-endGame-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardSelect_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .game_overlay-endGame-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount, .cardAlbum_content-album-card-visual:hover + .cardAlbum_content-album-card-label .cardAlbum_content-album-card-name + .cardAlbum_content-album-card-copiesCount {
+        opacity: 0;
+        width: 0; }
+  .cardSelect_content-album-card-label, .game_overlay-endGame-album-card-label, .cardAlbum_content-album-card-label {
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5);
+    line-height: 50px;
+    padding: 0 15px;
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    text-transform: none; }
+  .cardSelect_content-album-card-name, .game_overlay-endGame-album-card-name, .cardAlbum_content-album-card-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-transition: -webkit-width .2s;
+    -ms-transition: -ms-width .2s;
+    transition: width .2s; }
+  .cardSelect_content-album-card-copiesCount, .cardAlbum_content-album-card-copiesCount {
+    text-align: right;
+    -webkit-transition: -webkit-opacity .2s, width .2s;
+    -ms-transition: -ms-opacity .2s, width .2s;
+    transition: opacity .2s, width .2s; }
 
-.cardSelect_content-album-card-visual, .game_overlay-endGame-album-card-visual {
-  flex: 1;
-  position: relative; }
-  .cardSelect_content-album-card-visual .card, .game_overlay-endGame-album-card-visual .card {
-    position: relative;
-    left: calc(50% - 77px);
-    top: calc(50% - 95px); }
+.cardSelect_content-album-cardWrapper, .cardAlbum_content-album-cardWrapper {
+  width: 11.11111%;
+  height: 270px;
+  margin-bottom: 1.05em; }
+  .cardSelect_content-album-cardWrapper:nth-last-child(-n + 9), .cardAlbum_content-album-cardWrapper:nth-last-child(-n + 9) {
+    margin-bottom: 0; }
 
-.cardSelect_content-album-card-label, .game_overlay-endGame-album-card-label {
-  height: 50px;
-  background: rgba(0, 0, 0, 0.5);
-  line-height: 50px;
-  padding: 0 15px;
-  display: flex;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  text-transform: none; }
+.cardSelect_content-album-scroll, .cardAlbum_content-album-scroll {
+  flex-wrap: wrap; }
 
 /* OVERLAYS --------------*/
 .overlay {
@@ -624,35 +748,37 @@ label {
     text-align: center;
     vertical-align: text-bottom; }
 
-.footer_text, .about_text, .about_version {
-  cursor: default; }
-  .footer_text span, .about_text span, .about_version span {
-    font-size: .75em;
-    margin-right: .5em; }
-
 /* OPTIONS PANEL --------------*/
-.help_content-topics, .rulesSelect_content-rules, .userSettings_content-settings, .roomSelect_content-settings {
+.help_content-topics, .rulesSelect_content-rules, .roomSelect_content-settings {
   display: flex; }
-  .help_content-topics .col, .rulesSelect_content-rules .col, .userSettings_content-settings .col, .roomSelect_content-settings .col {
+  .help_content-topics .col, .rulesSelect_content-rules .col, .roomSelect_content-settings .col {
     width: 50%;
     margin-right: 1em; }
-  .help_content-topics .col:last-child, .rulesSelect_content-rules .col:last-child, .userSettings_content-settings .col:last-child, .roomSelect_content-settings .col:last-child {
+  .help_content-topics .col:last-child, .rulesSelect_content-rules .col:last-child, .roomSelect_content-settings .col:last-child {
     margin-right: 0; }
 
-.help_content-topics-topic, .rulesSelect_content-rules-rule, .userSettings_content-settings-setting, .roomSelect_content-settings-setting {
+.help_content-topics-topic, .title_overlay-signup-form-field, .title_overlay-login-form-field, .rulesSelect_content-rules-rule, .userSettings_content-settings-setting, .roomSelect_content-settings-setting {
   display: flex;
   height: 50px;
   line-height: 50px;
-  margin-bottom: 1em; }
-  .is--on.help_content-topics-topic, .is--on.rulesSelect_content-rules-rule, .is--on.userSettings_content-settings-setting, .is--on.roomSelect_content-settings-setting, .is--off.help_content-topics-topic, .is--off.rulesSelect_content-rules-rule, .is--off.userSettings_content-settings-setting, .is--off.roomSelect_content-settings-setting {
+  margin-bottom: 1em;
+  height: 50px; }
+  .help_content-topics-topic:not(.is--disabled):not(.is--readOnly).is--on, .title_overlay-signup-form-field:not(.is--disabled):not(.is--readOnly).is--on, .title_overlay-login-form-field:not(.is--disabled):not(.is--readOnly).is--on, .rulesSelect_content-rules-rule:not(.is--disabled):not(.is--readOnly).is--on, .userSettings_content-settings-setting:not(.is--disabled):not(.is--readOnly).is--on, .roomSelect_content-settings-setting:not(.is--disabled):not(.is--readOnly).is--on, .help_content-topics-topic:not(.is--disabled):not(.is--readOnly).is--off, .title_overlay-signup-form-field:not(.is--disabled):not(.is--readOnly).is--off, .title_overlay-login-form-field:not(.is--disabled):not(.is--readOnly).is--off, .rulesSelect_content-rules-rule:not(.is--disabled):not(.is--readOnly).is--off, .userSettings_content-settings-setting:not(.is--disabled):not(.is--readOnly).is--off, .roomSelect_content-settings-setting:not(.is--disabled):not(.is--readOnly).is--off, .help_content-topics-topic:not(.is--readOnly) .rulesSelect_content-rules-rule-select li:not(.is--disabled), .title_overlay-signup-form-field:not(.is--readOnly) .rulesSelect_content-rules-rule-select li:not(.is--disabled), .title_overlay-login-form-field:not(.is--readOnly) .rulesSelect_content-rules-rule-select li:not(.is--disabled), .rulesSelect_content-rules-rule:not(.is--readOnly) .rulesSelect_content-rules-rule-select li:not(.is--disabled), .userSettings_content-settings-setting:not(.is--readOnly) .rulesSelect_content-rules-rule-select li:not(.is--disabled), .roomSelect_content-settings-setting:not(.is--readOnly) .rulesSelect_content-rules-rule-select li:not(.is--disabled), .help_content-topics-topic:not(.is--readOnly) .userSettings_content-settings-setting-select li:not(.is--disabled), .title_overlay-signup-form-field:not(.is--readOnly) .userSettings_content-settings-setting-select li:not(.is--disabled), .title_overlay-login-form-field:not(.is--readOnly) .userSettings_content-settings-setting-select li:not(.is--disabled), .rulesSelect_content-rules-rule:not(.is--readOnly) .userSettings_content-settings-setting-select li:not(.is--disabled), .userSettings_content-settings-setting:not(.is--readOnly) .userSettings_content-settings-setting-select li:not(.is--disabled), .roomSelect_content-settings-setting:not(.is--readOnly) .userSettings_content-settings-setting-select li:not(.is--disabled), .help_content-topics-topic:not(.is--readOnly) .roomSelect_content-settings-setting-select li:not(.is--disabled), .title_overlay-signup-form-field:not(.is--readOnly) .roomSelect_content-settings-setting-select li:not(.is--disabled), .title_overlay-login-form-field:not(.is--readOnly) .roomSelect_content-settings-setting-select li:not(.is--disabled), .rulesSelect_content-rules-rule:not(.is--readOnly) .roomSelect_content-settings-setting-select li:not(.is--disabled), .userSettings_content-settings-setting:not(.is--readOnly) .roomSelect_content-settings-setting-select li:not(.is--disabled), .roomSelect_content-settings-setting:not(.is--readOnly) .roomSelect_content-settings-setting-select li:not(.is--disabled) {
     cursor: pointer; }
+  .is--disabled.help_content-topics-topic, .is--disabled.title_overlay-signup-form-field, .is--disabled.title_overlay-login-form-field, .is--disabled.rulesSelect_content-rules-rule, .is--disabled.userSettings_content-settings-setting, .is--disabled.roomSelect_content-settings-setting {
+    color: #666; }
+    .is--disabled.help_content-topics-topic .help_content-topics-topic-label, .is--disabled.title_overlay-signup-form-field .help_content-topics-topic-label, .is--disabled.title_overlay-login-form-field .help_content-topics-topic-label, .is--disabled.rulesSelect_content-rules-rule .help_content-topics-topic-label, .is--disabled.userSettings_content-settings-setting .help_content-topics-topic-label, .is--disabled.roomSelect_content-settings-setting .help_content-topics-topic-label, .is--disabled.help_content-topics-topic .title_overlay-signup-form-field-label, .is--disabled.title_overlay-signup-form-field .title_overlay-signup-form-field-label, .is--disabled.title_overlay-login-form-field .title_overlay-signup-form-field-label, .is--disabled.rulesSelect_content-rules-rule .title_overlay-signup-form-field-label, .is--disabled.userSettings_content-settings-setting .title_overlay-signup-form-field-label, .is--disabled.roomSelect_content-settings-setting .title_overlay-signup-form-field-label, .is--disabled.help_content-topics-topic .title_overlay-login-form-field-label, .is--disabled.title_overlay-signup-form-field .title_overlay-login-form-field-label, .is--disabled.title_overlay-login-form-field .title_overlay-login-form-field-label, .is--disabled.rulesSelect_content-rules-rule .title_overlay-login-form-field-label, .is--disabled.userSettings_content-settings-setting .title_overlay-login-form-field-label, .is--disabled.roomSelect_content-settings-setting .title_overlay-login-form-field-label, .is--disabled.help_content-topics-topic .rulesSelect_content-rules-rule-label, .is--disabled.title_overlay-signup-form-field .rulesSelect_content-rules-rule-label, .is--disabled.title_overlay-login-form-field .rulesSelect_content-rules-rule-label, .is--disabled.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-label, .is--disabled.userSettings_content-settings-setting .rulesSelect_content-rules-rule-label, .is--disabled.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-label, .is--disabled.help_content-topics-topic .lounge_log-chatbar-label, .is--disabled.title_overlay-signup-form-field .lounge_log-chatbar-label, .is--disabled.title_overlay-login-form-field .lounge_log-chatbar-label, .is--disabled.rulesSelect_content-rules-rule .lounge_log-chatbar-label, .is--disabled.userSettings_content-settings-setting .lounge_log-chatbar-label, .is--disabled.roomSelect_content-settings-setting .lounge_log-chatbar-label, .is--disabled.help_content-topics-topic .userSettings_content-settings-setting-label, .is--disabled.title_overlay-signup-form-field .userSettings_content-settings-setting-label, .is--disabled.title_overlay-login-form-field .userSettings_content-settings-setting-label, .is--disabled.rulesSelect_content-rules-rule .userSettings_content-settings-setting-label, .is--disabled.userSettings_content-settings-setting .userSettings_content-settings-setting-label, .is--disabled.roomSelect_content-settings-setting .userSettings_content-settings-setting-label, .is--disabled.help_content-topics-topic .roomSelect_content-settings-setting-label, .is--disabled.title_overlay-signup-form-field .roomSelect_content-settings-setting-label, .is--disabled.title_overlay-login-form-field .roomSelect_content-settings-setting-label, .is--disabled.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-label, .is--disabled.userSettings_content-settings-setting .roomSelect_content-settings-setting-label, .is--disabled.roomSelect_content-settings-setting .roomSelect_content-settings-setting-label {
+      background: rgba(0, 0, 0, 0.5); }
 
-.help_content-topics-topic-label, .rulesSelect_content-rules-rule-label, .userSettings_content-settings-setting-label, .roomSelect_content-settings-setting-label {
+.help_content-topics-topic-label, .title_overlay-signup-form-field-label, .title_overlay-login-form-field-label, .rulesSelect_content-rules-rule-label, .lounge_log-chatbar-label, .userSettings_content-settings-setting-label, .roomSelect_content-settings-setting-label {
   text-transform: none;
   flex: 1;
-  padding-left: 1em;
+  text-indent: 1em;
   background: rgba(255, 255, 255, 0.1);
-  position: relative; }
+  position: relative;
+  -webkit-transition: -webkit-background .2s;
+  -ms-transition: -ms-background .2s;
+  transition: background .2s; }
 
 .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting-toggle {
   position: relative;
@@ -662,33 +788,64 @@ label {
   -webkit-transition: -webkit-background .2s;
   -ms-transition: -ms-background .2s;
   transition: background .2s; }
-  .is--on.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--on.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--on.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
+  .is--on.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--on.title_overlay-signup-form-field .rulesSelect_content-rules-rule-toggle, .is--on.title_overlay-login-form-field .rulesSelect_content-rules-rule-toggle, .is--on.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--on.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--on.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--on.title_overlay-signup-form-field .userSettings_content-settings-setting-toggle, .is--on.title_overlay-login-form-field .userSettings_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--on.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--on.title_overlay-signup-form-field .roomSelect_content-settings-setting-toggle, .is--on.title_overlay-login-form-field .roomSelect_content-settings-setting-toggle, .is--on.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--on.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--on.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
     background: rgba(40, 51, 120, 0.5); }
-  .is--off.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--off.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--off.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
+  .is--off.help_content-topics-topic .rulesSelect_content-rules-rule-toggle, .is--off.title_overlay-signup-form-field .rulesSelect_content-rules-rule-toggle, .is--off.title_overlay-login-form-field .rulesSelect_content-rules-rule-toggle, .is--off.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-toggle, .is--off.userSettings_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-toggle, .is--off.help_content-topics-topic .userSettings_content-settings-setting-toggle, .is--off.title_overlay-signup-form-field .userSettings_content-settings-setting-toggle, .is--off.title_overlay-login-form-field .userSettings_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .userSettings_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .userSettings_content-settings-setting-toggle, .is--off.help_content-topics-topic .roomSelect_content-settings-setting-toggle, .is--off.title_overlay-signup-form-field .roomSelect_content-settings-setting-toggle, .is--off.title_overlay-login-form-field .roomSelect_content-settings-setting-toggle, .is--off.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-toggle, .is--off.userSettings_content-settings-setting .roomSelect_content-settings-setting-toggle, .is--off.roomSelect_content-settings-setting .roomSelect_content-settings-setting-toggle {
     background: rgba(235, 53, 71, 0.5); }
 
-.help_content-guide-contents, .rulesSelect_content-rules-rule-select, .userSettings_content-settings-setting-select, .roomSelect_content-settings-setting-select {
+.rulesSelect_content-rules-rule-select, .userSettings_content-settings-setting-select, .roomSelect_content-settings-setting-select {
   text-transform: none;
   flex: 1;
-  padding-left: 1em;
-  background: rgba(255, 255, 255, 0.1);
+  text-indent: 1em;
   position: relative;
   overflow: hidden;
   height: 100%;
   -webkit-transition: -webkit-height .2s .2s;
   -ms-transition: -ms-height .2s .2s;
   transition: height .2s .2s; }
-  .help_content-guide-contents li.is--disabled, .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled, .roomSelect_content-settings-setting-select li.is--disabled {
-    color: #000; }
+  .rulesSelect_content-rules-rule-select li, .userSettings_content-settings-setting-select li, .roomSelect_content-settings-setting-select li {
+    height: 50px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-transition: -webkit-background .2s;
+    -ms-transition: -ms-background .2s;
+    transition: background .2s; }
+    .rulesSelect_content-rules-rule-select li.is--disabled, .userSettings_content-settings-setting-select li.is--disabled, .roomSelect_content-settings-setting-select li.is--disabled {
+      color: #000; }
+    .is--active.help_content-topics-topic .rulesSelect_content-rules-rule-select li:hover:not(.is--disabled), .is--active.title_overlay-signup-form-field .rulesSelect_content-rules-rule-select li:hover:not(.is--disabled), .is--active.title_overlay-login-form-field .rulesSelect_content-rules-rule-select li:hover:not(.is--disabled), .is--active.rulesSelect_content-rules-rule .rulesSelect_content-rules-rule-select li:hover:not(.is--disabled), .is--active.userSettings_content-settings-setting .rulesSelect_content-rules-rule-select li:hover:not(.is--disabled), .is--active.roomSelect_content-settings-setting .rulesSelect_content-rules-rule-select li:hover:not(.is--disabled), .is--active.help_content-topics-topic .userSettings_content-settings-setting-select li:hover:not(.is--disabled), .is--active.title_overlay-signup-form-field .userSettings_content-settings-setting-select li:hover:not(.is--disabled), .is--active.title_overlay-login-form-field .userSettings_content-settings-setting-select li:hover:not(.is--disabled), .is--active.rulesSelect_content-rules-rule .userSettings_content-settings-setting-select li:hover:not(.is--disabled), .is--active.userSettings_content-settings-setting .userSettings_content-settings-setting-select li:hover:not(.is--disabled), .is--active.roomSelect_content-settings-setting .userSettings_content-settings-setting-select li:hover:not(.is--disabled), .is--active.help_content-topics-topic .roomSelect_content-settings-setting-select li:hover:not(.is--disabled), .is--active.title_overlay-signup-form-field .roomSelect_content-settings-setting-select li:hover:not(.is--disabled), .is--active.title_overlay-login-form-field .roomSelect_content-settings-setting-select li:hover:not(.is--disabled), .is--active.rulesSelect_content-rules-rule .roomSelect_content-settings-setting-select li:hover:not(.is--disabled), .is--active.userSettings_content-settings-setting .roomSelect_content-settings-setting-select li:hover:not(.is--disabled), .is--active.roomSelect_content-settings-setting .roomSelect_content-settings-setting-select li:hover:not(.is--disabled) {
+      background: rgba(255, 255, 255, 0.2); }
 
-.rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty, .userSettings_content-settings-setting.setting-placingMode, .roomSelect_content-settings-setting.setting-mode, .roomSelect_content-settings-setting.setting-difficulty {
-  cursor: pointer;
+.rulesSelect_content-rules-rule.rule-trade, .userSettings_content-settings-setting.setting-difficulty, .userSettings_content-settings-setting.setting-placingMode, .userSettings_content-settings-setting.setting-notifyMode, .userSettings_content-settings-setting.setting-inactiveAudio, .userSettings_content-settings-setting.setting-country, .roomSelect_content-settings-setting.setting-mode, .roomSelect_content-settings-setting.setting-difficulty {
   position: relative; }
-  .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
+  .is--active.rulesSelect_content-rules-rule.rule-trade, .is--active.userSettings_content-settings-setting.setting-difficulty, .is--active.userSettings_content-settings-setting.setting-placingMode, .is--active.userSettings_content-settings-setting.setting-notifyMode, .is--active.userSettings_content-settings-setting.setting-inactiveAudio, .is--active.userSettings_content-settings-setting.setting-country, .is--active.roomSelect_content-settings-setting.setting-mode, .is--active.roomSelect_content-settings-setting.setting-difficulty {
+    z-index: 1000; }
+    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-notifyMode .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-country .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-notifyMode .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-country .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-notifyMode .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-country .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
+      width: 0;
+      opacity: 0;
+      -webkit-transition: -webkit-width .2s .2s, opacity .2s .2s;
+      -ms-transition: -ms-width .2s .2s, opacity .2s .2s;
+      transition: width .2s .2s, opacity .2s .2s; }
+      .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-notifyMode .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-country .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-notifyMode .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-country .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-notifyMode .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-country .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
+        -webkit-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
+        -webkit-transition: -webkit-transform .2s;
+        -ms-transition: -ms-transform .2s;
+        transition: transform .2s; }
+    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-notifyMode .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-country .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-notifyMode .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-country .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-notifyMode .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-inactiveAudio .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-country .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select {
+      overflow-y: scroll;
+      height: 100px; }
+    .is--active.rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-notifyMode + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-inactiveAudio + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-country + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.rulesSelect_content-rules-rule.rule-trade + .title_overlay-signup-form-field, .is--active.userSettings_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field, .is--active.userSettings_content-settings-setting.setting-placingMode + .title_overlay-signup-form-field, .is--active.userSettings_content-settings-setting.setting-notifyMode + .title_overlay-signup-form-field, .is--active.userSettings_content-settings-setting.setting-inactiveAudio + .title_overlay-signup-form-field, .is--active.userSettings_content-settings-setting.setting-country + .title_overlay-signup-form-field, .is--active.roomSelect_content-settings-setting.setting-mode + .title_overlay-signup-form-field, .is--active.roomSelect_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field, .is--active.rulesSelect_content-rules-rule.rule-trade + .title_overlay-login-form-field, .is--active.userSettings_content-settings-setting.setting-difficulty + .title_overlay-login-form-field, .is--active.userSettings_content-settings-setting.setting-placingMode + .title_overlay-login-form-field, .is--active.userSettings_content-settings-setting.setting-notifyMode + .title_overlay-login-form-field, .is--active.userSettings_content-settings-setting.setting-inactiveAudio + .title_overlay-login-form-field, .is--active.userSettings_content-settings-setting.setting-country + .title_overlay-login-form-field, .is--active.roomSelect_content-settings-setting.setting-mode + .title_overlay-login-form-field, .is--active.roomSelect_content-settings-setting.setting-difficulty + .title_overlay-login-form-field, .is--active.rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-notifyMode + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-inactiveAudio + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-country + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-notifyMode + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-inactiveAudio + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-country + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-notifyMode + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-inactiveAudio + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-country + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting {
+      opacity: 0;
+      -webkit-transition: -webkit-opacity .2s;
+      -ms-transition: -ms-opacity .2s;
+      transition: opacity .2s; }
+  .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-notifyMode .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-inactiveAudio .rulesSelect_content-rules-rule-toggle, .userSettings_content-settings-setting.setting-country .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-notifyMode .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-inactiveAudio .userSettings_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-country .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-notifyMode .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-inactiveAudio .roomSelect_content-settings-setting-toggle, .userSettings_content-settings-setting.setting-country .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
+    cursor: pointer;
     -webkit-transition: -webkit-width .2s, opacity .2s;
     -ms-transition: -ms-width .2s, opacity .2s;
     transition: width .2s, opacity .2s; }
-    .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
+    .rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-notifyMode .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-inactiveAudio .rulesSelect_content-rules-rule-toggle:after, .userSettings_content-settings-setting.setting-country .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-notifyMode .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-inactiveAudio .userSettings_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-country .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-notifyMode .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-inactiveAudio .roomSelect_content-settings-setting-toggle:after, .userSettings_content-settings-setting.setting-country .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
       content: "";
       position: absolute;
       border-left: 6px solid transparent;
@@ -699,35 +856,12 @@ label {
       -webkit-transition: -webkit-transform .2s .2s;
       -ms-transition: -ms-transform .2s .2s;
       transition: transform .2s .2s; }
-  .rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]) {
+  .rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-notifyMode + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-inactiveAudio + .help_content-topics-topic:not([style*=opacity]), .userSettings_content-settings-setting.setting-country + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .title_overlay-signup-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .title_overlay-signup-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-notifyMode + .title_overlay-signup-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-inactiveAudio + .title_overlay-signup-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-country + .title_overlay-signup-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .title_overlay-signup-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .title_overlay-signup-form-field:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .title_overlay-login-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .title_overlay-login-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .title_overlay-login-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-notifyMode + .title_overlay-login-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-inactiveAudio + .title_overlay-login-form-field:not([style*=opacity]), .userSettings_content-settings-setting.setting-country + .title_overlay-login-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .title_overlay-login-form-field:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .title_overlay-login-form-field:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-notifyMode + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-inactiveAudio + .rulesSelect_content-rules-rule:not([style*=opacity]), .userSettings_content-settings-setting.setting-country + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-notifyMode + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-inactiveAudio + .userSettings_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-country + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting:not([style*=opacity]), .rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-notifyMode + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-inactiveAudio + .roomSelect_content-settings-setting:not([style*=opacity]), .userSettings_content-settings-setting.setting-country + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting:not([style*=opacity]), .roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting:not([style*=opacity]) {
     -webkit-transition: -webkit-opacity .2s .4s;
     -ms-transition: -ms-opacity .2s .4s;
     transition: opacity .2s .4s; }
-  .is--active.rulesSelect_content-rules-rule.rule-trade, .is--active.userSettings_content-settings-setting.setting-difficulty, .is--active.userSettings_content-settings-setting.setting-placingMode, .is--active.roomSelect_content-settings-setting.setting-mode, .is--active.roomSelect_content-settings-setting.setting-difficulty {
-    z-index: 1000; }
-    .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle {
-      width: 0;
-      opacity: 0;
-      -webkit-transition: -webkit-width .2s .2s, opacity .2s .2s;
-      -ms-transition: -ms-width .2s .2s, opacity .2s .2s;
-      transition: width .2s .2s, opacity .2s .2s; }
-      .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-toggle:after, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-toggle:after, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-toggle:after {
-        -webkit-transform: rotate(90deg);
-        -ms-transform: rotate(90deg);
-        transform: rotate(90deg);
-        -webkit-transition: -webkit-transform .2s;
-        -ms-transition: -ms-transform .2s;
-        transition: transform .2s; }
-    .is--active.rulesSelect_content-rules-rule.rule-trade .help_content-guide-contents, .is--active.userSettings_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.userSettings_content-settings-setting.setting-placingMode .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-mode .help_content-guide-contents, .is--active.roomSelect_content-settings-setting.setting-difficulty .help_content-guide-contents, .is--active.rulesSelect_content-rules-rule.rule-trade .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.userSettings_content-settings-setting.setting-placingMode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-mode .rulesSelect_content-rules-rule-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .rulesSelect_content-rules-rule-select, .is--active.rulesSelect_content-rules-rule.rule-trade .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .userSettings_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .userSettings_content-settings-setting-select, .is--active.rulesSelect_content-rules-rule.rule-trade .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select, .is--active.userSettings_content-settings-setting.setting-placingMode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-mode .roomSelect_content-settings-setting-select, .is--active.roomSelect_content-settings-setting.setting-difficulty .roomSelect_content-settings-setting-select {
-      overflow-y: scroll;
-      height: 100px; }
-    .is--active.rulesSelect_content-rules-rule.rule-trade + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.userSettings_content-settings-setting.setting-placingMode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-mode + .help_content-topics-topic, .is--active.roomSelect_content-settings-setting.setting-difficulty + .help_content-topics-topic, .is--active.rulesSelect_content-rules-rule.rule-trade + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.userSettings_content-settings-setting.setting-placingMode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-mode + .rulesSelect_content-rules-rule, .is--active.roomSelect_content-settings-setting.setting-difficulty + .rulesSelect_content-rules-rule, .is--active.rulesSelect_content-rules-rule.rule-trade + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .userSettings_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .userSettings_content-settings-setting, .is--active.rulesSelect_content-rules-rule.rule-trade + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting, .is--active.userSettings_content-settings-setting.setting-placingMode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-mode + .roomSelect_content-settings-setting, .is--active.roomSelect_content-settings-setting.setting-difficulty + .roomSelect_content-settings-setting {
-      opacity: 0;
-      -webkit-transition: -webkit-opacity .2s;
-      -ms-transition: -ms-opacity .2s;
-      transition: opacity .2s; }
 
-.userSettings_content-settings-setting-input, .roomSelect_content-settings-setting-input {
+.title_overlay-signup-form-field-input, .title_overlay-login-form-field-input, .lounge_log-chatbar-input, .userSettings_content-settings-setting-input, .roomSelect_content-settings-setting-input {
   border: none;
   outline: none;
   padding: 1em;
@@ -741,13 +875,24 @@ label {
   -webkit-transition: -webkit-background .2s;
   -ms-transition: -ms-background .2s;
   transition: background .2s; }
-  .userSettings_content-settings-setting-input:focus, .roomSelect_content-settings-setting-input:focus {
+  .title_overlay-signup-form-field-input:focus, .title_overlay-login-form-field-input:focus, .lounge_log-chatbar-input:focus, .userSettings_content-settings-setting-input:focus, .roomSelect_content-settings-setting-input:focus {
     background: rgba(40, 51, 120, 0.5); }
-  .is--invalid.userSettings_content-settings-setting-input, .is--invalid.roomSelect_content-settings-setting-input {
+  .is--invalid.title_overlay-signup-form-field-input, .is--invalid.title_overlay-login-form-field-input, .is--invalid.lounge_log-chatbar-input, .is--invalid.userSettings_content-settings-setting-input, .is--invalid.roomSelect_content-settings-setting-input {
     background: rgba(235, 53, 71, 0.5); }
 
+/* SCROLLABLE ELEMENT --------------*/
+.cardSelect_content-album-scroll, .cardAlbum_content-album-scroll, .help_content-guide-scroll, .rankings_leaderboard-ranks-scroll, .rankings_rankinglist-scroll, .lounge_log-messages-scroll, .lounge_userlist-scroll, .userSettings_content-settings-scroll {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 2em;
+  display: flex;
+  text-transform: none; }
+
 /* AVATAR --------------*/
-.game_playerHUD-avatar, .userSettings_header-avatar {
+.rankings_leaderboard-ranks-rank-ranker-avatar, .game_playerHUD-avatar, .rankings_rankinglist-element-ranking-avatar, .lounge_log-messages-message-user-avatar, .lounge_userlist-element-user-avatar, .lounge_userlist-userCard-header-avatar, .userSettings_header-avatar {
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
   padding: 5px;
@@ -755,7 +900,7 @@ label {
   -webkit-transition: -webkit-background .2s .2s, box-shadow .2s;
   -ms-transition: -ms-background .2s .2s, box-shadow .2s;
   transition: background .2s .2s, box-shadow .2s; }
-  .game_playerHUD-avatar:before, .userSettings_header-avatar:before {
+  .rankings_leaderboard-ranks-rank-ranker-avatar:before, .game_playerHUD-avatar:before, .rankings_rankinglist-element-ranking-avatar:before, .lounge_log-messages-message-user-avatar:before, .lounge_userlist-element-user-avatar:before, .lounge_userlist-userCard-header-avatar:before, .userSettings_header-avatar:before {
     content: "";
     position: absolute;
     background: rgba(0, 0, 0, 0.75);
@@ -767,7 +912,7 @@ label {
     -webkit-transition: -webkit-box-shadow .2s;
     -ms-transition: -ms-box-shadow .2s;
     transition: box-shadow .2s; }
-  .game_playerHUD-avatar:after, .userSettings_header-avatar:after {
+  .rankings_leaderboard-ranks-rank-ranker-avatar:after, .game_playerHUD-avatar:after, .rankings_rankinglist-element-ranking-avatar:after, .lounge_log-messages-message-user-avatar:after, .lounge_userlist-element-user-avatar:after, .lounge_userlist-userCard-header-avatar:after, .userSettings_header-avatar:after {
     content: "";
     position: absolute;
     width: calc(100% - 10px);
@@ -775,17 +920,17 @@ label {
     left: 5px;
     top: 5px;
     box-shadow: 2.5px 2.5px 2.5px 0px rgba(0, 0, 0, 0.5) inset; }
-  .game_playerHUD-avatar-img, .userSettings_header-avatar-img {
+  .game_playerHUD-avatar-img, .rankings_leaderboard-ranks-rank-ranker-avatar-img, .rankings_rankinglist-element-ranking-avatar-img, .lounge_log-messages-message-user-avatar-img, .lounge_userlist-element-user-avatar-img, .lounge_userlist-userCard-header-avatar-img, .userSettings_header-avatar-img {
     position: relative;
     width: auto;
     height: 100%;
     background-size: cover;
     background-repeat: no-repeat; }
 
-.game_playerHUD-user.is--active .game_playerHUD-avatar, .userSettings_header-avatar:hover, .userSettings_header-avatar.is--hover {
+.rankings_leaderboard-ranks-rank-ranker:hover .rankings_leaderboard-ranks-rank-ranker-avatar, .rankings_rankinglist-element-ranking:hover .rankings_rankinglist-element-ranking-avatar, .rankings_rankinglist-element-ranking.is--selected .rankings_rankinglist-element-ranking-avatar, .game_playerHUD-user.is--active .game_playerHUD-avatar, .lounge_userlist-element-user:hover .lounge_userlist-element-user-avatar, .lounge_userlist-element-user.is--selected .lounge_userlist-element-user-avatar, .lounge_userlist-element-user.is--currentUser .lounge_userlist-element-user-avatar, .lounge_userlist-userCard-header-avatar, .userSettings_header-avatar:hover, .userSettings_header-avatar.is--hover {
   background: rgba(71, 53, 235, 0.25);
   box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset, 0 0 18px 4px rgba(40, 0, 255, 0.25); }
-  .game_playerHUD-user.is--active .game_playerHUD-avatar:before, .userSettings_header-avatar:hover:before, .userSettings_header-avatar.is--hover:before {
+  .rankings_leaderboard-ranks-rank-ranker:hover .rankings_leaderboard-ranks-rank-ranker-avatar:before, .rankings_rankinglist-element-ranking:hover .rankings_rankinglist-element-ranking-avatar:before, .rankings_rankinglist-element-ranking.is--selected .rankings_rankinglist-element-ranking-avatar:before, .game_playerHUD-user.is--active .game_playerHUD-avatar:before, .lounge_userlist-element-user:hover .lounge_userlist-element-user-avatar:before, .lounge_userlist-element-user.is--selected .lounge_userlist-element-user-avatar:before, .lounge_userlist-element-user.is--currentUser .lounge_userlist-element-user-avatar:before, .lounge_userlist-userCard-header-avatar:before, .userSettings_header-avatar:hover:before, .userSettings_header-avatar.is--hover:before {
     box-shadow: 0 0 18px 8px rgba(33, 150, 243, 0.25); }
 
 .game_playerHUD-opponent.is--active .game_playerHUD-avatar {
@@ -937,16 +1082,19 @@ label {
 /*=======================*/
 #footer {
   width: 100%;
-  height: 190px;
+  height: 100px;
   bottom: 0;
   padding: 0px 50px 50px 50px;
   position: absolute;
   display: flex;
   align-items: flex-end;
   z-index: 2; }
+  #footer.is--inactive {
+    pointer-events: none; }
 
 .footer_logo {
-  margin-right: 1em; }
+  margin-right: 1em;
+  margin-bottom: -1.25em; }
 
 .footer_menu {
   display: flex;
@@ -1055,7 +1203,7 @@ label {
 .menu_versusMode .menu_element-bg {
   background-image: url(../assets/img/ui/menu_gladiolus.jpg); }
 
-.menu_networkMode .menu_element-bg {
+.menu_loungeRoom .menu_element-bg {
   background-image: url(../assets/img/ui/menu_prompto.jpg); }
 
 .menu_cardAlbum .menu_element-bg {
@@ -1129,7 +1277,7 @@ label {
       width: 0;
       height: 1px;
       background: currentColor;
-      top: 50%;
+      top: 1.25em;
       z-index: -1;
       opacity: 0.5;
       -webkit-transition: -webkit-width .2s .2s;
@@ -1151,10 +1299,205 @@ label {
   .about_prevBtn:after {
     content: "Back"; }
 
-.about_version {
+.about_playersCount {
+  position: absolute;
+  left: 50px;
+  bottom: 50px; }
+
+.about_info {
   position: absolute;
   right: 50px;
   bottom: 50px; }
+
+/*=======================*/
+/* RANKINGS SCREEN
+/*=======================*/
+#screen_overlayRankings {
+  z-index: 2;
+  display: flex;
+  flex-direction: column; }
+
+.rankings_main {
+  position: absolute;
+  width: calc(100% - 100px);
+  height: calc(100% - 175px);
+  left: calc(50% - (100% - 100px) / 2);
+  top: 50px;
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+  padding: 12px;
+  flex-wrap: wrap;
+  align-content: space-between;
+  justify-content: space-between;
+  z-index: 1; }
+  .rankings_main:before {
+    content: "";
+    position: absolute;
+    background: rgba(0, 0, 0, 0.75);
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    left: 5px;
+    top: 5px;
+    z-index: -1; }
+
+.rankings_leaderboard {
+  position: relative;
+  width: calc(100% - 307.5px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; }
+  .rankings_leaderboard-logo {
+    width: 630px;
+    height: 485px;
+    position: absolute;
+    left: calc(50% - 630px / 2);
+    top: calc(50% - 485px / 2);
+    opacity: 0.015;
+    pointer-events: none; }
+    .rankings_leaderboard-logo .svg-logo {
+      fill: white; }
+
+.rankings_leaderboard-ranks, .rankings_rankinglist {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerTR.png) no-repeat 100% 0%, url(../assets/img/ui/board_cornerBL.png) no-repeat 0% 100%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
+
+.rankings_leaderboard-ranks {
+  width: 100%;
+  height: 100%;
+  cursor: auto; }
+  .rankings_leaderboard-ranks * {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text; }
+  .rankings_leaderboard-ranks-scroll {
+    display: block; }
+  .rankings_leaderboard-ranks-rank .rank-flag, .rankings_leaderboard-ranks-rank .rank-stats, .rankings_leaderboard-ranks-rank .rank-rate, .rankings_leaderboard-ranks-rank .rank-points {
+    text-align: right; }
+  .rankings_leaderboard-ranks-rank .rank-date {
+    flex: 1;
+    text-transform: none;
+    padding-left: 1em;
+    font-weight: 100; }
+  .rankings_leaderboard-ranks-rank-info {
+    background: rgba(0, 0, 0, 0.5);
+    height: 50px;
+    line-height: 50px;
+    text-transform: uppercase;
+    font-weight: 500; }
+  .rankings_leaderboard-ranks-rank-ranker {
+    height: calc(85px + 1em);
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    -webkit-transition: -webkit-background .2s;
+    -ms-transition: -ms-background .2s;
+    transition: background .2s; }
+    .rankings_leaderboard-ranks-rank-ranker.firstPlace {
+      background: rgba(40, 51, 120, 0.2); }
+      .rankings_leaderboard-ranks-rank-ranker.firstPlace:hover {
+        background: rgba(40, 51, 120, 0.4); }
+      .rankings_leaderboard-ranks-rank-ranker.firstPlace .rank-rankerInfo-name {
+        color: #6d87fa; }
+    .rankings_leaderboard-ranks-rank-ranker:not(.firstPlace):hover {
+      background: rgba(255, 255, 255, 0.1); }
+    .rankings_leaderboard-ranks-rank-ranker .rank-number {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      font-weight: 500; }
+    .rankings_leaderboard-ranks-rank-ranker .rank-avatar {
+      display: flex;
+      justify-content: center;
+      align-items: center; }
+    .rankings_leaderboard-ranks-rank-ranker .rank-rankerInfo {
+      padding-left: 1rem;
+      padding-top: 1rem; }
+      .rankings_leaderboard-ranks-rank-ranker .rank-rankerInfo-name {
+        font-weight: 500;
+        font-size: 1.25em; }
+      .rankings_leaderboard-ranks-rank-ranker .rank-rankerInfo-title {
+        margin-top: 0.75em; }
+    .rankings_leaderboard-ranks-rank-ranker .rank-flag, .rankings_leaderboard-ranks-rank-ranker .rank-stats, .rankings_leaderboard-ranks-rank-ranker .rank-rate, .rankings_leaderboard-ranks-rank-ranker .rank-points {
+      line-height: 85px; }
+    .rankings_leaderboard-ranks-rank-ranker .rank-stats, .rankings_leaderboard-ranks-rank-ranker .rank-rate, .rankings_leaderboard-ranks-rank-ranker .rank-points {
+      font-size: 1.25em; }
+    .rankings_leaderboard-ranks-rank-ranker .rank-points {
+      font-weight: 700;
+      font-size: 1.5em; }
+    .rankings_leaderboard-ranks-rank-ranker .rank-insigna {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-left: 1em; }
+    .rankings_leaderboard-ranks-rank-ranker-avatar {
+      position: relative;
+      width: 75px;
+      height: 75px; }
+
+.rankings_rankinglist {
+  width: 300px;
+  position: relative; }
+  .rankings_rankinglist-element {
+    height: 50px; }
+    .rankings_rankinglist-element-group {
+      text-transform: uppercase;
+      line-height: 50px; }
+      .rankings_rankinglist-element-group-count {
+        margin-left: 1em; }
+    .rankings_rankinglist-element-ranking {
+      cursor: pointer; }
+      .rankings_rankinglist-element-ranking:not(:last-of-type) {
+        margin-bottom: 1em; }
+      .rankings_rankinglist-element-ranking-label {
+        flex: 1;
+        padding-left: 1em;
+        width: calc(100% - 50px);
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        position: relative; }
+        .rankings_rankinglist-element-ranking-label:after {
+          content: "";
+          position: absolute;
+          width: calc(100% - 1em);
+          height: 100%;
+          background: rgba(40, 51, 120, 0.25);
+          z-index: -1;
+          filter: blur(10px);
+          opacity: 0;
+          left: 1em;
+          -webkit-transition: -webkit-opacity .2s;
+          -ms-transition: -ms-opacity .2s;
+          transition: opacity .2s; }
+        .rankings_rankinglist-element-ranking-label-name {
+          font-weight: 500;
+          -webkit-transition: -webkit-color .2s;
+          -ms-transition: -ms-color .2s;
+          transition: color .2s; }
+        .rankings_rankinglist-element-ranking-label-leader {
+          margin: 0.5em 0 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis; }
+      .rankings_rankinglist-element-ranking.is--selected .rankings_rankinglist-element-ranking-label-name {
+        color: #6d87fa; }
+      .rankings_rankinglist-element-ranking:hover .rankings_rankinglist-element-ranking-label:after, .rankings_rankinglist-element-ranking.is--selected .rankings_rankinglist-element-ranking-label:after {
+        opacity: 1; }
+
+.insigna {
+  width: 75px;
+  height: 75px;
+  background-repeat: no-repeat;
+  background-size: contain; }
+  .insigna.insigna-gold {
+    background-image: url(../assets/img/ui/insigna_gold.png); }
+  .insigna.insigna-silver {
+    background-image: url(../assets/img/ui/insigna_silver.png); }
+  .insigna.insigna-bronze {
+    background-image: url(../assets/img/ui/insigna_bronze.png); }
 
 /*=======================*/
 /* HELP SCREEN
@@ -1176,31 +1519,23 @@ label {
   height: calc(100% - 25px);
   top: 100px; }
 
-.help_content-guide-contents {
-  cursor: inherit;
-  height: 100%;
-  background: none;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding-left: 0;
-  padding-right: 2em; }
-  .help_content-guide-contents figure {
-    display: flex; }
-    .help_content-guide-contents figure:not(:last-of-type) {
-      margin-bottom: 2em; }
-    .help_content-guide-contents figure figcaption {
-      vertical-align: top;
-      padding: 2em;
-      flex: 1;
-      background: rgba(255, 255, 255, 0.15);
-      margin-left: 2em;
-      line-height: 1.5em;
-      padding-left: 4em;
-      text-indent: -2em; }
-      .help_content-guide-contents figure figcaption span {
-        margin-right: 0.5em; }
-    .help_content-guide-contents figure img {
-      border: 1px solid rgba(255, 255, 255, 0.25); }
+.help_content-guide-scroll figure {
+  display: flex; }
+  .help_content-guide-scroll figure:not(:last-of-type) {
+    margin-bottom: 2em; }
+  .help_content-guide-scroll figure figcaption {
+    vertical-align: top;
+    padding: 2em;
+    flex: 1;
+    background: rgba(255, 255, 255, 0.15);
+    margin-left: 2em;
+    line-height: 1.5em;
+    padding-left: 4em;
+    text-indent: -2em; }
+    .help_content-guide-scroll figure figcaption span {
+      margin-right: 0.5em; }
+  .help_content-guide-scroll figure img {
+    border: 1px solid rgba(255, 255, 255, 0.25); }
 
 /*=======================*/
 /* TITLE SCREEN
@@ -1220,6 +1555,61 @@ label {
   top: 70%; }
   .title_startBtn:after {
     content: "Start"; }
+
+.title_account {
+  position: absolute;
+  right: 50px;
+  top: 50px;
+  display: flex;
+  align-items: center; }
+  .title_account-element {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    padding: .5em;
+    cursor: pointer;
+    -webkit-transition: -webkit-background .2s;
+    -ms-transition: -ms-background .2s;
+    transition: background .2s; }
+    .title_account-element:hover {
+      background: rgba(40, 51, 120, 0.5); }
+  .title_account-info {
+    display: flex;
+    background: rgba(255, 255, 255, 0.25); }
+    .title_account-info-welcome, .title_account-info-playerCount {
+      position: relative;
+      padding: .5em; }
+    .title_account-info-playerCount-onlineLabel, .title_account-info-playerCount-loungeLabel {
+      font-size: .75em; }
+
+.title_overlay-signup-form, .title_overlay-login-form {
+  width: 500px;
+  margin-top: 2em;
+  text-align: center;
+  overflow: hidden; }
+.title_overlay-login-form {
+  margin-bottom: 1em; }
+.title_overlay-signup-form .field-email, .title_overlay-login-form .field-password, .title_overlay-login-form .field-email {
+  margin-bottom: 3em; }
+.title_overlay-signup-form-field, .title_overlay-login-form-field {
+  text-align: initial; }
+.title_overlay-signup-btn, .title_overlay-login-btn {
+  position: relative;
+  display: inline-block; }
+  .title_overlay-signup-btn:not(:last-of-type), .title_overlay-login-btn:not(:last-of-type) {
+    margin-right: .5em; }
+.title_overlay-signup-message, .title_overlay-login-message, .title_overlay-login-forgotPwd {
+  text-transform: none;
+  margin-top: 1em;
+  min-height: 1em;
+  text-align: center;
+  line-height: 1.25em; }
+.title_overlay-login-forgotPwd {
+  cursor: pointer;
+  -webkit-transition: -webkit-letter-spacing .2s ease-in;
+  -ms-transition: -ms-letter-spacing .2s ease-in;
+  transition: letter-spacing .2s ease-in; }
+  .title_overlay-login-forgotPwd:hover {
+    letter-spacing: .1em; }
 
 /*=======================*/
 /* RULES SCREEN
@@ -1242,8 +1632,7 @@ label {
 
 /* HEADER --------------*/
 .cardSelect_header-help {
-  position: relative;
-  padding: 0; }
+  margin-top: 2em; }
 
 .cardSelect_header-ownedCards,
 .cardSelect_header-uniqueCopies {
@@ -1282,63 +1671,16 @@ label {
 .cardSelect_content-confirm {
   background: rgba(40, 51, 120, 0.5); }
 
-.cardSelect_content-nav-prevBtn, .cardSelect_content-nav-nextBtn {
-  width: 60px;
-  height: 60px;
-  position: absolute;
-  top: calc(50% - 30px);
-  z-index: 1; }
-  .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn-hoverFX {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    -webkit-transition: -webkit-all .2s .2s ease-in;
-    -ms-transition: -ms-all .2s .2s ease-in;
-    transition: all .2s .2s ease-in;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    overflow: hidden; }
-    .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn-hoverFX:after {
-      content: "";
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      background: rgba(0, 0, 0, 0.85);
-      -webkit-transition: -webkit-all .2s .2s ease-in;
-      -ms-transition: -ms-all .2s .2s ease-in;
-      transition: all .2s .2s ease-in; }
-  .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX {
-    border: 1px solid #FFF; }
-    .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-prevBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn:hover .cardSelect_content-nav-nextBtn-hoverFX:after, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-prevBtn-hoverFX:after, .cardSelect_content-nav-nextBtn.is--hover .cardSelect_content-nav-nextBtn-hoverFX:after {
-      background: #FFF;
-      -webkit-transition: -webkit-all .2s ease-out;
-      -ms-transition: -ms-all .2s ease-out;
-      transition: all .2s ease-out; }
-
-.cardSelect_content-nav-prevBtn {
-  left: 21px; }
-
-.cardSelect_content-nav-nextBtn {
-  right: 21px; }
-
 .cardSelect_content-album {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  position: relative; }
+  height: calc(100% - 25px);
+  top: 100px; }
 
-.cardSelect_content-album.flex-justify-start .cardSelect_content-album-card {
-  margin-right: 1.5em; }
-.cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual {
+.cardSelect_content-album-card.is--disabled .cardAlbum_content-album-card-visual, .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual {
   filter: saturate(0); }
-  .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual .card {
+  .cardSelect_content-album-card.is--disabled .cardAlbum_content-album-card-visual .card, .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-visual .card {
     cursor: default; }
-.cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-label {
-  color: #3d4043; }
-.cardSelect_content-album-card-copiesCount {
-  text-align: right; }
+.cardSelect_content-album-card.is--disabled .cardAlbum_content-album-card-label, .cardSelect_content-album-card.is--disabled .cardSelect_content-album-card-label {
+  color: #666; }
 
 /*=======================*/
 /* GAME SCREEN
@@ -1638,6 +1980,280 @@ label {
     transform: scale(1); }
 
 /*=======================*/
+/* LOUNGE SCREEN
+/*=======================*/
+.rankings_leaderboard-ranks-scroll, .rankings_rankinglist-scroll, .lounge_log-messages-scroll, .lounge_userlist-scroll {
+  display: block;
+  flex-direction: column;
+  padding: 25px; }
+.rankings_rankinglist-element-ranking, .lounge_log-messages-message-user, .lounge_userlist-element-user {
+  display: flex;
+  position: relative; }
+  .rankings_rankinglist-element-ranking-avatar, .lounge_log-messages-message-user-avatar, .lounge_userlist-element-user-avatar {
+    position: relative;
+    width: 50px;
+    height: 50px; }
+
+.lounge_main {
+  position: absolute;
+  width: calc(100% - 100px);
+  height: calc(100% - 175px);
+  left: calc(50% - (100% - 100px) / 2);
+  top: 50px;
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+  padding: 12px;
+  flex-wrap: wrap;
+  align-content: space-between;
+  justify-content: space-between;
+  z-index: 1; }
+  .lounge_main:before {
+    content: "";
+    position: absolute;
+    background: rgba(0, 0, 0, 0.75);
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    left: 5px;
+    top: 5px;
+    z-index: -1; }
+
+.lounge_log {
+  position: relative;
+  width: calc(100% - 307.5px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; }
+  .lounge_log-logo {
+    width: 630px;
+    height: 485px;
+    position: absolute;
+    left: calc(50% - 630px / 2);
+    top: 12.5%;
+    opacity: 0.015;
+    pointer-events: none; }
+    .lounge_log-logo .svg-logo {
+      fill: white; }
+  .lounge_log-chatbar {
+    display: flex;
+    border: 1px solid rgba(255, 255, 255, 0.25); }
+    .lounge_log-chatbar-label {
+      background: rgba(40, 51, 120, 0.75);
+      line-height: 70px;
+      cursor: pointer;
+      text-transform: uppercase;
+      -webkit-transition: -webkit-all .2s;
+      -ms-transition: -ms-all .2s;
+      transition: all .2s; }
+      .lounge_log-chatbar-label:hover {
+        background: rgba(235, 53, 71, 0.75); }
+      .lounge_log-chatbar-label:active {
+        background: #FFF;
+        color: #000; }
+    .lounge_log-chatbar-input {
+      width: 95%;
+      resize: none; }
+
+.lounge_log-messages, .lounge_userlist {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerTR.png) no-repeat 100% 0%, url(../assets/img/ui/board_cornerBL.png) no-repeat 0% 100%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
+
+.lounge_log-messages {
+  width: 100%;
+  height: calc(100% - 80px);
+  cursor: auto; }
+  .lounge_log-messages * {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text; }
+  .lounge_log-messages-message:not(:first-of-type) {
+    padding-top: 1em;
+    margin-top: 1em;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .lounge_log-messages-message a {
+    position: relative;
+    color: #6d87fa;
+    z-index: 0;
+    -webkit-transition: -webkit-color .4s;
+    -ms-transition: -ms-color .4s;
+    transition: color .4s; }
+    .lounge_log-messages-message a:before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 1px;
+      background: currentColor;
+      top: 1.25em;
+      z-index: -1;
+      opacity: 0.5;
+      -webkit-transition: -webkit-width .2s .2s;
+      -ms-transition: -ms-width .2s .2s;
+      transition: width .2s .2s; }
+    .lounge_log-messages-message a:hover, .lounge_log-messages-message a.is--hover {
+      color: #eb3547; }
+      .lounge_log-messages-message a:hover:before, .lounge_log-messages-message a.is--hover:before {
+        width: 100%; }
+  .lounge_log-messages-message-user-content {
+    flex: 1;
+    padding-left: 1em;
+    width: calc(100% - 50px);
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    position: relative; }
+    .lounge_log-messages-message-user-content-name {
+      font-weight: 500; }
+    .lounge_log-messages-message-user-content-date {
+      color: #666;
+      margin: 0 0 0 1em;
+      text-transform: uppercase; }
+    .lounge_log-messages-message-user-content-text {
+      color: #CCC;
+      margin: 0.5em 0 0;
+      line-height: 1.25em; }
+  .lounge_log-messages-message-user.is--currentUser .lounge_log-messages-message-user-content-name {
+    color: #6d87fa; }
+  .lounge_log-messages-message-user.is--deletedUser .lounge_log-messages-message-user-content-name {
+    color: #666; }
+
+.lounge_userlist {
+  width: 300px;
+  position: relative; }
+  .lounge_userlist-element {
+    height: 50px; }
+    .lounge_userlist-element-group {
+      text-transform: uppercase;
+      line-height: 50px; }
+      .lounge_userlist-element-group-count {
+        margin-left: 1em; }
+    .lounge_userlist-element-user {
+      cursor: pointer; }
+      .lounge_userlist-element-user:not(:last-of-type) {
+        margin-bottom: 1em; }
+      .lounge_userlist-element-user-label {
+        flex: 1;
+        padding-left: 1em;
+        width: calc(100% - 50px);
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        position: relative; }
+        .lounge_userlist-element-user-label:after {
+          content: "";
+          position: absolute;
+          width: calc(100% - 1em);
+          height: 100%;
+          background: rgba(40, 51, 120, 0.25);
+          z-index: -1;
+          filter: blur(10px);
+          opacity: 0;
+          left: 1em;
+          -webkit-transition: -webkit-opacity .2s;
+          -ms-transition: -ms-opacity .2s;
+          transition: opacity .2s; }
+        .lounge_userlist-element-user-label-name {
+          font-weight: 500;
+          -webkit-transition: -webkit-color .2s;
+          -ms-transition: -ms-color .2s;
+          transition: color .2s; }
+        .lounge_userlist-element-user-label-action {
+          margin: 0.5em 0 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          opacity: 0; }
+      .lounge_userlist-element-user.is--currentUser .lounge_userlist-element-user-label-name {
+        color: #6d87fa; }
+      .lounge_userlist-element-user.is--active .lounge_userlist-element-user-label-action {
+        -webkit-animation: extendText 4s ease-in-out infinite;
+        -ms-animation: extendText 4s ease-in-out infinite;
+        animation: extendText 4s ease-in-out infinite; }
+      .lounge_userlist-element-user:hover .lounge_userlist-element-user-label:after, .lounge_userlist-element-user.is--selected .lounge_userlist-element-user-label:after {
+        opacity: 1; }
+      .lounge_userlist-element-user.is--currentUser .lounge_userlist-element-user-label:after {
+        opacity: 1; }
+
+.lounge_userlist-userCard {
+  position: fixed;
+  width: 225px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25);
+  z-index: 1;
+  transform: translateX(-95%);
+  top: 0;
+  margin-top: -15px; }
+  .lounge_userlist-userCard-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1;
+    flex-direction: column;
+    text-transform: none;
+    line-height: 1.25em;
+    padding: 1.5em 0;
+    position: relative; }
+    .lounge_userlist-userCard-header:before {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: url(../assets/img/ui/headerPattern.jpg);
+      opacity: .25;
+      z-index: -1; }
+    .lounge_userlist-userCard-header-avatar {
+      position: relative;
+      width: 150px;
+      height: 150px; }
+    .lounge_userlist-userCard-header-info {
+      margin-top: 1.5em;
+      width: 150px;
+      display: flex; }
+      .lounge_userlist-userCard-header-info:not(.has--flag) {
+        text-align: center; }
+      .lounge_userlist-userCard-header-info-name {
+        font-weight: 500; }
+      .lounge_userlist-userCard-header-info-userId {
+        color: #666; }
+    .lounge_userlist-userCard-header-infoWrapper {
+      flex: 1; }
+  .lounge_userlist-userCard-content {
+    padding: .5em;
+    background: rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    flex: 1; }
+    .lounge_userlist-userCard-content-menu {
+      text-align: center; }
+      .lounge_userlist-userCard-content-menu-element {
+        position: relative; }
+        .lounge_userlist-userCard-content-menu-element:not(:last-of-type) {
+          margin-bottom: .5em; }
+
+.lounge_notLoggedIn-message {
+  text-transform: none;
+  margin-top: 2em;
+  text-align: center;
+  line-height: 1.25em; }
+.lounge_notLoggedIn-confirmBtn {
+  position: relative;
+  margin-top: 50px; }
+
+.lounge_challenge-message {
+  text-transform: none;
+  margin-top: 1em; }
+.lounge_challenge-acceptBtn, .lounge_challenge-declineBtn {
+  position: relative;
+  margin-top: 50px;
+  display: inline-block; }
+.lounge_challenge-declineBtn {
+  margin-left: 1em; }
+
+/*=======================*/
 /* USER SETTINGS SCREEN
 /*=======================*/
 #screen_userSettings {
@@ -1645,20 +2261,18 @@ label {
   flex-direction: column; }
 
 /* HEADER --------------*/
+.userSettings_header-help {
+  margin-top: 2em; }
+
 .userSettings_header-countWon,
 .userSettings_header-countLost,
-.userSettings_header-countDraw {
-  margin-top: 1em; }
-
-.userSettings_header-countWon-label,
-.userSettings_header-countLost-label,
-.userSettings_header-countDraw-label {
-  text-transform: none; }
-
-.userSettings_header-countWon-count,
-.userSettings_header-countLost-count,
-.userSettings_header-countDraw-count {
-  text-align: right; }
+.userSettings_header-countDraw,
+.userSettings_header-rankPoints {
+  margin-top: 1em;
+  margin-right: 1.5em;
+  text-transform: none;
+  display: inline-block;
+  line-height: 1.5em; }
 
 .userSettings_header-avatar {
   position: relative;
@@ -1666,8 +2280,25 @@ label {
   width: 200px; }
 
 /* CONTENT --------------*/
-.userSettings_content-load {
+.userSettings_content-load, .userSettings_content-confirm {
   background: rgba(40, 51, 120, 0.5); }
+
+.userSettings_content-settings {
+  height: calc(100% - 25px);
+  top: 100px; }
+
+.userSettings_content-settings-scroll .col {
+  width: 50%;
+  margin-right: 1em; }
+.userSettings_content-settings-scroll .col:last-child {
+  margin-right: 0; }
+
+.userSettings_content-settings-setting.setting-country.is--active .rulesSelect_content-rules-rule-select, .userSettings_content-settings-setting.setting-country.is--active .userSettings_content-settings-setting-select, .userSettings_content-settings-setting.setting-country.is--active .roomSelect_content-settings-setting-select {
+  overflow-y: scroll;
+  height: 200px; }
+
+.userSettings_content-settings-setting-input[type=range] {
+  width: calc(75% - 50px); }
 
 /*=======================*/
 /* ROOM SELECTION SCREEN
@@ -1678,6 +2309,41 @@ label {
 
 /* HEADER --------------*/
 /* CONTENT --------------*/
+/*=======================*/
+/* CARD ALBUM SCREEN
+/*=======================*/
+#screen_cardAlbum {
+  display: flex;
+  flex-direction: column; }
+
+/* HEADER --------------*/
+.cardAlbum_header-help {
+  margin-top: 2em; }
+
+.cardAlbum_header-ownedCards,
+.cardAlbum_header-uniqueCopies {
+  margin-top: 1em; }
+
+.cardAlbum_header-ownedCards-label,
+.cardAlbum_header-uniqueCopies-label {
+  text-transform: none; }
+
+.cardAlbum_header-ownedCards-count,
+.cardAlbum_header-uniqueCopies-count {
+  text-align: right; }
+
+/* CONTENT --------------*/
+.cardAlbum_content-album {
+  height: calc(100% - 25px);
+  top: 100px; }
+
+.cardAlbum_content-album-card.is--disabled .cardAlbum_content-album-card-visual, .cardAlbum_content-album-card.is--disabled .cardSelect_content-album-card-visual {
+  filter: saturate(0); }
+  .cardAlbum_content-album-card.is--disabled .cardAlbum_content-album-card-visual .card, .cardAlbum_content-album-card.is--disabled .cardSelect_content-album-card-visual .card {
+    cursor: default; }
+.cardAlbum_content-album-card.is--disabled .cardAlbum_content-album-card-label, .cardAlbum_content-album-card.is--disabled .cardSelect_content-album-card-label {
+  color: #666; }
+
 /*=======================*/
 /* 404 PAGE
 /*=======================*/
@@ -1702,5 +2368,26 @@ label {
     display: block;
     width: 100%;
     height: 100%; }
+
+/*=======================*/
+/* MAINTENANCE PAGE
+/*=======================*/
+.maintenance {
+  background: url(../assets/img/ui/alt_bg.jpg) 50% 100% no-repeat;
+  background-size: cover; }
+  .maintenance:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.85); }
+  .maintenance_img {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    top: 25%;
+    background: url(../assets/img/ui/maintenance.png) 50% 50% no-repeat;
+    background-size: contain; }
 
 /*# sourceMappingURL=main.css.map */

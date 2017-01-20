@@ -4,16 +4,12 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_overlayAbout.html"
+    "text!templates/templ_overlayAbout.ejs"
 ], function Screen_OverlayAbout ($, _, Backbone, _$, Screen, Templ_OverlayAbout) {
     return Screen.extend({
-        tagName : "section",
-        id      : "screen_overlayAbout",
-
+        id       : "screen_overlayAbout",
         template : _.template(Templ_OverlayAbout),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
+        events   : {
             "click .about_prevBtn" : "close",
             "click .about_social-element,.about_prevBtn,.about_credits" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
@@ -55,7 +51,7 @@ define([
                     eventAction: "clickCredits"
                 });
             },
-            "click .about_credits" : function () {
+            "click .about_legal" : function () {
                 _$.app.track("send", "event", {
                     eventCategory: "aboutEvent",
                     eventAction: "clickLegal"
@@ -71,7 +67,14 @@ define([
     });
 
     function initialize (options) {
-        this.$el.html(this.template({ appVersion: _$.app.version, appVersionFlag: _$.app.versionFlag }));
+        Screen.prototype.initialize.call(this);
+
+        this.$el.html(this.template({
+            appVersion     : _$.app.version,
+            appVersionFlag : _$.app.versionFlag,
+            playersCount   : _$.utils.getFormattedNumber(_$.app.playersCount),
+            playersLabel   : _$.app.playersCount === 1 ? "player" : "players"
+        }));
         this.line = this.$(".about_line");
         this.logo = this.$(".about_logo");
 
@@ -87,15 +90,15 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => { this.logo.addClass("is--tweening"); });
-        tl.from(this.$el, 0.4, { opacity: 0, clearProps: "all" });
-        tl.from(this.$(".about_bg"), 0.4, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=0.2");
+        tl.from(this.$el, 0.5, { opacity: 0, clearProps: "all" });
+        tl.from(this.$(".about_bg"), 0.5, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=0.2");
         tl.add(this.toggleLine("show"));
-        tl.from(this.logo, 0.4, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=1");
-        tl.from($(".about_text, .about_credits, .about_legal"), 0.4, { opacity: 0, y: -20, clearProps: "all" }, tl.recent().endTime());
-        tl.from($(".about_version"), 0.4, { opacity: 0, x: 20, clearProps: "all" }, tl.recent().startTime());
-        tl.call(() => { _$.audio.audioEngine.playSFX("menuOpen"); }, [], null, tl.recent().endTime() - 0.4);
-        tl.staggerFrom($(".about_social-element"), 0.4, { opacity: 0, y: 20, clearProps: "all" }, 0.1, "-=0.2");
-        tl.from(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
+        tl.from(this.logo, 0.5, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=0.5");
+        tl.from($(".about_text, .about_credits, .about_legal"), 0.5, { opacity: 0, y: -20, clearProps: "all" }, tl.recent().endTime());
+        tl.from($(".about_info"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, tl.recent().startTime());
+        tl.call(() => { _$.audio.audioEngine.playSFX("menuOpen"); }, [], null, tl.recent().endTime() - 0.5);
+        tl.staggerFrom($(".about_social-element"), 0.5, { opacity: 0, y: 20, clearProps: "all" }, 0.1, "-=0.2");
+        tl.from(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" }, "-=0.2");
         tl.call(() => {
             this.$el.addClass("is--showingLogo");
             this.logo.removeClass("is--tweening");
@@ -115,14 +118,14 @@ define([
             this.$el.removeClass("is--showingLogo");
         });
         tl.to(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25 });
-        tl.staggerTo($(".about_social-element"), 0.4, { opacity: 0, y: 20 }, -0.1);
-        tl.call(() => { _$.audio.audioEngine.playSFX("menuClose"); }, [], null, "-=0.2");
-        tl.to($(".about_text, .about_credits, .about_legal"), 0.4, { opacity: 0, y: -20 });
-        tl.to($(".about_version"), 0.4, { opacity: 0, x: 20 }, tl.recent().startTime());
-        tl.to(this.logo, 0.4, { opacity: 0, scale: 1.25 });
-        tl.add(this.toggleLine("hide"), "-=0.4");
-        tl.to(this.$(".about_bg"), 0.4, { opacity: 0, scale: 1.25 }, "-=1");
-        tl.to(this.$el, 0.4, { opacity: 0 }, "-=0.2");
+        tl.staggerTo($(".about_social-element"), 0.5, { opacity: 0, y: 20 }, -0.1, "-=0.2");
+        tl.call(() => { _$.audio.audioEngine.playSFX("menuClose"); }, [], null, "-=0.1");
+        tl.to($(".about_text, .about_credits, .about_legal"), 0.5, { opacity: 0, y: -20 });
+        tl.to($(".about_info"), 0.5, { opacity: 0, x: 20 }, tl.recent().startTime());
+        tl.to(this.logo, 0.5, { opacity: 0, scale: 1.25 });
+        tl.add(this.toggleLine("hide"), "-=0.5");
+        tl.to(this.$(".about_bg"), 0.5, { opacity: 0, scale: 1.25 }, "-=0.5");
+        tl.to(this.$el, 0.5, { opacity: 0 });
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {
@@ -146,9 +149,9 @@ define([
 
         if (state === "show") {
             tl.set(el, { clearProps:"display" });
-            tl.from(el, 1.5, { opacity:0, width:0, ease: Power3.easeOut, clearProps:"all" });
+            tl.from(el, 1, { opacity:0, width:0, ease: Power3.easeOut, clearProps:"all" });
         } else if (state === "hide") {
-            tl.to(el, 1.5, { width: 0, opacity: 0 });
+            tl.to(el, 1, { width: 0, opacity: 0 });
             tl.set(el, { display:"none", clearProps:"width,opacity" }, "+=.1");
         }
 

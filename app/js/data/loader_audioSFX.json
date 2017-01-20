@@ -60,6 +60,38 @@
         {
             "type" : "audio.sfx",
             "name" : "uiInput"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "uiError"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "loungeMsg"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "challengeSent"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "challengeStart"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "win"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "lose"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "login"
+        },
+        {
+            "type" : "audio.sfx",
+            "name" : "logout"
         }
     ]
 }

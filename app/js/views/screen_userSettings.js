@@ -4,40 +4,52 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_userSettings.html"
+    "text!templates/templ_userSettings.ejs"
 ], function Screen_UserSettings ($, _, Backbone, _$, Screen, Templ_UserSettings) {
     return Screen.extend({
-        id        : "screen_userSettings",
-
-        // Our template for the line of statistics at the bottom of the app.
-        template  : _.template(Templ_UserSettings),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events    : {
-            "click .userSettings_content-save-choice-saveBtn"    : "saveGame",
-            "click .userSettings_content-save-choice-cancelBtn"  : "resetChanges",
-            "click .userSettings_content-save-choice-exportBtn"  : "exportSaveFile",
-            "click .userSettings_content-save-choice-resetBtn"   : "resetUser",
-            "click .userSettings_content-save-choice-backBtn"    : function () {
-                this.transitionOut("title");
+        id       : "screen_userSettings",
+        template : _.template(Templ_UserSettings),
+        events   : {
+            "click .userSettings_content-save-choice-saveBtn"       : "saveGame",
+            "click .userSettings_content-save-choice-cancelBtn"     : "resetChanges",
+            "click .userSettings_content-save-choice-exportBtn"     : "exportSaveFile",
+            "click .userSettings_content-save-choice-resetAlbumBtn" : function () {
+                this.confirmAction = this.resetAlbum;
+                this.toggleConfirm("show");
             },
+            "click .userSettings_content-save-choice-deleteAccountBtn" : function () {
+                this.confirmAction = this.deleteAccount;
+                this.toggleConfirm("show");
+            },
+            "click .userSettings_content-save-choice-backBtn"    : function () { this.transitionOut("title"); },
             "click .userSettings_content-load-choice-loadBtn"    : "loadGame",
             "click .userSettings_content-load-choice-cancelBtn"  : function () {
-                $(".setting-import input").val("");
+                this.$(".setting-import input").val("");
                 this.toggleLoad("hide");
             },
-            "keyup .setting-name input"                           : _.debounce(function (e) { this.validateInput(e.target); }, 250),
-            "change .setting-avatar input,.setting-import input"  : function (e) { this.validateInput(e.target); },
-            "change .setting-bgm input,.setting-sfx input"        : "updateVolume",
-            "input .setting-bgm input,.setting-sfx input"         : "updateVolume",
-            "mouseenter .userSettings_content-save-choice-element,.userSettings_content-load-choice-element" : function () {
+            "click .userSettings_content-confirm-choice-confirmBtn" : function () { this.confirmAction(); },
+            "click .userSettings_content-confirm-choice-cancelBtn"  : function () {this.toggleConfirm("hide"); },
+            "keyup .setting-name input,.setting-email input,.setting-newPassword input,.setting-confirmPassword input" : _.debounce(function (e) { this.validateInput(e.target); }, 250),
+            "change .setting-avatar input,.setting-import input"    : function (e) { this.validateInput(e.target); },
+            "change .setting-bgm input,.setting-sfx input,.setting-notif"          : "updateVolume",
+            "input .setting-bgm input,.setting-sfx input,.setting-notif"           : "updateVolume",
+            "mouseenter .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.setting-difficulty,.setting-placingMode,.setting-avatar input,.setting-import input" : function () {
+            "click .userSettings_content-save-choice-element,.userSettings_content-load-choice-element,.userSettings_content-confirm-choice-element,.setting-difficulty,.setting-placingMode,.setting-notifyMode,.setting-inactiveAudio,.setting-country,.setting-avatar,.setting-import" : function () {
                 _$.audio.audioEngine.playSFX("uiConfirm");
             },
-            "focus .setting-name input" : function () {
+            "focus .setting-name input,.setting-email input,.setting-newPassword input,.setting-confirmPassword input" : function () {
                 _$.audio.audioEngine.playSFX("uiInput");
+            },
+            "click .setting-import .userSettings_content-settings-setting-label" : function () {
+                this.$(".setting-import input").val("");
+                this.toggleLoad("hide");
+                this.validateInput(this.$(".setting-import input")[0]);
+            },
+            "click .setting-avatar .userSettings_content-settings-setting-label" : function () {
+                this.$(".setting-avatar input").val("");
+                this.validateInput(this.$(".setting-avatar input")[0]);
             }
         },
 
@@ -45,13 +57,16 @@ define([
         remove,
 
         toggleLoad,
+        toggleConfirm,
 
         saveGame,
         resetChanges,
         loadGame,
         exportSaveFile,
-        resetUser,
+        resetAlbum,
+        deleteAccount,
         updateVolume,
+        buildCountryList,
 
         transitionIn,
         transitionOut,
@@ -59,17 +74,37 @@ define([
     });
 
     function initialize (options) {
+        Screen.prototype.initialize.call(this);
+        
         this.$el.html(this.template({
-            avatarSrc : _$.state.user.get("avatar"),
-            wonCount  : _$.state.user.get("gameStats").won,
-            lostCount : _$.state.user.get("gameStats").lost,
-            drawCount : _$.state.user.get("gameStats").draw,
-            bgmVolume : Math.floor(_$.audio.audioEngine.channels.bgm.volume * 100),
-            sfxVolume : Math.floor(_$.audio.audioEngine.channels.sfx.volume * 100)
+            isLoggedIn      : _$.comm.sessionManager.getSession(),
+            userName        : _$.state.user.get("name"),
+            email           : _$.state.user.get("email"),
+            avatarSrc       : _$.state.user.get("avatar"),
+            wonCount        : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").won),
+            wonRankedCount  : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").wonRanked),
+            lostCount       : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").lost),
+            lostRankedCount : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").lostRanked),
+            drawCount       : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").draw),
+            drawRankedCount : _$.utils.getFormattedNumber(_$.state.user.get("gameStats").drawRanked),
+            rankPoints      : _$.utils.getFormattedNumber(_$.state.user.get("rankPoints")),
+            bgmVolume       : _$.state.user.get("bgmVolume") * 100,
+            sfxVolume       : _$.state.user.get("sfxVolume") * 100,
+            notifVolume     : _$.state.user.get("notifVolume") * 100
         }));
 
-        this.difficultyDropdown  = null;
-        this.placingModeDropdown = null;
+        this.difficultyDropdown    = null;
+        this.placingModeDropdown   = null;
+        this.notifyModeDropdown    = null;
+        this.inactiveAudioDropdown = null;
+        this.countryDropdown       = null;
+        this.confirmAction         = null;
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.countryTempl = this.$(".countrySetting-COUNTRY_CODE")[0].outerHTML;
+            this.$(".countrySetting-COUNTRY_CODE").remove();
+            this.buildCountryList();
+        }
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();
@@ -79,28 +114,51 @@ define([
         Screen.prototype.remove.call(this);
         this.difficultyDropdown.remove();
         this.placingModeDropdown.remove();
+        this.inactiveAudioDropdown.remove();
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.notifyModeDropdown.remove();
+            this.countryDropdown.remove();
+        }
     }
 
     function saveGame () {
         var settings = {};
         var difficultySetting;
         var placingModeSetting;
+        var notifyModeSetting;
+        var inactiveAudioSetting;
+        var countrySetting;
 
-        settings.name   = this.$(".setting-name input").val().trim();
-        settings.avatar = this.$(".setting-avatar input")[0].files[0];
+        settings.name          = this.$(".setting-name input").val().trim();
+        settings.avatar        = this.$(".setting-avatar input")[0].files[0];
 
         difficultySetting      = this.difficultyDropdown.currentOption[0].className.replace("difficultySetting-", "");
         settings.difficulty    = difficultySetting;
         placingModeSetting     = this.placingModeDropdown.currentOption[0].className.replace("placingModeSetting-", "");
         settings.placingMode   = placingModeSetting;
+        inactiveAudioSetting   = this.inactiveAudioDropdown.currentOption[0].className.replace("inactiveAudioSetting-", "");
+        settings.inactiveAudio = inactiveAudioSetting;
 
         settings.bgmVolume     = this.$(".setting-bgm input").val() / 100;
         settings.sfxVolume     = this.$(".setting-sfx input").val() / 100;
+
+        if (_$.comm.sessionManager.getSession()) {
+            settings.email       = this.$(".setting-email input").val().trim();
+            notifyModeSetting    = this.notifyModeDropdown.currentOption[0].className.replace("notifyModeSetting-", "");
+            settings.notifyMode  = notifyModeSetting;
+            settings.notifVolume = this.$(".setting-notif input").val() / 100;
+            countrySetting       = this.countryDropdown.currentOption[0].className.replace("countrySetting-", "");
+            settings.country     = countrySetting === "unset" ? null : countrySetting;
+        }
+
+        this.$(".userSettings_header-help").text("");
 
         if (settings.avatar) {
             var url = URL.createObjectURL(settings.avatar);
             _$.utils.getBase64Image(url, (base64URL) => {
                 _$.state.user.set({ avatar: base64URL });
+                this.$(".userSettings_header-avatar-img").css("backgroundImage", "url(" + base64URL + ")");
                 proceed.call(this);
             });
         } else {
@@ -108,39 +166,96 @@ define([
         }
 
         function proceed () {
-            _$.state.user.set({
-                name        : settings.name,
-                difficulty  : settings.difficulty,
-                placingMode : settings.placingMode,
-                bgmVolume   : settings.bgmVolume,
-                sfxVolume   : settings.sfxVolume
-            });
+            var newSettings = {
+                name          : settings.name,
+                difficulty    : settings.difficulty,
+                placingMode   : settings.placingMode,
+                inactiveAudio : settings.inactiveAudio,
+                bgmVolume     : settings.bgmVolume,
+                sfxVolume     : settings.sfxVolume
+            };
+
+            if (_$.comm.sessionManager.getSession()) {
+                _.extend(newSettings, { notifyMode : settings.notifyMode, country: settings.country });
+            }
+
+            _$.state.user.set(newSettings);
             
             _$.app.track("set", {
                 "dimension0" : "difficulty",
                 "dimension1" : "placingMode",
+                "dimension2" : "notifyMode",
+                "dimension3" : "inactiveAudio",
+                "dimension4" : "country",
                 "metric0"    : "albumSize",
                 "metric1"    : "gameStats"
             });
+
             _$.app.track("send", "event", {
                 eventCategory : "userSettingsEvent",
                 eventAction   : "saveGame",
                 dimension0    : _$.state.user.get("difficulty"),
                 dimension1    : _$.state.user.get("placingMode"),
+                dimension2    : _$.state.user.get("notifyMode"),
+                dimension3    : _$.state.user.get("inactiveAudio"),
+                dimension4    : _$.state.user.get("country"),
                 metric0       : _$.state.user.get("album").length,
                 metric1       : JSON.stringify(_$.state.user.get("gameStats"))
             });
             
-            _$.app.saveData();
-            this.transitionOut("title");
+            _$.events.on("userDataSaved", () => {
+                _$.audio.audioEngine.playSFX("gameGain");
+                this.$(".userSettings_header-help").text("Changes successfully saved!");
+
+                if (_$.comm.sessionManager.getSession()) {
+                    _$.state.user.set("email", settings.email);
+                }
+            });
+
+            if (_$.comm.sessionManager.getSession()) {
+                var accountData = {
+                    currentPassword : this.$(".setting-currentPassword input").val().trim(),
+                    newPassword     : this.$(".setting-newPassword input").val().trim(),
+                    confirmPassword : this.$(".setting-confirmPassword input").val().trim(),
+                    newEmail        : settings.email
+                };
+
+                if (!accountData.newPassword) {
+                    delete accountData.password;
+                    delete accountData.newPassword;
+                    delete accountData.confirmPassword;
+
+                    this.$(".setting-currentPassword input, setting-confirmPassword input").val("");
+                }
+
+                if (accountData.newEmail === _$.state.user.get("email")) {
+                    delete accountData.newEmail;
+                }
+
+                _$.app.saveData(accountData, (error) => {
+                    this.$(".userSettings_header-help").text(error.message || error.error);
+                });
+            } else {
+                _$.app.saveData();
+            }
         }
     }
 
     function resetChanges () {
         this.$(".setting-name input").val(_$.state.user.get("name"));
-        $(".setting-avatar input, .setting-import input").val("");
+        this.$(".setting-avatar input, .setting-import input").val("");
+        this.$(".setting-bgm input").val(_$.state.user.get("bgmVolume") * 100).change();
+        this.$(".setting-sfx input").val(_$.state.user.get("sfxVolume") * 100).change();
         this.difficultyDropdown.reset();
         this.placingModeDropdown.reset();
+        this.inactiveAudioDropdown.reset();
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.$(".setting-email input").val(_$.state.user.get("email"));
+            this.$(".setting-notif input").val(_$.state.user.get("notifVolume") * 100).change();
+            this.notifyModeDropdown.reset();
+            this.countryDropdown.reset();
+        }
     }
 
     function loadGame () {
@@ -153,9 +268,7 @@ define([
 
         var file = this.$(".setting-import input")[0].files[0];
         _$.app.importSave(file, () => {
-            this.transitionOut("title", { fullIntro: true });
-            TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
-            _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+            this.fadeOut(this.transitionOut.bind(this, "title", { fullIntro: true }));
         });
     }
 
@@ -176,7 +289,7 @@ define([
         _$.app.exportSave();
     }
 
-    function resetUser () {
+    function resetAlbum () {
         _$.app.track("set", {
             "dimension0" : "difficulty",
             "metric0"    : "albumSize",
@@ -184,15 +297,60 @@ define([
         });
         _$.app.track("send", "event", {
             eventCategory : "userSettingsEvent",
-            eventAction   : "resetUser",
+            eventAction   : "resetAlbum",
             dimension0    : _$.state.user.get("difficulty"),               // difficulty
             metric0       : _$.state.user.get("album").length,             // albumSize
             metric1       : JSON.stringify(_$.state.user.get("gameStats")) // gameStats
         });
 
-        this.transitionOut("title", { setup: true, resetUser: true, fullIntro: true });
-        TweenMax.to(_$.dom, 1, { opacity: 0, delay: 1 });
-        _$.audio.audioEngine.stopBGM({ fadeDuration: 1 });
+        this.confirmAction = null;
+        this.toggleConfirm("hide");
+        _$.state.user.resetAlbum();
+
+        _$.events.on("userDataSaved", () => {
+            _$.audio.audioEngine.playSFX("gameGain");
+            this.$(".userSettings_header-help").text("Card album reset.");
+            _$.events.trigger("startUserEvents");
+        });
+
+        _$.events.trigger("stopUserEvents");
+        _$.app.saveData();
+    }
+
+    function deleteAccount () {
+        _$.app.track("set", {
+            "dimension0" : "difficulty",
+            "metric0"    : "albumSize",
+            "metric1"    : "gameStats"
+        });
+        _$.app.track("send", "event", {
+            eventCategory : "userSettingsEvent",
+            eventAction   : "deleteAccount",
+            dimension0    : _$.state.user.get("difficulty"),
+            metric0       : _$.state.user.get("album").length,
+            metric1       : JSON.stringify(_$.state.user.get("gameStats"))
+        });
+
+        this.confirmAction = null;
+        this.toggleConfirm("hide");
+
+        _$.events.once("initialized", () => {
+            _$.audio.audioEngine.playSFX("gameGain");
+            _$.ui.screen.info(null, {
+                titleBold    : "Account",
+                titleRegular : "deleted",
+                msg          : "Thanks for playing The Fifteenth Triad!"
+            });
+        });
+
+        setTimeout(() => {
+            if (_$.comm.sessionManager.getSession()) {
+                _$.comm.sessionManager.removeUser();
+            } else {
+                window.localStorage.removeItem(_$.app.name);
+                this.fadeOut(this.transitionOut.bind(this, "title", { setup: true, fullIntro: true }));
+            }
+        }, 500);
     }
 
     function updateVolume (event) {
@@ -206,9 +364,30 @@ define([
             if (event.type === "change") {
                 _$.audio.audioEngine.playSFX("cardFlip");
             }
+        } else if (id === "notifVolume") {
+            _$.audio.audioEngine.channels.notif.setVolume(value / 100);
+            if (event.type === "change") {
+                _$.audio.audioEngine.playNotif("loungeMsg");
+            }
         }
 
         this.$("label[for=\"" + id + "\"]").html(value);
+    }
+
+    function buildCountryList () {
+        var countryList = _$.utils.getCountryList();
+        var dom;
+        var className;
+        var text;
+
+        _.each(countryList, (country) => {
+            dom       = $(this.countryTempl).clone();
+            className = dom[0].className.replace("COUNTRY_CODE", country.code);
+            text      = dom.text().replace("COUNTRY_NAME", country.name);
+
+            dom.removeClass().addClass(className).text(text);
+            this.$(".setting-country .userSettings_content-settings-setting-select").append(dom);
+        });
     }
 
     function transitionIn () {
@@ -219,12 +398,42 @@ define([
             defaultOptionSelector : ".difficultySetting-" + _$.state.user.get("difficulty")
         });
 
-
         this.placingModeDropdown = this.createDropdown({
             selector              : ".setting-placingMode",
             dropdownSelector      : ".userSettings_content-settings-setting-select",
             defaultOptionSelector : ".placingModeSetting-" + _$.state.user.get("placingMode")
         });
+
+        this.inactiveAudioDropdown = this.createDropdown({
+            selector              : ".setting-inactiveAudio",
+            dropdownSelector      : ".userSettings_content-settings-setting-select",
+            defaultOptionSelector : ".inactiveAudioSetting-" + _$.state.user.get("inactiveAudio")
+        });
+
+        if (_$.comm.sessionManager.getSession()) {
+            this.notifyModeDropdown = this.createDropdown({
+                selector              : ".setting-notifyMode",
+                dropdownSelector      : ".userSettings_content-settings-setting-select",
+                defaultOptionSelector : ".notifyModeSetting-" + _$.state.user.get("notifyMode"),
+                onUpdate              : () => {
+                    var inactiveAudioSetting = this.inactiveAudioDropdown.currentOption[0].className.replace("inactiveAudioSetting-", "");
+                    var notifyModeSetting    = this.notifyModeDropdown.currentOption[0].className.replace("notifyModeSetting-", "");
+                    if (notifyModeSetting === "onlyInactive" && inactiveAudioSetting === "muteAll") {
+                        this.inactiveAudioDropdown.scrollTo(".inactiveAudioSetting-onlyNotifs");
+                    }
+                }
+            });
+
+            this.countryDropdown = this.createDropdown({
+                selector              : ".setting-country",
+                dropdownSelector      : ".userSettings_content-settings-setting-select",
+                defaultOptionSelector : _$.state.user.get("country") ? ".countrySetting-" + _$.state.user.get("country") : ".countrySetting-unset",
+                onOpen                : (dropdown) => {
+                    var scrollValue = dropdown.dropdownDOM.offset().top + dropdown.dropdownDOM.height();
+                    TweenMax.to(this.$(".userSettings_content-settings-scroll")[0], 0.2, { scrollTop: scrollValue });
+                }
+            });
+        }
 
         this.resetChanges();
 
@@ -234,33 +443,33 @@ define([
         tl.call(() => {
             this.$(".userSettings_header").slideDown(500);
         });
-        tl.to(this.$(".userSettings_header-avatar"), 0.5, { opacity: 1, clearProps:"all" }, tl.recent().endTime() + 0.5);
+        tl.to(this.$(".userSettings_header-avatar"), 0.5, { opacity: 1, clearProps:"all" }, "+=0.5");
+        tl.fromTo(this.$(".userSettings_content-settings-scroll"), 0.5, { height: 0, opacity: 0 }, { height: "100%", opacity: 1, clearProps: "all" }, "-=0.5");
         tl.staggerTo(this.$(".userSettings_content-settings-setting"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() - 0.5);
         tl.call(() => {
             this.$(".userSettings_content-save").slideDown(500);
             _$.events.trigger("startUserEvents");
-        });
+        }, null, [], "-=0.5");
 
         return this;
     }
 
     function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
+        this.checkBGMCrossfade(nextScreen);
 
         var tl = new TimelineMax();
-        if (_$.ui.footer.isOpen) {
-            tl.add(_$.ui.footer.toggleFooter(), 0);
-        }
         tl.call(() => {
             this.$(".userSettings_content-save, .userSettings_content-load").slideUp(500);
-        }, null, [], "-=1.5");
+        });
         tl.to(this.$(".userSettings_content-settings, .userSettings_header-avatar"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
         tl.call(() => {
             this.$(".userSettings_header").slideUp(500);
         });
+        tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             this.changeScreen(nextScreen, options);
-        }, null, [], tl.recent().endTime() + 0.5);
+        }, null, [], "+=0.5");
 
         return this;
     }
@@ -275,13 +484,29 @@ define([
         }
     }
 
+    function toggleConfirm (state) {
+        if (state === "show") {
+            this.$(".userSettings_content-confirm").css({pointerEvents: ""}).slideDown();
+            this.$(".userSettings_content-save").css({pointerEvents: "none"}).slideUp();
+        } else if (state === "hide") {
+            this.$(".userSettings_content-confirm").css({pointerEvents: "none"}).slideUp();
+            this.$(".userSettings_content-save").css({pointerEvents: ""}).slideDown();
+        }
+    }
+
     function validateInput (input) {
         var value = $(input).val().trim();
         var check;
 
         if (input === this.$(".setting-name input")[0]) {
-            check = value.length && !value.match(/\W/g);
-        } else if (input === this.$(".setting-avatar input")[0]) {
+            check = value.length;
+        } else if (input === this.$(".setting-email input")[0]) {
+            check = value.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/);
+        } else if (input === this.$(".setting-newPassword input")[0]) {
+            check = !value.length || value.length >= 6;
+        }  else if (input === this.$(".setting-confirmPassword input")[0]) {
+            check = value === this.$(".setting-newPassword input").val().trim();
+        }  else if (input === this.$(".setting-avatar input")[0]) {
             check = !input.files.length || !!input.files[0].name.match(/\.jpg|\.jpeg|\.png|\.gif$/);
         } else if (input === this.$(".setting-import input")[0]) {
             check = !input.files.length || input.files[0].name.endsWith("." + _$.app.saveExt);
@@ -297,7 +522,7 @@ define([
             }
         }
 
-        if (this.$(".setting-name input, .setting-avatar input, .setting-import input").hasClass("is--invalid")) {
+        if (this.$(".userSettings_content-settings-setting-input").hasClass("is--invalid")) {
             if (this.$(".userSettings_content-save").is(":visible")) {
                 this.$(".userSettings_content-save").css({pointerEvents: "none"}).slideUp();
             }
@@ -312,7 +537,7 @@ define([
                 } else if (input.files.length && !this.$(".userSettings_content-load").is(":visible")) {
                     this.toggleLoad("show");
                 }
-            } else if (!this.$(".userSettings_content-save, .userSettings_content-load").is(":visible")) {
+            } else if (!this.$(".userSettings_content-save, .userSettings_content-load, .userSettings_content-confirm").is(":visible")) {
                 this.$(".userSettings_content-save").css({ pointerEvents: "" }).slideDown();
             }
         }

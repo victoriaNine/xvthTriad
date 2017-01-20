@@ -13,6 +13,8 @@ require.config({
         modernizr         : "libs/modernizr/modernizr",
         socketIO          : "libs/socket.io-client/dist/socket.io",
         stats             : "libs/stats.js/build/stats",
+        superlogin        : "libs/superlogin-client/superlogin",
+        elo               : "libs/elo/elo",
 
         text              : "libs/requirejs-plugins/lib/text",
         async             : "libs/requirejs-plugins/src/async",
@@ -29,6 +31,10 @@ require.config({
         es6Promise        : "libs/es6-promise/es6-promise",
         fetch             : "libs/fetch/fetch",
         storage           : "libs/backbone/backbone.localStorage",
+        jsonPrune         : "libs/jsonPrune/json.prune",
+        axios             : "libs/axios/dist/axios",
+        eventemitter2     : "libs/eventemitter2/lib/eventemitter2",
+        tablesortNumber   : "libs/tablesort/tablesort.number",
 
         global            : "global"
     },
@@ -45,6 +51,8 @@ require([
     "tweenMax",
     "socketIO",
     "stats",
+    "superlogin",
+    "elo",
     "modules/audioEngine",
     "modules/canvasWebGL",
     "modules/assetLoader",
@@ -54,24 +62,28 @@ require([
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
     "json!data/loader_imgCards.json",
+    "json!data/loader_imgFlags.json",
     "json!data/loader_imgHelp.json",
     "json!data/loader_audioBGM.json",
     "json!data/loader_audioSFX.json",
     "global",
     "views/elem_footer",
     "views/screen",
+    "views/screen_cardAlbum",
     "views/screen_cardSelect",
     "views/screen_game",
     "views/screen_loading",
+    "views/screen_lounge",
     "views/screen_roomSelect",
     "views/screen_rulesSelect",
     "views/screen_title",
     "views/screen_userSettings",
-    "jqueryNearest"
-], function (Modernizr, $, _, tweenMax, SocketIO, Stats, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+    "jqueryNearest",
+    "jsonPrune"
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, Elo, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgFlags, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");
-    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgHelp];
+    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgFlags, loaderImgHelp];
 
     function setupScale () {
         var ORIGINAL_SIZE = {
@@ -180,11 +192,24 @@ require([
             e.src="//www.google-analytics.com/analytics.js";
             r.parentNode.insertBefore(e,r);
         }(window,document,"script","ga"));
-        ga("create","UA-89445990-1");
-        ga("send","pageview");
+        window.ga("create","UA-89445990-1");
+        window.ga("send","pageview");
     }
 
-    if (window.location.pathname !== "/") {
+    var location = window.location;
+    if (location.pathname !== "/") {
+        if (location.pathname === "/confirm-email" && location.search) {
+            var confirmEmailMsg = location.search.match("success=true") ? "Email verified, thanks! You can now login." : window.unescape(location.search.match(/=(.*?)$/)[1]);
+            _$.events.once("initialized", () => {
+                _$.audio.audioEngine.playSFX("gameGain");
+                _$.ui.screen.info({
+                    titleBold    : "Email",
+                    titleRegular : "confirmation",
+                    msg          : confirmEmailMsg
+                });
+            });
+        }
+        
         window.history.replaceState({}, "", "/");
     }
     
@@ -210,25 +235,38 @@ require([
         _$.app.env.mobileDeviceType = "tablet";
     }
 
-    _$.events.on("all", function (eventName, ...data) {
+    /*_$.events.on("all", function (event, ...data) {
         if (data.length) {
-            _$.debug.log("event triggered:", eventName, data);
+            _$.debug.log("event triggered:", event.name, event, data);
         } else {
-            _$.debug.log("event triggered:", eventName);
+            _$.debug.log("event triggered:", event.name, event);
         }
-    });
+    });*/
 
     _$.events.once("launch", function () {
-        _$.comm.socketManager = new SocketManager();
-        _$.ui.footer          = new Elem_Footer();
-        _$.ui.screen          = new Screen_Title({ setup: true, fullIntro: true });
+        _$.ui.footer = new Elem_Footer();
+        _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
 
         $(window).on("beforeunload", function (e) {
             return _$.ui.screen.showSavePrompt(e);
         }).on("blur", function() {
-            _$.audio.audioEngine.channels.master.fadeOut();
+            if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
+                return;
+            } else if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {
+                _$.audio.audioEngine.channels.bgm.fadeOut();
+                _$.audio.audioEngine.channels.sfx.fadeOut();
+            } else {
+                _$.audio.audioEngine.channels.master.fadeOut();
+            }
         }).on("focus", function() {
-            _$.audio.audioEngine.channels.master.fadeIn({ to: 1 });
+            if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
+                return;
+            } if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {
+                _$.audio.audioEngine.channels.bgm.fadeIn({ to: (_$.ui.screen.$(".setting-bgm input").val() / 100) || _$.state.user.get("bgmVolume") });
+                _$.audio.audioEngine.channels.sfx.fadeIn({ to: (_$.ui.screen.$(".setting-sfx input").val() / 100) || _$.state.user.get("sfxVolume") });
+            } else {
+                _$.audio.audioEngine.channels.master.fadeIn({ to: _$.audio.audioEngine.channels.master.defaultVolume });
+            }
         });
     });
 
@@ -240,13 +278,10 @@ require([
     _$.app.updateManager       = new UpdateManager();
     _$.app.assetLoader         = new AssetLoader();
     _$.audio.audioEngine       = new AudioEngine();
+    _$.comm.socketManager      = new SocketManager();
+    _$.comm.sessionManager     = new Superlogin(_$.app.sessionConfig, true);
     _$.ui.canvas               = new CanvasWebGL();
     _$.ui.screen               = new Screen_Loading();
 
     _$.app.assetLoader.load(loaders);
 });
-
-
-(function () {
-
-})();

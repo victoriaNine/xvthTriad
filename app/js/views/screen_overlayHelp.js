@@ -4,21 +4,17 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_overlayHelp.html",
-    "text!templates/templ_helpBasicRules.html",
-    "text!templates/templ_helpStartSolo.html",
-    "text!templates/templ_helpStartVersus.html"
+    "text!templates/templ_overlayHelp.ejs",
+    "text!templates/templ_helpBasicRules.ejs",
+    "text!templates/templ_helpStartSolo.ejs",
+    "text!templates/templ_helpStartVersus.ejs"
 ], function Screen_OverlayHelp ($, _, Backbone, _$, Screen, Templ_OverlayHelp, Templ_HelpBasicRules, Templ_HelpStartSolo, Templ_HelpStartVersus) {
-    var HELP_TOPICS = "basicRules|startSolo|startVersus";
+    const HELP_TOPICS = "basicRules|startSolo|startVersus";
 
     return Screen.extend({
-        tagName : "section",
-        id      : "screen_overlayHelp",
-
+        id       : "screen_overlayHelp",
         template : _.template(Templ_OverlayHelp),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {
+        events   : {
             "click .help_content-screenNav-choice-backBtn" : "showTopics",
             "click .help_content-topics-topic[class*=topic-]" : function (e) {
                 this.showGuide(e.currentTarget.className.match(HELP_TOPICS)[0]);
@@ -47,8 +43,9 @@ define([
     });
 
     function initialize (options) {
-        this.$el.html(this.template());
+        Screen.prototype.initialize.call(this);
 
+        this.$el.html(this.template());
         this.currentGuide   = null;
         this.guideTemplates = {
             basicRules  : Templ_HelpBasicRules,
@@ -67,11 +64,11 @@ define([
 
         var tl = new TimelineMax();
         tl.to(_$.ui.screen.$el, 0.5, { opacity: 0 });
-        tl.from(this.$el, 0.4, { opacity: 0, clearProps: "all" });
+        tl.from(this.$el, 0.5, { opacity: 0, clearProps: "all" });
         tl.call(() => {
             this.$(".help_header").slideDown(500);
         });
-        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
+        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1, "+=0.5");
         tl.call(() => {
             _$.events.trigger("startUserEvents");
             _$.events.trigger("helpPageOpen");
@@ -86,12 +83,12 @@ define([
         var tl = new TimelineMax();
         tl.call(() => {
             this.$(".help_content-screenNav").slideUp(500);
-        }, null, [], "-=1.5");
-        tl.to(this.$(".help_content-topics, .help_content-guide"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        });
+        tl.to(this.$(".help_content-topics, .help_content-guide"), 0.5, { opacity: 0 }, "+=0.5");
         tl.call(() => {
             this.$(".help_header").slideUp(500);
         });
-        tl.to(this.$el, 0.4, { opacity: 0 }, "-=0.2");
+        tl.to(this.$el, 0.5, { opacity: 0 });
         tl.to(_$.ui.screen.$el, 0.5, { opacity: 1, clearProps: "opacity" });
         tl.call(onTransitionComplete.bind(this));
 
@@ -137,21 +134,17 @@ define([
         });
 
         var tl = new TimelineMax();
-        if (_$.ui.footer.isOpen) {
-            tl.add(_$.ui.footer.toggleFooter());
-        }
-        tl.add(_$.ui.footer.toggleLogo("hide"), "-=1.5");
-        tl.to(this.$(".help_content-topics"), 0.5, { opacity: 0 }, 0);
+        tl.to(this.$(".help_content-topics"), 0.5, { opacity: 0 });
         tl.set(this.$(".help_content-topics"), { display: "none", clearProps: "opacity" });
         tl.set(this.$(".help_content-guide"), { clearProps: "display" });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 0 });
         tl.call(() => {
-            this.$(".help_content-guide-contents").html(guide);
+            this.$(".help_content-guide-scroll").html(guide);
             this.$(".help_header-title-topicName").text(" / " + title);
             this.showHelp(topicName);
         });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 1, clearProps: "opacity" });
-        tl.from(this.$(".help_content-guide-contents"), 0.5, { height: 0, opacity: 0, clearProps: "all" });
+        tl.fromTo(this.$(".help_content-guide-scroll"), 0.5, { height: 0, opacity: 0 }, { height: "100%", opacity: 1, clearProps: "all" });
         tl.call(() => {
             this.$(".help_content-screenNav").slideDown(500);
             _$.events.trigger("startUserEvents");
@@ -164,18 +157,16 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => { this.$(".help_content-screenNav").slideUp(500); });
-        tl.to(this.$(".help_content-guide"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        tl.to(this.$(".help_content-guide"), 0.5, { opacity: 0 }, "+=0.5");
         tl.set(this.$(".help_content-guide"), { display: "none", clearProps: "opacity" });
         tl.set(this.$(".help_content-topics"), { clearProps: "display" });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 0 });
         tl.call(() => {
-            this.$(".help_content-guide-contents, .help_header-title-topicName").empty();
+            this.$(".help_content-guide-scroll, .help_header-title-topicName").empty();
             this.showHelp();
         });
         tl.to(this.$(".help_header-title, .help_header-help, hr"), 0.5, { opacity: 1, clearProps: "opacity" });
-        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
-        tl.add(_$.ui.footer.toggleFooter(), "-=1.5");
-        tl.add(_$.ui.footer.toggleLogo("show"), "-=1.5");
+        tl.staggerFrom(this.$(".help_content-topics-topic"), 0.5, { opacity: 0, clearProps:"all" }, 0.1);
         tl.call(() => {
             _$.events.trigger("startUserEvents");
         });

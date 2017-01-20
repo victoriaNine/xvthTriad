@@ -123,7 +123,23 @@
         },
         {
             "type" : "img.ui",
+            "name" : "elem_dark.png"
+        },
+        {
+            "type" : "img.ui",
             "name" : "elem_wind.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "insigna_gold.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "insigna_silver.png"
+        },
+        {
+            "type" : "img.ui",
+            "name" : "insigna_bronze.png"
         }
     ]
 }

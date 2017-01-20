@@ -6,8 +6,9 @@ define([
     "models/model_player",
     "models/model_ai"
 ], function Model_Game (_, Backbone, _$, Model_Card, Model_Player, Model_AI) {
-    const BOARD_SIZE = 9;
-    const ELEMENTS   = ["fire", "ice", "water", "poison", "light", "thunder", "rock", "wind", "dark"];
+    const BOARD_SIZE   = 9;
+    const MAX_ELEMENTS = 5;
+    const ELEMENTS     = ["fire", "ice", "water", "poison", "light", "thunder", "rock", "wind", "dark"];
 
     return Backbone.Model.extend({
         defaults : {
@@ -38,7 +39,8 @@ define([
             computer      : null,
             turnNumber    : -1,
             role          : null,
-            roundNumber   : 0
+            roundNumber   : 0,
+            isRanked      : false
         },
 
         initialize,
@@ -101,31 +103,35 @@ define([
                 this.set({ players :
                     {
                         user     : new Model_Player({
-                            type   : "human",
-                            user   : _$.state.user,
-                            name   : _$.state.user.get("name"),
-                            avatar : _$.state.user.get("avatar"),
-                            deck   : userDeck
+                            type       : "human",
+                            user       : _$.state.user,
+                            name       : _$.state.user.get("name"),
+                            avatar     : _$.state.user.get("avatar"),
+                            rankPoints : _$.state.user.get("rankPoints"),
+                            deck       : userDeck
                         }),
                         opponent : new Model_Player({
-                            type   : "human",
-                            user   : opponent,
-                            name   : opponent.name,
-                            avatar : opponent.avatar,
-                            deck   : opponentDeck
+                            type       : "human",
+                            user       : opponent,
+                            name       : opponent.name,
+                            avatar     : opponent.avatar,
+                            rankPoints : opponent.rankPoints,
+                            deck       : opponentDeck
                         })
                     }
                 });
             }
         }
 
-        if (this.get("role") === "transmitter") {
+        if (this.get("role") === "emitter") {
             _$.comm.socketManager.emit("roundReset");
         } else if (this.get("role") === "receiver") {
-            _$.events.on("getFirstPlayer", (eventName, response) => {
-                if (response.msg) {
+            _$.events.on("getFirstPlayer", (event, data) => {
+                var playerRole = data.msg;
+
+                if (playerRole) {
                     _$.events.off("getFirstPlayer");
-                    var firstPlayer = (response.msg === "transmitter") ? this.get("players").opponent : this.get("players").user;
+                    var firstPlayer = (playerRole === "emitter") ? this.get("players").opponent : this.get("players").user;
                     this.set("playing", firstPlayer);
                     _$.events.trigger("firstPlayerSet");
                 }
@@ -135,7 +141,7 @@ define([
         if (this.get("rules").elemental) {
             var randomCase;
             var randomElement;
-            var elementsNb    = _.random(1, 5);
+            var elementsNb    = _.random(1, MAX_ELEMENTS);
             this.set("elementBoard", _.clone(this.get("board")));
 
             for (var i = 0, ii = elementsNb; i < ii; i++) {
@@ -192,26 +198,26 @@ define([
         switch (this.get("difficulty")) {
             case "easy":
                 config.name   = "Carbuncle";
-                config.avatar = "./assets/img/avatars/computer_carbuncle.jpg";
+                config.avatar = _$.assets.get("img.avatars.computer_carbuncle").src;
                 cardMinLevel  = 1;
                 cardMaxLevel  = 1;
                 break;
             case "normal":
                 config.name   = "Gentiana";
-                config.avatar = "./assets/img/avatars/computer_gentiana.jpg";
+                config.avatar = _$.assets.get("img.avatars.computer_gentiana").src;
                 cardMinLevel  = 1;
                 cardMaxLevel  = 2;
                 break;
             case "hard":
                 config.name   = "Bahamut";
-                config.avatar = "./assets/img/avatars/computer_bahamut.jpg";
+                config.avatar = _$.assets.get("img.avatars.computer_bahamut").src;
                 cardMinLevel  = 1;
                 cardMaxLevel  = 3;
                 break;
         }
 
         randomCards = _$.utils.getRandomCards({
-            amount   : 5,
+            amount   : _$.state.DECK_SIZE,
             minLevel : cardMinLevel,
             maxLevel : cardMaxLevel
         });
@@ -227,7 +233,7 @@ define([
 
     function setRules (rules = {}) {
         if (rules.trade && !rules.trade.match("none|one|difference|direct|all")) {
-            throw new Error("Invalid trade rule: " + rules.trade);
+            _$.debug.error("Invalid trade rule: " + rules.trade);
         }
 
         return _.defaults(rules, {
@@ -252,7 +258,7 @@ define([
 
         if (this.get("type") === "versus" && playing === user) {
             _$.comm.socketManager.emit("setPlayerAction", {
-                deckIndex : newCard.get("deckIndex"),
+                deckIndex  : newCard.get("deckIndex"),
                 position,
                 turnNumber : this.get("turnNumber")
             });
@@ -275,6 +281,7 @@ define([
         if (this.get("rules").elemental) {
             let caseName = _$.utils.getCaseNameFromPosition(newCard.get("position"));
             let element  = this.get("elementBoard")[caseName];
+
             if (element && element === newCard.get("element")) {
                 newCard.set("bonus", newCard.get("bonus") + 1);
                 triggerEvent("showElementalBonus", { caseName, bonusType: "bonus" });
@@ -341,26 +348,42 @@ define([
                 }
             }
 
+            // If this is the last card to check in the list of adjacent cards
             if (index === adjacentCardsNb - 1) {
+                // If all of the board's cases have been filled (end of the game)
                 if (playedCards.length === BOARD_SIZE) {
+                    // If this card has been flipped
                     if (flipped) {
+                        // Update the score a last time with the "end game" flag on
                         updateScore(card, { endGame: true });
+
+                    // If it hasn't been flipped, just notify the view to move to the end game
                     } else {
+                        // Do not make the end of game updates to the players' stats if it's just an AI simulation
                         if (!isSimulatedTurn) {
                             that.setupEndGame();
                         }
+
                         triggerEvent("toEndGame", { endGame: true });
                     }
+                // If it's not the end of game yet
                 } else {
+                    // If the card has been flipped
                     if (flipped) {
+                        // Update the score with the "next turn" flag on
+
                         updateScore(card, { nextTurn: true });
+                    // If it hasn't been flipped, just notify the view to move to the next turn
                     } else {
+                        // Do not make the end of turn updates to the players' stats if it's just an AI simulation
                         if (!isSimulatedTurn) {
                             that.setupNextTurn();
                         }
                         triggerEvent("toNextTurn", { nextTurn: true });
                     }
                 }
+
+            // If there are cards yet to be checked for that turn and this card has been flipped, update the score
             } else if (flipped) {
                 updateScore(card);
             }
@@ -395,7 +418,7 @@ define([
             if (!isSimulatedTurn) {
                 _$.events.trigger(eventName, options);
             } else if (eventName !== "flipCard") {
-                simulation = _.extend(simulation, { endGame: !!options.endGame });
+                _.extend(simulation, { endGame: !!options.endGame });
                 simulationCallback(simulation);
             }
         }
@@ -410,8 +433,8 @@ define([
             } else {
                 this.set("playing", (Math.random() > 0.5) ? this.get("players").user : this.get("players").opponent);
 
-                if (this.get("role") === "transmitter") {
-                    var firstPlayer = (this.get("playing") === this.get("players").user) ? "transmitter" : "receiver";
+                if (this.get("role") === "emitter") {
+                    var firstPlayer = (this.get("playing") === this.get("players").user) ? "emitter" : "receiver";
                     _$.comm.socketManager.emit("setFirstPlayer", firstPlayer);
                 }
 
@@ -434,15 +457,39 @@ define([
             card.set("position", null);
         });
 
+        var userElo, opponentElo, elo, odds;
+        
+        if (this.get("isRanked")) {
+            userElo     = this.get("players").user.get("rankPoints");
+            opponentElo = this.get("players").opponent.get("rankPoints");
+            elo         = _$.utils.getElo();
+            odds        = elo.expectedScore(userElo, opponentElo);
+        }
+
         if (this.get("players").user.get("points") > this.get("players").opponent.get("points")) {
             this.set("winner", this.get("players").user);
             _$.state.user.get("gameStats").won++;
+            if (this.get("isRanked")) {
+                _$.state.user.get("gameStats").wonRanked++;
+                _$.state.user.set("rankPoints", elo.newRating(odds, 1, userElo));
+            }
         } else if (this.get("players").opponent.get("points") > this.get("players").user.get("points")) {
             this.set("winner", this.get("players").opponent);
             _$.state.user.get("gameStats").lost++;
+            if (this.get("isRanked")) {
+                _$.state.user.get("gameStats").lostRanked++;
+                _$.state.user.set("rankPoints", elo.newRating(odds, 0, userElo));
+            }
         } else if (this.get("players").user.get("points") === this.get("players").opponent.get("points")) {
             this.set("winner", "draw");
-            _$.state.user.get("gameStats").draw++;
+
+            if (!this.get("rules").suddenDeath) {
+                _$.state.user.get("gameStats").draw++;
+                if (this.get("isRanked")) {
+                    _$.state.user.get("gameStats").drawRanked++;
+                    _$.state.user.set("rankPoints", elo.newRating(odds, 0.5, userElo));
+                }
+            }
         }
 
         if (this.get("winner") === "draw" && this.get("rules").suddenDeath) {
@@ -471,8 +518,8 @@ define([
         } else if (this.get("rules").trade === "difference") {
             this.set("cardsToTrade", Math.abs(this.get("players").user.get("points") - this.get("players").opponent.get("points")));
 
-            if (this.get("cardsToTrade") > 5) {
-                this.set("cardsToTrade", 5);
+            if (this.get("cardsToTrade") > _$.state.DECK_SIZE) {
+                this.set("cardsToTrade", _$.state.DECK_SIZE);
             }
         }
 
@@ -491,7 +538,7 @@ define([
             action.deckIndex = action.card.get("deckIndex");
             proceed.call(this);
         } else {
-            _$.events.on("getPlayerAction", (eventName, response) => {
+            _$.events.on("getPlayerAction", (event, response) => {
                 if (response.msg) {
                     _$.events.off("getPlayerAction");
                     action = response.msg;

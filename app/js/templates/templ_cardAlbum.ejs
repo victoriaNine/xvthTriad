@@ -1,0 +1,30 @@
+<div class="cardAlbum_header" style="display:none;">
+    <div class="cardAlbum_header-leftCol">
+        <h1 class="cardAlbum_header-title">
+            <span class="weight-bold">Card</span> album
+        </h1>
+        <hr>
+        <div class="cardAlbum_header-uniqueCopies">
+            <div class="cardAlbum_header-uniqueCopies-label">Owned cards</div>
+            <div class="cardAlbum_header-uniqueCopies-count">
+                <%= uniqueCopiesCount %>
+                <span class="color-darkGrey"> / <%= totalCardsCount %></span> 
+            </div>
+        </div>
+        <div class="cardAlbum_header-ownedCards">
+            <div class="cardAlbum_header-ownedCards-label">Total cards in the album</div>
+            <div class="cardAlbum_header-ownedCards-count"><%= ownedCardsCount %></div>
+        </div>
+        <p class="cardAlbum_header-help"></p>
+    </div>
+</div>
+<div class="cardAlbum_content">
+    <div class="cardAlbum_content-screenNav" style="display:none;">
+        <ul class="cardAlbum_content-screenNav-choice">
+            <li class="cardAlbum_content-screenNav-choice-backBtn cardAlbum_content-screenNav-choice-element">Back</li>
+        </ul>
+    </div>
+    <div class="cardAlbum_content-album">
+        <div class="cardAlbum_content-album-scroll"></div>
+    </div>
+</div>

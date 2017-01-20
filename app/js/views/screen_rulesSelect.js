@@ -4,25 +4,32 @@ define([
     "backbone",
     "global",
     "views/screen",
-    "text!templates/templ_rulesSelect.html"
+    "text!templates/templ_rulesSelect.ejs"
 ], function Screen_RulesSelect ($, _, Backbone, _$, Screen, Templ_RulesSelect) {
-    var RULES       = "open|random|elemental|sameWall|same|suddenDeath|plus|trade";
-    var TRADE_RULES = "none|one|difference|direct|all";
+    const RULES       = "open|random|elemental|sameWall|same|suddenDeath|plus|trade";
+    const TRADE_RULES = "none|one|difference|direct|all";
 
     return Screen.extend({
-        id        : "screen_rulesSelect",
+        id       : "screen_rulesSelect",
+        template : _.template(Templ_RulesSelect),
+        events   : {
+            "click .rulesSelect_content-rules-rule:not(.rule-trade):not(.is--disabled)" : function (e) {
+                if (this.readOnly) {
+                    e.preventDefault();
+                    return false;
+                }
 
-        // Our template for the line of statistics at the bottom of the app.
-        template  : _.template(Templ_RulesSelect),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events    : {
-            "click .rulesSelect_content-rules-rule:not(.rule-trade)" : function (e) {
-                this.toggleRule(e.currentTarget.className.match(RULES)[0], "toggle");
+                var ruleName = e.currentTarget.className.match(RULES)[0];
+                this.toggleRule(ruleName, "toggle");
+                this.updateRules();
             },
             "click .rulesSelect_content-screenNav-choice-backBtn" : function () {
-                if (_$.ui.roomSelect) {
-                    this.transitionOut("roomSelect");
+                if (_$.state.room) {
+                    if (_$.state.user.isInLounge) {
+                        this.transitionOut("lounge");
+                    } else {
+                        this.transitionOut("roomSelect");
+                    }
                 } else {
                     this.transitionOut("title");
                 }
@@ -32,6 +39,7 @@ define([
             "click .rulesSelect_content-confirm-choice-noBtn"     : function () { 
                 this.toggleConfirm("hide");
                 this.toggleRule("random", false);
+                this.updateRules();
             },
             "mouseenter .rulesSelect_content-rules-rule:not(.rule-trade)" : function (e) {
                 this.showHelp(e.currentTarget.className.match(RULES)[0]);
@@ -45,7 +53,15 @@ define([
             "mouseenter .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element" : function () {
                 _$.audio.audioEngine.playSFX("uiHover");
             },
-            "click .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element,.rulesSelect_content-rules-rule" : function () {
+            "click .rulesSelect_content-screenNav-choice-element,.rulesSelect_content-confirm-choice-element" : function () {
+                _$.audio.audioEngine.playSFX("uiConfirm");
+            },
+            "click .rulesSelect_content-rules-rule:not(.is--disabled)" : function (e) {
+                if (this.readOnly) {
+                    e.preventDefault();
+                    return false;
+                }
+
                 _$.audio.audioEngine.playSFX("uiConfirm");
             }
         },
@@ -57,6 +73,7 @@ define([
         toggleConfirm,
         updateRules,
         setOpponentRules,
+        setAvailableRules,
 
         toNextStep,
         transitionIn,
@@ -65,34 +82,26 @@ define([
     });
 
     function initialize (options = {}) {
-        _$.ui.rulesSelect = this;
-        this.rules        = null;
-        this.randomDeck   = null;
-        this.readOnly     = options.readOnly;
-
-        this.$el.html(this.template());
-        this.toggleRule("open", true, true);
-        this.toggleRule("random", false, true);
-        this.toggleRule("elemental", false, true);
-        this.toggleRule("suddenDeath", false, true);
-
+        Screen.prototype.initialize.call(this);
+        
+        _$.ui.rulesSelect  = this;
+        this.readOnly      = options.readOnly;
+        this.rules         = null;
+        this.randomDeck    = null;
         this.tradeDropdown = null;
+        this.initialized   = false;
+
+        this.$el.html(this.template({
+            isReadOnly: !!this.readOnly
+        }));
+
+        this.toggleRule("open", true);
+        this.toggleRule("random", false);
+        this.toggleRule("elemental", false);
+        this.toggleRule("suddenDeath", false);
 
         if (this.readOnly) {
-            this.$(".rulesSelect_content-rules").css({ pointerEvents: "none" });
-            this.$(".rulesSelect_content-confirm-choice-noBtn").hide();
-        }
-
-        if (!_$.state.room) {
-            this.$(".rulesSelect_content-screenNav-choice-backBtn").hide();
-        }
-
-        if (_$.state.user.get("album").length < 6) {
-            this.$(".tradeRule-one").addClass("is--disabled");
-        }
-
-        if (_$.state.user.get("album").length < 11) {
-            this.$(".tradeRule-difference, .tradeRule-direct, .tradeRule-all").addClass("is--disabled");
+            this.$(".rulesSelect_content-rules-rule").addClass("is--readOnly");
         }
 
         this.showHelp();
@@ -118,8 +127,8 @@ define([
         }
     }
 
-    function setOpponentRules (eventName, response) {
-        var opponentRules = response.msg;
+    function setOpponentRules (event, data) {
+        var opponentRules = data.msg;
 
         if (opponentRules) {
             _.each(opponentRules, (ruleState, ruleName) => {
@@ -129,35 +138,87 @@ define([
                     this.toggleRule(ruleName, ruleState);
                 }
             });
+
+            if (_$.ui.screen.id !== this.id) {
+                _$.audio.audioEngine.playSFX("gameGain");
+                _$.ui.screen.info({
+                    titleBold    : "Rules",
+                    titleRegular : "updated",
+                    msg          : _$.state.opponent.name + " has updated the rules",
+                    autoClose    : true
+                });
+            }
         }
     }
 
-    function toggleRule (rule, state, auto) {
-        var ruleDOM = this.$(".rule-" + rule);
-        
-        if (state === "toggle") {
-            state = ruleDOM.hasClass("is--on") ? false : true;
-        }
+    function setAvailableRules (opponent) {
+        var albumSize    = _$.state.user.get("album").length;
+        var albumSizeMin = opponent ? _.min([albumSize, opponent.albumSize]) : albumSize;
+        var albumSizeMax = opponent ? _.max([albumSize, opponent.albumSize]) : albumSize;
 
-        if (state) {
-            ruleDOM.removeClass("is--off").addClass("is--on");
-            ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("ON");
-        } else {
-            ruleDOM.removeClass("is--on").addClass("is--off");
-            ruleDOM.find(".rulesSelect_content-rules-rule-toggle").text("OFF");
-        }
+        if (albumSizeMin < _$.state.DECK_SIZE) {
+            _$.app.track("send", "event", {
+                eventCategory : "notEnoughCards",
+                dimension0    : _$.state.user.get("difficulty"),
+                metric0       : JSON.stringify(_$.state.user.get("gameStats"))
+            });
 
-        if (rule === "random") {
-            if (state && !this.$(".rulesSelect_content-confirm").is(":visible")) {
-                this.toggleConfirm("show");
-                _$.audio.audioEngine.playSFX("gameGain");
-            } else if (!state && this.$(".rulesSelect_content-confirm").is(":visible")) {
-                this.toggleConfirm("hide");
+            this.disableSetting(".rule-random", ".rulesSelect_content-rules-rule-toggle");
+            _$.audio.audioEngine.playSFX("uiError");
+
+            if (opponent && opponent.albumSize < _$.state.DECK_SIZE) {
+                _$.ui.screen.info({
+                    titleBold    : "Not enough ",
+                    titleRegular : "cards",
+                    msg          : "Your opponent doesn't have enough cards to play",
+                    btnMsg       : "Return to title screen",
+                    action       : _$.ui.screen.closePrompt.bind(_$.ui.screen, transitionOut.bind(_$.ui.screen, "title"))
+                });
+            } else {
+                _$.ui.screen.choice({
+                    titleBold    : "Not enough ",
+                    titleRegular : "cards",
+                    msg          : "You must own at least " + _$.state.DECK_SIZE + " cards to play",
+                    btn1Msg      : "Reset my album card",
+                    action1      : _$.ui.screen.closePrompt.bind(_$.ui.screen, _$.ui.screen.transitionOut.bind(_$.ui.screen, "userSettings")),
+                    btn2Msg      : "Return to title screen",
+                    action2      : _$.ui.screen.closePrompt.bind(_$.ui.screen, _$.ui.screen.transitionOut.bind(_$.ui.screen, "title"))
+                });
             }
         }
 
-        if (!auto) {
-            this.updateRules();
+        if (albumSizeMin < 6) {
+            this.tradeDropdown.disableOption(".tradeRule-one");
+        }
+
+        if (albumSizeMin < 11) {
+            this.tradeDropdown.disableOption(".tradeRule-difference");
+            this.tradeDropdown.disableOption(".tradeRule-direct");
+            this.tradeDropdown.disableOption(".tradeRule-all");
+        }
+
+        if (this.initialized) {
+            this.tradeDropdown.validitateCurrentOption(false, true);
+        }
+
+        this.updateRules();
+    }
+
+    function toggleRule (ruleName, state) {
+        this.toggleSetting(".rule-" + ruleName, ".rulesSelect_content-rules-rule-toggle", state);
+
+        if (ruleName === "random") {
+            var state = this.$(".rule-random").hasClass("is--on");
+            if (state && !this.$(".rulesSelect_content-confirm").is(":visible")) {
+                this.toggleConfirm("show");
+                _$.audio.audioEngine.playSFX("gameGain");
+
+                if (_$.ui.screen.id === "screen_cardSelect") {
+                    _$.ui.screen.transitionOut("rulesSelect");
+                }
+            } else if (!state && this.$(".rulesSelect_content-confirm").is(":visible")) {
+                this.toggleConfirm("hide");
+            }
         }
     }
 
@@ -176,6 +237,11 @@ define([
             rules[ruleName] = false;
         });
 
+        this.$(".rulesSelect_content-rules-rule.is--disabled").each(function () {
+            ruleName = this.className.match(RULES)[0];
+            delete rules[ruleName];
+        });
+
         tradeRule      = this.tradeDropdown.currentOption[0].className.replace("tradeRule-", "");
         rules.trade    = tradeRule;
 
@@ -189,7 +255,7 @@ define([
 
     function toNextStep () {
         if (this.rules.random) {
-            this.randomDeck = _.sampleSize(_$.state.user.get("album").models, 5);
+            this.randomDeck = _.sampleSize(_$.state.user.get("album").models, _$.state.DECK_SIZE);
             this.toGame(this.randomDeck);
         } else {
             this.transitionOut("cardSelect");
@@ -198,11 +264,18 @@ define([
 
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
-        this.tradeDropdown = this.createDropdown({
-            selector         : ".rule-trade",
-            dropdownSelector : ".rulesSelect_content-rules-rule-select",
-            onUpdate         : this.updateRules.bind(this)
-        });
+
+        if (!this.initialized) {
+            this.tradeDropdown = this.createDropdown({
+                selector         : ".rule-trade",
+                dropdownSelector : ".rulesSelect_content-rules-rule-select",
+                onUpdate         : this.updateRules.bind(this)
+            });
+
+            if (this.readOnly) {
+                this.tradeDropdown.disable();
+            }
+        }
 
         var tl = new TimelineMax();
         tl.set(this.$el, { clearProps: "display" });
@@ -211,28 +284,34 @@ define([
         tl.call(() => {
             this.$(".rulesSelect_header").slideDown(500);
         });
-        tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() + 0.5);
+        tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, "+=0.5");
         tl.call(() => {
-            this.$(".rulesSelect_content-screenNav").slideDown(500);
-            _$.events.trigger("startUserEvents");
-            this.updateRules();
-            
-            if (this.readOnly) {
-                _$.events.on("getRules", this.setOpponentRules, this);
-                _$.comm.socketManager.emit("getRules");
+            if (!this.initialized) {
+                this.initialized = true;
+
+                if (this.readOnly) {
+                    _$.events.on("getRules", this.setOpponentRules, this);
+                    _$.comm.socketManager.emit("getRules");
+                }
+
+                this.setAvailableRules(_$.state.opponent);
             }
-        });
+
+            if (!this.$(".rule-random").hasClass("is--on")) {
+                this.$(".rulesSelect_content-screenNav").slideDown(500);
+            }
+            
+            _$.events.trigger("startUserEvents");
+        }, null, [], "-=0.5");
 
         return this;
     }
 
     function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
+        this.checkBGMCrossfade(nextScreen);
 
         var tl = new TimelineMax();
-        if (_$.ui.footer.isOpen) {
-            tl.add(_$.ui.footer.toggleFooter(), 0);
-        }
         tl.call(() => {
             this.$(".rulesSelect_content-screenNav, .rulesSelect_content-confirm").slideUp(500);
         }, null, [], "-=1.5");
@@ -240,11 +319,12 @@ define([
         tl.call(() => {
             this.$(".rulesSelect_header").slideUp(500);
         });
+        tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             TweenMax.set(this.$el, { display: "none" });
             this.changeScreen(nextScreen, options);
-        }, null, [], tl.recent().endTime() + 0.5);
-
+        }, null, [], "+=0.5");
+    
         return this;
     }
 
@@ -259,9 +339,9 @@ define([
     }
 
     function showHelp (msgName, asIs) {
-        var defaultMsg = "Choose the game's rules.";
-        if (_$.ui.roomSelect) {
-            defaultMsg += " Only the player who created the room can set them.";
+        var defaultMsg = "Choose the duel's rules.";
+        if (_$.state.room) {
+            defaultMsg += " Only the player hosting the duel can set them.";
         }
 
         var text;
@@ -294,7 +374,8 @@ define([
                     break;
                 case "suddenDeath":
                     text  = "Any match that ends in a draw will be restarted.<br>";
-                    text += "Your deck for this new match will consist of the cards you had control over at the end of the previous game.";
+                    text += "Your deck for this new match will consist of the cards you had control over at the end of the previous round.<br>";
+                    text += "The duel will end in a draw after 5 rounds.<br>";
                     break;
                 case "plus":
                     text  = "If the ranks of the card you place have the same total when added to the ranks on the adjacent sides<br>";
@@ -307,19 +388,19 @@ define([
                     break;
                 case "one":
                     text  = "The winner chooses a card from the loser's deck.<br>";
-                    text += "You must have at least 6 cards to choose this trade mode.";
+                    text += "You and your opponent must have at least 6 cards to choose this trade mode.";
                     break;
                 case "difference":
                     text = "The winner chooses one card per score difference (2, 4, or 5).<br>";
-                    text += "You must have at least 11 cards to choose this trade mode.";
+                    text += "You and your opponent must have at least 11 cards to choose this trade mode.";
                     break;
                 case "direct":
-                    text  = "The players take the cards they have captured at the end of the game.<br>";
+                    text  = "The players take the cards they have captured at the end of the duel.<br>";
                     text += "This also applies in case of a draw. You must have at least 11 cards to choose this trade mode.";
                     break;
                 case "all":
                     text  = "The winner takes the loser's deck.<br>";
-                    text += "You must have at least 11 cards to choose this trade mode.";
+                    text += "You and your opponent must have at least 11 cards to choose this trade mode.";
                     break;
             }
         }

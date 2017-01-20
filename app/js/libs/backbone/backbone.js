@@ -142,17 +142,18 @@
     trigger: function(name) {
       if (!this._events) return this;
       var args = slice.call(arguments, 1);
-      if (!eventsApi(this, 'trigger', name, arguments)) return this;
+      var newArgs = [{ name: name }].concat(args);
+      if (!eventsApi(this, 'trigger', name, newArgs)) return this;
       var events = this._events[name];
       var allEvents = this._events.all;
-      if (events) triggerEvents(events, arguments);
-      if (allEvents) triggerEvents(allEvents, arguments);
+      if (events) triggerEvents(events, newArgs);
+      if (allEvents) triggerEvents(allEvents, newArgs);
 
       var parent = getParentNamespace(name);
       var parentArgs;
       if (!name.match(/^change/) && parent) {
         do {
-          parentArgs = [parent].concat(slice.call(args), name);
+          parentArgs = [{ name: parent, originEventName: name }].concat(slice.call(args));
           if (this._events[parent]) triggerEvents(this._events[parent], parentArgs);
           if (allEvents) triggerEvents(allEvents, parentArgs);
           parent = getParentNamespace(parent);

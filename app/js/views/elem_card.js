@@ -3,16 +3,13 @@ define([
     "underscore", 
     "backbone",
     "global",
-    "text!templates/templ_card.html"
+    "text!templates/templ_card.ejs"
 ], function Elem_Card ($, _, Backbone, _$, Templ_Card) {
     return Backbone.View.extend({
-        tagName               : "div",
-        className             : "card",
-
-        template : _.template(Templ_Card),
-
-        // Delegated events for creating new items, and clearing completed ones.
-        events           : {},
+        tagName   : "div",
+        className : "card",
+        template  : _.template(Templ_Card),
+        events    : {},
 
         initialize,
         flip
@@ -23,7 +20,7 @@ define([
         this.$el.html(this.template(this.model.attributes));
         this.$(".card-front").prepend(cardBG);
 
-        if (_$.state.inGame) {
+        if (_$.state.user.isInGame) {
             this.deckIndex = _.isNil(attributes.deckIndex) ? -1 : attributes.deckIndex;
 
             if (options.checkOwner) {
@@ -44,10 +41,12 @@ define([
         }
     }
 
-    function flip (info) {
-        info = info || { from: "right" };
-        _$.audio.audioEngine.playSFX("cardFlip");
+    function flip (info = { from: "right" }) {
         var tl = new TimelineMax();
+
+        tl.call(() => {
+            _$.audio.audioEngine.playSFX("cardFlip");
+        });
 
         if (info.from === "top") {
             tl.to(this.$el, 0.4, { rotationX: -180 });
@@ -72,5 +71,7 @@ define([
         } else if (info.from === "left") {
             tl.to(this.$el, 0.4, { rotationY: -360 });
         }
+
+        return tl;
     }
 });

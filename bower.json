@@ -15,9 +15,11 @@
     "socket.io-client": "^1.7.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.1.2",
-    "stats.js": "*"
+    "stats.js": "*",
+    "axios": "^0.15.3",
+    "eventemitter2": "^2.2.1",
+    "pouchdb": "^6.1.1",
+    "flag-icon-css": "^2.8.0"
   },
   "resolutions": {
     "lodash": "^4.16.6"
