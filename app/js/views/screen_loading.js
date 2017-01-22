@@ -44,9 +44,7 @@ define([
         });
 
         _$.events.once("fileLoaded:imgUI:logoNoText", () => {
-            var logo = $(_$.assets.get("svg.ui.logoNoText"));
-            this.$(".loading_logo").append(logo);
-
+            this.$(".loading_logo").append($(_$.assets.get("svg.ui.logoNoText")));
             TweenMax.to(this.$(".loading_wrapper"), 1, { opacity: 1, clearProps: "opacity" });
         });
 

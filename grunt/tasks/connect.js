@@ -779,41 +779,52 @@ module.exports = function (grunt, options) {
 
                     if (newRoom && RESERVED_ROOMS.indexOf(roomName) === -1) {
                         if (newRoom.length < 2) {
-                            leaveAllRooms(socket, function () {
-                                if (newRoom.length < 2) {
-                                    socket.playerInfo      = data.playerInfo;
-                                    socket.currentRoomName = roomName;
-                                    console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "do joinRoom");
+                            if (!isFromSameBrowser(socket, newRoom.emitter)) {
+                                leaveAllRooms(socket, function () {
+                                    if (newRoom.length < 2) {
+                                        socket.playerInfo      = data.playerInfo;
+                                        socket.currentRoomName = roomName;
+                                        console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "do joinRoom");
 
-                                    socket.join(socket.currentRoomName, function () {
-                                        newRoom.receiver         = socket;
-                                        socket.opponent          = newRoom.emitter;
-                                        newRoom.emitter.opponent = socket;
+                                        socket.join(socket.currentRoomName, function () {
+                                            newRoom.receiver         = socket;
+                                            socket.opponent          = newRoom.emitter;
+                                            newRoom.emitter.opponent = socket;
 
-                                        socket.to(socket.opponent.id).emit("in:opponentJoined", {
-                                            status : "ok",
-                                            msg    : {
-                                                opponent: socket.playerInfo
-                                            }
+                                            socket.to(socket.opponent.id).emit("in:opponentJoined", {
+                                                status : "ok",
+                                                msg    : {
+                                                    opponent: socket.playerInfo
+                                                }
+                                            });
+
+                                            socket.emit("in:joinRoom", {
+                                                status : "ok",
+                                                msg    : {
+                                                    opponent: socket.opponent.playerInfo
+                                                }
+                                            });
                                         });
-
+                                    } else {
                                         socket.emit("in:joinRoom", {
-                                            status : "ok",
+                                            status : "error",
                                             msg    : {
-                                                opponent: socket.opponent.playerInfo
+                                                reason  : "alreadyFull",
+                                                roomName: roomName
                                             }
                                         });
-                                    });
-                                } else {
-                                    socket.emit("in:joinRoom", {
-                                        status : "error",
-                                        msg    : {
-                                            reason  : "alreadyFull",
-                                            roomName: roomName
-                                        }
-                                    });
-                                }
-                            });
+                                    }
+                                });
+                            } else {
+                                socket.emit("in:joinRoom", {
+                                    status : "error",
+                                    msg    : {
+                                        reason      : "sameBrowser",
+                                        roomName    : roomName,
+                                        emitterName : newRoom.emitter.playerInfo.name
+                                    }
+                                });
+                            }
                         } else {
                             socket.emit("in:joinRoom", {
                                 status : "error",
@@ -842,97 +853,209 @@ module.exports = function (grunt, options) {
                 });
 
                 socket.on("out:setRules", function (data) {
-                    ROOM_LIST[socket.currentRoomName].rules = data;
+                    if (ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        ROOM_LIST[socket.currentRoomName].rules = data;
 
-                    console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "set rules");
-                    if (socket.opponent) {
-                        console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "send rules");
-                        socket.to(socket.opponent.id).emit("in:getRules", {
-                            status : "ok",
-                            msg    : data
+                        console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "set rules");
+                        if (socket.opponent) {
+                            console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "send rules");
+                            socket.to(socket.opponent.id).emit("in:getRules", {
+                                status : "ok",
+                                msg    : data
+                            });
+                        }
+
+                        socket.emit("in:setRules", {
+                             status : "ok"
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
                         });
                     }
-
-                    socket.emit("in:setRules", {
-                         status : "ok"
-                    });
                 });
 
                 socket.on("out:getRules", function (data) {
-                    console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "get rules");
-                    socket.emit("in:getRules", {
-                        status : "ok",
-                        msg    : ROOM_LIST[socket.currentRoomName].rules
-                    });
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "get rules");
+                        socket.emit("in:getRules", {
+                            status : "ok",
+                            msg    : ROOM_LIST[socket.currentRoomName].rules
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
+                });
+
+                socket.on("out:setElementBoard", function (data) {
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        ROOM_LIST[socket.currentRoomName].elementBoard = data;
+
+                        console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "set and send elementBoard:", data);
+                        socket.to(socket.opponent.id).emit("in:getElementBoard", {
+                            status : "ok",
+                            msg    : data
+                        });
+
+                        socket.emit("in:setElementBoard", {
+                            status : "ok"
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
+                });
+
+                socket.on("out:getElementBoard", function (data) {
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "get elementBoard:", ROOM_LIST[socket.currentRoomName].elementBoard);
+                        socket.emit("in:getElementBoard", {
+                            status : "ok",
+                            msg    : ROOM_LIST[socket.currentRoomName].elementBoard
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:setFirstPlayer", function (data) {
-                    ROOM_LIST[socket.currentRoomName].firstPlayer = data;
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        ROOM_LIST[socket.currentRoomName].firstPlayer = data;
 
-                    console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "set and send firstPlayer:", data);
-                    socket.to(socket.opponent.id).emit("in:getFirstPlayer", {
-                        status : "ok",
-                        msg    : data
-                    });
+                        console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "set and send firstPlayer:", data);
+                        socket.to(socket.opponent.id).emit("in:getFirstPlayer", {
+                            status : "ok",
+                            msg    : data
+                        });
 
-                    socket.emit("in:setFirstPlayer", {
-                        status : "ok"
-                    });
+                        socket.emit("in:setFirstPlayer", {
+                            status : "ok"
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:getFirstPlayer", function (data) {
-                    console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "get firstPlayer:", ROOM_LIST[socket.currentRoomName].firstPlayer);
-                    socket.emit("in:getFirstPlayer", {
-                        status : "ok",
-                        msg    : ROOM_LIST[socket.currentRoomName].firstPlayer
-                    });
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        console.log("Room", socket.currentRoomName, "-- receiver --", getClientName(socket), "get firstPlayer:", ROOM_LIST[socket.currentRoomName].firstPlayer);
+                        socket.emit("in:getFirstPlayer", {
+                            status : "ok",
+                            msg    : ROOM_LIST[socket.currentRoomName].firstPlayer
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:setPlayerAction", function (data) {
-                    ROOM_LIST[socket.currentRoomName].currentTurn = data.turnNumber;
-                    socket.playerActions[data.turnNumber]     = data;
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        ROOM_LIST[socket.currentRoomName].currentTurn = data.turnNumber;
+                        socket.playerActions[data.turnNumber]     = data;
 
-                    console.log("Room", socket.currentRoomName, "-- turn", data.turnNumber,"-- playing:", getClientName(socket), "set and send playerAction");
-                    socket.to(socket.opponent.id).emit("in:getPlayerAction", {
-                        status : "ok",
-                        msg    : data
-                    });
+                        console.log("Room", socket.currentRoomName, "-- turn", data.turnNumber,"-- playing:", getClientName(socket), "set and send playerAction");
+                        socket.to(socket.opponent.id).emit("in:getPlayerAction", {
+                            status : "ok",
+                            msg    : data
+                        });
 
-                    socket.emit("in:setPlayerAction", {
-                        status : "ok"
-                    });
+                        socket.emit("in:setPlayerAction", {
+                            status : "ok"
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:getPlayerAction", function (data) {
-                    var currentTurn = ROOM_LIST[socket.currentRoomName].currentTurn;
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        var currentTurn = ROOM_LIST[socket.currentRoomName].currentTurn;
 
-                    console.log("Room", socket.currentRoomName, "-- turn", currentTurn,"-- waiting:", getClientName(socket), "get playerAction");
-                    socket.emit("in:getPlayerAction", {
-                         status : "ok",
-                         msg    : socket.opponent.playerActions[currentTurn]
-                    });
+                        console.log("Room", socket.currentRoomName, "-- turn", currentTurn,"-- waiting:", getClientName(socket), "get playerAction");
+                        socket.emit("in:getPlayerAction", {
+                             status : "ok",
+                             msg    : socket.opponent.playerActions[currentTurn]
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:setSelectedCards", function (data) {
-                    socket.selectedCards = data;
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        socket.selectedCards = data;
 
-                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "set and send selected cards");
-                    socket.to(socket.opponent.id).emit("in:getSelectedCards", {
-                        status : "ok",
-                        msg    : data
-                    });
+                        console.log("Room", socket.currentRoomName, "--", getClientName(socket), "set and send selected cards");
+                        socket.to(socket.opponent.id).emit("in:getSelectedCards", {
+                            status : "ok",
+                            msg    : data
+                        });
 
-                    socket.emit("in:setSelectedCards", {
-                        status : "ok"
-                    });
+                        socket.emit("in:setSelectedCards", {
+                            status : "ok"
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:getSelectedCards", function (data) {
-                    console.log("Room", socket.currentRoomName, "--", getClientName(socket), "get selected cards");
-                    socket.emit("in:getSelectedCards", {
-                        status : "ok",
-                        msg    : socket.opponent.selectedCards
-                    });
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        console.log("Room", socket.currentRoomName, "--", getClientName(socket), "get selected cards");
+                        socket.emit("in:getSelectedCards", {
+                            status : "ok",
+                            msg    : socket.opponent.selectedCards
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:playerReset", function () {
@@ -971,17 +1094,26 @@ module.exports = function (grunt, options) {
                 });
 
                 socket.on("out:roundReset", function () {
-                    console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "do roundReset");
-                    ROOM_LIST[socket.currentRoomName].currentTurn = -1;
-                    ROOM_LIST[socket.currentRoomName].firstPlayer = null;
-                    ROOM_LIST[socket.currentRoomName].rounds++;
+                    if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
+                        console.log("Room", socket.currentRoomName, "-- emitter --", getClientName(socket), "do roundReset");
+                        ROOM_LIST[socket.currentRoomName].currentTurn  = -1;
+                        ROOM_LIST[socket.currentRoomName].firstPlayer  = null;
+                        ROOM_LIST[socket.currentRoomName].rounds++;
 
-                    socket.playerActions          = {};
-                    socket.opponent.playerActions = {};
+                        socket.playerActions          = {};
+                        socket.opponent.playerActions = {};
 
-                    socket.emit("in:roundReset", {
-                        status : "ok"
-                    });
+                        socket.emit("in:roundReset", {
+                            status : "ok"
+                        });
+                    } else {
+                        io.to(socket.id).emit("in:otherPlayerLeft", {
+                            status : "error",
+                            msg    : {
+                                reason: "lag"
+                            }
+                        });
+                    }
                 });
 
                 socket.on("out:confirmReady", function (userDeck) {
@@ -1211,6 +1343,15 @@ module.exports = function (grunt, options) {
                     });
 
                     addToRoomMessageHistory(serviceMsgData.roomName, serviceMsgData);
+                }
+
+                function isFromSameBrowser (clientA, clientB) {
+                    if (clientA.handshake.address === clientB.handshake.address &&
+                        clientA.handshake.headers["user-agent"] === clientB.handshake.headers["user-agent"]) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
 
                 function getClientName (client) {

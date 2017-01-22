@@ -69,6 +69,7 @@ define([
         
         _$.events.trigger("stopUserEvents");
         this.undelegateEvents();
+
         var tl = new TimelineMax();
         if (this.$el.hasClass("is--active")) {
             tl.call(() => { this.$el.removeClass("is--active"); });
@@ -105,7 +106,7 @@ define([
         }
         tl.call(() => { _$.events.trigger("startUserEvents"); this.delegateEvents(); this.isOpen = true; });
         if (options.autoClose) {
-            tl.call(() => { this.confirmAction(); }, [], null, "+=1");
+            tl.call(() => { this.confirmAction(); }, [], null, "+=" + (options.autoCloseDelay || 1));
         }
     }
 

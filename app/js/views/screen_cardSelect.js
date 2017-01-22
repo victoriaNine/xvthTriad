@@ -59,8 +59,7 @@ define([
             uniqueCopiesCount : this.uniqueCopies.length
         }));
 
-        var cardBG = $(_$.assets.get("svg.ui.cardBG"));
-        this.$(".cardSelect_header-deck-holder").append(cardBG);
+        this.$(".cardSelect_header-deck-holder").append($(_$.assets.get("svg.ui.cardBG")));
 
         this.createAlbumCardViews();
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);

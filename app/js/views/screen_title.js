@@ -100,8 +100,7 @@ define([
         this.signedUp           = false;
 
         this.$el.html(this.template());
-        var logo = $(_$.assets.get("svg.ui.logo"));
-        this.$(".title_logo").append(logo);
+        this.$(".title_logo").append($(_$.assets.get("svg.ui.logo")));
 
         // If the flag for the initialization flow is on
         if (options.setup) {

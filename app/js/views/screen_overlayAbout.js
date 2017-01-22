@@ -78,8 +78,7 @@ define([
         this.line = this.$(".about_line");
         this.logo = this.$(".about_logo");
 
-        var logo = $(_$.assets.get("svg.ui.logo"));
-        this.logo.append(logo);
+        this.logo.append($(_$.assets.get("svg.ui.logo")));
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();

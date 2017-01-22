@@ -323,7 +323,7 @@ define([
     function waitForOpponent (userDeck, callback) {
         _$.comm.socketManager.emit("confirmReady", userDeck, onResponse.bind(this));
         
-        _$.audio.audioEngine.playSFX("gameGain");
+        _$.audio.audioEngine.playSFX("menuOpen");
         this.info({
             titleBold    : "Please",
             titleRegular : "wait",

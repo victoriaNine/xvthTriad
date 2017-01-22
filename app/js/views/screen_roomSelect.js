@@ -129,8 +129,18 @@ define([
                 if (settings.mode === "join") {
                     // The player joining the room can already get their opponent's info
                     _$.state.opponent = response.msg.opponent;
+
+                    _$.audio.audioEngine.playSFX("gameGain");
+                    _$.ui.screen.info({
+                        titleBold      : "Room",
+                        titleRegular   : "joined",
+                        msg            : "You have joined " + _$.state.opponent.name + "'s room.",
+                        autoClose      : true,
+                        action         : this.closePrompt.bind(this, proceed.bind(this))
+                    });
+                } else {
+                    proceed.call(this);
                 }
-                proceed.call(this);
             } else if (response.status === "error") {
                 _$.audio.audioEngine.playSFX("uiError");
                 
@@ -140,6 +150,8 @@ define([
                     msg = "Room " + response.msg.roomName + " already exists. Please choose another name.";
                 } else if (response.msg.reason === "alreadyFull") {
                     msg = "Room " + response.msg.roomName + " is already full.";
+                } else if (response.msg.reason === "sameBrowser") {
+                    msg = "Please join room " + response.msg.roomName + " from a different browser " + response.msg.emitterName + " connected from.";
                 }
 
                 this.$(".setting-roomName input").addClass("is--invalid");
@@ -178,9 +190,9 @@ define([
                 this.initialized = true;
             }
 
+            _$.events.trigger("startUserEvents");
             this.$(".setting-roomName input").focus();
             this.validateInput(this.$(".setting-roomName input")[0]);
-            _$.events.trigger("startUserEvents");
         }, null, [], "-=0.5");
 
         return this;

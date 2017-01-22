@@ -29,7 +29,26 @@
             "type": "img.help",
             "name": "basicRules7.png"
         },
-
+        {
+            "type": "img.help",
+            "name": "advancedRules1.png"
+        },
+        {
+            "type": "img.help",
+            "name": "advancedRules2.gif"
+        },
+        {
+            "type": "img.help",
+            "name": "advancedRules3.gif"
+        },
+        {
+            "type": "img.help",
+            "name": "advancedRules4.gif"
+        },
+        {
+            "type": "img.help",
+            "name": "advancedRules5.gif"
+        },
         {
             "type": "img.help",
             "name": "startSolo1.png"
@@ -74,6 +93,34 @@
         {
             "type": "img.help",
             "name": "startVersus7.png"
+        },
+        {
+            "type": "img.help",
+            "name": "challengePlayer1.png"
+        },
+        {
+            "type": "img.help",
+            "name": "challengePlayer2.png"
+        },
+        {
+            "type": "img.help",
+            "name": "challengePlayer3.png"
+        },
+        {
+            "type": "img.help",
+            "name": "challengePlayer4.png"
+        },
+        {
+            "type": "img.help",
+            "name": "challengePlayer5.png"
+        },
+        {
+            "type": "img.help",
+            "name": "rankings1.png"
+        },
+        {
+            "type": "img.help",
+            "name": "rankings2.png"
         }
     ]
 }

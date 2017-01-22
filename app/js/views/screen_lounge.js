@@ -147,8 +147,7 @@ define([
         this.serviceMsgTempl   = this.$(".lounge_log-messages-message-info")[0].outerHTML;
         this.$(".lounge_userlist-element-user, .lounge_log-messages-message-user, .lounge_log-messages-message-info").remove();
 
-        var logo = $(_$.assets.get("svg.ui.logo"));
-        this.$(".lounge_log-logo").append(logo);
+        this.$(".lounge_log-logo").append($(_$.assets.get("svg.ui.logo")));
 
         this.writeWelcomeMessage();
         this.userlist._deletedUser = {

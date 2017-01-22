@@ -72,7 +72,7 @@ define([
         toggleRule,
         toggleConfirm,
         updateRules,
-        setOpponentRules,
+        updateFromOpponentRules,
         setAvailableRules,
 
         toNextStep,
@@ -86,8 +86,8 @@ define([
         
         _$.ui.rulesSelect  = this;
         this.readOnly      = options.readOnly;
-        this.rules         = null;
-        this.randomDeck    = null;
+        this.rules         = {};
+        this.randomDeck    = [];
         this.tradeDropdown = null;
         this.initialized   = false;
 
@@ -95,10 +95,14 @@ define([
             isReadOnly: !!this.readOnly
         }));
 
+        // Setting default rules for toggle options
         this.toggleRule("open", true);
         this.toggleRule("random", false);
         this.toggleRule("elemental", false);
         this.toggleRule("suddenDeath", false);
+        this.toggleRule("same", false);
+        this.toggleRule("sameWall", false);
+        this.toggleRule("plus", false);
 
         if (this.readOnly) {
             this.$(".rulesSelect_content-rules-rule").addClass("is--readOnly");
@@ -111,7 +115,7 @@ define([
 
     function remove () {
         if (this.readOnly) {
-            _$.events.off("getRules", this.setOpponentRules, this);
+            _$.events.off("getRules", this.updateFromOpponentRules, this);
         }
 
         delete _$.ui.rulesSelect;
@@ -127,7 +131,7 @@ define([
         }
     }
 
-    function setOpponentRules (event, data) {
+    function updateFromOpponentRules (event, data) {
         var opponentRules = data.msg;
 
         if (opponentRules) {
@@ -206,19 +210,27 @@ define([
 
     function toggleRule (ruleName, state) {
         this.toggleSetting(".rule-" + ruleName, ".rulesSelect_content-rules-rule-toggle", state);
+        var newState = this.$(".rule-" + ruleName).hasClass("is--on");
 
         if (ruleName === "random") {
-            var state = this.$(".rule-random").hasClass("is--on");
-            if (state && !this.$(".rulesSelect_content-confirm").is(":visible")) {
+            if (newState && !this.$(".rulesSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("show");
                 _$.audio.audioEngine.playSFX("gameGain");
 
                 if (_$.ui.screen.id === "screen_cardSelect") {
                     _$.ui.screen.transitionOut("rulesSelect");
                 }
-            } else if (!state && this.$(".rulesSelect_content-confirm").is(":visible")) {
+            } else if (!newState && this.$(".rulesSelect_content-confirm").is(":visible")) {
                 this.toggleConfirm("hide");
             }
+        }
+
+        // The "Same Wall" rule can only work if the "Same" rule is enabled
+        if (ruleName === "same" && !newState && this.rules.sameWall) {
+            this.toggleRule("sameWall", false);
+        }
+        if (ruleName === "sameWall" && newState && !this.rules.same) {
+            this.toggleRule("same", true);
         }
     }
 
@@ -290,7 +302,7 @@ define([
                 this.initialized = true;
 
                 if (this.readOnly) {
-                    _$.events.on("getRules", this.setOpponentRules, this);
+                    _$.events.on("getRules", this.updateFromOpponentRules, this);
                     _$.comm.socketManager.emit("getRules");
                 }
 
@@ -362,7 +374,7 @@ define([
                     text  = "One or more cases are randomly marked with an element.<br>";
                     text += "When an elemental card is placed on a corresponding element, each rank goes up a point.<br>";
                     text += "When any card is placed on a non-matching element, each rank goes down a point.<br>";
-                    text += "This does not affect the Same, Plus and Same Wall rules where the cards' original ranks apply.";
+                    text += "This does not affect the Same, Same Wall and Plus rules where the cards' original ranks apply.";
                     break;
                 case "same":
                     text  = "If the ranks of the card you place are the same as the ranks on the adjacent sides of two or more adjacent cards,<br>";
@@ -375,7 +387,7 @@ define([
                 case "suddenDeath":
                     text  = "Any match that ends in a draw will be restarted.<br>";
                     text += "Your deck for this new match will consist of the cards you had control over at the end of the previous round.<br>";
-                    text += "The duel will end in a draw after 5 rounds.<br>";
+                    text += "The duel will end in a draw after 5 rounds.";
                     break;
                 case "plus":
                     text  = "If the ranks of the card you place have the same total when added to the ranks on the adjacent sides<br>";

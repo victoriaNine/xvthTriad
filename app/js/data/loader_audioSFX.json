@@ -27,6 +27,10 @@
         },
         {
             "type" : "audio.sfx",
+            "name" : "specialRule"
+        },
+        {
+            "type" : "audio.sfx",
             "name" : "menuClose"
         },
         {

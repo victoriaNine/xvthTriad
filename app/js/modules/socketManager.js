@@ -78,6 +78,10 @@ define(["underscore", "global"], function socketManager (_, _$) {
                 _$.events.trigger("getRules", msgFromServer);
             });
 
+            this.socket.on("in:getElementBoard", (msgFromServer) => {
+                _$.events.trigger("getElementBoard", msgFromServer);
+            });
+
             this.socket.on("in:getFirstPlayer", (msgFromServer) => {
                 _$.events.trigger("getFirstPlayer", msgFromServer);
             });
