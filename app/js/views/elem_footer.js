@@ -87,8 +87,7 @@ define([
             text   : []
         };
 
-        var logo = $(_$.assets.get("svg.ui.logo"));
-        this.logo.append(logo);
+        this.logo.append($(_$.assets.get("svg.ui.logo")));
     }
 
     function toggleMainMenu (nextScreen, noTracking, toSection) {

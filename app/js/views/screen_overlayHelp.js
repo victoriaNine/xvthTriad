@@ -6,10 +6,13 @@ define([
     "views/screen",
     "text!templates/templ_overlayHelp.ejs",
     "text!templates/templ_helpBasicRules.ejs",
+    "text!templates/templ_helpAdvancedRules.ejs",
     "text!templates/templ_helpStartSolo.ejs",
-    "text!templates/templ_helpStartVersus.ejs"
-], function Screen_OverlayHelp ($, _, Backbone, _$, Screen, Templ_OverlayHelp, Templ_HelpBasicRules, Templ_HelpStartSolo, Templ_HelpStartVersus) {
-    const HELP_TOPICS = "basicRules|startSolo|startVersus";
+    "text!templates/templ_helpStartVersus.ejs",
+    "text!templates/templ_helpChallengePlayer.ejs",
+    "text!templates/templ_helpRankings.ejs"
+], function Screen_OverlayHelp ($, _, Backbone, _$, Screen, Templ_OverlayHelp) {
+    const HELP_TOPICS = "basicRules|advancedRules|startSolo|startVersus|challengePlayer|rankings";
 
     return Screen.extend({
         id       : "screen_overlayHelp",
@@ -48,9 +51,12 @@ define([
         this.$el.html(this.template());
         this.currentGuide   = null;
         this.guideTemplates = {
-            basicRules  : Templ_HelpBasicRules,
-            startSolo   : Templ_HelpStartSolo,
-            startVersus : Templ_HelpStartVersus  
+            basicRules      : require("text!templates/templ_helpBasicRules.ejs"),
+            advancedRules   : require("text!templates/templ_helpAdvancedRules.ejs"),
+            startSolo       : require("text!templates/templ_helpStartSolo.ejs"),
+            startVersus     : require("text!templates/templ_helpStartVersus.ejs"),
+            challengePlayer : require("text!templates/templ_helpChallengePlayer.ejs"),
+            rankings        : require("text!templates/templ_helpRankings.ejs")
         };
 
         this.showHelp();
@@ -185,11 +191,20 @@ define([
                 case "basicRules":
                     text = "Learn the basic rules of the Fifteenth Triad.";
                     break;
+                case "advancedRules":
+                    text = "Learn the advanced and special rules of the Fifteenth Triad.";
+                    break;
                 case "startSolo":
                     text = "How to start a game in Solo mode (play against the computer).";
                     break;
                 case "startVersus":
                     text = "How to start a game in Versus mode (play against a friend).";
+                    break;
+                case "challengePlayer":
+                    text = "How to challenge another player in the Lounge Room.";
+                    break;
+                case "rankings":
+                    text = "Learn about the ranking system.";
                     break;
             }
         }

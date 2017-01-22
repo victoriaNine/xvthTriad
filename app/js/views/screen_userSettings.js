@@ -395,19 +395,22 @@ define([
         this.difficultyDropdown = this.createDropdown({
             selector              : ".setting-difficulty",
             dropdownSelector      : ".userSettings_content-settings-setting-select",
-            defaultOptionSelector : ".difficultySetting-" + _$.state.user.get("difficulty")
+            defaultOptionSelector : ".difficultySetting-" + _$.state.user.get("difficulty"),
+            onOpen                : onDropdownOpen.bind(this)
         });
 
         this.placingModeDropdown = this.createDropdown({
             selector              : ".setting-placingMode",
             dropdownSelector      : ".userSettings_content-settings-setting-select",
-            defaultOptionSelector : ".placingModeSetting-" + _$.state.user.get("placingMode")
+            defaultOptionSelector : ".placingModeSetting-" + _$.state.user.get("placingMode"),
+            onOpen                : onDropdownOpen.bind(this)
         });
 
         this.inactiveAudioDropdown = this.createDropdown({
             selector              : ".setting-inactiveAudio",
             dropdownSelector      : ".userSettings_content-settings-setting-select",
-            defaultOptionSelector : ".inactiveAudioSetting-" + _$.state.user.get("inactiveAudio")
+            defaultOptionSelector : ".inactiveAudioSetting-" + _$.state.user.get("inactiveAudio"),
+            onOpen                : onDropdownOpen.bind(this)
         });
 
         if (_$.comm.sessionManager.getSession()) {
@@ -415,6 +418,7 @@ define([
                 selector              : ".setting-notifyMode",
                 dropdownSelector      : ".userSettings_content-settings-setting-select",
                 defaultOptionSelector : ".notifyModeSetting-" + _$.state.user.get("notifyMode"),
+                onOpen                : onDropdownOpen.bind(this),
                 onUpdate              : () => {
                     var inactiveAudioSetting = this.inactiveAudioDropdown.currentOption[0].className.replace("inactiveAudioSetting-", "");
                     var notifyModeSetting    = this.notifyModeDropdown.currentOption[0].className.replace("notifyModeSetting-", "");
@@ -428,10 +432,7 @@ define([
                 selector              : ".setting-country",
                 dropdownSelector      : ".userSettings_content-settings-setting-select",
                 defaultOptionSelector : _$.state.user.get("country") ? ".countrySetting-" + _$.state.user.get("country") : ".countrySetting-unset",
-                onOpen                : (dropdown) => {
-                    var scrollValue = dropdown.dropdownDOM.offset().top + dropdown.dropdownDOM.height();
-                    TweenMax.to(this.$(".userSettings_content-settings-scroll")[0], 0.2, { scrollTop: scrollValue });
-                }
+                onOpen                : onDropdownOpen.bind(this)
             });
         }
 
@@ -452,6 +453,11 @@ define([
         }, null, [], "-=0.5");
 
         return this;
+
+        function onDropdownOpen (dropdown) {
+            var scrollValue = dropdown.dropdownDOM.offset().top + dropdown.dropdownDOM.height();
+            TweenMax.to(this.$(".userSettings_content-settings-scroll")[0], 0.2, { scrollTop: scrollValue });
+        }
     }
 
     function transitionOut (nextScreen, options) {

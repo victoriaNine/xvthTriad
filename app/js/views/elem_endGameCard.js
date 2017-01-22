@@ -34,7 +34,7 @@ define([
 
         this.$(".game_overlay-endGame-album-card-visual").append(this.cardView.$el);
 
-        if (!_$.state.game.get("cardsToTrade") ||
+        if (!_$.state.game.get("cardsToPickCount") ||
             _$.state.game.get("winner") !== _$.state.game.get("players").user ||
             this.cardView.model.get("owner") !== _$.state.game.get("players").opponent) {
             this.events = {};

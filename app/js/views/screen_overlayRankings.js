@@ -31,8 +31,7 @@ define([
         Screen.prototype.initialize.call(this);
 
         this.$el.html(this.template());
-        var logo = $(_$.assets.get("svg.ui.logo"));
-        this.$(".rankings_leaderboard-logo").append(logo);
+        this.$(".rankings_leaderboard-logo").append($(_$.assets.get("svg.ui.logo")));
 
         this.defaultRanking = RANKINGS[0];
         this.currentRanking = null;
@@ -118,7 +117,6 @@ define([
         var tl = new TimelineMax();
 
         tl.call(() => {
-            console.log(rankingName, this.currentRanking);
             this.$(".ranking-" + this.currentRanking + ", .ranking-" + rankingName).toggleClass("is--selected");
         });
         tl.to(this.$(".rankings_leaderboard-ranks-scroll"), 0.5, { opacity : 0 });

@@ -59,6 +59,7 @@ require([
     "modules/gamepadManager",
     "modules/updateManager",
     "modules/socketManager",
+    "global",
     "json!data/loader_imgUI.json",
     "json!data/loader_imgAvatars.json",
     "json!data/loader_imgCards.json",
@@ -66,8 +67,6 @@ require([
     "json!data/loader_imgHelp.json",
     "json!data/loader_audioBGM.json",
     "json!data/loader_audioSFX.json",
-    "global",
-    "views/elem_footer",
     "views/screen",
     "views/screen_cardAlbum",
     "views/screen_cardSelect",
@@ -78,12 +77,22 @@ require([
     "views/screen_rulesSelect",
     "views/screen_title",
     "views/screen_userSettings",
+    "views/elem_footer",
     "jqueryNearest",
     "jsonPrune"
-], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, Elo, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgFlags, loaderImgHelp, loaderAudioBGM, loaderAudioSFX, _$, Elem_Footer) {
+], function (Modernizr, $, _, tweenMax, SocketIO, Stats, Superlogin, Elo, AudioEngine, CanvasWebGL, AssetLoader, GamepadManager, UpdateManager, SocketManager, _$) {
     var Screen_Loading = require("views/screen_loading");
     var Screen_Title   = require("views/screen_title");
-    var loaders        = [loaderAudioBGM, loaderAudioSFX, loaderImgUI, loaderImgAvatars, loaderImgCards, loaderImgFlags, loaderImgHelp];
+    var Elem_Footer    = require("views/elem_footer");
+    var loaders        = [
+        require("json!data/loader_imgUI.json"),
+        require("json!data/loader_imgAvatars.json"),
+        require("json!data/loader_imgCards.json"),
+        require("json!data/loader_imgFlags.json"),
+        require("json!data/loader_imgHelp.json"),
+        require("json!data/loader_audioBGM.json"),
+        require("json!data/loader_audioSFX.json")
+    ];
 
     function setupScale () {
         var ORIGINAL_SIZE = {

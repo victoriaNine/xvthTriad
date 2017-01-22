@@ -25,6 +25,7 @@ $color_lightGrey   : #E5E6DE;
 $color_red         : rgba(235, 53, 71, 1);
 $color_blue        : rgba(40, 51, 120, 1);
 $color_lightBlue   : #6d87fa;
+$color_midBlue     : #5377fb;
 
 $fontSize_UI       : 24px;
 $fontSize_score    : 96px;
@@ -940,8 +941,12 @@ button {
         font-size: $fontSize_overlay;
         letter-spacing: 0.5em;
         opacity: 0;
+        text-shadow: 0 0 15px $color_darkGrey;
         @include transition("letter-spacing .6s, opacity .4s");
     }
+
+    &.is--user h1     { text-shadow: 0 0 15px $color_midBlue; }
+    &.is--opponent h1 { text-shadow: 0 0 15px $color_red; }
 
     &.is--active {
         pointer-events:auto;
@@ -1912,6 +1917,10 @@ button {
 .help_content-guide-scroll {
     @extend %scrollable;
 
+    & > div {
+        flex: 1;
+    }
+
     & figure {
         display: flex;
 
@@ -1924,19 +1933,44 @@ button {
             padding: 2em;
             flex: 1;
             background: rgba(255, 255, 255, 0.15);
-            margin-left: 2em;
             line-height: 1.5em;
 
             padding-left: 4em;
             text-indent: -2em;
 
-            & span {
-                margin-right: 0.5em;
+            & span.weight-bold {
+                margin-right: 0.9em;
             }
         }
 
         & img {
             border: 1px solid rgba(255, 255, 255, 0.25);
+            align-self: flex-start;
+            margin-right: 2em;
+        }
+    }
+}
+
+.help_advancedRules {
+    &-elements {
+        position: relative;
+        margin-top: 2em;
+        display: flex;
+
+        &-element {
+            height: 1.5em;
+            position: relative;
+            text-indent: 2.5em;
+            margin-right: 2em;
+            line-height: 1.5em;
+
+            &:before {
+                @include fullSizeAbs("");
+                left:0;
+                top:0;
+                background-repeat: no-repeat;
+                background-position: 0 50%;
+            }
         }
     }
 }
@@ -2348,10 +2382,13 @@ button {
                 url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
 }
 
-.element-fire, .element-ice, .element-wind, .element-earth,
-.element-water, .element-thunder, .element-poison, .element-holy {
+.elementCase {
     &:before {
         @include fullSizeAbs("");
+        left:0;
+        top:0;
+        background-repeat: no-repeat;
+        background-position: 50%;
     }
 
     &:after {
@@ -2378,15 +2415,15 @@ button {
     &.has--penalty:after { content: "-1"; }
 }
 
-.element-fire:before    { background: url(#{ $uiAssetsPath + "elem_fire.png"}) no-repeat 50%; }
-.element-ice:before     { background: url(#{ $uiAssetsPath + "elem_ice.png"}) no-repeat 50%; }
-.element-wind:before    { background: url(#{ $uiAssetsPath + "elem_wind.png"}) no-repeat 50%; }
-.element-earth:before   { background: url(#{ $uiAssetsPath + "elem_earth.png"}) no-repeat 50%; }
-.element-water:before   { background: url(#{ $uiAssetsPath + "elem_water.png"}) no-repeat 50%; }
-.element-thunder:before { background: url(#{ $uiAssetsPath + "elem_thunder.png"}) no-repeat 50%; }
-.element-poison:before  { background: url(#{ $uiAssetsPath + "elem_poison.png"}) no-repeat 50%; }
-.element-holy:before    { background: url(#{ $uiAssetsPath + "elem_holy.png"}) no-repeat 50%; }
-
+.element-fire:before    { background-image: url(#{ $uiAssetsPath + "elem_fire.png"}); }
+.element-ice:before     { background-image: url(#{ $uiAssetsPath + "elem_ice.png"}); }
+.element-wind:before    { background-image: url(#{ $uiAssetsPath + "elem_wind.png"}); }
+.element-rock:before    { background-image: url(#{ $uiAssetsPath + "elem_rock.png"}); }
+.element-water:before   { background-image: url(#{ $uiAssetsPath + "elem_water.png"}); }
+.element-thunder:before { background-image: url(#{ $uiAssetsPath + "elem_thunder.png"}); }
+.element-poison:before  { background-image: url(#{ $uiAssetsPath + "elem_poison.png"}); }
+.element-light:before   { background-image: url(#{ $uiAssetsPath + "elem_light.png"}); }
+.element-dark:before    { background-image: url(#{ $uiAssetsPath + "elem_dark.png"}); }
 
 /* PLAYER HUD --------------*/
 %playerHUD {
@@ -2432,7 +2469,7 @@ button {
 .game_playerHUD-opponent.is--active .game_playerHUD-bar:before { background: linear-gradient(to left, transparentize($color_red, 0.25) 0%, transparentize($color_red, 1) 100%); }
 
 .game_playerHUD-user .game_playerHUD-bar                   { text-align: right; padding-right: 125px; }
-.game_playerHUD-user.is--active .game_playerHUD-bar        { text-shadow: 0 0 15px rgb(83, 119, 251); }
+.game_playerHUD-user.is--active .game_playerHUD-bar        { text-shadow: 0 0 15px $color_midBlue; }
 .game_playerHUD-user .game_playerHUD-bar:before            { background: linear-gradient(to right, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%); left:-50px; }
 .game_playerHUD-user.is--active .game_playerHUD-bar:before { background: linear-gradient(to right, transparentize($color_blue, 0.25) 0%, transparentize($color_blue, 1) 100%); }
 
@@ -2566,6 +2603,17 @@ button {
     }
 }
 
+%inGame_overlay {
+    @extend .overlay, .screen;
+    background: rgba(0, 0, 0, 0.25);
+
+    & h1              { text-shadow: 0 0 15px #000; }
+    &.is--neutral h1  { text-shadow: 0 0 15px $color_darkGrey; }
+}
+
+.game_overlay-playerTurn, .game_overlay-specialRule {
+    @extend %inGame_overlay;
+}
 
 /*=======================*/
 /* LOUNGE SCREEN

@@ -347,7 +347,7 @@ button {
 /* COMPONENTS
 /*=======================*/
 /* CONTAINERS ------------*/
-.screen {
+.screen, .game_overlay-playerTurn, .game_overlay-specialRule {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -651,7 +651,7 @@ button {
   flex-wrap: wrap; }
 
 /* OVERLAYS --------------*/
-.overlay {
+.overlay, .game_overlay-playerTurn, .game_overlay-specialRule {
   background: rgba(0, 0, 0, 0.95);
   z-index: 9999;
   display: flex;
@@ -667,15 +667,20 @@ button {
   -webkit-transition: -webkit-all .2s .2s ease-out;
   -ms-transition: -ms-all .2s .2s ease-out;
   transition: all .2s .2s ease-out; }
-  .overlay h1 {
+  .overlay h1, .game_overlay-playerTurn h1, .game_overlay-specialRule h1 {
     text-align: center;
     font-size: 72px;
     letter-spacing: 0.5em;
     opacity: 0;
+    text-shadow: 0 0 15px #666;
     -webkit-transition: -webkit-letter-spacing .6s, opacity .4s;
     -ms-transition: -ms-letter-spacing .6s, opacity .4s;
     transition: letter-spacing .6s, opacity .4s; }
-  .overlay.is--active {
+  .overlay.is--user h1, .is--user.game_overlay-playerTurn h1, .is--user.game_overlay-specialRule h1 {
+    text-shadow: 0 0 15px #5377fb; }
+  .overlay.is--opponent h1, .is--opponent.game_overlay-playerTurn h1, .is--opponent.game_overlay-specialRule h1 {
+    text-shadow: 0 0 15px #eb3547; }
+  .overlay.is--active, .is--active.game_overlay-playerTurn, .is--active.game_overlay-specialRule {
     pointer-events: auto;
     opacity: 1;
     -webkit-transform: scale(1);
@@ -684,7 +689,7 @@ button {
     -webkit-transition: -webkit-all .4s ease-out;
     -ms-transition: -ms-all .4s ease-out;
     transition: all .4s ease-out; }
-    .overlay.is--active h1 {
+    .overlay.is--active h1, .is--active.game_overlay-playerTurn h1, .is--active.game_overlay-specialRule h1 {
       opacity: 1;
       letter-spacing: 0;
       -webkit-transition: -webkit-letter-spacing .4s .2s, opacity .2s .2s;
@@ -1519,6 +1524,8 @@ button {
   height: calc(100% - 25px);
   top: 100px; }
 
+.help_content-guide-scroll > div {
+  flex: 1; }
 .help_content-guide-scroll figure {
   display: flex; }
   .help_content-guide-scroll figure:not(:last-of-type) {
@@ -1528,14 +1535,35 @@ button {
     padding: 2em;
     flex: 1;
     background: rgba(255, 255, 255, 0.15);
-    margin-left: 2em;
     line-height: 1.5em;
     padding-left: 4em;
     text-indent: -2em; }
-    .help_content-guide-scroll figure figcaption span {
-      margin-right: 0.5em; }
+    .help_content-guide-scroll figure figcaption span.weight-bold {
+      margin-right: 0.9em; }
   .help_content-guide-scroll figure img {
-    border: 1px solid rgba(255, 255, 255, 0.25); }
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    align-self: flex-start;
+    margin-right: 2em; }
+
+.help_advancedRules-elements {
+  position: relative;
+  margin-top: 2em;
+  display: flex; }
+  .help_advancedRules-elements-element {
+    height: 1.5em;
+    position: relative;
+    text-indent: 2.5em;
+    margin-right: 2em;
+    line-height: 1.5em; }
+    .help_advancedRules-elements-element:before {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background-repeat: no-repeat;
+      background-position: 0 50%; }
 
 /*=======================*/
 /* TITLE SCREEN
@@ -1754,14 +1782,16 @@ button {
 #case33 {
   background: url(../assets/img/ui/board_caseBG.png) no-repeat 50%, url(../assets/img/ui/board_cornerTL.png) no-repeat 0% 0%, url(../assets/img/ui/board_cornerBR.png) no-repeat 100% 100%; }
 
-.element-fire:before, .element-ice:before, .element-wind:before, .element-earth:before,
-.element-water:before, .element-thunder:before, .element-poison:before, .element-holy:before {
+.elementCase:before {
   content: "";
   width: 100%;
   height: 100%;
-  position: absolute; }
-.element-fire:after, .element-ice:after, .element-wind:after, .element-earth:after,
-.element-water:after, .element-thunder:after, .element-poison:after, .element-holy:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  background-position: 50%; }
+.elementCase:after {
   position: absolute;
   width: 100%;
   height: 1em;
@@ -1778,43 +1808,42 @@ button {
   -webkit-transition: -webkit-all .4s ease-out;
   -ms-transition: -ms-all .4s ease-out;
   transition: all .4s ease-out; }
-.element-fire.has--bonus:after, .element-fire.has--penalty:after, .element-ice.has--bonus:after, .element-ice.has--penalty:after, .element-wind.has--bonus:after, .element-wind.has--penalty:after, .element-earth.has--bonus:after, .element-earth.has--penalty:after,
-.element-water.has--bonus:after,
-.element-water.has--penalty:after, .element-thunder.has--bonus:after, .element-thunder.has--penalty:after, .element-poison.has--bonus:after, .element-poison.has--penalty:after, .element-holy.has--bonus:after, .element-holy.has--penalty:after {
+.elementCase.has--bonus:after, .elementCase.has--penalty:after {
   opacity: 1;
   -webkit-transform: scale(1);
   -ms-transform: scale(1);
   transform: scale(1); }
-.element-fire.has--bonus:after, .element-ice.has--bonus:after, .element-wind.has--bonus:after, .element-earth.has--bonus:after,
-.element-water.has--bonus:after, .element-thunder.has--bonus:after, .element-poison.has--bonus:after, .element-holy.has--bonus:after {
+.elementCase.has--bonus:after {
   content: "+1"; }
-.element-fire.has--penalty:after, .element-ice.has--penalty:after, .element-wind.has--penalty:after, .element-earth.has--penalty:after,
-.element-water.has--penalty:after, .element-thunder.has--penalty:after, .element-poison.has--penalty:after, .element-holy.has--penalty:after {
+.elementCase.has--penalty:after {
   content: "-1"; }
 
 .element-fire:before {
-  background: url(../assets/img/ui/elem_fire.png) no-repeat 50%; }
+  background-image: url(../assets/img/ui/elem_fire.png); }
 
 .element-ice:before {
-  background: url(../assets/img/ui/elem_ice.png) no-repeat 50%; }
+  background-image: url(../assets/img/ui/elem_ice.png); }
 
 .element-wind:before {
-  background: url(../assets/img/ui/elem_wind.png) no-repeat 50%; }
+  background-image: url(../assets/img/ui/elem_wind.png); }
 
-.element-earth:before {
-  background: url(../assets/img/ui/elem_earth.png) no-repeat 50%; }
+.element-rock:before {
+  background-image: url(../assets/img/ui/elem_rock.png); }
 
 .element-water:before {
-  background: url(../assets/img/ui/elem_water.png) no-repeat 50%; }
+  background-image: url(../assets/img/ui/elem_water.png); }
 
 .element-thunder:before {
-  background: url(../assets/img/ui/elem_thunder.png) no-repeat 50%; }
+  background-image: url(../assets/img/ui/elem_thunder.png); }
 
 .element-poison:before {
-  background: url(../assets/img/ui/elem_poison.png) no-repeat 50%; }
+  background-image: url(../assets/img/ui/elem_poison.png); }
 
-.element-holy:before {
-  background: url(../assets/img/ui/elem_holy.png) no-repeat 50%; }
+.element-light:before {
+  background-image: url(../assets/img/ui/elem_light.png); }
+
+.element-dark:before {
+  background-image: url(../assets/img/ui/elem_dark.png); }
 
 /* PLAYER HUD --------------*/
 .game_playerHUD-opponent, .game_playerHUD-user {
@@ -1978,6 +2007,13 @@ button {
     -webkit-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1); }
+
+.game_overlay-playerTurn, .game_overlay-specialRule {
+  background: rgba(0, 0, 0, 0.25); }
+  .game_overlay-playerTurn h1, .game_overlay-specialRule h1 {
+    text-shadow: 0 0 15px #000; }
+  .is--neutral.game_overlay-playerTurn h1, .is--neutral.game_overlay-specialRule h1 {
+    text-shadow: 0 0 15px #666; }
 
 /*=======================*/
 /* LOUNGE SCREEN

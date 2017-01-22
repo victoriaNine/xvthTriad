@@ -29,6 +29,8 @@ define([
 
                 if (defaultValue) {
                     return this.get(path, defaultValue, noClone);
+                } else {
+                    return null;
                 }
             }
 
