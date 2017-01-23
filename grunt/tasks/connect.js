@@ -309,7 +309,7 @@ module.exports = function (grunt, options) {
                     msg    : ++CLIENT_COUNT
                 });
 
-                console.log("A user connected (" + getClientName(socket) + "). Players online:", CLIENT_COUNT);
+                console.log(moment.tz("Europe/Paris").format("YYYY.MM.DD @ HH:mm:ss"), "-- A user connected (" + getClientName(socket) + "). Players online:", CLIENT_COUNT);
                 console.log("=======");
 
                 db.query("auth/verifiedUsers").then(function (result) {
@@ -327,7 +327,7 @@ module.exports = function (grunt, options) {
                         msg    : --CLIENT_COUNT
                     });
 
-                    console.log("A user disconnected (" + getClientName(socket) + "). Players online:", CLIENT_COUNT);
+                    console.log(moment.tz("Europe/Paris").format("YYYY.MM.DD @ HH:mm:ss"), "-- A user disconnected (" + getClientName(socket) + "). Players online:", CLIENT_COUNT);
                     console.log("=======");
 
                     if (socket.opponent && ROOM_LIST[socket.currentRoomName] && !ROOM_LIST[socket.currentRoomName].hasEnded) {
