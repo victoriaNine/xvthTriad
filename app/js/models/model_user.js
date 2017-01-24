@@ -1,12 +1,4 @@
 define(["underscore", "backbone", "global", "collections/coll_album"], function Model_User (_, Backbone, _$, Coll_Album) {
-    const DAY_IN_MINUTES = 24 * 60;
-    const DECAY_RATES    = [
-        { days: 7 , penalty: 1 },
-        { days: 14, penalty: 2 },
-        { days: 28, penalty: 5 },
-        { days: 56, penalty: 10 }
-    ];
-
     return Backbone.Model.extend({
         defaults : {
             userId         : null,
