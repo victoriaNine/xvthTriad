@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "text!templates/templ_promptOverlay.ejs"
@@ -66,7 +66,7 @@ define([
                 options.action = window.location.reload.bind(window.location);
                 break;
         }
-        
+
         _$.events.trigger("stopUserEvents");
         this.undelegateEvents();
 
@@ -94,7 +94,7 @@ define([
             }
 
             this.span.text(options.titleBold);
-            this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
+            options.titleRegular && this.$(".prompt_overlay-title").html(this.span).append(" " + options.titleRegular);
             this.$(".prompt_overlay-message").text(options.msg);
             this.$(".prompt_overlay-confirmBtn").text(options.btnMsg);
         });
@@ -141,7 +141,7 @@ define([
                 if (_$.ui.screen.id !== "screen_title") {
                      _$.ui.screen.transitionOut("title");
                 }
-            }   
+            }
         });
     }
 

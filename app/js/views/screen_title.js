@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "models/model_user",
@@ -93,17 +93,18 @@ define([
         self = this;
 
         Screen.prototype.initialize.call(this);
-        
+
         this.introTL            = null;
         this.accountTemplate    = _.template(Templ_TitleAccount);
         this.loginConfirmAction = this.doLogin;
         this.signedUp           = false;
+        this.shouldSetup        = options.setup;
 
         this.$el.html(this.template());
         this.$(".title_logo").append($(_$.assets.get("svg.ui.logo")));
 
         // If the flag for the initialization flow is on
-        if (options.setup) {
+        if (this.shouldSetup) {
             // We create a new user
             _$.state.user = new Model_User();
 
@@ -204,7 +205,7 @@ define([
         }
 
         function proceed () {
-            if (options.setup) {
+            if (this.shouldSetup) {
                 _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
                 _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
                 _$.audio.audioEngine.setBGM("bgm.menus");
@@ -260,7 +261,7 @@ define([
             _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
             _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
             _$.audio.audioEngine.channels.notif.setVolume(_$.state.user.get("notifVolume"));
-            
+
             // We logout the user from other potential sessions
             _$.comm.sessionManager.logoutOthers().then((...args) => {
                 // And we emit the login event to the game server
@@ -314,6 +315,14 @@ define([
             _$.events.off("gamepad", skipIntro, this);
             _$.events.trigger("startUserEvents");
             _$.events.trigger("initialized");
+
+            if (this.shouldSetup) {
+              _$.ui.screen.info({
+                  titleBold : "Welcome!",
+                  msg       : "First timer? Feel free to check the tutorials in the Help section.",
+                  btnMsg    : "Got it!"
+              });
+            }
         });
 
         _.each(logoPaths, function (logoPath) {
@@ -372,13 +381,13 @@ define([
     function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
         this.checkBGMCrossfade(nextScreen);
-        
+
         var tl = new TimelineMax();
         tl.call(() => {
             _$.audio.audioEngine.playSFX("titleStart");
             _$.ui.footer.menu.find(".footer_menu-element").removeClass("is--active");
         });
-        
+
         tl.to(this.$(".title_account"), 0.5, { opacity: 0, x: 20 }, 0);
         tl.to(this.$(".title_startBtn"), 0.5, { opacity: 0, scale: 1.25 }, 0);
         tl.to(this.$(".title_logo"), 0.75, { opacity: 0, scale: 1.25 }, 0.5);
@@ -470,7 +479,7 @@ define([
             confirmPassword : this.$(".title_overlay-signup-form .field-password input").val(),
             profile         : _.omit(_$.utils.getUserData(), ["version", "userId", "name"])
         };
-        
+
         this.$(".title_overlay-signup-form-field-input").removeClass("is--invalid");
         this.$(".title_overlay-signup-message").text("");
         this.$(".title_overlay-signup-confirmBtn").text("Signing up...");
@@ -512,7 +521,7 @@ define([
             if (_.has(error.validationErrors, "email")) {
                 this.$(".title_overlay-signup-form .field-email input").addClass("is--invalid");
             }
-            
+
             this.$(".title_overlay-signup-message").html(errorString);
         });
 
