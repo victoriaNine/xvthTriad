@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -15,7 +15,7 @@ define([
         events   : {
             "click .cardSelect_content-screenNav-choice-backBtn" : function () { this.transitionOut("rulesSelect"); },
             "click .cardSelect_content-confirm-choice-yesBtn"    : function () {
-                this.toGame(this.userDeck);
+                this.toGame(_.compact(this.userDeck));
             },
             "click .cardSelect_content-confirm-choice-noBtn"     : function () { this.toggleConfirm("hide"); },
             "mouseenter .cardSelect_content-screenNav-choice-element,.cardSelect_content-confirm-choice-element,.cardSelect_content-nav-element" : function () {
@@ -42,7 +42,7 @@ define([
 
     function initialize (options) {
         Screen.prototype.initialize.call(this);
-        
+
         _$.ui.cardSelect = this;
 
         var cardList         = _$.utils.getCardList();
@@ -145,8 +145,8 @@ define([
     }
 
     function updateDeck (options) {
-        var fromHolderIndex = options.moveFrom ? parseInt(options.moveFrom.id.replace(/\D/g, "")) : -1;
-        var toHolderIndex   = options.moveTo ? parseInt(options.moveTo.id.replace(/\D/g, "")) : -1;
+        var fromHolderIndex = options.moveFrom ? parseInt(options.moveFrom.id.replace(/\D/g, "")) - 1 : -1;
+        var toHolderIndex   = options.moveTo ? parseInt(options.moveTo.id.replace(/\D/g, "")) - 1 : -1;
 
         if (options.action === "remove") {
             // If the card was previously in the deck, we update the deck and holders values
@@ -173,7 +173,7 @@ define([
                         if (options.moveFrom) {
                             // We move the card copy where "A" previously was
                             albumCardView.moveToDeck(options.moveFrom, cardCopy, true);
- 
+
                             this.userDeck[fromHolderIndex]             = albumCardView.cardView.model;
                             this.holders[options.moveFrom.id].cardView = cardCopy;
                         } else {
