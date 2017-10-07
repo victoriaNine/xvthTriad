@@ -22,11 +22,11 @@ module.exports = function (grunt, options) {
                     cwd: "<%= yeoman.app %>",
                     src: ["**", "!css/**"],
                     dest: "<%= yeoman.dist %>"
-                },
+                }/*,
                 {
                     src: "node_modules/apache-server-configs/dist/.htaccess",
                     dest: "<%= yeoman.dist %>/.htaccess"
-                }
+                }*/
             ]
         }
     };
