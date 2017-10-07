@@ -49,7 +49,7 @@ $fontSize_overlay  : 72px;
   }
   /*@-o-keyframes #{$animation-name} {
     @content;
-  }*/ 
+  }*/
   @keyframes #{$animation-name} {
     @content;
   }
@@ -60,7 +60,7 @@ $fontSize_overlay  : 72px;
   //-moz-animation: #{$str};
   -ms-animation: #{$str};
   //-o-animation: #{$str};
-  animation: #{$str};      
+  animation: #{$str};
 }
 
 @mixin transform($str) {
@@ -212,7 +212,7 @@ $fontSize_overlay  : 72px;
                 }
 
                 &-name {
-                    font-weight:500; 
+                    font-weight:500;
                     @include transition("color .2s");
                 }
 
@@ -361,7 +361,7 @@ $gridWidthBase: 100% / 12;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,0.75); 
+    background-color: rgba(0,0,0,0.75);
 }
 
 * {
@@ -838,7 +838,7 @@ button {
     width: auto;
     height: 100%;
     background-size: cover;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     z-index: 1;
 }
 
@@ -987,7 +987,7 @@ button {
 %socialIcons {
     display: flex;
     align-items: flex-end;
-    
+
     &-element {
         @extend %btn-diamond;
 
@@ -1251,7 +1251,7 @@ button {
         width: auto;
         height: 100%;
         background-size: cover;
-        background-repeat: no-repeat; 
+        background-repeat: no-repeat;
     }
 }
 
@@ -1352,11 +1352,12 @@ button {
     background: #FFF;
     width: 0;
     height: 1px;
-    position: absolute;
+    position: fixed;
     left:0;
     top: calc(50% + 6px);
 
     @include transform("translate3d(0, 0, 0)");
+    @include transition("width 1s ease-out");
 }
 
 

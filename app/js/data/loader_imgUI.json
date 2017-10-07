@@ -95,7 +95,7 @@
         },
         {
             "type" : "img.ui",
-            "name" : "elem_earth.png"
+            "name" : "elem_rock.png"
         },
         {
             "type" : "img.ui",
@@ -103,7 +103,7 @@
         },
         {
             "type" : "img.ui",
-            "name" : "elem_holy.png"
+            "name" : "elem_light.png"
         },
         {
             "type" : "img.ui",

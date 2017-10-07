@@ -1075,12 +1075,15 @@ button {
   background: #FFF;
   width: 0;
   height: 1px;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: calc(50% + 6px);
   -webkit-transform: translate3d(0, 0, 0);
   -ms-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0); }
+  transform: translate3d(0, 0, 0);
+  -webkit-transition: -webkit-width 1s ease-out;
+  -ms-transition: -ms-width 1s ease-out;
+  transition: width 1s ease-out; }
 
 /*=======================*/
 /* FOOTER

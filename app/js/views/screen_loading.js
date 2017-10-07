@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -15,7 +15,7 @@ define([
 
     function initialize (options) {
         Screen.prototype.initialize.call(this);
-        
+
         this.loadPercentage = 0;
         this.canvasAssets   = 0;
         this.$el.html(this.template());
@@ -24,7 +24,7 @@ define([
         _$.events.on("loadProgress", () => {
             if (_$.app.assetLoader.getPercentage() > this.loadPercentage) {
                 this.loadPercentage = _$.app.assetLoader.getPercentage();
-                TweenMax.to(this.$(".loading_line"), 0.2, { width: this.loadPercentage + "%" });
+                TweenMax.set(this.$(".loading_line"), { width: this.loadPercentage + "%" });
             }
         });
 
@@ -54,10 +54,7 @@ define([
 
             _$.events.once("socketReady", (event, data) => {
                 _$.comm.sessionManager.once("initialized", () => {
-                    var tl = new TimelineMax();
-                    tl.call(() => { _$.events.trigger("launch"); }, [], null, 0.5);
-                    tl.to(this.$el, 0.5, { opacity: 0, scale: 1.25 }, "+=0.5");
-                    tl.call(() => { this.remove(); });
+                    proceed.call(this);
                 });
 
                 _$.app.playersCount = data.msg;
@@ -87,7 +84,7 @@ define([
             if (_$.app.env.deviceType === "mobile") {
                 _$.state.FX_LEVEL = 2;
             }
-            
+
             _$.events.trigger("addFX");
             TweenMax.to(_$.ui.canvas.dom, 2, { opacity : 1, clearProps: "opacity", delay: 1 });
         }

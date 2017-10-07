@@ -59,64 +59,71 @@ define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_,
             url     = _getFilePath(fileInfo.type) + fileInfo.name;
             name    = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
             promise = new Promise(function resolver (resolve, reject) {
-                var progressStarted = false;
-                var request         = new XMLHttpRequest();
-                request.open("GET", url, true);
+                if (type === "img") {
+                    var img = new Image();
+                    img.onload = function () {
+                      _onFileLoaded(img, fileInfo, loader.name);
+                      resolve(img);
+                    };
+                    img.onprogress = progressHandler.bind(null, assetName);
+                    img.onerror = reject;
+                    img.src = url;
+                } else {
+                    var request = new XMLHttpRequest();
 
-                switch (type) {
-                    case "img":
-                        request.responseType = "blob";
-                        onLoad = _createImgNode.bind(null, fileInfo, url);
-                        break;
-                    case "audio":
-                        request.responseType = "arraybuffer";
-                        onLoad = _decodeAudio.bind(null, fileInfo);
-                        break;
-                    case "data":
-                        request.responseType = "json";
-                        onLoad = () => request.responseType;
-                        break;
-                    case "text":
-                        request.responseType = "text";
-                        onLoad = () => request.responseType;
-                        break;
-                    case "svg":
-                        request.responseType = "text";
-                        onLoad = _createSvgNode.bind(null, fileInfo);
-                        break;
+                    switch (type) {
+                        case "audio":
+                            request.responseType = "arraybuffer";
+                            onLoad = _decodeAudio.bind(null, fileInfo);
+                            break;
+                        case "data":
+                            request.responseType = "json";
+                            onLoad = () => request.responseType;
+                            break;
+                        case "text":
+                            request.responseType = "text";
+                            onLoad = () => request.responseType;
+                            break;
+                        case "svg":
+                            request.responseType = "text";
+                            onLoad = _createSvgNode.bind(null, fileInfo);
+                            break;
+                    }
+
+                    request.open("GET", url, true);
+                    request.onload = function () {
+                        new Promise(function (resolveSub, rejectSub) {
+                            return resolveSub(onLoad(request.response));
+                        }).then(function (data) {
+                            _onFileLoaded(data, fileInfo, loader.name);
+                            resolve(data);
+                        });
+                    };
+
+                    request.onprogress = progressHandler.bind(null, assetName);
+                    request.onerror = reject;
+                    request.send();
                 }
-
-                request.onload = function () {
-                    resolve(new Promise(function (resolveSub, rejectSub) {
-                        return resolveSub(onLoad(request.response));
-                    }).then(function (data) {
-                        _onFileLoaded(data, fileInfo, loader.name);
-                        return data;
-                    }));
-                };
-
-                request.onprogress = function (e) {
-                    var total  = 0;
-                    var loaded = 0;
-
-                    that.loadProgress[loader.name + ":" + assetName] = e;
-                    _.each(that.loadProgress, function (progress) {
-                        total  += progress.total;
-                        loaded += progress.loaded;
-                    });
-
-                    that.loaded = loaded;
-                    that.total  = total;
-
-                    _$.events.trigger("loadProgress:" + loader.name + ":" + assetName, e.loaded, e.total);
-                };
-
-                request.onerror = reject;
-                request.send();
             });
 
             promises.push(promise);
         });
+
+        function progressHandler (assetName, e) {
+          var total  = 0;
+          var loaded = 0;
+
+          that.loadProgress[loader.name + ":" + assetName] = e;
+          _.each(that.loadProgress, function (progress) {
+              total  += progress.total;
+              loaded += progress.loaded;
+          });
+
+          that.loaded = loaded;
+          that.total  = total;
+
+          _$.events.trigger("loadProgress:" + loader.name + ":" + assetName, e.loaded, e.total);
+        }
 
         return new Promise(function resolver (resolve, reject) {
             Promise.all(promises).then(function (responses) {
@@ -131,7 +138,7 @@ define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_,
         if (fileInfo.type !== "font") {
              _$.assets.set(fileInfo.type + "." + assetName, file);
         }
-        
+
         _$.events.trigger("fileLoaded:" + loaderName + ":" + assetName);
     }
 
@@ -143,12 +150,6 @@ define(["underscore", "global", "es6Promise", "fetch"], function assetLoader (_,
                 resolve(audioBuffer);
             }
         });
-    }
-
-    function _createImgNode (fileInfo, url, data) {
-        var img = new Image();
-        img.src = url;
-        return img;
     }
 
     function _createSvgNode (fileInfo, data) {

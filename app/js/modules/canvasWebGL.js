@@ -83,7 +83,7 @@ define([
             }
 
             flareSettings.tween = new TimelineMax({ delay: 1, repeat: -1, paused:true });
-            flareSettings.tween.to(flareSettings, 10, { opacity: 0.5, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
+            flareSettings.tween.to(flareSettings, 10, { opacity: 0.4, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
             flareSettings.tween.to(flareSettings, 10, { opacity: 0.1, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 100, taper: "none", randomize: true, clamp: true }) });
             flareSettings.tween.to(flareSettings, 4, { opacity: 0.0, ease: RoughEase.ease.config({ template:  Power0.easeNone, strength: 0.25, points: 50, taper: "none", randomize: true, clamp: true }) });
 
@@ -210,7 +210,7 @@ define([
 
         if (FX_LEVEL >= 1) {
             ctx2d.save();
-            ctx2d.globalAlpha = 0.05;
+            ctx2d.globalAlpha = 0.03;
             ctx2d.fillStyle   = bgPattern;
             ctx2d.fillRect(0, 0, WIDTH, HEIGHT);
             ctx2d.restore();
@@ -220,7 +220,7 @@ define([
             if (reformatNode.source) {
                 reformatNode.source.update();
             }
-            
+
             noiseNode.time      = noiseSettings.time;
             if (ADD_FX) {
                 vignetteNode.amount = vignetteSettings.amount;

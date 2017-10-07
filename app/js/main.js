@@ -218,10 +218,10 @@ require([
                 });
             });
         }
-        
+
         window.history.replaceState({}, "", "/");
     }
-    
+
     TweenMax.set(_$.dom, { opacity : 0 });
     setupScale();
 

@@ -317,7 +317,8 @@ define([
             _$.events.trigger("initialized");
 
             if (this.shouldSetup) {
-              _$.ui.screen.info({
+              _$.audio.audioEngine.playSFX("gameGain");
+              this.info({
                   titleBold : "Welcome!",
                   msg       : "First timer? Feel free to check the tutorials in the Help section.",
                   btnMsg    : "Got it!"
