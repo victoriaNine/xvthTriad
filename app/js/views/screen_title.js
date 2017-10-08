@@ -70,9 +70,14 @@ define([
                 e.preventDefault();
                 this.closeOverlay("login");
             },
-            "submit .title_overlay-signup-form"    : "doSignup",
-            "submit .title_overlay-login-form"     : "loginConfirmAction",
-            "click .title_overlay-login-forgotPwd" : "toForgotPassword"
+            "click .title_overlay-passwordReset-closeBtn" : function (e) {
+                e.preventDefault();
+                this.closeOverlay("passwordReset");
+            },
+            "submit .title_overlay-signup-form"        : "doSignup",
+            "submit .title_overlay-login-form"         : "loginConfirmAction",
+            "click .title_overlay-login-forgotPwd"     : "toForgotPassword",
+            "submit .title_overlay-passwordReset-form" : "doPasswordReset"
         },
 
         initialize,
@@ -84,6 +89,8 @@ define([
         closeOverlay,
         doSignup,
         doLogin,
+        doPasswordReset,
+        resetPassword,
         updateAccountLayout,
         toForgotPassword,
         sendPasswordMail
@@ -98,13 +105,13 @@ define([
         this.accountTemplate    = _.template(Templ_TitleAccount);
         this.loginConfirmAction = this.doLogin;
         this.signedUp           = false;
-        this.shouldSetup        = options.setup;
+        this.resetToken         = null;
 
         this.$el.html(this.template());
         this.$(".title_logo").append($(_$.assets.get("svg.ui.logo")));
 
         // If the flag for the initialization flow is on
-        if (this.shouldSetup) {
+        if (options.setup) {
             // We create a new user
             _$.state.user = new Model_User();
 
@@ -171,6 +178,7 @@ define([
                     });
                 }
             } else {
+                // If there is data but it is invalid, we prepare an error overlay
                 if (_$.utils.getLocalStorage(_$.app.name) && !_$.app.checkDataType(_$.utils.getLocalStorage(_$.app.name))) {
                     _$.events.once("initialized", () => {
                         _$.audio.audioEngine.playSFX("menuOpen");
@@ -179,9 +187,19 @@ define([
                             action : "close"
                         });
                     });
+                } else {
+                  // Otherwise the user has no data to load, so we prepare a welcome overlay
+                  _$.events.once("initialized", () => {
+                      _$.audio.audioEngine.playSFX("gameGain");
+                      this.info({
+                          titleBold : "Welcome!",
+                          msg       : "First timer? Feel free to check the tutorials in the Help section.",
+                          btnMsg    : "Got it!"
+                      });
+                  });
                 }
 
-                // Otherwise there is no data to load, so we create a new user profile
+                // Since there is no data to load, we create a new user profile
                 setupNewUser.call(this);
             }
         } else {
@@ -205,7 +223,7 @@ define([
         }
 
         function proceed () {
-            if (this.shouldSetup) {
+            if (options.setup) {
                 _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
                 _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
                 _$.audio.audioEngine.setBGM("bgm.menus");
@@ -315,23 +333,14 @@ define([
             _$.events.off("gamepad", skipIntro, this);
             _$.events.trigger("startUserEvents");
             _$.events.trigger("initialized");
-
-            if (this.shouldSetup) {
-              _$.audio.audioEngine.playSFX("gameGain");
-              this.info({
-                  titleBold : "Welcome!",
-                  msg       : "First timer? Feel free to check the tutorials in the Help section.",
-                  btnMsg    : "Got it!"
-              });
-            }
         });
 
-        _.each(logoPaths, function (logoPath) {
+        logoPaths.forEach(logoPath => {
             let dummyObject = { value: 0 };
 
             logoTl.to(dummyObject, 8, {
                 value    : logoPath.pathLength,
-                onUpdate : function () {
+                onUpdate : () => {
                     logoPath.path.setAttribute("stroke-dasharray", dummyObject.value + " " + (logoPath.pathLength - dummyObject.value));
                 }
             }, 0);
@@ -494,17 +503,17 @@ define([
             _$.audio.audioEngine.playSFX("gameGain");
 
             this.$(".title_overlay-signup-confirmBtn").text("Success!");
-            this.$(".title_overlay-signup-message").text("Thank you! A confirmation mail was sent to " + data.email + ".");
+            this.$(".title_overlay-signup-message").text("Thank you! A confirmation mail was sent to " + data.email);
             this.$(".title_overlay-signup-confirmBtn, .title_overlay-signup-closeBtn").slideUp(200);
             setTimeout(() => { this.$(".title_overlay-signup-closeBtn").slideDown(200); }, 1000);
 
             this.signedUp = true;
         }).catch((error) => {
-            var errorString = _.map(_.omit(error.validationErrors, "confirmPassword"), (error) => { return error.join(". "); }).join("<br>");
+            var errorString = _.map(_.omit(error.validationErrors, "confirmPassword"), error => error.join(". ")).join("<br>");
             errorString = errorString.replace("username", "login").replace("Username", "Login");
 
             _$.audio.audioEngine.playSFX("uiError");
-            this.$(".title_overlay-signup-confirmBtn").text("Error!");
+            this.$(".title_overlay-signup-confirmBtn").text("Error");
             setTimeout(() => { this.$(".title_overlay-signup-confirmBtn").text("Confirm"); }, 1000);
 
             if (_.has(error.validationErrors, "name")) {
@@ -603,7 +612,7 @@ define([
             toPos         = "-100%";
         }
 
-        this.$(".title_overlay-login-form .field-login input").val("");
+        this.$(".title_overlay-login-form .field-password input").val("");
         this.$(".title_overlay-login-form-field-input").removeClass("is--invalid");
 
         var tl = new TimelineMax();
@@ -627,22 +636,11 @@ define([
         var userId = this.$(".title_overlay-login-form .field-login input").val();
         var email  = this.$(".title_overlay-login-form .field-email input").val();
 
-        if (email || !userId) {
-            proceed.call(this);
-        } else {
-            _$.comm.sessionManager.getUser(userId).then((user) => {
-                email = user.email;
-                proceed.call(this);
-            }).catch((error) => {
-                onError.call(this, error.message || error.error);
-            });
-        }
-
-        function proceed () {
-            _$.comm.sessionManager.forgotPassword(email).then((response) => {
+        if (email || userId) {
+            _$.comm.sessionManager.forgotPassword(email, userId).then((response) => {
                 _$.audio.audioEngine.playSFX("gameGain");
                 this.$(".title_overlay-login-confirmBtn").text("Success!");
-                this.$(".title_overlay-login-message").text("Password recovery email sent to " + email + ".");
+                this.$(".title_overlay-login-message").text("Password recovery email sent to " + response.email + ".");
             }).catch((error) => {
                 onError.call(this, error.message || error.error);
             });
@@ -658,6 +656,58 @@ define([
         }
 
         return false;
+    }
+
+    function doPasswordReset () {
+      _$.app.track("send", "event", {
+          eventCategory : "accountEvent",
+          eventAction   : "passwordReset",
+          dimension1    : _$.state.user.get("difficulty"),
+          metric0       : _$.state.user.get("album").length,
+          metric1       : JSON.stringify(_$.state.user.get("gameStats"))
+      });
+
+      this.$(".title_overlay-passwordReset-form-field-input").removeClass("is--invalid");
+      this.$(".title_overlay-passwordReset-message").text("");
+      this.$(".title_overlay-passwordReset-confirmBtn").text("Resetting...");
+
+      _$.comm.sessionManager.resetPassword({
+          token: this.resetToken,
+          password: this.$(".title_overlay-passwordReset-form .field-password input").val(),
+          confirmPassword: this.$(".title_overlay-passwordReset-form .field-confirmPassword input").val()
+      }).then((session) => {
+          _$.audio.audioEngine.playSFX("gameGain");
+          this.$(".title_overlay-passwordReset-confirmBtn").text("Success!");
+          this.$(".title_overlay-passwordReset-message").text("Password successfully reset!");
+          this.$(".title_overlay-passwordReset-confirmBtn, .title_overlay-passwordReset-closeBtn").slideUp(200);
+          setTimeout(() => { this.$(".title_overlay-passwordReset-closeBtn").slideDown(200); }, 1000);
+
+          this.resetToken = null;
+      }).catch((error) => {
+          var errors = error.validationErrors.token ? { ...error.validationErrors, token: ["Invalid token"] } : error.validationErrors;
+          var errorString = _.map(errors, error => error.join(". ")).join("<br>");
+
+          _$.audio.audioEngine.playSFX("uiError");
+          this.$(".title_overlay-passwordReset-confirmBtn").text("Error");
+          setTimeout(() => { this.$(".title_overlay-passwordReset-confirmBtn").text("Reset"); }, 1000);
+
+          if (_.has(error.validationErrors, "password")) {
+              this.$(".title_overlay-passwordReset-form .field-password input").addClass("is--invalid");
+          }
+
+          if (_.has(error.validationErrors, "confirmPassword")) {
+              this.$(".title_overlay-passwordReset-form .field-confirmPassword input").addClass("is--invalid");
+          }
+
+          this.$(".title_overlay-passwordReset-message").html(errorString);
+      });
+
+      return false;
+    }
+
+    function resetPassword (token) {
+      this.resetToken = token;
+      this.openOverlay("passwordReset");
     }
 
     function updateAccountLayout () {

@@ -218,6 +218,13 @@ require([
                     msg          : confirmEmailMsg
                 });
             });
+        } else if (location.pathname.match("/password-reset/(.+)")) {
+            var token = location.pathname.match("/password-reset/(.+)")[1];
+            
+            _$.events.once("initialized", () => {
+                _$.audio.audioEngine.playSFX("gameGain");
+                _$.ui.screen.resetPassword(token);
+            });
         }
 
         window.history.replaceState({}, "", "/");

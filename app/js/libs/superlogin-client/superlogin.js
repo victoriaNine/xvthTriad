@@ -343,9 +343,9 @@ define([
 
         login(credentials) {
             if (!credentials.username || !credentials.password) {
-                return Promise.reject({ error: 'Username or Password missing...' });
+                return Promise.reject({ error: 'Username or password missing' });
             }
-            
+
             return this._http.post(`${this._config.baseUrl}/login`, credentials, { skipRefresh: true })
                 .then(res => {
                     if (res.data.error) {
@@ -508,8 +508,8 @@ define([
                 });
         }
 
-        forgotPassword(email) {
-            return this._http.post(`${this._config.baseUrl}/forgot-password`, { email }, { skipRefresh: true })
+        forgotPassword(email, login) {
+            return this._http.post(`${this._config.baseUrl}/forgot-password`, { email, login }, { skipRefresh: true })
                 .then(res => {
                     if (res.data.error) {
                         throw parseError(res.data);
