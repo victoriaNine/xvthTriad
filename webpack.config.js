@@ -5,9 +5,9 @@ import path from 'path';
 const ENV = process.env.NODE_ENV || 'development';
 const CSS_MAPS = ENV!=='production';
 
-module.exports = {
-	context: path.resolve(__dirname, "./app"),
-  entry: './main.js',
+const config = {
+  context: path.resolve(__dirname, "./app"),
+  entry: './js/main.js',
 
   output: {
     path: path.resolve(__dirname, "./dist"),
@@ -15,51 +15,51 @@ module.exports = {
     filename: 'bundle.js'
   },
 
-	resolve: {
-		alias: {
-			jquery            : "libs/jquery/dist/jquery",
-			backbone          : "libs/backbone/backbone",
-			underscore        : "libs/lodash/dist/lodash",
-			tweenMax          : "libs/gsap/src/uncompressed/TweenMax",
-			seriously         : "libs/seriouslyjs/seriously",
-			modernizr         : "libs/modernizr/modernizr",
-			socketIO          : "libs/socket.io-client/dist/socket.io",
-			stats             : "libs/stats.js/build/stats",
-			superlogin        : "libs/superlogin-client/superlogin",
-			elo               : "libs/elo/elo",
+  resolve: {
+    alias: {
+      /*jquery            : "libs/jquery/dist/jquery",
+      backbone          : "libs/backbone/backbone",
+      underscore        : "libs/lodash/dist/lodash",
+      tweenMax          : "libs/gsap/src/uncompressed/TweenMax",
+      seriously         : "libs/seriouslyjs/seriously",
+      modernizr         : "libs/modernizr/modernizr",
+      socketIO          : "libs/socket.io-client/dist/socket.io",
+      stats             : "libs/stats.js/build/stats",
+      superlogin        : "libs/superlogin-client/superlogin",
+      elo               : "libs/elo/elo",
 
-			text              : "libs/requirejs-plugins/lib/text",
-			async             : "libs/requirejs-plugins/src/async",
-			font              : "libs/requirejs-plugins/src/font",
-			goog              : "libs/requirejs-plugins/src/goog",
-			image             : "libs/requirejs-plugins/src/image",
-			json              : "libs/requirejs-plugins/src/json",
-			noext             : "libs/requirejs-plugins/src/noext",
-			mdown             : "libs/requirejs-plugins/src/mdown",
-			propertyParser    : "libs/requirejs-plugins/src/propertyParser",
-			markdownConverter : "libs/requirejs-plugins/lib/Markdown.Converter",
+      text              : "libs/requirejs-plugins/lib/text",
+      async             : "libs/requirejs-plugins/src/async",
+      font              : "libs/requirejs-plugins/src/font",
+      goog              : "libs/requirejs-plugins/src/goog",
+      image             : "libs/requirejs-plugins/src/image",
+      json              : "libs/requirejs-plugins/src/json",
+      noext             : "libs/requirejs-plugins/src/noext",
+      mdown             : "libs/requirejs-plugins/src/mdown",
+      propertyParser    : "libs/requirejs-plugins/src/propertyParser",
+      markdownConverter : "libs/requirejs-plugins/lib/Markdown.Converter",
 
-			jqueryNearest     : "libs/jquery-nearest/src/jquery.nearest",
-			es6Promise        : "libs/es6-promise/es6-promise",
-			fetch             : "libs/fetch/fetch",
-			storage           : "libs/backbone/backbone.localStorage",
-			jsonPrune         : "libs/jsonPrune/json.prune",
-			axios             : "libs/axios/dist/axios",
-			eventemitter2     : "libs/eventemitter2/lib/eventemitter2",
-			tablesortNumber   : "libs/tablesort/tablesort.number",
+      jqueryNearest     : "libs/jquery-nearest/src/jquery.nearest",
+      es6Promise        : "libs/es6-promise/es6-promise",
+      fetch             : "libs/fetch/fetch",
+      storage           : "libs/backbone/backbone.localStorage",
+      jsonPrune         : "libs/jsonPrune/json.prune",
+      axios             : "libs/axios/dist/axios",
+      eventemitter2     : "libs/eventemitter2/lib/eventemitter2",
+      tablesortNumber   : "libs/tablesort/tablesort.number",*/
 
-			global            : "global"
-		}
-	},
+      global            : "global"
+    }
+  },
   module: {
     rules: [
       { test: /jqueryNearest/, loader: 'exports?jquery' },
-			{
+      {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: 'babel-loader'
       },
-			{
+      {
         test: /\.(css|sass|scss)$/,
         include: [path.resolve(__dirname, 'app/js/views/main.js')],
         use: ExtractTextPlugin.extract({
@@ -78,7 +78,6 @@ module.exports = {
           ]
         })
       },
-			,
       {
         test: /\.json$/,
         use: 'json-loader'
@@ -93,7 +92,9 @@ module.exports = {
       },
     ]
   },
-	plugins: [
-      new webpack.optimize.UglifyJsPlugin({minimize: true})
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({minimize: true})
   ]
 };
+
+export default config;

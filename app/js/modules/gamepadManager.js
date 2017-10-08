@@ -281,7 +281,7 @@ class GamepadManager {
             map    : CONTROLLER_TYPE[gamepad.id],
             state  : {
                 axes    : clone(gamepad.axes),
-                buttons : map(gamepad.buttons, (button) => { ...button }))
+                buttons : map(gamepad.buttons, (button) => ({ ...button }))
             }
         };
 
@@ -326,7 +326,7 @@ class GamepadManager {
         }
 
         if (update) {
-            states = { ...this.activeStates, ...states });
+            states = { ...this.activeStates, ...states };
         }
 
         this.activeStates = pickBy(states);
