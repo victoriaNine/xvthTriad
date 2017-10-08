@@ -22,7 +22,10 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.audioCtx      = this.audioEngine.audioCtx;
             this.volume        = 1;
             this.defaultVolume = this.volume;
+            this.savedVolume   = this.volume;
             this.gainNode      = this.audioCtx.createGain();
+            this.isMuted       = false;
+            this.mutedByUser     = false;
 
             this.fade = {
                 options : null,
@@ -35,24 +38,30 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         }
 
         setVolume (gain) {
-            this.volume              = this.parseVolume(gain);
-            this.gainNode.gain.value = this.volume;
+            this.volume = this.parseVolume(gain);
+
+            if (this.isMuted) {
+                this.savedVolume = this.volume;
+            } else {
+                this.gainNode.gain.value = this.volume;
+            }
         }
 
         rampToVolume (options = {}) {
-            options = _.defaults(options, {
+            options = {
                 from      : this.volume,
                 to        : this.volume,
                 type      : "ramp",
                 duration  : 2,
                 delay     : 0,
-                clearGain : false
-            });
+                clearGain : false,
+                ...options
+            };
 
             options.from = this.parseVolume(options.from);
             options.to   = this.parseVolume(options.to);
 
-            options.ease = (options.type === "fadeIn" || options.type === "fadeOut") ? Circ.easeIn : options.ease ? Ease.map[options.ease] : Power2.easeOut;
+            options.ease = options.type.match("^fadeIn$|^fadeOut$") ? Circ.easeIn : options.ease ? Ease.map[options.ease] : Power2.easeOut;
 
             this.fade.options = options;
             this.fade.tween   = new TimelineMax();
@@ -60,7 +69,9 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             this.fade.tween.fromTo(this, options.duration, { volume: options.from }, { volume: options.to, ease: options.ease, delay: options.delay,
                 onUpdate   : () => {
-                    this.gainNode.gain.value = this.volume;
+                    if ((options.type === "fadeIn" && this.isMuted) || (options.type === "fadeOut" && !this.isMuted)) {
+                        this.gainNode.gain.value = this.volume;
+                    }
                 },
                 onComplete : () => {
                     if (options.clearGain) {
@@ -86,12 +97,67 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             return this.fade;
         }
 
+        mute (fade = false, fadeOptions = {}, fromUser = false) {
+            if (this.isMuted) {
+                return;
+            }
+
+            this.savedVolume = this.volume;
+
+            if (fade) {
+                this.fadeOut({
+                    ...fadeOptions,
+                    callback: () => {
+                      this.isMuted = true;
+                      this.mutedByUser = fromUser;
+
+                      _.isFunction(fadeOptions.callback) && fadeOptions.callback();
+                    }
+                });
+            } else {
+                this.setVolume(0);
+                this.isMuted = true;
+                this.mutedByUser = fromUser;
+            }
+        }
+
+        unmute (fade = false, fadeOptions = {}, fromUser = false) {
+            if ((this.mutedByUser && !fromUser) || !this.isMuted) {
+                return;
+            }
+
+            if (fade) {
+              this.fadeIn({
+                  ...fadeOptions,
+                  to: this.savedVolume,
+                  callback: () => {
+                    this.isMuted = false;
+                    this.mutedByUser = false;
+
+                    _.isFunction(fadeOptions.callback) && fadeOptions.callback();
+                  }
+              });
+            } else {
+              this.isMuted = false;
+              this.mutedByUser = false;
+              this.setVolume(this.savedVolume);
+            }
+        }
+
+        toggleMute (state, fade = false, fadeOptions = {}) {
+            if (state) {
+                this.mute(fade, fadeOptions);
+            } else {
+                this.unmute(fade, fadeOptions);
+            }
+        }
+
         fadeIn (options = {}) {
-            return this.rampToVolume(_.extend(options, { from: 0, type: "fadeIn" }));
+            return this.rampToVolume({ ...options, from: 0, type: "fadeIn" });
         }
 
         fadeOut (options = {}) {
-            return this.rampToVolume(_.extend(options, { to: 0, type: "fadeOut" }));
+            return this.rampToVolume({ ...options, to: 0, type: "fadeOut" });
         }
 
         parseVolume (volume) {
@@ -216,9 +282,10 @@ define(["underscore", "global"], function audioEngine (_, _$) {
             this.isPaused    = false;
 
             // Events
-            this.events = _.extend({}, this.events, {
+            this.events = {
+                ...this.events,
                 ended: this._eventNameBase + "ended"
-            });
+            };
 
             this.createSource();
         }
@@ -459,7 +526,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
         }
 
         seekToBGM (options = {}) {
-            this.playBGM(_.extend(options, { seeking: true }));
+            this.playBGM({...options, seeking: true });
         }
 
         stopBGM (options = {}) {
@@ -547,7 +614,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
                 }
             } else {
                 // Resume the BGM
-                this.playBGM(name, _.extend(options, { from: bgm.pausedAt }));
+                this.playBGM(name, { ...options, from: bgm.pausedAt });
             }
 
             function proceed () {
@@ -639,7 +706,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             var delay     = options.delay || 0;
             var startTime = this.audioCtx.currentTime + delay;
-            
+
             sfx.createSource(); // Regenerate a source for the SFX
             if (options.volume) {
                 sfx.setVolume(options.volume);
@@ -660,7 +727,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             var delay     = options.delay || 0;
             var startTime = this.audioCtx.currentTime + delay;
-            
+
             notif.createSource("notif"); // Regenerate a source for the Notif
             if (options.volume) {
                 notif.setVolume(options.volume);

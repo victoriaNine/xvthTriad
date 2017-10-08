@@ -17,19 +17,19 @@
     <ul class="about_social">
         <li class="about_social-fbBtn about_social-element">
             <div class="about_social-element-hoverFX"></div>
-            <i class="about_social-icon socicon-facebook"></i>
+            <i class="about_social-icon fa fa-facebook"></i>
         </li>
         <li class="about_social-ttBtn about_social-element">
             <div class="about_social-element-hoverFX"></div>
-            <i class="about_social-icon socicon-twitter"></i>
+            <i class="about_social-icon fa fa-twitter"></i>
         </li>
         <li class="about_social-rdtBtn about_social-element">
             <div class="about_social-element-hoverFX"></div>
-            <i class="about_social-icon socicon-reddit"></i>
+            <i class="about_social-icon fa fa-reddit-alien"></i>
         </li>
         <li class="about_social-tbrBtn about_social-element">
             <div class="about_social-element-hoverFX"></div>
-            <i class="about_social-icon socicon-tumblr"></i>
+            <i class="about_social-icon fa fa-tumblr"></i>
         </li>
     </ul>
     <div class="about_prevBtn">
@@ -37,6 +37,8 @@
         <div class="arrow-left"></div>
     </div>
     <div class="about_info">
-        <%= playersCount %> <span class="fontsize-small"><%= playersLabel %> registered</span>| <span class="fontsize-small">Version</span><%= appVersion %><% if (appVersionFlag) { %> (<%= appVersionFlag %>)<% } %>
+        <%= playersCount %> <span class="fontsize-small"><%= playersLabel %> registered</span>
+        | <span class="fontsize-small">Version</span><%= appVersion %><% if (appVersionFlag) { %> (<%= appVersionFlag %>)<% } %>
+        | <span class="about_info-volume"><i class="about_info-volume-icon fa fa-volume-up"></i></span>
     </div>
 </div>

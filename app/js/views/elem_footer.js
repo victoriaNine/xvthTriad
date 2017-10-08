@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen_overlayMenu",
@@ -53,6 +53,9 @@ define([
                     eventCategory: "socialShareEvent",
                     eventAction: "footerTumblr"
                 });
+            },
+            "click .footer_text-volume" : function (e) {
+                _$.utils.toggleMute(e.currentTarget);
             }
         },
 
@@ -162,7 +165,7 @@ define([
                     eventAction   : "closeRankings"
                 });
             }
-            
+
             _$.events.once("rankingsClosed", () => {
                 delete _$.ui.rankings;
                 this.$(".footer_menu-rankingsBtn").removeClass("is--active");
@@ -222,7 +225,7 @@ define([
                     eventAction   : "closeHelp"
                 });
             }
-            
+
             _$.events.once("helpPageClosed", () => {
                 delete _$.ui.help;
                 this.$(".footer_menu-helpBtn").removeClass("is--active");
@@ -282,7 +285,7 @@ define([
                     eventAction   : "closeAbout"
                 });
             }
-            
+
             _$.events.once("aboutPageClosed", () => {
                 delete _$.ui.about;
                 this.$(".footer_menu-aboutBtn").removeClass("is--active");

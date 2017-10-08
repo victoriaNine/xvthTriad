@@ -104,6 +104,7 @@ define([
 
         getBase64Image,
         timecodeToSecs,
+        toggleMute,
         openSharePopup
     };
 
@@ -215,6 +216,18 @@ define([
         return timeValues[0] * 60 * 60 + timeValues[1] * 60 + timeValues[2];
     }
 
+    function toggleMute (iconDOM) {
+      if (_$.audio.audioEngine.channels.master.isMuted) {
+        _$.audio.audioEngine.channels.master.unmute(false, null, true);
+        $(iconDOM).removeClass("is--disabled");
+        $(iconDOM).find("i").removeClass("fa-volume-off").addClass("fa-volume-up");
+      } else {
+        _$.audio.audioEngine.channels.master.mute(false, null, true);
+        $(iconDOM).addClass("is--disabled");
+        $(iconDOM).find("i").removeClass("fa-volume-up").addClass("fa-volume-off");
+      }
+    }
+
     /* DESIGN */
     function getAppSizeRatio () {
         return document.body.scrollWidth / window.screen.actualWidth;
@@ -237,7 +250,7 @@ define([
 
         tl.set(elements, { display: "" });
         tl.from(elements, duration, { opacity: 0 });
-        
+
         return tl;
     }
 
@@ -319,7 +332,7 @@ define([
                 domObserver.disconnect();
             }
         }
-         
+
         domObserver.observe(_$.dom[0], {
             attributes: true,
             childList: true,
@@ -344,7 +357,7 @@ define([
                     if (_.isFunction(callback)) {
                         callback(reader.result);
                     }
-                    
+
                     resolve(reader.result);
                 };
                 reader.onerror = reject;

@@ -9,7 +9,7 @@ Features:
 - Versus mode (vs player)
 - Multiplayer mode (online network)
 - A nice UI
-- Gamepad support (with the Gamepad API) **Update: Dropped as it doesn't enhance the UX**
+- Gamepad support (with the Gamepad API) **Update: Dropped as it doesn't enhance the UX. Partial support is still available.**
 
 ## Technologies used
 ### Heavy-lifting
@@ -22,6 +22,8 @@ Features:
 - [SASS](sass-lang.com)
 - [Seriously.JS](https://github.com/brianchirls/Seriously.js): WebGL real-time effect compositing
 - [Arpad](https://github.com/PhobosRising/node-arpad): Generates ELO scores for the leaderboards
+- [flag-icon](https://github.com/lipis/flag-icon-css): For user profile flags
+- [FontAwesome](http://fontawesome.io/)
 - Localstorage: Persistence layer for the user's data (non-registered player)
 - Canvas API: Background visuals compositing
 - WebAudio API: Used with a simple, custom audio engine with separate channels for music, sound effects and notifications

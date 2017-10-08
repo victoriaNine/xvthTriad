@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -56,6 +56,9 @@ define([
                     eventCategory: "aboutEvent",
                     eventAction: "clickLegal"
                 });
+            },
+            "click .about_info-volume" : function (e) {
+                _$.utils.toggleMute(e.currentTarget);
             }
         },
 
@@ -79,6 +82,9 @@ define([
         this.logo = this.$(".about_logo");
 
         this.logo.append($(_$.assets.get("svg.ui.logo")));
+        if (!_$.audio.audioEngine.channels.master.volume) {
+          this.$(".about_info-volume").addClass("is--disabled");
+        }
 
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
         this.add();

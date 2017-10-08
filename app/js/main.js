@@ -209,6 +209,7 @@ require([
     if (location.pathname !== "/") {
         if (location.pathname === "/confirm-email" && location.search) {
             var confirmEmailMsg = location.search.match("success=true") ? "Email verified, thanks! You can now login." : window.unescape(location.search.match(/=(.*?)$/)[1]);
+
             _$.events.once("initialized", () => {
                 _$.audio.audioEngine.playSFX("gameGain");
                 _$.ui.screen.info({
@@ -262,19 +263,19 @@ require([
             if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
                 return;
             } else if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {
-                _$.audio.audioEngine.channels.bgm.fadeOut();
-                _$.audio.audioEngine.channels.sfx.fadeOut();
+                _$.audio.audioEngine.channels.bgm.mute(true);
+                _$.audio.audioEngine.channels.sfx.mute(true);
             } else {
-                _$.audio.audioEngine.channels.master.fadeOut();
+                _$.audio.audioEngine.channels.master.mute(true);
             }
         }).on("focus", function() {
             if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
                 return;
             } if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {
-                _$.audio.audioEngine.channels.bgm.fadeIn({ to: (_$.ui.screen.$(".setting-bgm input").val() / 100) || _$.state.user.get("bgmVolume") });
-                _$.audio.audioEngine.channels.sfx.fadeIn({ to: (_$.ui.screen.$(".setting-sfx input").val() / 100) || _$.state.user.get("sfxVolume") });
+                _$.audio.audioEngine.channels.bgm.unmute(true);
+                _$.audio.audioEngine.channels.sfx.unmute(true);
             } else {
-                _$.audio.audioEngine.channels.master.fadeIn({ to: _$.audio.audioEngine.channels.master.defaultVolume });
+                _$.audio.audioEngine.channels.master.unmute(true);
             }
         });
     });

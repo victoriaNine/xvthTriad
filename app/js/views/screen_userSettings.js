@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -21,7 +21,7 @@ define([
                 this.confirmAction = this.deleteAccount;
                 this.toggleConfirm("show");
             },
-            "click .userSettings_content-save-choice-backBtn"    : function () { this.transitionOut("title"); },
+            "click .userSettings_content-save-choice-backBtn"    : function () { this.resetChanges(); this.transitionOut("title"); },
             "click .userSettings_content-load-choice-loadBtn"    : "loadGame",
             "click .userSettings_content-load-choice-cancelBtn"  : function () {
                 this.$(".setting-import input").val("");
@@ -75,7 +75,7 @@ define([
 
     function initialize (options) {
         Screen.prototype.initialize.call(this);
-        
+
         this.$el.html(this.template({
             isLoggedIn      : _$.comm.sessionManager.getSession(),
             userName        : _$.state.user.get("name"),
@@ -176,11 +176,11 @@ define([
             };
 
             if (_$.comm.sessionManager.getSession()) {
-                _.extend(newSettings, { notifyMode : settings.notifyMode, country: settings.country });
+                newSettings = { ...newSettings, notifyMode: settings.notifyMode, country: settings.country };
             }
 
             _$.state.user.set(newSettings);
-            
+
             _$.app.track("set", {
                 "dimension0" : "difficulty",
                 "dimension1" : "placingMode",
@@ -202,7 +202,7 @@ define([
                 metric0       : _$.state.user.get("album").length,
                 metric1       : JSON.stringify(_$.state.user.get("gameStats"))
             });
-            
+
             _$.events.on("userDataSaved", () => {
                 _$.audio.audioEngine.playSFX("gameGain");
                 this.$(".userSettings_header-help").text("Changes successfully saved!");
@@ -356,17 +356,17 @@ define([
     function updateVolume (event) {
         var id    = event.target.id;
         var value = event.target.value;
-        
+
         if (id === "bgmVolume") {
             _$.audio.audioEngine.channels.bgm.setVolume(value / 100);
         } else if (id === "sfxVolume") {
             _$.audio.audioEngine.channels.sfx.setVolume(value / 100);
-            if (event.type === "change") {
+            if (event.type === "input") {
                 _$.audio.audioEngine.playSFX("cardFlip");
             }
         } else if (id === "notifVolume") {
             _$.audio.audioEngine.channels.notif.setVolume(value / 100);
-            if (event.type === "change") {
+            if (event.type === "input") {
                 _$.audio.audioEngine.playNotif("loungeMsg");
             }
         }
@@ -380,7 +380,7 @@ define([
         var className;
         var text;
 
-        _.each(countryList, (country) => {
+        countryList.forEach((country) => {
             dom       = $(this.countryTempl).clone();
             className = dom[0].className.replace("COUNTRY_CODE", country.code);
             text      = dom.text().replace("COUNTRY_NAME", country.name);

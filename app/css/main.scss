@@ -1,5 +1,5 @@
 @import url("./reset.css");
-@import url("./socicon.css");
+@import url("./font-awesome.css");
 @import url("./flag-icon.css");
 
 /*=======================*/
@@ -994,11 +994,11 @@ button {
         position: relative;
         display: inline-block;
         margin-right: 1em;
-        vertical-align: super;
-        padding: .15em;
         bottom: .15em;
         overflow: visible !important;
         font-size: inherit;
+        width: 1.65em;
+        height: 1.65em;
 
         &-hoverFX {
             @extend %btn-diamond-hoverFX;
@@ -1016,32 +1016,39 @@ button {
     }
 
     &-icon {
-        &:after {
-            content: "\n\n";
-            visibility: hidden;
-
-            font-family: "socicon" !important;
-            font-style: normal !important;
-            font-weight: normal !important;
-            font-variant: normal !important;
-            text-transform: none !important;
-            speak: none;
-            line-height: 1;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
         &:before {
             position: absolute;
-            left: calc(50% - .75em);
-            top: calc(50% - (.75em / 2));
-            font-size: .75em;
+            top: calc(50% - (1em / 2));
+            font-size: 1em;
             width: 100%;
             height: 100%;
             text-align: center;
             vertical-align: text-bottom;
         }
+
+        &.fa-facebook:before, &.fa-tumblr:before {
+          left: -0.05em;
+        }
+
+        &.fa-twitter:before {
+          left: 0.04em;
+        }
+
+        &.fa-reddit-alien:before {
+          left: -0.03em;
+        }
     }
+}
+
+%volumeIcon {
+  width: 20px;
+  display: inline-block;
+  cursor: pointer;
+  @include transition("opacity 0.2s");
+
+  &.is--disabled {
+    opacity: 0.25;
+  }
 }
 
 /* OPTIONS PANEL --------------*/
@@ -1419,6 +1426,10 @@ button {
     position: absolute;
     right: $globalPadding;
     bottom: $globalPadding;
+
+    &-volume {
+      @extend %volumeIcon;
+    }
 }
 
 
@@ -1551,7 +1562,7 @@ button {
     height: 33.3333%;
     display: flex;
     position: relative;
-    align-items: flex-start;
+    align-items: center;
     padding-top: $globalPadding * 2;
     justify-content: center;
 }
@@ -1662,6 +1673,10 @@ button {
     position: absolute;
     right: $globalPadding;
     bottom: $globalPadding;
+
+    &-volume {
+      @extend %volumeIcon;
+    }
 }
 
 
@@ -2042,35 +2057,47 @@ button {
 }
 
 .title_overlay {
-    &-signup-form, &-login-form {
+    &-signup-form, &-login-form, &-passwordReset-form {
         width: 500px;
         margin-top: 2em;
         text-align: center;
         overflow: hidden;
     }
 
-    &-login-form {
+    &-login-form,, &-passwordReset-form {
         margin-bottom: 1em;
     }
 
-    &-signup-form .field-email, &-login-form .field-password, &-login-form .field-email {
+    &-signup-form .field-email,
+    &-login-form .field-password,
+    &-login-form .field-email,
+    &-passwordReset-form .field-password,
+    &-passwordReset-form .field-confirmPassword {
         margin-bottom: 3em;
     }
 
-    &-signup-form-field, &-login-form-field {
+    &-signup-form-field,
+    &-login-form-field,
+    &-passwordReset-form-field {
         @extend %options-option;
         text-align: initial;
     }
 
-    &-signup-form-field-label, &-login-form-field-label {
+    &-signup-form-field-label,
+    &-login-form-field-label,
+    &-passwordReset-form-field-label {
         @extend %options-option-label;
     }
 
-    &-signup-form-field-input, &-login-form-field-input {
+    &-signup-form-field-input,
+    &-login-form-field-input,
+    &-passwordReset-form-field-input {
         @extend %options-option-input;
     }
 
-    &-signup-btn, &-login-btn {
+    &-signup-btn,
+    &-login-btn,
+    &-passwordReset-btn {
         @extend %btn-rect;
 
         position: relative;
@@ -2081,7 +2108,10 @@ button {
         }
     }
 
-    &-signup-message, &-login-message, &-login-forgotPwd {
+    &-signup-message,
+    &-login-message,
+    &-login-forgotPwd,
+    &-passwordReset-message {
         text-transform: none;
         margin-top: 1em;
         min-height: 1em;
