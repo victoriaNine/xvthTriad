@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -38,7 +38,7 @@ define([
 
     function initialize (options) {
         Screen.prototype.initialize.call(this);
-        
+
         this.$el.html(this.template());
         TweenMax.set(this.$(".menu_element"), { pointerEvents: "none" });
         _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
@@ -49,13 +49,24 @@ define([
         _$.events.trigger("stopUserEvents");
 
         var tl = new TimelineMax();
-        tl.staggerFrom(this.$(".menu_element"), 0.4, { opacity: 0, clearProps: "opacity" }, 0.1);
-        tl.staggerFrom(this.$(".menu_element-bg"), 0.4, { opacity: 0, y: 50, clearProps: "all" }, 0.1, 0.2);
+        tl.staggerFrom(
+          this.$(".menu_element"),
+          this.transitionSettings.slides,
+          { opacity: 0, clearProps: "opacity" },
+          this.transitionSettings.staggers
+        );
+        tl.staggerFrom(
+          this.$(".menu_element-bg"),
+          this.transitionSettings.slides,
+          { opacity: 0, y: 50, clearProps: "all" },
+          this.transitionSettings.staggers,
+          this.transitionSettings.slides * 2
+        );
         tl.call(() => {
             _$.events.trigger("startUserEvents");
             _$.events.trigger("mainMenuOpen");
             TweenMax.set(this.$(".menu_element"), { clearProps: "pointerEvents" });
-        }, null, [], "-=0.4");
+        }, null, [], `-=${this.transitionSettings.slides}`);
 
         return this;
     }
@@ -65,8 +76,19 @@ define([
 
         var tl = new TimelineMax();
         tl.set(this.$(".menu_element"), { pointerEvents: "none" });
-        tl.staggerTo(this.$(".menu_element-bg"), 0.4, { opacity: 0, y: 50 }, -0.1);
-        tl.staggerTo(this.$(".menu_element"), 0.4, { opacity: 0 }, -0.1, 0.2);
+        tl.staggerTo(
+          this.$(".menu_element-bg"),
+          this.transitionSettings.slides,
+          { opacity: 0, y: 50 },
+          -1 * this.transitionSettings.staggers
+        );
+        tl.staggerTo(
+          this.$(".menu_element"),
+          this.transitionSettings.slides,
+          { opacity: 0 },
+          -1 * this.transitionSettings.staggers,
+          this.transitionSettings.slides * 2
+        );
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {

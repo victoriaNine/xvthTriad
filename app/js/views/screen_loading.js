@@ -65,8 +65,8 @@ define([
 
             function proceed () {
                 var tl = new TimelineMax();
-                tl.call(() => { _$.events.trigger("launch"); }, [], null, 0.5);
-                tl.to(this.$el, 0.5, { opacity: 0, scale: 1.25 }, "+=0.5");
+                tl.call(() => { _$.events.trigger("launch"); }, [], null, this.transitionSettings.slides);
+                tl.to(this.$el, this.transitionSettings.slides, { opacity: 0, scale: 1.25 }, `+=${this.transitionSettings.slides}`);
                 tl.call(() => { this.remove(); });
             }
         });

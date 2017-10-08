@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -48,7 +48,7 @@ define([
         TweenMax.lagSmoothing(0);
 
         Screen.prototype.initialize.call(this);
-        
+
         _$.ui.roomSelect  = this;
         this.settings     = null;
         this.modeDropdown = null;
@@ -70,7 +70,7 @@ define([
         if (_$.ui.rulesSelect) {
             _$.ui.rulesSelect.remove();
         }
-        
+
         if (_$.ui.cardSelect) {
             _$.ui.cardSelect.remove();
         }
@@ -143,7 +143,7 @@ define([
                 }
             } else if (response.status === "error") {
                 _$.audio.audioEngine.playSFX("uiError");
-                
+
                 if (response.msg.reason === "reserved") {
                     msg = "This room name is reserved.";
                 } else if (response.msg.reason === "alreadyExists") {
@@ -182,9 +182,15 @@ define([
         tl.set(this.$(".roomSelect_content-settings"), { clearProps: "opacity" });
         tl.set(this.$(".roomSelect_content-settings-setting"), { opacity: 0 });
         tl.call(() => {
-            this.$(".roomSelect_header").slideDown(500);
+            this.$(".roomSelect_header").slideDown(this.transitionSettings.slides * 1000);
         });
-        tl.staggerTo(this.$(".roomSelect_content-settings-setting"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, "+=0.5");
+        tl.staggerTo(
+          this.$(".roomSelect_content-settings-setting"),
+          this.transitionSettings.slides,
+          { opacity: 1, clearProps:"all" },
+          this.transitionSettings.staggers,
+          `+=${this.transitionSettings.slides}`
+        );
         tl.call(() => {
             if (!this.initialized) {
                 this.initialized = true;
@@ -193,7 +199,7 @@ define([
             _$.events.trigger("startUserEvents");
             this.$(".setting-roomName input").focus();
             this.validateInput(this.$(".setting-roomName input")[0]);
-        }, null, [], "-=0.5");
+        }, null, [], `-=${this.transitionSettings.slides}`);
 
         return this;
     }
@@ -204,17 +210,17 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => {
-            this.$(".roomSelect_content-screenNav").slideUp(500);
+            this.$(".roomSelect_content-screenNav").slideUp(this.transitionSettings.slides * 1000);
         });
-        tl.to(this.$(".roomSelect_content-settings"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        tl.to(this.$(".roomSelect_content-settings"), this.transitionSettings.slides, { opacity: 0 }, tl.recent().endTime() + this.transitionSettings.slides);
         tl.call(() => {
-            this.$(".roomSelect_header").slideUp(500);
+            this.$(".roomSelect_header").slideUp(this.transitionSettings.slides * 1000);
         });
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             TweenMax.set(this.$el, { display: "none" });
             this.changeScreen(nextScreen, options);
-        }, null, [], "+=0.5");
+        }, null, [], `+=${this.transitionSettings.slides}`);
 
         return this;
     }

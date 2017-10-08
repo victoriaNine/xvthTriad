@@ -87,12 +87,18 @@ define([
         tl.set(this.$(".cardSelect_content-album-scroll"), { clearProps: "opacity" });
         tl.set(this.$(".cardSelect_content-album-cardWrapper"), { opacity: 0 });
         tl.call(() => {
-            this.$(".cardSelect_header").slideDown(500);
-            TweenMax.to(this.$(".cardCopy"), 0.5, { opacity: 1, clearProps: "opacity", delay: 0.5 });
+            this.$(".cardSelect_header").slideDown(this.transitionSettings.slides * 1000);
+            TweenMax.to(this.$(".cardCopy"), this.transitionSettings.slides, { opacity: 1, clearProps: "opacity", delay: this.transitionSettings.slides });
         });
-        tl.staggerTo(_.take(this.$(".cardSelect_content-album-cardWrapper"), CARDS_PER_LINE * 2), 0.5, { opacity: 1, clearProps: "all" }, 0.1, "+=0.5");
+        tl.staggerTo(
+          _.take(this.$(".cardSelect_content-album-cardWrapper"), CARDS_PER_LINE * 2),
+          this.transitionSettings.slides,
+          { opacity: 1, clearProps: "all" },
+          this.transitionSettings.staggers,
+          `+=${this.transitionSettings.slides}`
+        );
         tl.call(() => {
-            this.$(".cardSelect_content-screenNav").slideDown(500);
+            this.$(".cardSelect_content-screenNav").slideDown(this.transitionSettings.slides * 1000);
             _$.events.trigger("startUserEvents");
 
             if (!this.initialized) {
@@ -105,7 +111,7 @@ define([
                     holder5 : { dom: this.$("#holder5"), cardView: null }
                 };
             }
-        }, null, [], "-=0.5");
+        }, null, [], `-=${this.transitionSettings.slides}`);
 
         return this;
     }
@@ -115,18 +121,18 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => {
-            this.$(".cardSelect_content-screenNav, .cardSelect_content-confirm").slideUp(500);
+            this.$(".cardSelect_content-screenNav, .cardSelect_content-confirm").slideUp(this.transitionSettings.slides * 1000);
         });
-        tl.to(this.$(".cardSelect_content-album-scroll"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
-        tl.to(this.$(".cardCopy"), 0.5, { opacity: 0 }, "-=0.5");
+        tl.to(this.$(".cardSelect_content-album-scroll"), this.transitionSettings.slides, { opacity: 0 }, tl.recent().endTime() + this.transitionSettings.slides);
+        tl.to(this.$(".cardCopy"), this.transitionSettings.slides, { opacity: 0 }, `-=${this.transitionSettings.slides}`);
         tl.call(() => {
-            this.$(".cardSelect_header").slideUp(500);
+            this.$(".cardSelect_header").slideUp(this.transitionSettings.slides * 1000);
         });
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             TweenMax.set(this.$el, { display: "none" });
             this.changeScreen(nextScreen, fromMenu);
-        }, null, [], "+=0.5");
+        }, null, [], `+=${this.transitionSettings.slides}`);
 
         return this;
     }

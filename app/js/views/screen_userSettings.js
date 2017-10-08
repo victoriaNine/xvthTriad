@@ -442,15 +442,21 @@ define([
         tl.set(this.$(".userSettings_content-settings"), { clearProps: "opacity" });
         tl.set(this.$(".userSettings_content-settings-setting, .userSettings_header-avatar"), { opacity: 0 });
         tl.call(() => {
-            this.$(".userSettings_header").slideDown(500);
+            this.$(".userSettings_header").slideDown(this.transitionSettings.slides * 1000);
         });
-        tl.to(this.$(".userSettings_header-avatar"), 0.5, { opacity: 1, clearProps:"all" }, "+=0.5");
-        tl.fromTo(this.$(".userSettings_content-settings-scroll"), 0.5, { height: 0, opacity: 0 }, { height: "100%", opacity: 1, clearProps: "all" }, "-=0.5");
-        tl.staggerTo(this.$(".userSettings_content-settings-setting"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, tl.recent().endTime() - 0.5);
+        tl.to(this.$(".userSettings_header-avatar"), this.transitionSettings.slides, { opacity: 1, clearProps:"all" }, `+=${this.transitionSettings.slides}`);
+        tl.fromTo(this.$(".userSettings_content-settings-scroll"), this.transitionSettings.slides, { height: 0, opacity: 0 }, { height: "100%", opacity: 1, clearProps: "all" }, `-=${this.transitionSettings.slides}`);
+        tl.staggerTo(
+          this.$(".userSettings_content-settings-setting"),
+          this.transitionSettings.slides,
+          { opacity: 1, clearProps:"all" },
+          this.transitionSettings.staggers,
+          tl.recent().endTime() - this.transitionSettings.slides
+        );
         tl.call(() => {
-            this.$(".userSettings_content-save").slideDown(500);
+            this.$(".userSettings_content-save").slideDown(this.transitionSettings.slides * 1000);
             _$.events.trigger("startUserEvents");
-        }, null, [], "-=0.5");
+        }, null, [], `-=${this.transitionSettings.slides}`);
 
         return this;
 
@@ -466,16 +472,16 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => {
-            this.$(".userSettings_content-save, .userSettings_content-load").slideUp(500);
+            this.$(".userSettings_content-save, .userSettings_content-load").slideUp(this.transitionSettings.slides * 1000);
         });
-        tl.to(this.$(".userSettings_content-settings, .userSettings_header-avatar"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        tl.to(this.$(".userSettings_content-settings, .userSettings_header-avatar"), this.transitionSettings.slides, { opacity: 0 }, tl.recent().endTime() + this.transitionSettings.slides);
         tl.call(() => {
-            this.$(".userSettings_header").slideUp(500);
+            this.$(".userSettings_header").slideUp(this.transitionSettings.slides * 1000);
         });
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             this.changeScreen(nextScreen, options);
-        }, null, [], "+=0.5");
+        }, null, [], `+=${this.transitionSettings.slides}`);
 
         return this;
     }

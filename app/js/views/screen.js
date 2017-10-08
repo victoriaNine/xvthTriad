@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/elem_promptOverlay",
@@ -133,8 +133,9 @@ define([
     });
 
     function initialize (options = {}) {
-        this.eventsDisabled = false;
-        this.promptOverlay  = new Elem_PromptOverlay();
+        this.eventsDisabled     = false;
+        this.promptOverlay      = new Elem_PromptOverlay();
+        this.transitionSettings = _$.ui.transitionSettings;
 
         _$.events.on("startUserEvents", _delegate, this);
         _$.events.on("stopUserEvents", _undelegate, this);
@@ -322,7 +323,7 @@ define([
 
     function waitForOpponent (userDeck, callback) {
         _$.comm.socketManager.emit("confirmReady", userDeck, onResponse.bind(this));
-        
+
         _$.audio.audioEngine.playSFX("menuOpen");
         this.info({
             titleBold    : "Please",
@@ -401,7 +402,7 @@ define([
 
                 _$.comm.socketManager.emit("playerReset");
             }
-            
+
             _$.utils.addDomObserver(this.$el, () => {
                 _$.events.trigger("startUserEvents");
 
@@ -501,7 +502,7 @@ define([
         if (_$.ui.screen.id === "screen_title") {
             _$.ui.screen.updateAccountLayout();
         }
-        
+
         // Connection errors are already handled by the socket manager
         if (!_.isString(event) || event.match("disconnect|connect_timeout|kick")) {
             return;
@@ -531,8 +532,8 @@ define([
         }
 
         function doLogout () {
-            this.fadeOut(this.changeScreen.bind(this, "title", { setup: true, fullIntro: true })); 
-        }                
+            this.fadeOut(this.changeScreen.bind(this, "title", { setup: true, fullIntro: true }));
+        }
     }
 
     function fadeOut (callback) {

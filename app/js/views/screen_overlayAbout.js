@@ -95,15 +95,15 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => { this.logo.addClass("is--tweening"); });
-        tl.from(this.$el, 0.5, { opacity: 0, clearProps: "all" });
-        tl.from(this.$(".about_bg"), 0.5, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=0.2");
+        tl.from(this.$el, this.transitionSettings.slides, { opacity: 0, clearProps: "all" });
+        tl.from(this.$(".about_bg"), this.transitionSettings.slides, { opacity: 0, scale: 1.25, clearProps: "all" }, `-=${this.transitionSettings.staggers * 2}`);
         tl.add(this.toggleLine("show"));
-        tl.from(this.logo, 0.5, { opacity: 0, scale: 1.25, clearProps: "all" }, "-=0.5");
-        tl.from($(".about_text, .about_credits, .about_legal"), 0.5, { opacity: 0, y: -20, clearProps: "all" }, tl.recent().endTime());
-        tl.from($(".about_info"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, tl.recent().startTime());
-        tl.call(() => { _$.audio.audioEngine.playSFX("menuOpen"); }, [], null, tl.recent().endTime() - 0.5);
-        tl.staggerFrom($(".about_social-element"), 0.5, { opacity: 0, y: 20, clearProps: "all" }, 0.1, "-=0.2");
-        tl.from(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" }, "-=0.2");
+        tl.from(this.logo, this.transitionSettings.slides, { opacity: 0, scale: 1.25, clearProps: "all" }, `-=${this.transitionSettings.slides}`);
+        tl.from($(".about_text, .about_credits, .about_legal"), this.transitionSettings.slides, { opacity: 0, y: -20, clearProps: "all" }, tl.recent().endTime());
+        tl.from($(".about_info"), this.transitionSettings.slides, { opacity: 0, x: 20, clearProps: "all" }, tl.recent().startTime());
+        tl.call(() => { _$.audio.audioEngine.playSFX("menuOpen"); }, [], null, tl.recent().endTime() - this.transitionSettings.slides);
+        tl.staggerFrom($(".about_social-element"), this.transitionSettings.slides, { opacity: 0, y: 20, clearProps: "all" }, this.transitionSettings.staggers, `-=${this.transitionSettings.staggers * 2}`);
+        tl.from(this.$(".about_prevBtn"), this.transitionSettings.slides, { opacity : 0, scale: 1.25, clearProps: "all" }, `-=${this.transitionSettings.staggers * 2}`);
         tl.call(() => {
             this.$el.addClass("is--showingLogo");
             this.logo.removeClass("is--tweening");
@@ -122,15 +122,15 @@ define([
             this.logo.addClass("is--tweening");
             this.$el.removeClass("is--showingLogo");
         });
-        tl.to(this.$(".about_prevBtn"), 0.5, { opacity : 0, scale: 1.25 });
-        tl.staggerTo($(".about_social-element"), 0.5, { opacity: 0, y: 20 }, -0.1, "-=0.2");
+        tl.to(this.$(".about_prevBtn"), this.transitionSettings.slides, { opacity : 0, scale: 1.25 });
+        tl.staggerTo($(".about_social-element"), this.transitionSettings.slides, { opacity: 0, y: 20 }, -0.1, `-=${this.transitionSettings.staggers * 2}`);
         tl.call(() => { _$.audio.audioEngine.playSFX("menuClose"); }, [], null, "-=0.1");
-        tl.to($(".about_text, .about_credits, .about_legal"), 0.5, { opacity: 0, y: -20 });
-        tl.to($(".about_info"), 0.5, { opacity: 0, x: 20 }, tl.recent().startTime());
-        tl.to(this.logo, 0.5, { opacity: 0, scale: 1.25 });
-        tl.add(this.toggleLine("hide"), "-=0.5");
-        tl.to(this.$(".about_bg"), 0.5, { opacity: 0, scale: 1.25 }, "-=0.5");
-        tl.to(this.$el, 0.5, { opacity: 0 });
+        tl.to($(".about_text, .about_credits, .about_legal"), this.transitionSettings.slides, { opacity: 0, y: -20 });
+        tl.to($(".about_info"), this.transitionSettings.slides, { opacity: 0, x: 20 }, tl.recent().startTime());
+        tl.to(this.logo, this.transitionSettings.slides, { opacity: 0, scale: 1.25 });
+        tl.add(this.toggleLine("hide"), `-=${this.transitionSettings.slides}`);
+        tl.to(this.$(".about_bg"), this.transitionSettings.slides, { opacity: 0, scale: 1.25 }, `-=${this.transitionSettings.slides}`);
+        tl.to(this.$el, this.transitionSettings.slides, { opacity: 0 });
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {
@@ -154,10 +154,10 @@ define([
 
         if (state === "show") {
             tl.set(el, { clearProps:"display" });
-            tl.from(el, 1, { opacity:0, width:0, ease: Power3.easeOut, clearProps:"all" });
+            tl.from(el, this.transitionSettings.longScroll, { opacity:0, width:0, ease: Power3.easeOut, clearProps:"all" });
         } else if (state === "hide") {
-            tl.to(el, 1, { width: 0, opacity: 0 });
-            tl.set(el, { display:"none", clearProps:"width,opacity" }, "+=.1");
+            tl.to(el, this.transitionSettings.longScroll, { width: 0, opacity: 0 });
+            tl.set(el, { display:"none", clearProps:"width,opacity" }, `+=${this.transitionSettings.staggers}`);
         }
 
         return tl;

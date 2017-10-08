@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -270,7 +270,7 @@ define([
                 _$.debug.log(this.userInfo.userId, event.name, data);
                 var userInfo = data.msg.userInfo;
                 var userId   = data.msg.userId;
-                
+
                 if (data.msg.type === "userJoined") {
                     this.userlist[userId] = userInfo;
                     this.addUserToList(userInfo);
@@ -342,13 +342,18 @@ define([
 
     function transitionIn () {
         _$.events.trigger("stopUserEvents");
-        
+
         var tl = new TimelineMax();
-        tl.from(this.$(".lounge_main"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
-        tl.from(this.$(".lounge_log-logo"), 0.5, { opacity : 0, scale: 0.85, clearProps: "all" }, 0);
-        tl.to(this.$(".lounge_log-messages-scroll")[0], 1, { scrollTop: this.$(".lounge_log-messages-scroll")[0].scrollHeight, ease: Expo.easeInOut }, 0.25);
+        tl.from(this.$(".lounge_main"), this.transitionSettings.slides, { opacity : 0, scale: 1.25, clearProps: "all" });
+        tl.from(this.$(".lounge_log-logo"), this.transitionSettings.slides, { opacity : 0, scale: 0.85, clearProps: "all" }, 0);
+        tl.to(
+          this.$(".lounge_log-messages-scroll")[0],
+          this.transitionSettings.longScroll,
+          { scrollTop: this.$(".lounge_log-messages-scroll")[0].scrollHeight, ease: Expo.easeInOut },
+          this.transitionSettings.slides / 2
+        );
         if (!_$.comm.sessionManager.getSession()) {
-            tl.call(() => { this.$(".lounge_notLoggedIn").addClass("is--active"); }, [], null, 0.4);
+            tl.call(() => { this.$(".lounge_notLoggedIn").addClass("is--active"); }, [], null, this.transitionSettings.slides * 0.9);
         }
         tl.call(() => {
             if (_$.comm.sessionManager.getSession()) {
@@ -364,7 +369,7 @@ define([
                     }
                 });
 
-                this.$(".lounge_notLoggedIn-confirmBtn").slideDown(400);
+                this.$(".lounge_notLoggedIn-confirmBtn").slideDown(this.transitionSettings.slides * 1000);
             }
         });
 
@@ -374,10 +379,10 @@ define([
     function transitionOut (nextScreen, options) {
         _$.events.trigger("stopUserEvents");
         this.checkBGMCrossfade(nextScreen);
-        
+
         var tl = new TimelineMax();
-        tl.to(this.$(".lounge_log-logo"), 0.5, { opacity : 0, scale: 0.85 });
-        tl.to(this.$(".lounge_main"), 0.5, { opacity : 0, scale: 1.25 }, 0.25);
+        tl.to(this.$(".lounge_log-logo"), this.transitionSettings.slides, { opacity : 0, scale: 0.85 });
+        tl.to(this.$(".lounge_main"), this.transitionSettings.slides, { opacity : 0, scale: 1.25 }, this.transitionSettings.slides / 2);
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             if (!_$.state.room) {
@@ -725,7 +730,7 @@ define([
             this.$(".lounge_userlist-userCard-header-info").addClass("has--flag");
         }
 
-        TweenMax.killChildTweensOf(this.$(".lounge_userlist-userCard")); 
+        TweenMax.killChildTweensOf(this.$(".lounge_userlist-userCard"));
         var tl = new TimelineMax();
         if (userId === this.userInfo.userId) { tl.set(this.$(".lounge_userlist-userCard-content"), { display: "none" }); }
         tl.set(this.$(".lounge_userlist-userCard"), { clearProps: "display", y: offset.top });
@@ -745,7 +750,7 @@ define([
         this.$(".user-" + this.userCardId).removeClass("is--selected");
         this.userCardId = null;
 
-        TweenMax.killChildTweensOf(this.$(".lounge_userlist-userCard")); 
+        TweenMax.killChildTweensOf(this.$(".lounge_userlist-userCard"));
         var tl = new TimelineMax();
         tl.fromTo(this.$(".lounge_userlist-userCard"), 0.2, { x: "-95%", opacity: 1 }, { x: "-90%", opacity: 0 });
         tl.set(this.$(".lounge_userlist-userCard"), { display: "none" });
@@ -777,7 +782,7 @@ define([
         var opponentName = this.userlist[opponentId].name;
         this.closeUserCard();
 
-        _$.events.once("receiveChallengeReply", onReply, this); 
+        _$.events.once("receiveChallengeReply", onReply, this);
 
         _$.comm.socketManager.emit("sendChallenge", { to: opponentId }, (response) => {
             _$.debug.log(this.userInfo.userId, "sendChallenge", response);

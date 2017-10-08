@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "models/model_card",
@@ -69,13 +69,19 @@ define([
         tl.set(this.$(".cardAlbum_content-album-scroll"), { clearProps: "opacity" });
         tl.set(this.$(".cardAlbum_content-album-cardWrapper"), { opacity: 0 });
         tl.call(() => {
-            this.$(".cardAlbum_header").slideDown(500);
+            this.$(".cardAlbum_header").slideDown(this.transitionSettings.slides * 1000);
         });
-        tl.staggerTo(_.take(this.$(".cardAlbum_content-album-cardWrapper"), CARDS_PER_LINE * 2), 0.5, { opacity: 1, clearProps: "all" }, 0.1, "+=0.5");
+        tl.staggerTo(
+            _.take(this.$(".cardAlbum_content-album-cardWrapper"), CARDS_PER_LINE * 2),
+            this.transitionSettings.slides,
+            { opacity: 1, clearProps: "all" },
+            this.transitionSettings.staggers,
+            `+=${this.transitionSettings.slides}`
+        );
         tl.call(() => {
-            this.$(".cardAlbum_content-screenNav").slideDown(500);
+            this.$(".cardAlbum_content-screenNav").slideDown(this.transitionSettings.slides * 1000);
             _$.events.trigger("startUserEvents");
-        }, null, [], "-=0.5");
+        }, null, [], `-=${this.transitionSettings.slides}`);
 
         return this;
     }
@@ -85,16 +91,16 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => {
-            this.$(".cardAlbum_content-screenNav, .cardAlbum_content-confirm").slideUp(500);
+            this.$(".cardAlbum_content-screenNav, .cardAlbum_content-confirm").slideUp(this.transitionSettings.slides * 1000);
         });
-        tl.to(this.$(".cardAlbum_content-album-scroll"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+        tl.to(this.$(".cardAlbum_content-album-scroll"), this.transitionSettings.slides, { opacity: 0 }, tl.recent().endTime() + this.transitionSettings.slides);
         tl.call(() => {
-            this.$(".cardAlbum_header").slideUp(500);
+            this.$(".cardAlbum_header").slideUp(this.transitionSettings.slides * 1000);
         });
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             this.changeScreen(nextScreen, fromMenu);
-        }, null, [], "+=0.5");
+        }, null, [], `+=${this.transitionSettings.slides}`);
 
         return this;
     }

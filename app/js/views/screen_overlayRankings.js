@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -71,10 +71,10 @@ define([
         _$.events.trigger("stopUserEvents");
 
         var tl = new TimelineMax();
-        tl.to(_$.ui.screen.$el, 0.5, { opacity: 0 });
-        tl.from(this.$(".rankings_main"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
-        tl.from(this.$(".rankings_leaderboard-logo"), 0.5, { opacity : 0, scale: 0.85, clearProps: "all" }, 0);
-        tl.from(this.$(".rankings_leaderboard-ranks-scroll"), 0.5, { opacity : 0, clearProps: "all" }, 0.25);
+        tl.to(_$.ui.screen.$el, this.transitionSettings.slides, { opacity: 0 });
+        tl.from(this.$(".rankings_main"), this.transitionSettings.slides, { opacity : 0, scale: 1.25, clearProps: "all" });
+        tl.from(this.$(".rankings_leaderboard-logo"), this.transitionSettings.slides, { opacity : 0, scale: 0.85, clearProps: "all" }, 0);
+        tl.from(this.$(".rankings_leaderboard-ranks-scroll"), this.transitionSettings.slides, { opacity : 0, clearProps: "all" }, this.transitionSettings.slides / 2);
         tl.call(() => {
             _$.events.trigger("startUserEvents");
             _$.events.trigger("rankingsOpen");
@@ -87,9 +87,9 @@ define([
         _$.events.trigger("stopUserEvents");
 
         var tl = new TimelineMax();
-        tl.to(this.$(".rankings_leaderboard-logo"), 0.5, { opacity : 0, scale: 0.85 });
-        tl.to(this.$(".rankings_main"), 0.5, { opacity : 0, scale: 1.25 }, 0.25);
-        tl.to(_$.ui.screen.$el, 0.5, { opacity: 1, clearProps: "opacity" });
+        tl.to(this.$(".rankings_leaderboard-logo"), this.transitionSettings.slides, { opacity : 0, scale: 0.85 });
+        tl.to(this.$(".rankings_main"), this.transitionSettings.slides, { opacity : 0, scale: 1.25 }, this.transitionSettings.slides / 2);
+        tl.to(_$.ui.screen.$el, this.transitionSettings.slides, { opacity: 1, clearProps: "opacity" });
         tl.call(onTransitionComplete.bind(this));
 
         function onTransitionComplete () {

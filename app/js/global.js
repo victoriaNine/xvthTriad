@@ -73,7 +73,13 @@ define([
     var assets    = new AssetManager();
     var events    = _.clone(Backbone.Events);
     var state     = { DECK_SIZE: 5 };
-    var ui        = {};
+    var ui        = {
+        transitionSettings: {
+            slides: 0.3,
+            staggers: 0.1,
+            longScroll: 0.7,
+        }
+    };
     var controls  = {};
     var audio     = {};
     var comm      = {};

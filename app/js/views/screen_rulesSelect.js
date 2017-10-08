@@ -1,6 +1,6 @@
 define([
     "jquery",
-    "underscore", 
+    "underscore",
     "backbone",
     "global",
     "views/screen",
@@ -36,7 +36,7 @@ define([
             },
             "click .rulesSelect_content-screenNav-choice-nextBtn" : "toNextStep",
             "click .rulesSelect_content-confirm-choice-yesBtn"    : "toNextStep",
-            "click .rulesSelect_content-confirm-choice-noBtn"     : function () { 
+            "click .rulesSelect_content-confirm-choice-noBtn"     : function () {
                 this.toggleConfirm("hide");
                 this.toggleRule("random", false);
                 this.updateRules();
@@ -83,7 +83,7 @@ define([
 
     function initialize (options = {}) {
         Screen.prototype.initialize.call(this);
-        
+
         _$.ui.rulesSelect  = this;
         this.readOnly      = options.readOnly;
         this.rules         = {};
@@ -121,7 +121,7 @@ define([
         delete _$.ui.rulesSelect;
         Screen.prototype.remove.call(this);
         this.tradeDropdown.remove();
-        
+
         if (_$.ui.roomSelect) {
             _$.ui.roomSelect.remove();
         }
@@ -294,9 +294,15 @@ define([
         tl.set(this.$(".rulesSelect_content-rules"), { clearProps: "opacity" });
         tl.set(this.$(".rulesSelect_content-rules-rule"), { opacity: 0 });
         tl.call(() => {
-            this.$(".rulesSelect_header").slideDown(500);
+            this.$(".rulesSelect_header").slideDown(this.transitionSettings.slides * 1000);
         });
-        tl.staggerTo(this.$(".rulesSelect_content-rules-rule"), 0.5, { opacity: 1, clearProps:"all" }, 0.1, "+=0.5");
+        tl.staggerTo(
+          this.$(".rulesSelect_content-rules-rule"),
+          this.transitionSettings.slides,
+          { opacity: 1, clearProps:"all" },
+          this.transitionSettings.staggers,
+          `+=${this.transitionSettings.slides}`
+        );
         tl.call(() => {
             if (!this.initialized) {
                 this.initialized = true;
@@ -310,11 +316,11 @@ define([
             }
 
             if (!this.$(".rule-random").hasClass("is--on")) {
-                this.$(".rulesSelect_content-screenNav").slideDown(500);
+                this.$(".rulesSelect_content-screenNav").slideDown(this.transitionSettings.slides * 1000);
             }
-            
+
             _$.events.trigger("startUserEvents");
-        }, null, [], "-=0.5");
+        }, null, [], `-=${this.transitionSettings.slides}`);
 
         return this;
     }
@@ -325,18 +331,18 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => {
-            this.$(".rulesSelect_content-screenNav, .rulesSelect_content-confirm").slideUp(500);
-        }, null, [], "-=1.5");
-        tl.to(this.$(".rulesSelect_content-rules"), 0.5, { opacity: 0 }, tl.recent().endTime() + 0.5);
+            this.$(".rulesSelect_content-screenNav, .rulesSelect_content-confirm").slideUp(this.transitionSettings.slides * 1000);
+        }, null, [], `-=${this.transitionSettings.slides * 3}`);
+        tl.to(this.$(".rulesSelect_content-rules"), this.transitionSettings.slides, { opacity: 0 }, tl.recent().endTime() + this.transitionSettings.slides);
         tl.call(() => {
-            this.$(".rulesSelect_header").slideUp(500);
+            this.$(".rulesSelect_header").slideUp(this.transitionSettings.slides * 1000);
         });
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(() => {
             TweenMax.set(this.$el, { display: "none" });
             this.changeScreen(nextScreen, options);
-        }, null, [], "+=0.5");
-    
+        }, null, [], `+=${this.transitionSettings.slides}`);
+
         return this;
     }
 

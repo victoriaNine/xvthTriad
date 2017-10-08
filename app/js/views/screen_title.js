@@ -362,17 +362,17 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); });
-        tl.from(this.$(".title_logo"), 1, { opacity : 0, scale: 1.25, clearProps: "all" });
-        tl.from(this.$(".title_startBtn"), 0.5, { opacity : 0, scale: 1.25, clearProps: "all" });
-        tl.addLabel("enterFooter", "-=1");
+        tl.from(this.$(".title_logo"), this.transitionSettings.slides, { opacity : 0, scale: 1.25, clearProps: "all" });
+        tl.from(this.$(".title_startBtn"), this.transitionSettings.slides, { opacity : 0, scale: 1.25, clearProps: "all" });
+        tl.addLabel("enterFooter", `-=${this.transitionSettings.slides * 2}`);
         tl.add(_$.ui.footer.toggleMenu("show"), "enterFooter");
-        tl.add(_$.ui.footer.toggleSocial("show"), "enterFooter+=0.5");
-        tl.set(_$.ui.footer.text, { clearProps: "display" }, "enterFooter+=2");
-        tl.to(_$.ui.footer.text, 1, { opacity: 1, x: 0, clearProps: "all" }, "enterFooter+=2");
-        tl.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" }, "enterFooter+=2.5");
+        tl.add(_$.ui.footer.toggleSocial("show"), `enterFooter+=${this.transitionSettings.slides}`);
+        tl.set(_$.ui.footer.text, { clearProps: "display" }, `enterFooter+=${this.transitionSettings.slides * 4}`);
+        tl.to(_$.ui.footer.text, this.transitionSettings.longScroll, { opacity: 1, x: 0, clearProps: "all" }, `enterFooter+=${this.transitionSettings.slides * 4}`);
+        tl.from(this.$(".title_account"), this.transitionSettings.slides, { opacity: 0, x: 20, clearProps: "all" }, `enterFooter+=${this.transitionSettings.slides * 5}`);
         tl.call(() => {
             _$.ui.footer.menu.find(".footer_menu-homeBtn").addClass("is--active");
-        }, [], null, "enterFooter+=3");
+        }, [], null, `enterFooter+=${this.transitionSettings.slides * 6}`);
         tl.call(() => {
             $(window).off("click touchstart", skipTransition.bind(this));
             _$.events.off("gamepad", skipTransition, this);
@@ -398,10 +398,10 @@ define([
             _$.ui.footer.menu.find(".footer_menu-element").removeClass("is--active");
         });
 
-        tl.to(this.$(".title_account"), 0.5, { opacity: 0, x: 20 }, 0);
-        tl.to(this.$(".title_startBtn"), 0.5, { opacity: 0, scale: 1.25 }, 0);
-        tl.to(this.$(".title_logo"), 0.75, { opacity: 0, scale: 1.25 }, 0.5);
-        tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); }, [], null, 0.5);
+        tl.to(this.$(".title_account"), this.transitionSettings.slides, { opacity: 0, x: 20 }, 0);
+        tl.to(this.$(".title_startBtn"), this.transitionSettings.slides, { opacity: 0, scale: 1.25 }, 0);
+        tl.to(this.$(".title_logo"), this.transitionSettings.slides * 1.5, { opacity: 0, scale: 1.25 }, this.transitionSettings.slides);
+        tl.call(() => { _$.audio.audioEngine.playSFX("titleLogo"); }, [], null, this.transitionSettings.slides);
         tl.add(this.checkFooterUpdate(nextScreen), 0);
         tl.call(this.changeScreen.bind(this, nextScreen, options));
 
@@ -420,9 +420,9 @@ define([
 
         var tl = new TimelineMax();
         tl.call(() => { overlay.addClass("is--active"); });
-        tl.call(() => { this.$(overlaySelector + "-confirmBtn," + overlaySelector + "-closeBtn").slideDown(400); }, [], null, "+=0.8");
+        tl.call(() => { this.$(overlaySelector + "-confirmBtn," + overlaySelector + "-closeBtn").slideDown(this.transitionSettings.slides * 1000); }, [], null, `+=${this.transitionSettings.slides * 2}`);
         if (overlayName === "login") {
-            tl.from(this.$(".title_overlay-login-forgotPwd"), 0.4, { opacity: 0, y: 20, clearProps: "all" }, "+=0.2");
+            tl.from(this.$(".title_overlay-login-forgotPwd"), this.transitionSettings.slides, { opacity: 0, y: 20, clearProps: "all" }, `+=${this.transitionSettings.staggers * 2}`);
         }
         tl.call(() => {
             _$.events.trigger("startUserEvents");
@@ -437,13 +437,13 @@ define([
 
         var tl = new TimelineMax();
         if (overlayName === "login") {
-            tl.to(this.$(".title_overlay-login-forgotPwd"), 0.4, { opacity: 0, y: 20 });
+            tl.to(this.$(".title_overlay-login-forgotPwd"), this.transitionSettings.slides, { opacity: 0, y: 20 });
         }
         tl.call(() => {
-            this.$(overlaySelector + "-confirmBtn," + overlaySelector + "-closeBtn").slideUp(400);
+            this.$(overlaySelector + "-confirmBtn," + overlaySelector + "-closeBtn").slideUp(this.transitionSettings.slides * 1000);
             this.$(overlaySelector + " input").blur();
-        }, [], null, "-=0.2");
-        tl.call(() => { overlay.removeClass("is--active"); }, [], null, "+=0.4");
+        }, [], null, `-=${this.transitionSettings.staggers * 2}`);
+        tl.call(() => { overlay.removeClass("is--active"); }, [], null, `+=${this.transitionSettings.slides}`);
         tl.call(() => {
             if (_$.comm.sessionManager.getSession()) {
                 overlay.remove();
@@ -464,7 +464,7 @@ define([
             }
 
             _$.events.trigger("startUserEvents");
-        }, [], null, "+=0.8");
+        }, [], null, `+=${this.transitionSettings.slides * 2}`);
     }
 
     function doSignup (e) {
@@ -498,14 +498,14 @@ define([
             _$.events.once(_$.audio.audioEngine.getBGM("bgm.win").events.ended, () => {
                 _$.audio.audioEngine.currentBGM.rampToVolume({ to: _$.audio.audioEngine.currentBGM.defaultVolume, duration: 1 });
             });
-            _$.audio.audioEngine.currentBGM.rampToVolume({ to: "-=0.75", duration: 0.5 });
+            _$.audio.audioEngine.currentBGM.rampToVolume({ to: "-=0.75", duration: this.transitionSettings.slides });
             _$.audio.audioEngine.playBGM({ name: "bgm.win" });
             _$.audio.audioEngine.playSFX("gameGain");
 
             this.$(".title_overlay-signup-confirmBtn").text("Success!");
             this.$(".title_overlay-signup-message").text("Thank you! A confirmation mail was sent to " + data.email);
-            this.$(".title_overlay-signup-confirmBtn, .title_overlay-signup-closeBtn").slideUp(200);
-            setTimeout(() => { this.$(".title_overlay-signup-closeBtn").slideDown(200); }, 1000);
+            this.$(".title_overlay-signup-confirmBtn, .title_overlay-signup-closeBtn").slideUp(this.transitionSettings.slides * 1000);
+            setTimeout(() => { this.$(".title_overlay-signup-closeBtn").slideDown(this.transitionSettings.slides * 1000); }, 1000);
 
             this.signedUp = true;
         }).catch((error) => {
@@ -616,17 +616,17 @@ define([
         this.$(".title_overlay-login-form-field-input").removeClass("is--invalid");
 
         var tl = new TimelineMax();
-        tl.to(this.$(".title_overlay-login-message, .title_overlay-login-forgotPwd, .title_overlay-login-confirmBtn"), 0.4, { opacity: 0 });
-        tl.to(this.$(".title_overlay-login-form " + fromField), 0.2, { opacity: 0, x: fromPos }, 0);
+        tl.to(this.$(".title_overlay-login-message, .title_overlay-login-forgotPwd, .title_overlay-login-confirmBtn"), this.transitionSettings.slides, { opacity: 0 });
+        tl.to(this.$(".title_overlay-login-form " + fromField), this.transitionSettings.staggers * 2, { opacity: 0, x: fromPos }, 0);
         tl.set(this.$(".title_overlay-login-form " + fromField), { display:"none", clearProps:"opacity, x" });
         tl.set(this.$(".title_overlay-login-form " + toField), { clearProps:"display, x" });
-        tl.from(this.$(".title_overlay-login-form " + toField), 0.2, { opacity: 0, x: toPos, clearProps:"all" });
+        tl.from(this.$(".title_overlay-login-form " + toField), this.transitionSettings.staggers * 2, { opacity: 0, x: toPos, clearProps:"all" });
         tl.call(() => {
             this.$(".title_overlay-login-message").text(messageTxt);
             this.$(".title_overlay-login-forgotPwd").text(forgotPwdTxt);
             this.$(".title_overlay-login-confirmBtn").text(confirmBtnTxt);
         });
-        tl.to(this.$(".title_overlay-login-message, .title_overlay-login-forgotPwd, .title_overlay-login-confirmBtn"), 0.4, { opacity: 1, clearProps:"opacity" });
+        tl.to(this.$(".title_overlay-login-message, .title_overlay-login-forgotPwd, .title_overlay-login-confirmBtn"), this.transitionSettings.slides, { opacity: 1, clearProps:"opacity" });
         tl.call(() => { _$.events.trigger("startUserEvents"); });
     }
 
@@ -679,8 +679,8 @@ define([
           _$.audio.audioEngine.playSFX("gameGain");
           this.$(".title_overlay-passwordReset-confirmBtn").text("Success!");
           this.$(".title_overlay-passwordReset-message").text("Password successfully reset!");
-          this.$(".title_overlay-passwordReset-confirmBtn, .title_overlay-passwordReset-closeBtn").slideUp(200);
-          setTimeout(() => { this.$(".title_overlay-passwordReset-closeBtn").slideDown(200); }, 1000);
+          this.$(".title_overlay-passwordReset-confirmBtn, .title_overlay-passwordReset-closeBtn").slideUp(this.transitionSettings.slides * 1000);
+          setTimeout(() => { this.$(".title_overlay-passwordReset-closeBtn").slideDown(this.transitionSettings.slides * 1000); }, 1000);
 
           this.resetToken = null;
       }).catch((error) => {
@@ -718,7 +718,7 @@ define([
 
         if (this.$(".title_account").length) {
             var tl = new TimelineMax();
-            tl.to(this.$(".title_account"), 0.5, { opacity: 0, x: 20 });
+            tl.to(this.$(".title_account"), this.transitionSettings.slides, { opacity: 0, x: 20 });
             tl.call(() => {
                 _$.utils.addDomObserver(this.$(".title_account"), proceed.bind(this), true, "remove");
                 this.$(".title_account").remove();
@@ -729,7 +729,7 @@ define([
 
         function proceed () {
             _$.utils.addDomObserver(accountLayout, () => {
-                TweenMax.from(this.$(".title_account"), 0.5, { opacity: 0, x: 20, clearProps: "all" });
+                TweenMax.from(this.$(".title_account"), this.transitionSettings.slides, { opacity: 0, x: 20, clearProps: "all" });
             }, true);
 
             _$.comm.socketManager.emit("getOnlineCount", null, (data) => {

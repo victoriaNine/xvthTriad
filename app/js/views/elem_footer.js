@@ -70,7 +70,11 @@ define([
         toggleMainMenu,
         toggleRankings,
         toggleHelpPage,
-        toggleAboutPage
+        toggleAboutPage,
+
+        showElement,
+        hideElement,
+        staggerToggle
     });
 
     function initialize (options) {
@@ -83,6 +87,7 @@ define([
         this.social = this.$(".footer_social");
         this.text   = this.$(".footer_text");
 
+        this.transitionSettings = _$.ui.transitionSettings;
         this.queuedAnimations = {
             logo   : [],
             menu   : [],
@@ -349,10 +354,10 @@ define([
         } else {
             if (this.isOpen) {
                 tl.add(this.toggleSocial("hide"));
-                tl.add(this.toggleMenu("hide"), "-=1.5");
+                tl.add(this.toggleMenu("hide"), `-=${this.transitionSettings.slides * 3}`);
             } else {
                 tl.add(this.toggleMenu("show"));
-                tl.add(this.toggleSocial("show"), "-=1.5");
+                tl.add(this.toggleSocial("show"), `-=${this.transitionSettings.slides * 3}`);
             }
         }
 
@@ -367,12 +372,12 @@ define([
 
         if (state === "show") {
             tl.add(this.toggleLogo("show"));
-            tl.add(this.toggleMenu("show"), "-=1.5");
-            tl.add(this.toggleSocial("show"), "-=1.5");
+            tl.add(this.toggleMenu("show"), `-=${this.transitionSettings.slides * 3}`);
+            tl.add(this.toggleSocial("show"), `-=${this.transitionSettings.slides * 3}`);
         } else if (state === "hide") {
             tl.add(this.toggleSocial("hide"));
-            tl.add(this.toggleMenu("hide"), "-=1.5");
-            tl.add(this.toggleLogo("hide"), "-=1.5");
+            tl.add(this.toggleMenu("hide"), `-=${this.transitionSettings.slides * 3}`);
+            tl.add(this.toggleLogo("hide"), `-=${this.transitionSettings.slides * 3}`);
         }
 
         return tl;
@@ -391,8 +396,8 @@ define([
         var tl = new TimelineMax();
         tl.call(() => { el.addClass("is--tweening"); });
 
-        if (state === "show") { tl.add(_showElement(el)); }
-        else if (state === "hide") { tl.add(_hideElement(el)); }
+        if (state === "show") { tl.add(this.showElement(el)); }
+        else if (state === "hide") { tl.add(this.hideElement(el)); }
 
         tl.call(() => {
             el.removeClass("is--tweening");
@@ -406,49 +411,50 @@ define([
     }
 
     function toggleMenu (state) {
-        return _staggerToggle(this.menu.find(".footer_menu-element"), state);
+        return this.staggerToggle(this.menu.find(".footer_menu-element"), state);
     }
 
     function toggleSocial (state) {
-        return _staggerToggle(this.social.find(".footer_social-element"), state);
+        return this.staggerToggle(this.social.find(".footer_social-element"), state);
     }
 
-    function _staggerToggle (elements, state) {
+    function staggerToggle (elements, state) {
+        var that = this;
         var tl = new TimelineMax();
         var nbElement = elements.length;
 
         $(elements).each(function (i) {
             if (state === "show") {
-                tl.add(_showElement($(this)), i * 0.1);
+                tl.add(that.showElement($(this)), i * that.transitionSettings.staggers);
             } else if (state === "hide") {
-                tl.add(_hideElement($(this)), (nbElement - i) * 0.1);
+                tl.add(that.hideElement($(this)), (nbElement - i) * that.transitionSettings.staggers);
             }
         });
 
         return tl;
     }
 
-    function _showElement (element) {
+    function showElement (element) {
         var tl = new TimelineMax();
 
         tl.set(element, { clearProps: "all" });
         tl.set(element, { overflow: "hidden" });
-        tl.from(element, 0.5, { width: 0, borderWidth: 0 }, 0);
-        tl.from(element, 1.5, { opacity: 0 });
-        tl.from(element, 1, { height: 0, padding :0, margin: 0, ease: Power3.easeOut }, 0.5);
-        tl.set(element, { clearProps: "all" }, "+=.1");
+        tl.from(element, this.transitionSettings.slides, { width: 0, borderWidth: 0 }, 0);
+        tl.from(element, this.transitionSettings.slides * 3, { opacity: 0 });
+        tl.from(element, this.transitionSettings.slides * 2, { height: 0, padding :0, margin: 0, ease: Power3.easeOut }, this.transitionSettings.slides);
+        tl.set(element, { clearProps: "all" }, `+=${this.transitionSettings.staggers}`);
 
         return tl;
     }
 
-    function _hideElement (element) {
+    function hideElement (element) {
         var tl = new TimelineMax();
 
         tl.set(element, { overflow: "hidden" });
-        tl.to(element, 1.5, { opacity:0 });
-        tl.to(element, 1, { height:0, padding:0, margin:0, ease: Power3.easeOut }, 0);
-        tl.to(element, 0.5, { width: 0, borderWidth: 0 }, 0.5);
-        tl.set(element, { display: "none", clearProps: "height,width,overflow,borderWidth,padding,margin,opacity" }, "+=.1");
+        tl.to(element, this.transitionSettings.slides * 3, { opacity:0 });
+        tl.to(element, this.transitionSettings.slides * 2, { height:0, padding:0, margin:0, ease: Power3.easeOut }, 0);
+        tl.to(element, this.transitionSettings.slides, { width: 0, borderWidth: 0 }, this.transitionSettings.slides);
+        tl.set(element, { display: "none", clearProps: "height,width,overflow,borderWidth,padding,margin,opacity" }, `+=${this.transitionSettings.staggers}`);
 
         return tl;
     }
