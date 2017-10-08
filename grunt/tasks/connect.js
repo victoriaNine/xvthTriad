@@ -1,22 +1,29 @@
 module.exports = function (grunt, options) {
-    var _                = require("lodash");
-    var lrSnippet        = require("connect-livereload")({ port: grunt.config("livereloadPort") });
-    var path             = require("path");
-    var express          = require("express");
-    var http             = require("http");
-    var fs               = require("fs");
-    var compression      = require("compression");
-    var bodyParser       = require("body-parser");
-    var logger           = require("morgan");
-    var SuperLogin       = require("superlogin");
-    var FacebookStrategy = require("passport-facebook").Strategy;
-    var PouchDB          = require("pouchdb");
-    var CronJob          = require("cron").CronJob;
-    var moment           = require("moment-timezone");
-    
+    var _                    = require("lodash");
+    var lrSnippet            = require("connect-livereload")({ port: grunt.config("livereloadPort") });
+    var path                 = require("path");
+    var express              = require("express");
+    var http                 = require("http");
+    var fs                   = require("fs");
+    var compression          = require("compression");
+    var bodyParser           = require("body-parser");
+    var logger               = require("morgan");
+    var SuperLogin           = require("superlogin");
+    var FacebookStrategy     = require("passport-facebook").Strategy;
+    var PouchDB              = require("pouchdb");
+    var CronJob              = require("cron").CronJob;
+    var moment               = require("moment-timezone");
+    var webpack              = require("webpack");
+    var webpackDevMiddleware = require("webpack-dev-middleware");
+    var wpConfig             = require(path.resolve(process.cwd(), "./webpack.config.js"));
+
+    console.log(webpackConfig);
+
+
     grunt.registerTask("connect", function (target) {
         var port       = grunt.config("serverPort");
         var app        = express();
+        var compiler   = webpack(wpConfig);
         var folder     = (target === "prod" || target === "beta") ? grunt.config("yeoman")[target] : grunt.config("yeoman").tmp;
         var protocol   = "http://"; //process.env.NODE_ENV === "prod" ? "https://" : "http://";
         var db         = new PouchDB(protocol + process.env.DB_USER + ":" + process.env.DB_PASS + "@" + process.env.DB_HOST + "/users");
@@ -31,7 +38,7 @@ module.exports = function (grunt, options) {
         // Setup SuperLogin
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: false }));
- 
+
         // Redirect to https except on localhost
         //app.use(httpsRedirect);
 
@@ -67,27 +74,31 @@ module.exports = function (grunt, options) {
                 requireEmailConfirm: true,
                 confirmEmailRedirectURL: "/confirm-email"
             },
-            providers: { 
+            providers: {
                 local: true
             }
         };
-        
-        // Initialize SuperLogin 
+
+        // Initialize SuperLogin
         var superlogin = new SuperLogin(config);
         if (superlogin.config.getItem("providers.facebook.credentials.clientID")) {
             superlogin.registerOAuth2("facebook", FacebookStrategy);
         }
-        
-        // Mount SuperLogin's routes to our app 
+
+        // Mount SuperLogin's routes to our app
         app.use("/auth", superlogin.router);
 
         app.use(compression());
         if (target === "livereload") { app.use(lrSnippet); }
-        app.use(express.static(path.resolve(folder)));
+
+        app.use(webpackDevMiddleware(compiler, {
+            publicPath: wpConfig.output.publicPath
+        }));
+        //app.use(express.static(path.resolve(folder)));
 
         // Not found: just serve index.html
         app.use(function (req, res) {
-            var file = folder + "/index.html"; 
+            var file = folder + "/index.html";
             if (grunt.file.exists(file)) {
                 fs.createReadStream(file).pipe(res);
                 return;
@@ -204,7 +215,7 @@ module.exports = function (grunt, options) {
                                 rate       : rate
                             };
                         });
-                        
+
                         while (ranking_aceOfCards.length < 10) {
                             ranking_aceOfCards.push({ filler: true });
                         }
@@ -635,7 +646,7 @@ module.exports = function (grunt, options) {
 
                 socket.on("out:cancelChallenge", function (data) {
                     var opponent = getClientByUserId(data.to);
-                    
+
                     // We check the opponent is still online
                     if (opponent && opponent.isInLounge) {
                         socket.to(opponent.id).emit("in:challengeCancelled", {
@@ -654,7 +665,7 @@ module.exports = function (grunt, options) {
                                 emitterId  : socket.userId,
                                 receiverId : opponent.userId
                             }
-                        });                        
+                        });
 
                         socket.emit("in:cancelChallenge", {
                             status : "ok"
@@ -743,7 +754,7 @@ module.exports = function (grunt, options) {
 
                 socket.on("out:createRoom", function (data) {
                     var roomName = data.settings.roomName;
-                    
+
                     if (ROOM_LIST[roomName] || RESERVED_ROOMS.indexOf(roomName) !== -1) {
                         socket.emit("in:createRoom", {
                             status : "error",
