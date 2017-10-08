@@ -69,7 +69,7 @@ define(["underscore", "global"], function audioEngine (_, _$) {
 
             this.fade.tween.fromTo(this, options.duration, { volume: options.from }, { volume: options.to, ease: options.ease, delay: options.delay,
                 onUpdate   : () => {
-                    if ((options.type === "fadeIn" && this.isMuted) || (options.type === "fadeOut" && !this.isMuted)) {
+                    if ((options.type === "fadeIn" && this.isMuted) || (options.type.match("^fadeOut$|^ramp$") && !this.isMuted)) {
                         this.gainNode.gain.value = this.volume;
                     }
                 },
