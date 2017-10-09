@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template, isNil } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'global';
+import _$ from 'store';
 import Templ_Card from './template.ejs';
 
 export default Backbone.View.extend({

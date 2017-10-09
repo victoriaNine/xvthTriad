@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import { camelCase, noop, map, isString, isFunction } from 'lodash';
 import Backbone from 'backbone';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 import Elem_PromptOverlay from './../../components/PromptOverlay';
 
 class Dropdown {
@@ -407,25 +408,25 @@ function changeScreen (nextScreen, options = {}) {
             _$.events.trigger("startUserEvents");
 
             if (nextScreen === "title") {
-                var Screen_Title = require("views/screen_title");
+                var Screen_Title = require("./Title");
                 _$.ui.screen     = new Screen_Title(options);
             } else if (nextScreen === "lounge") {
-                var Screen_Lounge = require("views/screen_lounge");
+                var Screen_Lounge = require("./Lounge");
                 _$.ui.screen      = new Screen_Lounge(options);
             } else if (nextScreen === "roomSelect") {
-                var Screen_RoomSelect = require("views/screen_roomSelect");
+                var Screen_RoomSelect = require("./RoomSelect");
                 _$.ui.screen          = new Screen_RoomSelect(options);
             } else if (nextScreen === "rulesSelect") {
-                var Screen_RulesSelect = require("views/screen_rulesSelect");
+                var Screen_RulesSelect = require("./RulesSelect");
                 _$.ui.screen           = new Screen_RulesSelect(options);
             } else if (nextScreen === "cardsSelect") {
-                var Screen_CardSelect = require("views/screen_cardSelect");
+                var Screen_CardSelect = require("./CardSelect");
                 _$.ui.screen          = new Screen_CardSelect(options);
             } else if (nextScreen === "cardAlbum") {
-                var Screen_CardAlbum  = require("views/screen_cardAlbum");
+                var Screen_CardAlbum  = require("./CardAlbum");
                 _$.ui.screen          = new Screen_CardAlbum(options);
             } else if (nextScreen === "userSettings") {
-                var Screen_UserSettings = require("views/screen_userSettings");
+                var Screen_UserSettings = require("./UserSettings");
                 _$.ui.screen            = new Screen_UserSettings(options);
             }
         }, true, "remove");
@@ -436,20 +437,20 @@ function changeScreen (nextScreen, options = {}) {
             _$.utils.addDomObserver(this.$el, () => {
                 _$.events.trigger("startUserEvents");
 
-                var Screen_Game = require("views/screen_game");
+                var Screen_Game = require("./Game");
                 _$.ui.screen = new Screen_Game(options);
             }, true, "remove");
             this.remove();
         } else {
             _$.events.trigger("startUserEvents");
             if (nextScreen === "roomSelect") {
-                var Screen_RoomSelect = require("views/screen_roomSelect");
+                var Screen_RoomSelect = require("./RoomSelect");
                 _$.ui.screen          = _$.ui.roomSelect ? _$.ui.roomSelect.transitionIn() : new Screen_RoomSelect(options);
             } else if (nextScreen === "rulesSelect") {
-                var Screen_RulesSelect = require("views/screen_rulesSelect");
+                var Screen_RulesSelect = require("./RulesSelect");
                 _$.ui.screen =_$.ui.rulesSelect ? _$.ui.rulesSelect.transitionIn() : new Screen_RulesSelect(options);
             } else if (nextScreen === "cardSelect") {
-                var Screen_CardSelect = require("views/screen_cardSelect");
+                var Screen_CardSelect = require("./CardSelect");
                 _$.ui.screen =_$.ui.cardSelect ? _$.ui.cardSelect.transitionIn() : new Screen_CardSelect(options);
             }
         }

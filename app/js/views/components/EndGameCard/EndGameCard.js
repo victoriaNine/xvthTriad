@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import { template } from 'lodash';
 import Backbone from 'backbone';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 import Elem_Card from './../Card';
 import Templ_EndGameCard from './template.ejs';
 

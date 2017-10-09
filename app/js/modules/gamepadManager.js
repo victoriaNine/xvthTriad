@@ -1,6 +1,6 @@
 import { each, some, clone, map, pickBy, isArray, filter, get } from 'lodash';
 
-import _$ from 'global';
+import _$ from 'store';
 
 const MAP_PS = {
     axe : {

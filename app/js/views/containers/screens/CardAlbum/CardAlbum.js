@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { uniqBy, find, map, take, each, template } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'global';
+import _$ from 'store';
 import Model_Card from './../../../../models/Card';
 import Screen from './../Screen';
 import Elem_AlbumCard from './../../../components/AlbumCard';

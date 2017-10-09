@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import { template, map, omit, has } from 'lodash';
 import Backbone from 'backbone';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 import Screen from './../Screen';
 import Templ_Title from './template.ejs';
 import Templ_TitleAccount from './template_titleAccount.ejs';

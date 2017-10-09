@@ -1,1 +1,1 @@
-export default from './AlbumCard';
+export default from './Card';

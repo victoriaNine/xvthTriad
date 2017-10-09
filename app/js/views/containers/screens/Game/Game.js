@@ -1,10 +1,13 @@
 import $ from 'jquery';
-import { template, concat, clone, each, map, startCase, filter, isArray, some, get, includes, remove, difference } from 'lodash';
+import { template, concat, clone, each, map, startCase, filter, isArray, some, get, includes, remove as _remove, difference } from 'lodash';
 import Backbone from 'backbone';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 import Model_Game from './../../../../models/Game';
 import Screen from './../Screen';
+import Screen_Lounge from './../Lounge';
+import Screen_Title from './../Title';
 import Elem_EndGameCard from './../../../components/EndGameCard';
 import Elem_Card from './../../../components/Card';
 import Templ_Game from './template.ejs';
@@ -106,7 +109,7 @@ function initialize (options = {}) {
 
     this.$(".game_deck-holder").append($(_$.assets.get("svg.ui.cardBG")));
 
-    concat(this.players.user.get("deck"), this.players.opponent.get("deck")).forEach(, (cardModel, index, deck) => {
+    concat(this.players.user.get("deck"), this.players.opponent.get("deck")).forEach((cardModel, index, deck) => {
         renderCard.call(this, cardModel, index % (deck.length / 2));
     });
 
@@ -734,13 +737,11 @@ function transitionOut () {
     function proceed () {
         _$.events.trigger("startUserEvents");
         if (nextScreen === "lounge") {
-            var Screen_Lounge = require("views/screen_lounge");
-            _$.ui.screen      = new Screen_Lounge();
+            _$.ui.screen = new Screen_Lounge();
         } else {
             // Re-enable lag smoothing
             TweenMax.lagSmoothing(1000, 16);
-            var Screen_Title = require("views/screen_title");
-            _$.ui.screen     = new Screen_Title();
+            _$.ui.screen = new Screen_Title();
         }
     }
 }
@@ -860,7 +861,7 @@ function endGameCardSelected (event, info) {
             }
         }
     } else {
-        remove(this.gainedCards, (item) => item === info.endGameCardView);
+        _remove(this.gainedCards, (item) => item === info.endGameCardView);
     }
 
     if (_$.state.room) {

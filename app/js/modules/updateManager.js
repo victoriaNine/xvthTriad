@@ -1,6 +1,6 @@
 import { findIndex, slide, map } from 'lodash';
 
-import _$ from 'global';
+import _$ from 'store';
 
 const PATCH_HISTORY = [
     { version: "1.0.0", flag: "beta", patch: _.identity },

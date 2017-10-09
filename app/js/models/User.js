@@ -1,7 +1,7 @@
 import { concat } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'global';
+import _$ from 'store';
 import Coll_Album from './../collections/Album';
 
 export default Backbone.Model.extend({

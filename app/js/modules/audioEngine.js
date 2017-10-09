@@ -1,6 +1,7 @@
 import { isString, isFunction, isFinite, clamp, get, omit, isNil } from 'lodash';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 
 const ALIASES     = {
     bgm   : {

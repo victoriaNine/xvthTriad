@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import { template, compact, uniqBy, take, each, without } from 'lodash';
 import Backbone from 'backbone';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 import Screen from './../Screen';
 import Elem_AlbumCard from './../../../components/AlbumCard';
 import Templ_CardSelect from './template.ejs';

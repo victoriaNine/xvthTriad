@@ -1,7 +1,7 @@
-import { each, map  radom, clone, filter, orderBy, concat } from 'lodash';
+import { each, map, random, clone, filter, orderBy, concat } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'global';
+import _$ from 'store';
 import Model_Card from './Card';
 import Model_Player from './Player';
 import Model_AI from './AI';
@@ -436,7 +436,7 @@ function placeCard (newCard, position, simulation, simulationCallback) {
                 });
             }
         } else {
-            simulation = { ...simulation, endGame: playedCards.length === BOARD_SIZE });
+            simulation = { ...simulation, endGame: playedCards.length === BOARD_SIZE };
             simulationCallback(simulation);
         }
     }

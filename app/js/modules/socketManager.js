@@ -1,7 +1,7 @@
 import { isFunction } from 'lodash';
-import socket from 'socketIO';
+import socket from 'socket.io';
 
-import _$ from 'global';
+import _$ from 'store';
 
 class SocketManager {
     init () {

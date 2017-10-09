@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import { template, debounce } from 'lodash';
 import Backbone from 'backbone';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 import Screen from './../Screen';
 import Templ_UserSettings from './template.ejs';
 

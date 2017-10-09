@@ -1,11 +1,10 @@
 import $ from 'jquery';
-import { clone, get, set, isNil, map, isFunction, isArray, each, isString, map, random, filter, find, isDate } from 'lodash';
+import { clone, get, set, isNil, map, isFunction, isArray, each, isString, random, filter, find, isDate } from 'lodash';
 import Backbone from 'backbone';
-import Elo from 'elo';
+import Elo from 'arpad';
 
-import _$ from 'global';
-import cardList from './../data/cardList.json';
-import countryList from './../data/countryList.json';
+import cardList from './data/cardList.json';
+import countryList from './data/countryList.json';
 
 class AssetManager {
     constructor () {

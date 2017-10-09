@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
 
-import _$ from 'global';
+import _$ from 'store';
 
 export default Backbone.Model.extend({
     defaults : {

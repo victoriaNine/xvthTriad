@@ -1,14 +1,15 @@
 import $ from 'jquery';
 import { max } from 'lodash';
 import Seriously from 'seriously';
+import { TweenMax } from 'gsap';
 
-import _$ from 'global';
+import _$ from 'store';
 import Firefly from './firefly';
-import '../libs/seriouslyjs/effects/seriously.noise';
-import '../libs/seriouslyjs/effects/seriously.vignette';
-import '../libs/seriouslyjs/sources/seriously.depth';
-import '../libs/seriouslyjs/sources/seriously.imagedata';
-import '../libs/seriouslyjs/effects/seriously.displacement';
+import './seriouslyjs/effects/seriously.noise';
+import './seriouslyjs/effects/seriously.vignette';
+import './seriouslyjs/sources/seriously.depth';
+import './seriouslyjs/sources/seriously.imagedata';
+import './seriouslyjs/effects/seriously.displacement';
 
 var FX_LEVEL         = 5;
 var ADD_FX           = false;

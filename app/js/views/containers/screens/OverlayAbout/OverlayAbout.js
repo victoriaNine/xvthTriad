@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'global';
+import _$ from 'store';
 import Screen from './../Screen';
 import Templ_OverlayAbout from './template.ejs';
 

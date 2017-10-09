@@ -1,6 +1,17 @@
 import { first, each } from 'lodash';
 
-import _$ from 'global';
+import _$ from 'store';
+
+function testAudioFormat (format) {
+  const a = document.createElement('audio');
+
+  switch (format) {
+    case 'mp3':
+      return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''));
+    case 'ogg':
+      return !!(a.canPlayType && a.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/, ''));
+  }
+}
 
 class AssetLoader {
     constructor () {
@@ -47,7 +58,7 @@ function _loadFiles (loader) {
     loader.files.forEach((fileInfo) => {
         let type      = fileInfo.type.slice(0, fileInfo.type.indexOf("."));
         if (type === "audio" && !fileInfo.name.match(".ogg|.mp3|.wav")) {
-            fileInfo.name += window.Modernizr.audio.ogg ? ".ogg" : window.Modernizr.audio.mp3 ? ".mp3" : ".wav";
+            fileInfo.name += testAudioFormat("ogg") ? ".ogg" : testAudioFormat("mp3") ? ".mp3" : ".wav";
         }
 
         let assetName = fileInfo.name.slice(0, fileInfo.name.indexOf("."));

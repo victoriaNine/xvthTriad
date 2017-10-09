@@ -1,18 +1,8 @@
 import $ from 'jquery';
-import Stats from 'stats';
+import Stats from 'stats.js';
+import 'jquery-nearest';
 
-import 'modernizr';
-import 'gsap';
-import 'jqueryNearest';
-import 'jsonPrune';
-import 'es6-promise/auto';
-import 'fetch';
-import 'storage';
-import 'axios';
-import 'eventemitter2';
-import 'tablesortNumber';
-
-import _$ from 'global';
+import _$ from 'store';
 
 import AudioEngine from './modules/audioEngine';
 import CanvasWebGL from './modules/canvasWebGL';
@@ -20,6 +10,7 @@ import AssetLoader from './modules/assetLoader';
 import GamepadManager from './modules/gamepadManager';
 import UpdateManager from './modules/updateManager';
 import SocketManager from './modules/socketManager';
+import Superlogin from './modules/superlogin';
 
 import Screen_Loading from './views/containers/screens/Loading';
 import Screen_Title from './views/containers/screens/Title';
@@ -32,6 +23,8 @@ import LoaderImgFlags from './data/loaders/imgFlags.json';
 import LoaderImgHelp from './data/loaders/imgHelp.json';
 import LoaderAudioBGM from './data/loaders/audioBGM.json';
 import LoaderAudioSFX from './data/loaders/audioSFX.json';
+
+import './../css/main.scss';
 
 var loaders = [
   LoaderImgUI,

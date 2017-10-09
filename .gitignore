@@ -24,4 +24,5 @@ _wip
 *.nginxConfig
 wip.txt
 *.sh
+*.env
 *.htaccess
