@@ -1,5 +1,5 @@
 import { isFunction } from 'lodash';
-import socket from 'socket.io';
+import * as socket from 'socket.io-client';
 
 import _$ from 'store';
 

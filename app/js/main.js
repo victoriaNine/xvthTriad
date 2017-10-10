@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 import $ from 'jquery';
 import Stats from 'stats.js';
 import 'jquery-nearest';

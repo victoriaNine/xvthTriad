@@ -59,32 +59,38 @@ const config = {
         use: 'raw-loader'
       },
       {
-        test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif|mp4|pdf)(\?.*)?$/i,
-        use: ENV==='production' ? 'file-loader' : 'url-loader'
+        test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif|mp4|pdf|ogg|mp3|wav)(\?.*)?$/i,
+        use: 'file-loader'
       },
     ]
   },
 
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({minimize: true}),
+    //new webpack.optimize.UglifyJsPlugin({minimize: true}),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery'
+    }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
       template: './index.ejs',
       minify: { collapseWhitespace: true }
-    })/*,
-    new CopyWebpackPlugin([
-      { from: './manifest.json', to: './' },
-      { from: './favicon.ico', to: './' }
-    ])*/
+    }),
   ],
 
   node: {
     fs: 'empty',
-    child_process: 'empty',
-    package: 'empty',
+    global: true,
+    crypto: 'empty',
     tls: 'empty',
-    generate: 'empty'
+    net: 'empty',
+    process: true,
+    module: false,
+    clearImmediate: false,
+    setImmediate: false
   },
+
+  devtool: ENV==='production' ? 'source-map' : 'cheap-module-eval-source-map',
 };
 
 export default config;

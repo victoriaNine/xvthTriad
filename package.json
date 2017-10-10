@@ -13,6 +13,7 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-es2015-spread": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
@@ -45,6 +46,14 @@
     "webpack": "^3.6.0",
     "webpack-dev-middleware": "^1.12.0"
   },
+  "dependencies": {
+    "arpad": "^1.0.1",
+    "gsap": "^1.20.3",
+    "jquery": "^3.2.1",
+    "jquery-nearest": "^1.4.0",
+    "lodash": "^4.17.4",
+    "stats.js": "^0.17.0"
+  },
   "engines": {
     "node": ">=0.10.0"
   },
@@ -57,13 +66,5 @@
     "test": "npm run -s lint && jest --coverage",
     "test:watch": "npm run -s test -- --watch",
     "lint": "eslint src test"
-  },
-  "dependencies": {
-    "arpad": "^1.0.1",
-    "gsap": "^1.20.3",
-    "jquery": "^3.2.1",
-    "jquery-nearest": "^1.4.0",
-    "lodash": "^4.17.4",
-    "stats.js": "^0.17.0"
   }
 }

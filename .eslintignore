@@ -5,7 +5,7 @@ app/js/collections/*
 app/js/data/*
 app/js/libs/*
 app/js/models/*
-app/js/modules/*
+# app/js/modules/*
 app/js/views/components/*
 app/js/views/containers/screens/*
 # app/js/views/containers/partials/*

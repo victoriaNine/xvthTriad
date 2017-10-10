@@ -14,8 +14,7 @@ Features:
 ## Technologies used
 ### Heavy-lifting
 - [Backbone](http://backbonejs.org)
-- [RequireJS](http://requirejs.org)
-- [Grunt](https://gruntjs.com)
+- [Webpack](https://webpack.js.org)
 
 ### Front-end
 - [GSAP](https://greensock.com/gsap)
