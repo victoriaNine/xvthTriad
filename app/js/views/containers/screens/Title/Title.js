@@ -4,6 +4,7 @@ import Backbone from 'backbone';
 import { TweenMax } from 'gsap';
 
 import _$ from 'store';
+import Model_User from './../../../../models/User';
 import Screen from './../Screen';
 import Templ_Title from './template.ejs';
 import Templ_TitleAccount from './template_titleAccount.ejs';
