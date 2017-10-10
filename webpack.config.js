@@ -3,6 +3,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 
+import packageConfig from './package.json';
+
 const ENV = process.env.NODE_ENV || 'development';
 const CSS_MAPS = ENV!=='production';
 const BASE_PATH = path.resolve(__dirname, "app/");
@@ -71,6 +73,13 @@ const config = {
       $: 'jquery',
       jQuery: 'jquery'
     }),
+    new webpack.DefinePlugin({
+      __APP_NAME__: JSON.stringify(packageConfig.name),
+      __VERSION__: JSON.stringify(packageConfig.version),
+      __VERSION_NAME__: JSON.stringify(packageConfig.versionName),
+      __VERSION_FLAG__: JSON.stringify(packageConfig.versionFlag),
+      __IS_DEV__: ENV === 'development',
+    }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
       template: './index.ejs',
@@ -90,7 +99,7 @@ const config = {
     setImmediate: false
   },
 
-  devtool: ENV==='production' ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: 'source-map',
 };
 
 export default config;

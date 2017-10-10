@@ -40,10 +40,10 @@ class AssetManager {
 
 var startTime = Date.now();
 var app       = Object.create(null, {
-    name          : { value: "{{ NAME }}" },
-    version       : { value: "{{ VERSION }}" },
-    versionName   : { value: "{{ VERSION_NAME }}" },
-    versionFlag   : { value: "{{ VERSION_FLAG }}" },
+    name          : { value: `${__APP_NAME__}` },
+    version       : { value: `${__VERSION__}` },
+    versionName   : { value: `${__VERSION_NAME__}` },
+    versionFlag   : { value: `${__VERSION_FLAG__}` },
     currentTime   : { get: getCurrentTime },
     checkUpdates  : { value: checkUpdates },
     saveData      : { value: saveData },
@@ -64,8 +64,8 @@ var app       = Object.create(null, {
         refreshThreshold   : 0.9
     }},
     saveConfig: { value: {
-        savePrefix    : "{{ NAME }}:save//",
-        sessionPrefix : "{{ NAME }}:session//",
+        savePrefix    :`${__APP_NAME__}:save/`,
+        sessionPrefix :`${__APP_NAME__}:session/`,
         extension     : "xvtsave"
     }}
 });
@@ -115,7 +115,7 @@ var utils = {
 };
 
 var debug = {
-    debugMode: true,
+    debugMode: __IS_DEV__,
     log,
     warn,
     error
