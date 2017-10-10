@@ -34,7 +34,7 @@ function initialize (options) {
             event.originEventName === "fileLoaded:imgUI:bgDepthMap" ||
             event.originEventName === "fileLoaded:imgUI:bgPattern" ||
             event.originEventName === "fileLoaded:imgUI:bgFlare") {
-            that.canvasAssets++;
+            this.canvasAssets++;
             _checkCanvasAssets.call(this);
         }
     });
