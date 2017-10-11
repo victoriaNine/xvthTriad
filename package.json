@@ -50,8 +50,8 @@
   "dependencies": {
     "arpad": "^1.0.1",
     "gsap": "^1.20.3",
-    "jquery": "^3.2.1",
-    "jquery-nearest": "^1.4.0",
+    "jquery": "2.1.4",
+    "jquery-nearest": "1.4.0",
     "lodash": "^4.17.4",
     "stats.js": "^0.17.0"
   },

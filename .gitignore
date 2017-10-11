@@ -13,6 +13,8 @@ node_modules/socket.io-client/node_modules/*
 node_modules/socket.io-adapter/node_modules/*
 !/node_modules/couch-pwd/
 node_modules/couch-pwd/node_modules/*
+!/node_modules/jquery-nearest/
+node_modules/jquery-nearest/node_modules/*
 dist
 test/temp
 .sass-cache
