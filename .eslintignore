@@ -1,13 +1,4 @@
 # /node_modules/* and /bower_components/* ignored by default
 
 # Ignore built files except build/index.js
-app/js/collections/*
-app/js/data/*
 app/js/libs/*
-app/js/models/*
-# app/js/modules/*
-app/js/views/components/*
-app/js/views/containers/screens/*
-# app/js/views/containers/partials/*
-app/js/main.js
-app/js/store.js

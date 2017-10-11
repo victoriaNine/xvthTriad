@@ -15,7 +15,12 @@
   },
   "settings": {},
   "globals": {
-    "sleep": 1
+    "sleep": 1,
+    "__APP_NAME__": true,
+    "__IS_DEV__": true,
+    "__VERSION__": true,
+    "__VERSION_NAME__": true,
+    "__VERSION_FLAG__": true
   },
   "rules": {
     "no-empty": 0,

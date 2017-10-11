@@ -22,6 +22,14 @@ const config = {
 
   resolve: {
     alias: {
+      Collections: path.resolve(BASE_PATH, "js/collections/"),
+      Data: path.resolve(BASE_PATH, "js/data/"),
+      Models: path.resolve(BASE_PATH, "js/models/"),
+      Modules: path.resolve(BASE_PATH, "js/modules/"),
+      Components: path.resolve(BASE_PATH, "js/views/components/"),
+      Partials: path.resolve(BASE_PATH, "js/views/containers/partials/"),
+      Screens: path.resolve(BASE_PATH, "js/views/containers/screens/"),
+
       seriously$: path.resolve(BASE_PATH, "js/modules/seriouslyjs/seriously.js"),
       store$: path.resolve(BASE_PATH, "js/store.js"),
     }

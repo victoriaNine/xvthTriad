@@ -4,10 +4,10 @@ import Backbone from 'backbone';
 import { TimelineMax, Power3 } from 'gsap';
 
 import _$ from 'store';
-import Screen_OverlayMenu from './../../screens/OverlayMenu';
-import Screen_OverlayRankings from './../../screens/OverlayRankings';
-import Screen_OverlayHelp from './../../screens/OverlayHelp';
-import Screen_OverlayAbout from './../../screens/OverlayAbout';
+import Screen_OverlayMenu from 'Screens/OverlayMenu';
+import Screen_OverlayRankings from 'Screens/OverlayRankings';
+import Screen_OverlayHelp from 'Screens/OverlayHelp';
+import Screen_OverlayAbout from 'Screens/OverlayAbout';
 import Templ_Footer from './template.ejs';
 
 export default Backbone.View.extend({
