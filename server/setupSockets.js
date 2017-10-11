@@ -941,9 +941,9 @@ export default function setupSockets (server, db, cronJobs) {
     socket.on("out:encodeSaveData", (data) => {
       const JSONdata    = JSON.stringify(data.JSONdata);
       const prefix      = data.prefix;
-      let encodedData = prefix;
+      let encodedData   = prefix;
 
-      JSONdata.split("").forEach((char) => {
+      each(JSONdata.split(""), (char) => {
         encodedData += saveConfig.charSeparator + (char.codePointAt(0) + parseFloat(saveConfig.charOffset));
       });
 
@@ -956,9 +956,9 @@ export default function setupSockets (server, db, cronJobs) {
     socket.on("out:decodeSaveData", (data) => {
       const encodedData = data.encodedData;
       const prefix      = data.prefix;
-      let JSONdata    = "";
+      let JSONdata      = "";
 
-      encodedData.replace(prefix, "").match(new RegExp(saveConfig.charSeparator + "\\d+", "g")).forEach((chunk) => {
+      each(encodedData.replace(prefix, "").match(new RegExp(saveConfig.charSeparator + "\\d+", "g")), (chunk) => {
         JSONdata += String.fromCodePoint(chunk.match(/\d+/) - parseFloat(saveConfig.charOffset));
       });
 
@@ -969,7 +969,7 @@ export default function setupSockets (server, db, cronJobs) {
     });
 
     socket.on("out:getRanking", (data) => {
-      const name    = data.msg.name;
+      const name  = data.msg.name;
       let ranking = null;
 
       if (name === "aceOfCards") {

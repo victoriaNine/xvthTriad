@@ -58,7 +58,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "dev": "babel-node server/",
+    "dev": "babel-node server/ --inspect",
     "start": "serve build -s -c 1",
     "prestart": "npm run build",
     "build": "cross-env NODE_ENV=production webpack --progress",

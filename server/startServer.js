@@ -7,20 +7,22 @@ import SuperLogin from 'superlogin';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { CronJob } from 'cron';
 import moment from 'moment-timezone';
+import PouchDB from 'pouchdb';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackConfig from './../webpack.config.js';
 
 import setupSockets from './setupSockets';
 
+const protocol = process.env.NODE_ENV === "prod" ? "https://" : "http://";
+const db = new PouchDB(protocol + process.env.DB_USER + ":" + process.env.DB_PASS + "@" + process.env.DB_HOST + "/users");
 const cronJobs = {};
 
-export default function startServer (db, protocol) {
+export default function startServer () {
   const PORT     = 9000;
   const app      = express();
   const compiler = webpack(webpackConfig);
 
-  //const folder     = (target === "prod" || target === "beta") ? grunt.config("yeoman")[target] : grunt.config("yeoman").tmp;
   let server;
 
   app.set("port", PORT);
