@@ -20,6 +20,7 @@
     "backbone": "1.1.2",
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
+    "copy-webpack-plugin": "^4.1.1",
     "cron": "^1.2.1",
     "css-loader": "^0.28.7",
     "dotenv": "^4.0.0",
@@ -58,7 +59,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "dev": "babel-node server/ --inspect",
+    "dev": "babel-node server/ --inspect --progress",
     "start": "serve build -s -c 1",
     "prestart": "npm run build",
     "build": "cross-env NODE_ENV=production webpack --progress",

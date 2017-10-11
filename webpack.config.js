@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import path from 'path';
 
 import packageConfig from './package.json';
@@ -85,6 +86,11 @@ const config = {
       template: './index.ejs',
       minify: { collapseWhitespace: true }
     }),
+    new CopyWebpackPlugin([
+      { from: './favicon.ico', to: './' },
+      { from: './robots.txt', to: './' },
+      { from: './assets/img/icons/*', to: './' },
+    ]),
   ],
 
   node: {
