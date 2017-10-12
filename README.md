@@ -9,12 +9,15 @@ Features:
 - Versus mode (vs player)
 - Multiplayer mode (online network)
 - A nice UI
-- Gamepad support (with the Gamepad API) **Update: Dropped as it doesn't enhance the UX. Partial support is still available.**
+- Gamepad support (with the Gamepad API)
+*Update: Dropped as it doesn't enhance the UX. Partial support is still available.*
 
 ## Technologies used
 ### Heavy-lifting
 - [Backbone](http://backbonejs.org)
 - [Webpack](https://webpack.js.org)
+- ~~[Grunt](https://gruntjs.com/)~~ Formerly
+- ~~[RequireJS](http://requirejs.org/)~~ Formerly
 
 ### Front-end
 - [GSAP](https://greensock.com/gsap)
