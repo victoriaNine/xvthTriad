@@ -4,12 +4,12 @@ import Seriously from 'seriously';
 import { TweenMax, RoughEase, Power0, SteppedEase, TimelineMax } from 'gsap';
 
 import _$ from 'store';
-import Firefly from './firefly';
-import './seriouslyjs/effects/seriously.noise';
-import './seriouslyjs/effects/seriously.vignette';
-import './seriouslyjs/sources/seriously.depth';
-import './seriouslyjs/sources/seriously.imagedata';
-import './seriouslyjs/effects/seriously.displacement';
+import Firefly from 'Modules/firefly';
+import 'seriously/effects/seriously.noise';
+import 'seriously/effects/seriously.vignette';
+import 'seriously/sources/seriously.depth';
+import 'seriously/sources/seriously.imagedata';
+import 'seriously/effects/seriously.displacement';
 
 let FX_LEVEL         = 5;
 let ADD_FX           = false;

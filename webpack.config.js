@@ -31,6 +31,7 @@ const config = {
       Screens: path.resolve(BASE_PATH, "js/views/containers/screens/"),
 
       seriously$: path.resolve(BASE_PATH, "js/modules/seriouslyjs/seriously.js"),
+      seriously: path.resolve(BASE_PATH, "js/modules/seriouslyjs/"),
       store$: path.resolve(BASE_PATH, "js/store.js"),
     }
   },
