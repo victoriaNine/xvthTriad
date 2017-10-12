@@ -469,17 +469,24 @@ function getFormattedNumber (number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function getFormattedDate (dateObject, options = {}) {
+function getFormattedDate (dateObject = new Date(), options = {}) {
   if (!isDate(dateObject)) {
     dateObject = (new Date(dateObject)).toString() === "Invalid Date" ? new Date() : new Date(dateObject);
   }
 
-  const date  = dateObject.getFullYear() + "." + (dateObject.getMonth() < 10 ? ("0" + (dateObject.getMonth() + 1)) : dateObject.getMonth() + 1) + "." + (dateObject.getDate() < 10 ? "0" + dateObject.getDate() : dateObject.getDate());
-  let time  = (dateObject.getHours() < 10 && options.hoursHH ? "0" + dateObject.getHours() : dateObject.getHours()) + ":";
-  time += (dateObject.getMinutes() < 10 ? "0" + dateObject.getMinutes() : dateObject.getMinutes());
+  let year = dateObject.getFullYear();
+  let month = dateObject.getMonth() + 1;
+  let day = dateObject.getDate();
+  let hours = dateObject.getHours();
+  let minutes = dateObject.getMinutes();
+  let seconds = dateObject.getSeconds();
+
+  const date  = `${year}.${month < 10 ? "0" + month : month}.${day < 10 ? "0" + day : day}`;
+  let time  = (hours < 10 && options.hoursHH ? "0" + hours : hours) + ":";
+  time += (minutes < 10 ? "0" + minutes : minutes);
 
   if (options.seconds) {
-    time += ":" + (dateObject.getSeconds() < 10 ? "0" + dateObject.getSeconds() : dateObject.getSeconds());
+    time += ":" + (seconds < 10 ? "0" + seconds : seconds);
   }
 
   return { date, time };

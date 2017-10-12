@@ -468,7 +468,8 @@ function writeMessage (msgData, isFromHistory) {
   const userInfo      = this.userlist[msgData.userId];
 
   let parsedText = msgData.text;
-  parsedText     = parsedText.replace(/[\u00A0-\u9999<>&]/gim, (i) => { return "&#" + i.charCodeAt(0) + ";"; }).replace(/\n/, "<br>");
+  // eslint-disable-next-line no-useless-escape
+  parsedText     = parsedText.replace(/[\u00A0-\u9999<>\&]/gim, (i) => { return "&#" + i.charCodeAt(0) + ";"; }).replace(/\n/, "<br>");
 
   const userNameRe   = new RegExp(this.userInfo.name, "gi");
   const userMentions = parsedText.match(userNameRe);
