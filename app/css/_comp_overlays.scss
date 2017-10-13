@@ -13,8 +13,8 @@
     opacity: 0;
     flex-direction: column;
 
-    @include transform("scale(1.2)");
-    @include transition("all .2s .2s ease-out");
+    transform: scale(1.2);
+    transition: all .2s .2s ease-out;
 
     & h1 {
         text-align: center;
@@ -22,7 +22,7 @@
         letter-spacing: 0.5em;
         opacity: 0;
         text-shadow: 0 0 15px $color_darkGrey;
-        @include transition("letter-spacing .6s, opacity .4s");
+        transition: letter-spacing .6s, opacity .4s;
     }
 
     &.is--user h1     { text-shadow: 0 0 15px $color_midBlue; }
@@ -32,13 +32,13 @@
         pointer-events:auto;
         opacity: 1;
 
-        @include transform("scale(1)");
-        @include transition("all .4s ease-out");
+        transform: scale(1);
+        transition: all .4s ease-out;
 
         & h1 {
             opacity: 1;
             letter-spacing: 0;
-            @include transition("letter-spacing .4s .2s, opacity .2s .2s");
+            transition: letter-spacing .4s .2s, opacity .2s .2s;
         }
     }
 }

@@ -71,7 +71,7 @@
             padding-top: 0.5em;
             padding-bottom: 0.5em;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            @include transition("background .2s");
+            transition: background .2s;
 
             &.firstPlace {
                 background: transparentize($color_blue, 0.8);

@@ -41,7 +41,7 @@
 .loading_text {
     font-size: 24px;
     margin-top: 1em;
-    @include animation("extendText 4s ease-in-out infinite");
+    animation: extendText 4s ease-in-out infinite;
 }
 
 .loading_line {
@@ -52,6 +52,6 @@
     left:0;
     top: calc(50% + 6px);
 
-    @include transform("translate3d(0, 0, 0)");
-    @include transition("width 1s ease-out");
+    transform: translate3d(0, 0, 0);
+    transition: width 1s ease-out;
 }

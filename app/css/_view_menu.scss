@@ -12,7 +12,7 @@
     padding: $globalPadding;
     position: relative;
     background: #000;
-    @include transition("filter .2s");
+    transition: filter .2s;
 
     &:after {
         @include fullSizeAbs("");
@@ -45,19 +45,19 @@
 
     &-title span:nth-of-type(1) {
         font-weight: 700;
-        @include transform("translateY(-0.5em)");
-        @include transition("opacity .4s .2s, transform .4s .2s");
+        transform: translateY(-0.5em);
+        transition: opacity .4s .2s, transform .4s .2s;
     }
 
     &-title span:nth-of-type(2) {
-        @include transform("translateX(-0.5em)");
-        @include transition("opacity .4s, transform .4s");
+        transform: translateX(-0.5em);
+        transition: opacity .4s, transform .4s;
     }
 
     &:hover &-title, &.is--active &-title, &.is--hover &-title, html.isMobile & &-title {
         span { opacity: 1; }
-        span:nth-of-type(1) { @include transform("translateY(0)"); @include transition("opacity .4s, transform .4s"); }
-        span:nth-of-type(2) { @include transform("translateX(0)"); @include transition("opacity .4s .2s, transform .4s .2s"); }
+        span:nth-of-type(1) { transform: translateY(0); transition: opacity .4s, transform .4s; }
+        span:nth-of-type(2) { transform: translateX(0); transition: opacity .4s .2s, transform .4s .2s; }
     }
 }
 

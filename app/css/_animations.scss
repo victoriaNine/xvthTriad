@@ -1,13 +1,13 @@
 /*=======================*/
 /* ANIMATIONS
 /*=======================*/
-@include keyframes (extendText) {
+@keyframes extendText {
   0%   { opacity:0; letter-spacing: 0; }
   10%, 20%  { opacity:1; }
   75%, 100%  { opacity:0; letter-spacing: 0.75em; }
 }
 
-@include keyframes (cursorMove) {
-  0%, 100% { @include transform("translateX(0)"); }
-  50%     { @include transform("translateX(0.5em)"); }
+@keyframes cursorMove {
+  0%, 100% { transform: translateX(0); }
+  50%     { transform: translateX(0.5em); }
 }

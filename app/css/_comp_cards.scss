@@ -12,7 +12,7 @@
     transform-style: preserve-3d;
 
     &:hover, &.is--hover {
-        @include transform("scale(1.1)");
+        transform: scale(1.1);
     }
 
     &.is--played {
@@ -33,7 +33,7 @@
     margin-top: 2px;
     position: absolute;
     z-index: 0;
-    @include transition("fill .2s");
+    transition: fill .2s;
 }
 
 .card-blue .svg-cardBG, .card-black:hover .svg-cardBG, .card-black.is--hover .svg-cardBG  { fill: transparentize($color_blue, 0.5); }
@@ -52,7 +52,7 @@
 .card-back {
     background: url(#{ $uiAssetsPath + "card_back.png" }) no-repeat;
     z-index: 2;
-    @include transform("rotateX(180deg)");
+    transform: rotateX(180deg);
 }
 
 /* ALBUMS --------------*/
@@ -100,13 +100,13 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        @include transition("width .2s");
+        transition: width .2s;
     }
 
     &-copiesCount {
         @extend .col_3, .weight-medium;
         text-align: right;
-        @include transition("opacity .2s, width .2s");
+        transition: opacity .2s, width .2s;
     }
 }
 

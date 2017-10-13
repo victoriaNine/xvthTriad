@@ -45,7 +45,7 @@
             line-height: 70px;
             cursor: pointer;
             text-transform: uppercase;
-            @include transition("all .2s");
+            transition: all .2s;
 
             &:hover {
                 background: transparentize($color_red, 0.25);
@@ -95,7 +95,7 @@
             position: relative;
             color: $color_lightBlue;
             z-index: 0;
-            @include transition("color .4s");
+            transition: color .4s;
 
             &:before {
                 content    : "";
@@ -107,7 +107,7 @@
                 z-index    : -1;
                 opacity    : 0.5;
 
-                @include transition("width .2s .2s");
+                transition: width .2s .2s;
             }
 
             &:hover, &.is--hover {

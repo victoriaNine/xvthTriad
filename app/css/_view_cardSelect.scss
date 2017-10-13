@@ -63,7 +63,7 @@
 .cardSelect_header-deck-holder .svg-cardBG {
     stroke-width: 1;
     stroke: rgba(255, 255, 255, .05);
-    @include transition("fill .2s");
+    transition: fill .2s;
 }
 
 /* CONTENT --------------*/

@@ -20,7 +20,7 @@
         stroke: rgba(255, 255, 255, 0);
         cursor:pointer;
         @include remainingSpace();
-        @include transition("fill .15s, stroke .15s");
+        transition: fill .15s, stroke .15s;
     }
 
     &:not(.is--tweening):hover .svg-logo, &:not(.is--tweening).is--hover .svg-logo {
@@ -89,7 +89,7 @@
   width: 20px;
   display: inline-block;
   cursor: pointer;
-  @include transition("opacity 0.2s");
+  transition: opacity 0.2s;
 
   &.is--disabled {
     opacity: 0.25;

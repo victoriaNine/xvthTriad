@@ -21,8 +21,8 @@
         top:-100%;
         pointer-events:none;
 
-        @include transition("top .15s ease-in");
-        @include transform("translate3d(0, 0, 0)");
+        transition: top .15s ease-in;
+        transform: translate3d(0, 0, 0);
     }
 
     &:hover, &.is--active, &.is--hover {
@@ -43,7 +43,7 @@
 
     &-hoverFX {
         @include fullSizeAbs();
-        @include transform("rotate(45deg)");
+        transform: rotate(45deg);
         border: 1px solid #FFF;
         overflow: hidden;
 
@@ -52,7 +52,7 @@
             top:200%;
             left:200%;
 
-            @include transition("all .2s .2s ease-in");
+            transition: all .2s .2s ease-in;
         }
     }
 
@@ -63,7 +63,7 @@
                 top:0;
                 left:0;
 
-                @include transition("all .2s ease-out");
+                transition: all .2s ease-out;
             }
         }
     }
@@ -79,8 +79,8 @@
         box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0),
                     0px 0px 10px 0 rgba(0, 0, 0, 0);
 
-        @include transform("scale(0.85) rotate(45deg)");
-        @include transition("box-shadow .2s ease-in");
+        transform: scale(0.85) rotate(45deg);
+        transition: box-shadow .2s ease-in;
     }
 
     &:after {
@@ -93,7 +93,7 @@
         height: 1em;
         transform: translate3d(0,0,0);
 
-        @include transition("letter-spacing .15s .1s, text-indent .15s .1s");
+        transition: letter-spacing .15s .1s, text-indent .15s .1s;
     }
 
     &:hover, &.is--hover {
@@ -101,7 +101,7 @@
             box-shadow: -25px 25px 0 0 rgba(0, 0, 0, .25),
                         25px -25px 0 0 rgba(0, 0, 0, .25);
 
-            @include transition("box-shadow .2s .1s ease-out");
+            transition: box-shadow .2s .1s ease-out;
         }
 
         &:after {
@@ -124,9 +124,9 @@
     @extend %arrow;
 }
 
-.arrow-up   { @include transform("rotate(-90deg)"); }
-.arrow-down { @include transform("rotate(90deg)"); }
-.arrow-left { @include transform("rotate(180deg)"); }
+.arrow-up   { transform: rotate(-90deg); }
+.arrow-down { transform: rotate(90deg); }
+.arrow-left { transform: rotate(180deg); }
 
 %btn-diamond:hover %arrow, %btn-diamond.is--hover %arrow {
     mix-blend-mode: exclusion;

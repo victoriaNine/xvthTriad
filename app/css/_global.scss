@@ -86,7 +86,7 @@ h1 {
   text-shadow: none; }
 
 input:not([type]):not(.lounge_log-chatbar-input) {
-    @include transition("letter-spacing .2s ease-in, background .2s");
+    transition: letter-spacing .2s ease-in, background .2s;
 
     &:focus {
         letter-spacing: .5em;
@@ -98,7 +98,7 @@ input[type=file] {
 }
 
 input[type=password] {
-    @include transition("letter-spacing .2s ease-in, background .2s");
+    transition: letter-spacing .2s ease-in, background .2s;
     letter-spacing: .5em;
 
     &:focus {
@@ -193,7 +193,7 @@ button {
     z-index: 99999;
     pointer-events: none;
 
-    @include animation("cursorMove 1s ease-in-out infinite");
+    animation: cursorMove 1s ease-in-out infinite;
 }
 
 .color-darkGrey     { color: $color_darkGrey; }

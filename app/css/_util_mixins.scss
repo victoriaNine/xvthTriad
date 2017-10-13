@@ -1,48 +1,6 @@
 /*=======================*/
 /* MIXINS
 /*=======================*/
-@mixin keyframes($animation-name) {
-  @-webkit-keyframes #{$animation-name} {
-    @content;
-  }
-  /*@-moz-keyframes #{$animation-name} {
-    @content;
-  }  */
-  @-ms-keyframes #{$animation-name} {
-    @content;
-  }
-  /*@-o-keyframes #{$animation-name} {
-    @content;
-  }*/
-  @keyframes #{$animation-name} {
-    @content;
-  }
-}
-
-@mixin animation($str) {
-  -webkit-animation: #{$str};
-  //-moz-animation: #{$str};
-  -ms-animation: #{$str};
-  //-o-animation: #{$str};
-  animation: #{$str};
-}
-
-@mixin transform($str) {
-  -webkit-transform: #{$str};
-  //-moz-transform: #{$str};
-  -ms-transform: #{$str};
-  //-o-transform: #{$str};
-  transform: #{$str};
-}
-
-@mixin transition($str) {
-  -webkit-transition: -webkit-#{$str};
-  //-moz-transition: -moz-#{$str};
-  -ms-transition: -ms-#{$str};
-  //-o-transition: -o-#{$str};
-  transition: #{$str};
-}
-
 @mixin fullSizeAbs ($content: false) {
     @if $content { content: $content; }
     width: 100%;
@@ -172,12 +130,12 @@
                     filter: blur(10px);
                     opacity: 0;
                     left: 1em;
-                    @include transition("opacity .2s");
+                    transition: opacity .2s;
                 }
 
                 &-name {
                     font-weight:500;
-                    @include transition("color .2s");
+                    transition: color .2s;
                 }
 
                 &-#{ if($loungeList, "action", "leader") } {
@@ -196,7 +154,7 @@
 
             @if $loungeList {
                 &.is--active &-label-action {
-                    @include animation("extendText 4s ease-in-out infinite");
+                    animation: extendText 4s ease-in-out infinite;
                 }
             }
 

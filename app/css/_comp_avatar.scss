@@ -8,7 +8,7 @@
     padding: 5px;
     z-index: 0;
 
-    @include transition("background .2s .2s, box-shadow .2s");
+    transition: background .2s .2s, box-shadow .2s;
 
     &:before {
         content: "";
@@ -20,7 +20,7 @@
         top: 5px;
         z-index: -1;
 
-        @include transition("box-shadow .2s");
+        transition: box-shadow .2s;
     }
 
     &:after {

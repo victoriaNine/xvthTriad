@@ -35,7 +35,7 @@
 
     &:before {
         @include fullSizeAbs("");
-        @include transition("background .2s");
+        transition: background .2s;
     }
 
     &.blue:before {
@@ -123,13 +123,13 @@
         font-weight: 500;
         text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
         opacity: 0;
-        @include transform("scale(1.2)");
-        @include transition("all .4s ease-out");
+        transform: scale(1.2);
+        transition: all .4s ease-out;
     }
 
     &.has--bonus:after, &.has--penalty:after {
         opacity: 1;
-        @include transform("scale(1)");
+        transform: scale(1);
     }
 
     &.has--bonus:after   { content: "+1"; }
@@ -218,7 +218,7 @@
     letter-spacing: 0.75em;
     opacity: 1;
 
-    @include animation("extendText 4s ease-in-out infinite");
+    animation: extendText 4s ease-in-out infinite;
 }
 
 .game_playerHUD-score {
@@ -320,7 +320,7 @@
     &-name   { @extend %album-card-name; }
 
     & .card-blue:hover, & .card-blue.is--hover {
-        @include transform("scale(1)");
+        transform: scale(1);
     }
 }
 

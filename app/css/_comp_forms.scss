@@ -44,7 +44,7 @@
     text-indent: 1em;
     background: rgba(255, 255, 255, 0.1);
     position: relative;
-    @include transition("background .2s");
+    transition: background .2s;
 }
 
 %options-option-toggle {
@@ -52,7 +52,7 @@
     width: $globalPadding;
     text-align: center;
     background: rgba(0, 0, 0, 0.5);
-    @include transition("background .2s");
+    transition: background .2s;
 
     %options-option.is--on & {
         background: transparentize($color_blue, 0.5);
@@ -71,13 +71,13 @@
     overflow: hidden;
     height: 100%;
 
-    @include transition("height .2s .2s");
+    transition: height .2s .2s;
 
     & li {
         height: 50px;
         position: relative;
         background: rgba(255, 255, 255, 0.1);
-        @include transition("background .2s");
+        transition: background .2s;
 
         &.is--disabled { color: #000; }
 
@@ -96,11 +96,11 @@
         & %options-option-toggle {
             width: 0;
             opacity: 0;
-            @include transition("width .2s .2s, opacity .2s .2s");
+            transition: width .2s .2s, opacity .2s .2s;
 
             &:after {
-                @include transform("rotate(90deg)");
-                @include transition("transform .2s");
+                transform: rotate(90deg);
+                transition: transform .2s;
             }
         }
 
@@ -111,13 +111,13 @@
 
         & + %options-option {
             opacity: 0;
-            @include transition("opacity .2s");
+            transition: opacity .2s;
         }
     }
 
     & %options-option-toggle {
         cursor: pointer;
-        @include transition("width .2s, opacity .2s");
+        transition: width .2s, opacity .2s;
 
         &:after {
             content: "";
@@ -128,12 +128,12 @@
             left:calc(50% - 4.5px);
             top:calc(50% - 4.5px);
 
-            @include transition("transform .2s .2s");
+            transition: transform .2s .2s;
         }
     }
 
     & + %options-option:not([style*=opacity]) {
-        @include transition("opacity .2s .4s");
+        transition: opacity .2s .4s;
     }
 }
 
@@ -148,7 +148,7 @@
     cursor:auto;
     width: 75%;
     background: rgba(0, 0, 0, 0.5);
-    @include transition("background .2s");
+    transition: background .2s;
 
     &:focus {
         background: transparentize($color_blue, 0.5);
