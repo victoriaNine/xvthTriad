@@ -5,7 +5,7 @@ import Stats from 'stats.js';
 import { TweenMax } from 'gsap';
 import 'jquery-nearest';
 
-import _$ from 'store';
+import _$ from 'common';
 
 import AudioEngine from 'Modules/audioEngine';
 import CanvasWebGL from 'Modules/canvasWebGL';

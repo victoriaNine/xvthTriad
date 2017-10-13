@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template, each, lowerCase } from 'lodash';
 import { TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Screen from 'Screens/Screen';
 import Templ_OverlayRankings from './template.ejs';
 

@@ -1,7 +1,7 @@
 import { template, each, min, sampleSize } from 'lodash';
 import { TweenMax, TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Screen from 'Screens/Screen';
 import Templ_RulesSelect from './template.ejs';
 

@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { each, some, clone, map, pickBy, isArray, filter, get } from 'lodash';
 import { TweenMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 
 const MAP_PS = {
   axe : {

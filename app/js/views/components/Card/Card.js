@@ -3,7 +3,7 @@ import { template, isNil } from 'lodash';
 import Backbone from 'backbone';
 import { TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Templ_Card from './template.ejs';
 
 export default Backbone.View.extend({

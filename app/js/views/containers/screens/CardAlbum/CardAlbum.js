@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { uniqBy, find, map, take, each, template } from 'lodash';
 import { TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Model_Card from 'Models/Card';
 import Screen from 'Screens/Screen';
 import Comp_AlbumCard from 'Components/AlbumCard';

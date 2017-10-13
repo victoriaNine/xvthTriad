@@ -2,7 +2,7 @@ import { map, isString, isFunction } from 'lodash';
 import Backbone from 'backbone';
 import { TweenMax, TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Comp_PromptOverlay from 'Components/PromptOverlay';
 import Dropdown from 'Modules/Dropdown';
 

@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template } from 'lodash';
 import { TimelineMax, Power3 } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Screen from 'Screens/Screen';
 import Templ_OverlayAbout from './template.ejs';
 

@@ -2,7 +2,7 @@ import { template, isFunction } from 'lodash';
 import Backbone from 'backbone';
 import { TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Templ_PromptOverlay from './template.ejs';
 
 export default Backbone.View.extend({

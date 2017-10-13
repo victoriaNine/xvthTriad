@@ -2,7 +2,7 @@ import { template } from 'lodash';
 import Backbone from 'backbone';
 import { TweenMax, TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Comp_Card from 'Components/Card';
 import Templ_EndGameCard from './template.ejs';
 

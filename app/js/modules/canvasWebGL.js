@@ -3,7 +3,7 @@ import { max } from 'lodash';
 import Seriously from 'seriously';
 import { TweenMax, RoughEase, Power0, SteppedEase, TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Firefly from 'Modules/firefly';
 import 'seriously/effects/seriously.noise';
 import 'seriously/effects/seriously.vignette';

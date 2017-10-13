@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
 
-import _$ from 'store';
+import _$ from 'common';
 import Model_Card from 'Models/Card';
 
 export default Backbone.Collection.extend({

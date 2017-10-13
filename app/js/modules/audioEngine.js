@@ -1,7 +1,7 @@
 import { isString, isFunction, isFinite, clamp, get, omit, isNil } from 'lodash';
 import { TweenMax, Circ, Ease, Power2, TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 
 const ALIASES     = {
   bgm   : {

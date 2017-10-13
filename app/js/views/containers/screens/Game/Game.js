@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template, concat, clone, each, map, startCase, filter, isArray, some, get, includes, remove as _remove, difference } from 'lodash';
 import { TweenMax, TimelineMax } from 'gsap';
 
-import _$ from 'store';
+import _$ from 'common';
 import Model_Game from 'Models/Game';
 import Screen from 'Screens/Screen';
 import Screen_Lounge from 'Screens/Lounge';

@@ -1,7 +1,7 @@
 import { isNil, isString, camelCase } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'store';
+import _$ from 'common';
 
 export default Backbone.Model.extend({
   defaults : {
