@@ -1,0 +1,136 @@
+/*=======================*/
+/* USER SETTINGS SCREEN
+/*=======================*/
+#screen_userSettings {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.userSettings_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+        margin-top: 2em;
+    }
+}
+
+.userSettings_header-countWon,
+.userSettings_header-countLost,
+.userSettings_header-countDraw,
+.userSettings_header-rankPoints {
+    @extend .row;
+    margin-top: 1em;
+    margin-right: 1.5em;
+    text-transform: none;
+    display: inline-block;
+    line-height: 1.5em;
+}
+
+.userSettings_header-countWon-count,
+.userSettings_header-countLost-count,
+.userSettings_header-countDraw-count,
+.userSettings_header-rankPoints-count {
+    @extend .weight-medium;
+}
+
+.userSettings_header-avatar {
+    @extend %avatar;
+    position: relative;
+    height: 200px;
+    width: 200px;
+
+    &:hover, &.is--hover {
+        @extend %avatar-blue;
+    }
+
+    &-img {
+        @extend %avatar-img;
+    }
+}
+
+/* CONTENT --------------*/
+.userSettings_content {
+    @extend %content
+}
+
+.userSettings_content-save, .userSettings_content-load, .userSettings_content-confirm {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.userSettings_content-load, .userSettings_content-confirm {
+    background: transparentize($color_blue, 0.5);
+}
+
+.userSettings_content-settings {
+    @extend %content-inner;
+    height: calc(100% - #{ $globalPadding / 2 });
+    top: $globalPadding * 2;
+}
+
+.userSettings_content-settings-scroll {
+    @extend %scrollable;
+
+    & .col {
+        width: 50%;
+        margin-right: 1em;
+    }
+
+    & .col:last-child {
+        margin-right: 0;
+    }
+}
+
+.userSettings_content-settings-setting {
+    @extend %options-option;
+
+    &.setting-difficulty, &.setting-placingMode, &.setting-notifyMode, &.setting-inactiveAudio {
+        @extend %options-option-list;
+    }
+
+    &.setting-country {
+        @extend %options-option-list;
+
+        &.is--active %options-option-select {
+            overflow-y: scroll;
+            height: 200px;
+        }
+    }
+}
+
+.userSettings_content-settings-setting-label {
+    @extend %options-option-label;
+}
+
+.userSettings_content-settings-setting-toggle {
+    @extend %options-option-toggle;
+}
+
+.userSettings_content-settings-setting-select {
+    @extend %options-option-select;
+}
+
+.userSettings_content-settings-setting-input {
+    @extend %options-option-input;
+
+    &[type=range] {
+        width: calc(75% - 50px);
+    }
+}

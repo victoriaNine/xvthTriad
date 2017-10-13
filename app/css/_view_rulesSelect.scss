@@ -1,0 +1,69 @@
+/*=======================*/
+/* RULES SCREEN
+/*=======================*/
+#screen_rulesSelect {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.rulesSelect_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+    }
+}
+
+/* CONTENT --------------*/
+.rulesSelect_content {
+    @extend %content
+}
+
+.rulesSelect_content-confirm, .rulesSelect_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.rulesSelect_content-confirm {
+    background: transparentize($color_blue, 0.5);
+}
+
+.rulesSelect_content-rules {
+    @extend %options;
+}
+
+.rulesSelect_content-rules-rule {
+    @extend %options-option;
+
+    &.rule-trade {
+        @extend %options-option-list;
+    }
+}
+
+.rulesSelect_content-rules-rule-label {
+    @extend %options-option-label;
+}
+
+.rulesSelect_content-rules-rule-toggle {
+    @extend %options-option-toggle;
+}
+
+.rulesSelect_content-rules-rule-select {
+    @extend %options-option-select;
+}

@@ -1,0 +1,93 @@
+/*=======================*/
+/* COMPONENTS
+/*=======================*/
+/* CONTAINERS ------------*/
+.screen {
+    @include fullSizeAbs();
+    top:0;
+    left:0;
+}
+
+%header {
+    height: 300px;
+    width: 100%;
+    padding: $globalPadding;
+    background: rgba(0, 0, 0, 0.95);
+    position: relative;
+    z-index: 1;
+    display: flex;
+
+    &:before {
+        @include fullSizeAbs("");
+        top: 0;
+        left: 0;
+        background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
+        opacity: .25;
+        z-index: -1;
+    }
+
+    &-leftCol {
+        width: auto;
+    }
+
+    &-rightCol {
+        @include remainingSpace();
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &-help {
+        text-transform: none;
+        position: absolute;
+        left: 0;
+        padding: 0 $globalPadding;
+        margin-top: 1em;
+        line-height: 1.25em;
+    }
+}
+
+%content {
+    width: 100%;
+    height: calc(100% - 490px);
+    position: relative;
+    padding: $globalPadding;
+}
+
+%content-inner {
+    height: $contentHeight;
+    top: calc(50% - #{ $contentHeight / 2 });
+    position: absolute;
+    width: 100%;
+    left: 0;
+    padding: 0 $globalPadding;
+}
+
+%content-prompt {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: $globalPadding;
+    padding: 0 $globalPadding;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+%content-promptChoice {
+    @extend %content-prompt;
+    display: flex;
+    align-items: center;
+
+    &-choice {
+        display: flex;
+        align-items: center;
+        margin-right: 1em;
+        height: 100%;
+
+        &-element {
+            @extend %btn-rect;
+            position: relative;
+            display: inline-block;
+            margin-right: .5em;
+        }
+    }
+}

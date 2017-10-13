@@ -1,0 +1,78 @@
+/*=======================*/
+/* CARD ALBUM SCREEN
+/*=======================*/
+#screen_cardAlbum {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.cardAlbum_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+        margin-top: 2em;
+    }
+}
+
+.cardAlbum_header-ownedCards,
+.cardAlbum_header-uniqueCopies {
+    @extend .row;
+    margin-top: 1em;
+}
+
+.cardAlbum_header-ownedCards-label,
+.cardAlbum_header-uniqueCopies-label {
+    @extend .col_9;
+    text-transform: none;
+}
+
+.cardAlbum_header-ownedCards-count,
+.cardAlbum_header-uniqueCopies-count {
+    @extend .col_3, .weight-medium;
+    text-align: right;
+}
+
+/* CONTENT --------------*/
+.cardAlbum_content {
+    @extend %content
+}
+
+.cardAlbum_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.cardAlbum_content-album {
+    @extend %content-inner;
+    height: calc(100% - #{ $globalPadding / 2 });
+    top: $globalPadding * 2;
+}
+
+.cardAlbum_content-album-scroll {
+    @extend %album-scroll;
+}
+
+.cardAlbum_content-album-cardWrapper {
+    @extend %album-cardWrapper;
+}
+
+.cardAlbum_content-album-card {
+    @include scrollableAlbumCard;
+}

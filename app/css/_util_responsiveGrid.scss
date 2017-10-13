@@ -1,0 +1,30 @@
+/*=======================*/
+/* 12 COLUMNS RESPONSIVE GRID
+/*=======================*/
+$gridWidthBase: 100% / 12;
+
+.row { display:flex; }
+.col_h { width: #{ $gridWidthBase * 0.5 }; }
+.col_1 { width: #{ $gridWidthBase * 1 }; }
+.col_1h { width: #{ $gridWidthBase * 1.5 }; }
+.col_2 { width: #{ $gridWidthBase * 2 }; }
+.col_2h { width: #{ $gridWidthBase * 2.5 }; }
+.col_3 { width: #{ $gridWidthBase * 3 }; }
+.col_3h { width: #{ $gridWidthBase * 3.5 }; }
+.col_4 { width: #{ $gridWidthBase * 4 }; }
+.col_4h { width: #{ $gridWidthBase * 4.5 }; }
+.col_5 { width: #{ $gridWidthBase * 5 }; }
+.col_5h { width: #{ $gridWidthBase * 5.5 }; }
+.col_6 { width: #{ $gridWidthBase * 6 }; }
+.col_6h { width: #{ $gridWidthBase * 6.5 }; }
+.col_7 { width: #{ $gridWidthBase * 7 }; }
+.col_7h { width: #{ $gridWidthBase * 7.5 }; }
+.col_8 { width: #{ $gridWidthBase * 8 }; }
+.col_8h { width: #{ $gridWidthBase * 8.5 }; }
+.col_9 { width: #{ $gridWidthBase * 9 }; }
+.col_9h { width: #{ $gridWidthBase * 9.5 }; }
+.col_10 { width: #{ $gridWidthBase * 10 }; }
+.col_10h { width: #{ $gridWidthBase * 10.5 }; }
+.col_11 { width: #{ $gridWidthBase * 11 }; }
+.col_11h { width: #{ $gridWidthBase * 11.5 }; }
+.col_12 { width: #{ $gridWidthBase * 12 }; }

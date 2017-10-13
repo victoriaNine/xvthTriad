@@ -1,0 +1,337 @@
+/*=======================*/
+/* GAME SCREEN
+/*=======================*/
+/* BOARD --------------*/
+#board {
+    position: absolute;
+    display:flex;
+    flex-wrap:wrap;
+    width: $boardWidth;
+    height: $boardHeight;
+    align-content: space-between;
+    justify-content: space-between;
+    left:calc(50% - #{ $boardWidth / 2 });
+    top:calc(50% - #{ $boardHeight / 2 });
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+    padding: 12px;
+}
+
+#board:before {
+    content: "";
+    position: absolute;
+    background: rgba(0, 0, 0, 0.75);
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    left: 5px;
+    top: 5px;
+}
+
+.case {
+    width: calc(33.333% - 4.5px);
+    height: calc(33.333% - 4.5px);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    &:before {
+        @include fullSizeAbs("");
+        @include transition("background .2s");
+    }
+
+    &.blue:before {
+        background: transparentize($color_blue, 0.75);
+    }
+
+    &.red:before {
+        background: transparentize($color_red, 0.75);
+    }
+}
+
+#case11 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
+}
+
+#case21 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerBL.png"}) no-repeat 0% 100%,
+                url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
+}
+
+#case31 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTR.png"}) no-repeat 100% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBL.png"}) no-repeat 0% 100%;
+}
+
+#case12 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTR.png"}) no-repeat 100% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
+}
+
+#case22 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
+                url(#{ $uiAssetsPath + "board_cornerTR.png"}) no-repeat 100% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBL.png"}) no-repeat 0% 100%,
+                url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
+}
+
+#case32 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBL.png"}) no-repeat 0% 100%;
+}
+
+#case13 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTR.png"}) no-repeat 100% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBL.png"}) no-repeat 0% 100%;
+}
+
+#case23 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
+                url(#{ $uiAssetsPath + "board_cornerTR.png"}) no-repeat 100% 0%;
+}
+
+#case33 {
+    background: url(#{ $uiAssetsPath + "board_caseBG.png"}) no-repeat 50%,
+                url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
+}
+
+.elementCase {
+    &:before {
+        @include fullSizeAbs("");
+        left:0;
+        top:0;
+        background-repeat: no-repeat;
+        background-position: 50%;
+    }
+
+    &:after {
+        position: absolute;
+        width: 100%;
+        height: 1em;
+        text-align: center;
+        top: calc(50% - .5em);
+        z-index: 999;
+        font-size: 36px;
+        font-weight: 500;
+        text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+        opacity: 0;
+        @include transform("scale(1.2)");
+        @include transition("all .4s ease-out");
+    }
+
+    &.has--bonus:after, &.has--penalty:after {
+        opacity: 1;
+        @include transform("scale(1)");
+    }
+
+    &.has--bonus:after   { content: "+1"; }
+    &.has--penalty:after { content: "-1"; }
+}
+
+.element-fire:before    { background-image: url(#{ $uiAssetsPath + "elem_fire.png"}); }
+.element-ice:before     { background-image: url(#{ $uiAssetsPath + "elem_ice.png"}); }
+.element-wind:before    { background-image: url(#{ $uiAssetsPath + "elem_wind.png"}); }
+.element-rock:before    { background-image: url(#{ $uiAssetsPath + "elem_rock.png"}); }
+.element-water:before   { background-image: url(#{ $uiAssetsPath + "elem_water.png"}); }
+.element-thunder:before { background-image: url(#{ $uiAssetsPath + "elem_thunder.png"}); }
+.element-poison:before  { background-image: url(#{ $uiAssetsPath + "elem_poison.png"}); }
+.element-light:before   { background-image: url(#{ $uiAssetsPath + "elem_light.png"}); }
+.element-dark:before    { background-image: url(#{ $uiAssetsPath + "elem_dark.png"}); }
+
+/* PLAYER HUD --------------*/
+%playerHUD {
+    width:$boardWidth;
+    height:#{$boardHeight - 175px};
+    top: calc(50% - (#{$boardHeight / 2} - 100px));
+    position: absolute;
+}
+
+.game_playerHUD-opponent {
+    @extend %playerHUD;
+    right: calc(50% + (#{$boardWidth / 2} + 50px));
+}
+.game_playerHUD-user {
+    @extend %playerHUD;
+    left: calc(50% + (#{$boardWidth / 2} + 50px));
+}
+
+.game_playerHUD-bar {
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size:$fontSize_UI;
+    text-transform: none;
+    font-weight: 500;
+    z-index: 0;
+}
+
+.game_playerHUD-bar:before {
+    content: "";
+    position: absolute;
+    width: calc(100% + 50px);
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}
+
+.game_playerHUD-opponent .game_playerHUD-bar                   { padding-left: 125px; }
+.game_playerHUD-opponent.is--active .game_playerHUD-bar        { text-shadow: 0 0 15px $color_red; }
+.game_playerHUD-opponent .game_playerHUD-bar:before            { background: linear-gradient(to left, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%); }
+.game_playerHUD-opponent.is--active .game_playerHUD-bar:before { background: linear-gradient(to left, transparentize($color_red, 0.25) 0%, transparentize($color_red, 1) 100%); }
+
+.game_playerHUD-user .game_playerHUD-bar                   { text-align: right; padding-right: 125px; }
+.game_playerHUD-user.is--active .game_playerHUD-bar        { text-shadow: 0 0 15px $color_midBlue; }
+.game_playerHUD-user .game_playerHUD-bar:before            { background: linear-gradient(to right, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%); left:-50px; }
+.game_playerHUD-user.is--active .game_playerHUD-bar:before { background: linear-gradient(to right, transparentize($color_blue, 0.25) 0%, transparentize($color_blue, 1) 100%); }
+
+.game_playerHUD-bar-type {
+    position: absolute;
+    top: -1.5em;
+    text-transform: uppercase;
+    font-size: 12px;
+    line-height: 1em;
+    letter-spacing: 0.125em;
+}
+
+.game_playerHUD-bar-state {
+    position: absolute;
+    bottom: -1.5em;
+    text-transform: uppercase;
+    font-size: 12px;
+    line-height: 1em;
+    letter-spacing: 0;
+    opacity: 0;
+}
+
+.game_playerHUD-user .game_playerHUD-bar-state { right: 125px; }
+%playerHUD.is--active .game_playerHUD-bar-state {
+    letter-spacing: 0.75em;
+    opacity: 1;
+
+    @include animation("extendText 4s ease-in-out infinite");
+}
+
+.game_playerHUD-score {
+    position: absolute;
+    font-size: $fontSize_score;
+    vertical-align: middle;
+    text-align: center;
+    top: -32px;
+    font-weight: 500;
+}
+
+.game_playerHUD-opponent .game_playerHUD-score { right:0; }
+.game_playerHUD-user .game_playerHUD-score     { left:0; }
+
+.game_playerHUD-avatar {
+    @extend %avatar;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: calc(-100px / 4);
+
+    &-img {
+        @extend %avatar-img;
+    }
+}
+
+.game_playerHUD-opponent .game_playerHUD-avatar { left: 0; }
+.game_playerHUD-user .game_playerHUD-avatar     { right: 0; }
+
+.game_playerHUD-user.is--active .game_playerHUD-avatar {
+    @extend %avatar-blue;
+}
+
+.game_playerHUD-opponent.is--active .game_playerHUD-avatar {
+    @extend %avatar-red;
+}
+
+/* DECK HOLDERS --------------*/
+.game_deck {
+    display: flex;
+    position: absolute;
+    flex-wrap: wrap;
+    justify-content: center;
+    bottom: 0;
+}
+
+.game_deck-holder {
+    width: $cardWidth;
+    height: $cardHeight;
+    position:relative;
+    padding-top:2px;
+}
+
+.game_deck-holder:nth-child(1),
+.game_deck-holder:nth-child(2),
+.game_deck-holder:nth-child(4) {
+    margin-right: 1em;
+}
+
+.game_deck-holder:nth-child(1),
+.game_deck-holder:nth-child(2),
+.game_deck-holder:nth-child(3) {
+    margin-bottom: 1em;
+}
+
+.game_deck-holder .svg-cardBG {
+    stroke-width: 1;
+    stroke: rgba(255, 255, 255, .05);
+    fill: rgba(0, 0, 0, 0.5);
+}
+
+.game_overlay-endGame-confirmBtn {
+    @extend %btn-rect;
+
+    position: relative;
+    margin-top: 50px;
+}
+
+.game_overlay-endGame-album-user,
+.game_overlay-endGame-album-opponent {
+    height: $contentHeight;
+    display: flex;
+    position: relative;
+}
+
+.game_overlay-endGame-album-opponent {
+    margin-top: 50px;
+    margin-bottom: 1.5em;
+}
+
+.game_overlay-endGame-album-card {
+    @extend %album-card;
+    height: $contentHeight;
+    margin-right: 1.5em;
+    border: none;
+
+    &-visual { @extend %album-card-visual; }
+    &-label  { @extend %album-card-label; }
+    &-name   { @extend %album-card-name; }
+
+    & .card-blue:hover, & .card-blue.is--hover {
+        @include transform("scale(1)");
+    }
+}
+
+%inGame_overlay {
+    @extend .overlay, .screen;
+    background: rgba(0, 0, 0, 0.25);
+
+    & h1              { text-shadow: 0 0 15px #000; }
+    &.is--neutral h1  { text-shadow: 0 0 15px $color_darkGrey; }
+}
+
+.game_overlay-playerTurn, .game_overlay-specialRule {
+    @extend %inGame_overlay;
+}

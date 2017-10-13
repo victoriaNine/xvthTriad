@@ -1,0 +1,215 @@
+/*=======================*/
+/* GENERAL RULES
+/*=======================*/
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.75);
+}
+
+* {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    user-select:none;
+    cursor: inherit;
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    background: #000;
+    font-family: "AvantGarde LT", sans-serif;
+    font-weight: 200;
+    text-transform: uppercase;
+    color:#FFF;
+}
+
+body {
+    transform-origin: 50%;
+    width: 100%;
+    height: 100%;
+    cursor:default;
+}
+
+a {
+    color:inherit;
+    text-decoration: none;
+    cursor:auto;
+}
+
+hr {
+    position: relative;
+    width: calc(100% - 17.5px);
+    margin-left: 7.5px;
+}
+
+hr:after, hr:before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border: 1px #FFF solid;
+    transform: rotate(45deg);
+    top: -2.5px;
+}
+
+hr:after { left: -7.5px; }
+hr:before { right: -8.5px; }
+
+h1 {
+    font-size: $fontSize_title;
+}
+
+::-webkit-input-placeholder { letter-spacing: 0; }
+:-moz-placeholder           { letter-spacing: 0; }
+::-moz-placeholder          { letter-spacing: 0; }
+:-ms-input-placeholder      { letter-spacing: 0; }
+
+::selection {
+  background: #000;
+  color: #FFF;
+  text-shadow: none; }
+::-moz-selection {
+  background: #000;
+  color: #FFF;
+  text-shadow: none; }
+
+input:not([type]):not(.lounge_log-chatbar-input) {
+    @include transition("letter-spacing .2s ease-in, background .2s");
+
+    &:focus {
+        letter-spacing: .5em;
+    }
+}
+
+input[type=file] {
+    cursor: pointer;
+}
+
+input[type=password] {
+    @include transition("letter-spacing .2s ease-in, background .2s");
+    letter-spacing: .5em;
+
+    &:focus {
+        letter-spacing: 1em;
+    }
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    margin: 0px 0;
+    padding:0;
+    cursor: pointer;
+    height:100%;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 100%;
+}
+input[type=range]::-webkit-slider-thumb {
+    height: 100%;
+    width: 2px;
+    background: #FFF;
+    -webkit-appearance: none;
+}
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+input[type=range]::-moz-range-thumb {
+    height: 100%;
+    width: 2px;
+    background: #FFF;
+    border-radius:0;
+    border:none;
+}
+input[type=range]::-ms-track {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+input[type=range]::-ms-thumb {
+    height: 100%;
+    width: 2px;
+    background: #FFF;
+    border-radius:0;
+    border:none;
+}
+
+label {
+    position: relative;
+    width: 50px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+button {
+    -webkit-appearance: none;
+    border:0;
+    outline:0;
+    padding: 0;
+    margin: 0;
+    background: inherit;
+    color:inherit;
+    font: inherit;
+    text-transform: inherit;
+    text-align: inherit;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#app {
+    @include fullSizeAbs();
+
+    &.useGamepad * {
+        cursor: none;
+    }
+}
+
+.cursor {
+    position: fixed;
+    width: 35px;
+    height: 25px;
+    background: url(#{ $uiAssetsPath + "cursor.png"}) no-repeat;
+    z-index: 99999;
+    pointer-events: none;
+
+    @include animation("cursorMove 1s ease-in-out infinite");
+}
+
+.color-darkGrey     { color: $color_darkGrey; }
+.color-lightBlue    { color: $color_lightBlue; }
+.color-red          { color: $color_red; }
+.weight-medium      { font-weight: 500; }
+.weight-bold        { font-weight: 700; }
+.flex-justify-sb    { justify-content: space-between; }
+.flex-justify-start { justify-content: flex-start; }
+.fontsize-small     { font-size: .75em; margin-right: .5em; }
+
+@media (orientation: portrait) {
+    body {
+        background: #000 url(#{ $uiAssetsPath + "rotateDevice.png"}) no-repeat 50% 50%;
+        background-size: 30%;
+    }
+
+    #app { visibility: hidden; }
+}

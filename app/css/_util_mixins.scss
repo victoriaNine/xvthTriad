@@ -1,0 +1,247 @@
+/*=======================*/
+/* MIXINS
+/*=======================*/
+@mixin keyframes($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+  /*@-moz-keyframes #{$animation-name} {
+    @content;
+  }  */
+  @-ms-keyframes #{$animation-name} {
+    @content;
+  }
+  /*@-o-keyframes #{$animation-name} {
+    @content;
+  }*/
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin animation($str) {
+  -webkit-animation: #{$str};
+  //-moz-animation: #{$str};
+  -ms-animation: #{$str};
+  //-o-animation: #{$str};
+  animation: #{$str};
+}
+
+@mixin transform($str) {
+  -webkit-transform: #{$str};
+  //-moz-transform: #{$str};
+  -ms-transform: #{$str};
+  //-o-transform: #{$str};
+  transform: #{$str};
+}
+
+@mixin transition($str) {
+  -webkit-transition: -webkit-#{$str};
+  //-moz-transition: -moz-#{$str};
+  -ms-transition: -ms-#{$str};
+  //-o-transition: -o-#{$str};
+  transition: #{$str};
+}
+
+@mixin fullSizeAbs ($content: false) {
+    @if $content { content: $content; }
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+@mixin remainingSpace () {
+    flex:1;
+    position: relative;
+}
+
+@mixin scrollableAlbumCard {
+    @extend %album-card;
+
+    &.is--disabled {
+        & .cardAlbum_content-album-card-visual,
+        & .cardSelect_content-album-card-visual {
+            filter: saturate(0);
+
+            & .card { cursor: default; }
+        }
+
+        & .cardAlbum_content-album-card-label,
+        & .cardSelect_content-album-card-label {
+            color: $color_darkGrey;
+        }
+    }
+
+    &-visual { @extend %album-card-visual; }
+    &-label  { @extend %album-card-label; }
+    &-name   {
+        @extend %album-card-name;
+        @extend .col_9;
+    }
+
+    &-copiesCount {
+        @extend %album-card-copiesCount;
+    }
+}
+
+@mixin board {
+    position: absolute;
+    width: calc(100% - #{ $globalPadding * 2 });
+    height: calc(100% - #{ $globalPadding * 3.5 });
+    left: calc(50% - (100% - #{ $globalPadding * 2 }) / 2);
+    top: $globalPadding;
+    display: flex;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+    padding: 12px;
+    flex-wrap: wrap;
+    align-content: space-between;
+    justify-content: space-between;
+    z-index: 1;
+
+    &:before {
+        content: "";
+        position: absolute;
+        background: rgba(0, 0, 0, 0.75);
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        left: 5px;
+        top: 5px;
+        z-index: -1;
+    }
+}
+
+@mixin corners {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: url(#{ $uiAssetsPath + "board_cornerTL.png"}) no-repeat 0% 0%,
+                url(#{ $uiAssetsPath + "board_cornerTR.png"}) no-repeat 100% 0%,
+                url(#{ $uiAssetsPath + "board_cornerBL.png"}) no-repeat 0% 100%,
+                url(#{ $uiAssetsPath + "board_cornerBR.png"}) no-repeat 100% 100%;
+}
+
+@mixin boardList ($loungeList: false) {
+    width: 300px;
+    position: relative;
+
+    &-scroll { @extend %lounge-list-scroll; }
+    &-element {
+        height: 50px;
+
+        &-group {
+            text-transform: uppercase;
+            line-height: 50px;
+
+            &-count {
+                margin-left: 1em;
+            }
+        }
+
+        &-#{ if($loungeList, "user", "ranking") } {
+            @extend %lounge-list-element-user;
+            cursor: pointer;
+
+            &:not(:last-of-type) {
+                margin-bottom: 1em;
+            }
+
+            &-avatar {
+                @extend %lounge-list-element-user-avatar;
+
+                &-img {
+                    @extend %lounge-list-element-user-avatar-img;
+                }
+            }
+
+            &-label {
+                flex: 1;
+                padding-left: 1em;
+                width: calc(100% - 50px);
+                justify-content: center;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    width: calc(100% - 1em);
+                    height: 100%;
+                    background: transparentize($color_blue, 0.75);
+                    z-index: -1;
+                    filter: blur(10px);
+                    opacity: 0;
+                    left: 1em;
+                    @include transition("opacity .2s");
+                }
+
+                &-name {
+                    font-weight:500;
+                    @include transition("color .2s");
+                }
+
+                &-#{ if($loungeList, "action", "leader") } {
+                    @extend .fontsize-small;
+                    margin: 0.5em 0 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    @if $loungeList { opacity: 0; }
+                }
+            }
+
+            &.is--#{ if($loungeList, "currentUser", "selected") } &-label-name {
+                color: $color_lightBlue;
+            }
+
+            @if $loungeList {
+                &.is--active &-label-action {
+                    @include animation("extendText 4s ease-in-out infinite");
+                }
+            }
+
+            &:hover &-avatar, &.is--selected &-avatar {
+                @extend %avatar-blue;
+            }
+
+            @if $loungeList {
+                &.is--currentUser &-avatar {
+                    @extend %avatar-blue;
+                }
+            }
+
+            &:hover &-label:after, &.is--selected &-label:after {
+                opacity: 1;
+            }
+
+            @if $loungeList {
+                &.is--currentUser &-label:after {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+
+@mixin boardContent ($lounge: false) {
+    position: relative;
+    width: calc(100% - 307.5px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &-logo {
+        width: 630px;
+        height: 485px;
+        position: absolute;
+        left: calc(50% - 630px / 2);
+        top: #{if($lounge, 12.5%, calc(50% - 485px / 2))};
+        opacity: 0.015;
+        pointer-events:none;
+
+        & .svg-logo {
+            fill: rgba(255, 255, 255, 1);
+        }
+    }
+}

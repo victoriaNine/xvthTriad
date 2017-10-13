@@ -1,0 +1,65 @@
+/*=======================*/
+/* COMPONENTS
+/*=======================*/
+/* AVATAR --------------*/
+%avatar {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25), 0 0 0px 5px rgba(255, 255, 255, 0.05) inset;
+    padding: 5px;
+    z-index: 0;
+
+    @include transition("background .2s .2s, box-shadow .2s");
+
+    &:before {
+        content: "";
+        position: absolute;
+        background: rgba(0, 0, 0, 0.75);
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        left: 5px;
+        top: 5px;
+        z-index: -1;
+
+        @include transition("box-shadow .2s");
+    }
+
+    &:after {
+        content: "";
+        position: absolute;
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        left: 5px;
+        top: 5px;
+        box-shadow: 2.5px 2.5px 2.5px 0px rgba(0, 0, 0, 0.5) inset;
+    }
+
+    &-img {
+        position: relative;
+        width: auto;
+        height: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+}
+
+%avatar-blue {
+    background: rgba(71, 53, 235, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25),
+                0 0 0px 5px rgba(255, 255, 255, 0.05) inset,
+                0 0 18px 4px rgba(40, 0, 255, 0.25);
+
+    &:before {
+        box-shadow: 0 0 18px 8px rgba(33, 150, 243, 0.25);
+    }
+}
+
+%avatar-red {
+    background: transparentize($color_red, 0.75);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25),
+                0 0 0px 5px rgba(255, 255, 255, 0.05) inset,
+                0 0 18px 4px rgba(255, 0, 40, 0.25);
+
+    &:before {
+        box-shadow: 0 0 18px 8px rgba(243, 33, 36, 0.25);
+    }
+}

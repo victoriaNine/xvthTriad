@@ -1,0 +1,136 @@
+/*=======================*/
+/* TITLE SCREEN
+/*=======================*/
+.title_logo {
+    width: 630px;
+    height: 485px;
+    position: absolute;
+    left: calc(50% - 630px / 2);
+    top: 12.5%;
+
+    & .svg-logo {
+        fill: rgba(255, 255, 255, 1);
+    }
+}
+
+.title_startBtn {
+    @extend %btn-diamond-text;
+    position: absolute;
+    left:calc(50% - #{ $btnSize_big / 2 });
+    top: 70%;
+
+    &:after {
+        content:"Start";
+    }
+
+    &-hoverFX {
+        @extend %btn-diamond-text-hoverFX;
+    }
+}
+
+.title_account {
+    position: absolute;
+    right: $globalPadding;
+    top: $globalPadding;
+    display: flex;
+    align-items: center;
+
+    &-element {
+        position: relative;
+        background: rgba(0, 0, 0, 0.5);
+        padding: .5em;
+        cursor: pointer;
+        @include transition("background .2s");
+
+        &:hover {
+            background: transparentize($color_blue, 0.5);
+        }
+    }
+
+    &-info {
+        display: flex;
+        background: rgba(255, 255, 255, 0.25);
+
+        &-welcome, &-playerCount {
+            position: relative;
+            padding: .5em;
+        }
+
+        &-playerCount-onlineLabel, &-playerCount-loungeLabel {
+            font-size: .75em;
+        }
+    }
+}
+
+.title_overlay {
+    &-signup-form, &-login-form, &-passwordReset-form {
+        width: 500px;
+        margin-top: 2em;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    &-login-form,, &-passwordReset-form {
+        margin-bottom: 1em;
+    }
+
+    &-signup-form .field-email,
+    &-login-form .field-password,
+    &-login-form .field-email,
+    &-passwordReset-form .field-password,
+    &-passwordReset-form .field-confirmPassword {
+        margin-bottom: 3em;
+    }
+
+    &-signup-form-field,
+    &-login-form-field,
+    &-passwordReset-form-field {
+        @extend %options-option;
+        text-align: initial;
+    }
+
+    &-signup-form-field-label,
+    &-login-form-field-label,
+    &-passwordReset-form-field-label {
+        @extend %options-option-label;
+    }
+
+    &-signup-form-field-input,
+    &-login-form-field-input,
+    &-passwordReset-form-field-input {
+        @extend %options-option-input;
+    }
+
+    &-signup-btn,
+    &-login-btn,
+    &-passwordReset-btn {
+        @extend %btn-rect;
+
+        position: relative;
+        display: inline-block;
+
+        &:not(:last-of-type) {
+            margin-right: .5em;
+        }
+    }
+
+    &-signup-message,
+    &-login-message,
+    &-login-forgotPwd,
+    &-passwordReset-message {
+        text-transform: none;
+        margin-top: 1em;
+        min-height: 1em;
+        text-align: center;
+        line-height: 1.25em;
+    }
+
+    &-login-forgotPwd {
+        cursor: pointer;
+        @include transition("letter-spacing .2s ease-in");
+
+        &:hover {
+            letter-spacing: .1em;
+        }
+    }
+}

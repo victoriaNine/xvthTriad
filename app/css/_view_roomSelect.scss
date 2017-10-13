@@ -1,0 +1,77 @@
+/*=======================*/
+/* ROOM SELECTION SCREEN
+/*=======================*/
+#screen_roomSelect {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.roomSelect_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+    }
+}
+
+/* CONTENT --------------*/
+.roomSelect_content {
+    @extend %content
+}
+
+.roomSelect_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.roomSelect_content-settings {
+    @extend %options;
+}
+
+.roomSelect_content-settings-setting {
+    @extend %options-option;
+
+    &.setting-mode {
+        @extend %options-option-list;
+    }
+}
+
+.roomSelect_content-settings-setting {
+    @extend %options-option;
+
+    &.setting-difficulty {
+        @extend %options-option-list;
+    }
+}
+
+.roomSelect_content-settings-setting-label {
+    @extend %options-option-label;
+}
+
+.roomSelect_content-settings-setting-toggle {
+    @extend %options-option-toggle;
+}
+
+.roomSelect_content-settings-setting-select {
+    @extend %options-option-select;
+}
+
+.roomSelect_content-settings-setting-input {
+    @extend %options-option-input;
+}

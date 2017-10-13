@@ -1,0 +1,106 @@
+/*=======================*/
+/* CARD SELECTION SCREEN
+/*=======================*/
+#screen_cardSelect {
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.cardSelect_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+        margin-top: 2em;
+    }
+}
+
+.cardSelect_header-ownedCards,
+.cardSelect_header-uniqueCopies {
+    @extend .row;
+    margin-top: 1em;
+}
+
+.cardSelect_header-ownedCards-label,
+.cardSelect_header-uniqueCopies-label {
+    @extend .col_9;
+    text-transform: none;
+}
+
+.cardSelect_header-ownedCards-count,
+.cardSelect_header-uniqueCopies-count {
+    @extend .col_3, .weight-medium;
+    text-align: right;
+}
+
+.cardSelect_header-deck {
+    height: $cardHeight;
+    display: flex;
+    position: relative;
+}
+
+.cardSelect_header-deck-holder {
+    width: $cardWidth;
+    height: 100%;
+    margin-left: 1em;
+    position:relative;
+    padding-top: 2px;
+
+    &.glowing .svg-cardBG {
+        fill: transparentize($color_blue, 0.5);
+    }
+}
+
+.cardSelect_header-deck-holder .svg-cardBG {
+    stroke-width: 1;
+    stroke: rgba(255, 255, 255, .05);
+    @include transition("fill .2s");
+}
+
+/* CONTENT --------------*/
+.cardSelect_content {
+    @extend %content
+}
+
+.cardSelect_content-confirm, .cardSelect_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.cardSelect_content-confirm {
+    background: transparentize($color_blue, 0.5);
+}
+
+.cardSelect_content-album {
+    @extend %content-inner;
+    height: calc(100% - #{ $globalPadding / 2 });
+    top: $globalPadding * 2;
+}
+
+.cardSelect_content-album-scroll {
+    @extend %album-scroll;
+}
+
+.cardSelect_content-album-cardWrapper {
+    @extend %album-cardWrapper;
+}
+
+.cardSelect_content-album-card {
+    @include scrollableAlbumCard;
+}
