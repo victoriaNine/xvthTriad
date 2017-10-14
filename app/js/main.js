@@ -29,6 +29,10 @@ import LoaderAudioSFX from 'Data/loaders/audioSFX.json';
 
 import './../css/main.scss';
 
+if (process.env.NODE_ENV==='production') {
+  require('./pwa');
+}
+
 const loaders = [
   LoaderImgUI,
   LoaderImgAvatars,

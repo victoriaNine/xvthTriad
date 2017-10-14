@@ -1,7 +1,6 @@
 import { find, reverse, each, map, orderBy, take, uniqBy } from 'lodash';
 import express from 'express';
 import http from 'http';
-import compression from 'compression';
 import bodyParser from 'body-parser';
 import SuperLogin from 'superlogin';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
@@ -23,16 +22,11 @@ export default function startServer () {
   const app      = express();
   const compiler = webpack(webpackConfig);
 
-  let server;
-
   app.set("port", PORT);
 
   // Setup SuperLogin
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-
-  // Redirect to https except on localhost
-  //app.use(httpsRedirect);
 
   const superloginConfig = {
     dbServer: {
@@ -80,28 +74,12 @@ export default function startServer () {
   // Mount SuperLogin's routes to our app
   app.use("/auth", superlogin.router);
 
-  app.use(compression());
-  //if (target === "livereload") { app.use(lrSnippet); }
-
   app.use(webpackDevMiddleware(compiler, {
     publicPath: webpackConfig.output.publicPath
   }));
-  //app.use(express.static(path.resolve(folder)));
-
-  // Not found: just serve index.html
-  /*app.use(function (req, res) {
-  const file = folder + "/index.html";
-  if (grunt.file.exists(file)) {
-  fs.createReadStream(file).pipe(res);
-  return;
-  }
-
-  res.statusCode = 404;
-  res.end();
-  });*/
 
   // Create node.js http server and listen on port
-  server = http.createServer(app);
+  const server = http.createServer(app);
   server.listen(app.get("port"), () => {
     console.log("Server listening on port", app.get("port"));
     setupCronJobs(db);

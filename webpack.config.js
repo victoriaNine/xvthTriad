@@ -2,6 +2,8 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import OfflinePlugin from 'offline-plugin';
+import CompressionPlugin from 'compression-webpack-plugin';
 import path from 'path';
 
 import packageConfig from './package.json';
@@ -79,7 +81,6 @@ const config = {
   },
 
   plugins: [
-    //new webpack.optimize.UglifyJsPlugin({minimize: true}),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery'
@@ -101,7 +102,62 @@ const config = {
       { from: './robots.txt', to: './' },
       { from: './assets/img/icons/*', to: './' },
     ]),
-  ],
+  ].concat(ENV==='production' ? [
+    new webpack.optimize.UglifyJsPlugin({
+      output: {
+        comments: false
+      },
+      compress: {
+        unsafe_comps: true,
+        properties: true,
+        keep_fargs: false,
+        pure_getters: false,
+        collapse_vars: true,
+        unsafe: true,
+        warnings: false,
+        screw_ie8: true,
+        sequences: true,
+        dead_code: true,
+        drop_debugger: true,
+        comparisons: true,
+        conditionals: true,
+        evaluate: true,
+        booleans: true,
+        loops: true,
+        unused: true,
+        hoist_funs: true,
+        if_return: true,
+        join_vars: true,
+        cascade: true,
+        drop_console: true
+      }
+    }),
+
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+
+    new OfflinePlugin({
+      relativePaths: false,
+      AppCache: false,
+      excludes: ['_redirects'],
+      ServiceWorker: {
+        events: true
+      },
+      cacheMaps: [
+        {
+          match: /.*/,
+          to: '/',
+          requestTypes: ['navigate']
+        }
+      ],
+      publicPath: '/'
+    })
+  ] : []),
 
   node: {
     fs: 'empty',
