@@ -62,17 +62,26 @@ function setup (options) { // eslint-disable-line no-unused-vars
 
   this.set({ name });
   this.resetAlbum();
-  this.setAvatarPath(avatarUrl);
-  this.dataLoaded = true;
-
-  _$.events.trigger("userDataLoaded:setup");
+  this.setAvatarPath(avatarUrl).then(() => {
+    this.dataLoaded = true;
+    _$.events.trigger("userDataLoaded:setup");
+  });
 }
 
 function setAvatarPath (url) {
   this.avatarURL = url;
-  _$.utils.getBase64Image(url, (base64URL) => {
+  
+  return _$.utils.getBase64Image(url).then((base64URL) => {
     this.set({ avatar: base64URL });
-    fetch(this.get("avatar")); // Pre-load the user's avatar
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = function () {
+        resolve(base64URL);
+      };
+      img.onerror = reject;
+      img.src = base64URL;
+    });
   });
 }
 

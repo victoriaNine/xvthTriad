@@ -358,11 +358,12 @@ function getBase64Image (url, callback) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => {
+        const parsedUrl = reader.result.replace(" ", "");
         if (isFunction(callback)) {
-          callback(reader.result);
+          callback(parsedUrl);
         }
 
-        resolve(reader.result);
+        resolve(parsedUrl);
       };
       reader.onerror = reject;
       reader.readAsDataURL(blob);

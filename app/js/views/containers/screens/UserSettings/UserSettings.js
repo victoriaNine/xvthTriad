@@ -160,7 +160,7 @@ function saveGame () {
     const url = URL.createObjectURL(settings.avatar);
     _$.utils.getBase64Image(url, (base64URL) => {
       _$.state.user.set({ avatar: base64URL });
-      this.$(".userSettings_header-avatar-img").css("backgroundImage", "url(" + base64URL + ")");
+      this.$(".userSettings_header-avatar-img").css("backgroundImage", "url('" + base64URL + "')");
       proceed.call(this);
     });
   } else {

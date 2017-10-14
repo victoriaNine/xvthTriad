@@ -8,21 +8,21 @@
             <div class="userSettings_header-countWon-label">Games won</div>
             <div class="userSettings_header-countWon-count">
                 <%= wonRankedCount %> (ranked)
-                <span class="color-darkGrey"> / <%= wonCount %> (total)</span> 
+                <span class="color-darkGrey"> / <%= wonCount %> (total)</span>
             </div>
         </div>
         <div class="userSettings_header-countLost">
             <div class="userSettings_header-countLost-label">Losses</div>
             <div class="userSettings_header-countLost-count">
                 <%= lostRankedCount %> (ranked)
-                <span class="color-darkGrey"> / <%= lostCount %> (total)</span> 
+                <span class="color-darkGrey"> / <%= lostCount %> (total)</span>
             </div>
         </div>
         <div class="userSettings_header-countDraw">
             <div class="userSettings_header-countDraw-label">Tie games</div>
             <div class="userSettings_header-countDraw-count">
                 <%= drawRankedCount %> (ranked)
-                <span class="color-darkGrey"> / <%= drawCount %> (total)</span> 
+                <span class="color-darkGrey"> / <%= drawCount %> (total)</span>
             </div>
         </div>
         <% if (isLoggedIn) { %>
@@ -35,7 +35,7 @@
     </div>
     <div class="userSettings_header-rightCol">
         <div class="userSettings_header-avatar">
-            <div class="userSettings_header-avatar-img" style="background-image: url(<%= avatarSrc %>);"></div>
+            <div class="userSettings_header-avatar-img" style="background-image: url('<%= avatarSrc %>');"></div>
         </div>
     </div>
 </div>
