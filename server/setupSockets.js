@@ -576,8 +576,11 @@ export default function setupSockets (server, db, cronJobs) {
         }
       } else {
         socket.emit("in:joinRoom", {
-          reason  : (RESERVED_ROOMS.indexOf(roomName) !== -1) ? "reserved" : "alreadyExists",
-          roomName,
+          status : "error",
+          msg    : {
+            reason  : (RESERVED_ROOMS.indexOf(roomName) !== -1) ? "reserved" : "doesntExists",
+            roomName,
+          }
         });
       }
     });

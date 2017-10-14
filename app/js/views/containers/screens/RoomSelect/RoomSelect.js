@@ -150,6 +150,8 @@ function toNextStep () {
         msg = "This room name is reserved.";
       } else if (response.msg.reason === "alreadyExists") {
         msg = "Room " + response.msg.roomName + " already exists. Please choose another name.";
+      } else if (response.msg.reason === "doesntExists") {
+        msg = "Room " + response.msg.roomName + " doesn't exist. You can create it.";
       } else if (response.msg.reason === "alreadyFull") {
         msg = "Room " + response.msg.roomName + " is already full.";
       } else if (response.msg.reason === "sameBrowser") {
