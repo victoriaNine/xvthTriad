@@ -55,6 +55,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   this.settings     = null;
   this.modeDropdown = null;
   this.initialized  = false;
+  this.isValidated = false;
 
   this.$el.html(this.template());
   this.showHelp();
@@ -82,6 +83,10 @@ function remove () {
 }
 
 function toNextStep () {
+  if (!this.isValidated) {
+    return;
+  }
+
   const settings   = {};
   const playerInfo = _$.state.user.getPlayerInfo();
   let modeSetting;
@@ -236,6 +241,8 @@ function validateInput (input) {
   if (input === this.$(".setting-roomName input")[0]) {
     check = value.length && !value.match(/\W/g);
   }
+
+  this.isValidated = check;
 
   if (check) {
     if ($(input).hasClass("is--invalid")) {

@@ -101,6 +101,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   this.inactiveAudioDropdown = null;
   this.countryDropdown       = null;
   this.confirmAction         = null;
+  this.isValidated           = false;
 
   if (_$.comm.sessionManager.getSession()) {
     this.countryTempl = this.$(".countrySetting-COUNTRY_CODE")[0].outerHTML;
@@ -125,6 +126,10 @@ function remove () {
 }
 
 function saveGame () {
+  if (!this.isValidated) {
+    return;
+  }
+
   const settings = {};
   let difficultySetting;
   let placingModeSetting;
@@ -261,6 +266,10 @@ function resetChanges () {
 }
 
 function loadGame () {
+  if (!this.isValidated) {
+    return;
+  }
+
   if (!_$.debug.debugMode) {
     _$.app.track("send", "event", {
       eventCategory : "userSettingsEvent",
@@ -275,6 +284,10 @@ function loadGame () {
 }
 
 function exportSaveFile () {
+  if (!this.isValidated) {
+    return;
+  }
+  
   _$.app.track("set", {
     "dimension0" : "difficulty",
     "metric0"    : "albumSize",
@@ -525,6 +538,8 @@ function validateInput (input) {
   } else if (input === this.$(".setting-import input")[0]) {
     check = !input.files.length || input.files[0].name.endsWith("." + _$.app.saveExt);
   }
+
+  this.isValidated = check;
 
   if (check) {
     if ($(input).hasClass("is--invalid")) {
