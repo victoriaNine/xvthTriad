@@ -8,6 +8,7 @@ Features:
 - Solo mode (vs computer AI)
 - Versus mode (vs player)
 - Multiplayer mode (online network)
+- Persistence layers: the player can load and export their data in the LocalStorage from a generated save file or a database
 - A nice UI
 - Gamepad support (with the Gamepad API)
 *Update: Dropped as it doesn't enhance the UX. Partial support is still available.*
