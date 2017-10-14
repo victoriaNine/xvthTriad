@@ -156,19 +156,18 @@ function updateDeck (options) {
   const fromHolderIndex = options.moveFrom ? parseInt(options.moveFrom.id.replace(/\D/g, ""), 10) - 1 : -1;
   const toHolderIndex   = options.moveTo ? parseInt(options.moveTo.id.replace(/\D/g, ""), 10) - 1 : -1;
 
+  // If the card was previously in the deck, we free its previous position in both the user's deck and the card holders
+  if (options.moveFrom) {
+    this.userDeck[fromHolderIndex]             = null;
+    this.holders[options.moveFrom.id].cardView = null;
+  }
+
   if (options.action === "remove") {
-    // If the card was previously in the deck, we update the deck and holders values
-    if (options.moveFrom) {
-      this.userDeck[fromHolderIndex]             = null;
-      this.holders[options.moveFrom.id].cardView = null;
-    } // Otherwise the user cancelled their selection mid-drag-and-drop, so there is nothing to do
+    // If the user was removing the card from the holder, there is nothing more to update
   } else if (options.action === "add") {
+    // If the user was adding a card in the deck, we update the deck and the card holders with the new card
     this.userDeck[toHolderIndex]             = options.albumCardView.cardView.model;
     this.holders[options.moveTo.id].cardView = options.cardCopy;
-
-    if (options.moveFrom) {
-      this.holders[options.moveFrom.id].cardView = null;
-    }
 
     // We check whether we need to reorder the deck in case cards have been swapped places
     // For each card in the album, except the one we're placing (card "A")
