@@ -8,11 +8,12 @@ import packageConfig from './package.json';
 
 const ENV = process.env.NODE_ENV || 'development';
 const CSS_MAPS = ENV!=='production';
+const MAINTENANCE = process.argv.includes('maintenance=true');
 const BASE_PATH = path.resolve(__dirname, "app/");
 
 const config = {
   context: BASE_PATH,
-  entry: './js/main.js',
+  entry: MAINTENANCE ? './js/maintenance.js' : './js/main.js',
 
   output: {
     path: path.resolve(__dirname, "dist/"),
@@ -92,7 +93,7 @@ const config = {
     }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
-      template: './index.ejs',
+      template: MAINTENANCE ? './maintenance.ejs' : './index.ejs',
       minify: { collapseWhitespace: true }
     }),
     new CopyWebpackPlugin([
