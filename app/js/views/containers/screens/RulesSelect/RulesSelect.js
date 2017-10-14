@@ -332,7 +332,7 @@ function transitionOut (nextScreen, options) {
   const tl = new TimelineMax();
   tl.call(() => {
     this.$(".rulesSelect_content-screenNav, .rulesSelect_content-confirm").slideUp(this.transitionSettings.slides * 1000);
-  }, null, [], `-=${this.transitionSettings.slides * 3}`);
+  });
   tl.to(this.$(".rulesSelect_content-rules"), this.transitionSettings.slides, { opacity: 0 }, tl.recent().endTime() + this.transitionSettings.slides);
   tl.call(() => {
     this.$(".rulesSelect_header").slideUp(this.transitionSettings.slides * 1000);
