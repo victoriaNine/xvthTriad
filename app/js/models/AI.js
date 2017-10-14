@@ -22,15 +22,6 @@ export default Backbone.Model.extend({
 });
 
 function initialize (options) { // eslint-disable-line no-unused-vars
-  /*this.worker = new Worker("./js/aiWorker.js");
-  this.worker.onmessage = function (e) {
-  console.log("Message received from worker", e.data);
-  };
-  this.worker.postMessage({
-  global : _$,
-  data   :[10, 5]
-  });*/
-
   this.currentState = null;
   this.bestAction   = null;
   this.action       = null;
