@@ -961,14 +961,21 @@ export default function setupSockets (server, db, cronJobs) {
       const prefix      = data.prefix;
       let JSONdata      = "";
 
-      each(encodedData.replace(prefix, "").match(new RegExp(saveConfig.charSeparator + "\\d+", "g")), (chunk) => {
-        JSONdata += String.fromCodePoint(chunk.match(/\d+/) - parseFloat(saveConfig.charOffset));
-      });
-
-      socket.emit("in:decodeSaveData", {
-        status : "ok",
-        msg    : JSON.parse(JSONdata)
-      });
+      try {
+        each(encodedData.replace(prefix, "").match(new RegExp(saveConfig.charSeparator + "\\d+", "g")), (chunk) => {
+          JSONdata += String.fromCodePoint(chunk.match(/\d+/) - parseFloat(saveConfig.charOffset));
+        });
+        
+        socket.emit("in:decodeSaveData", {
+          status : "ok",
+          msg    : JSON.parse(JSONdata)
+        });
+      } catch (error) {
+        socket.emit("in:decodeSaveData", {
+          status : "error",
+          msg    : "Invalid source data"
+        });
+      }
     });
 
     socket.on("out:getRanking", (data) => {

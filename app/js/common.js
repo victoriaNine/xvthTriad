@@ -597,12 +597,12 @@ function loadFromStorage (storageData) {
 function importSave (saveFile, callback) {
   const blob = URL.createObjectURL(saveFile);
 
-  fetch(blob).then((response) => response.text()).then((data) => {
-    _$.app.loadData(data);
-    if (isFunction(callback)) {
-      callback(data);
-    }
-    return data;
+  return fetch(blob).then((response) => response.text()).then((data) => {
+    return _$.app.loadData(data).then(() => {
+      if (isFunction(callback)) {
+        callback(data);
+      }
+    });
   });
 }
 
@@ -621,7 +621,7 @@ function exportSave (fileName) {
   ).replace(/[^\d+-]/g, "");
 
   if (!fileName) {
-    fileName = _$.app.name + "_" + saveTime + "." + _$.app.saveExt;
+    fileName = _$.app.name + "_" + saveTime + "." + _$.app.saveConfig.extension;
   }
 
   if (typeof data === "object") {
@@ -677,9 +677,14 @@ function _decodeSaveData (encodedData, type = "save") {
     return Promise.resolve("");
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     _$.comm.socketManager.emit("decodeSaveData", { encodedData, prefix }, (response) => {
-      resolve(response.msg);
+      if (response.status === "ok") {
+        resolve(response.msg);
+      } else {
+        _$.debug.error("DecodeSave: " + response.msg);
+        reject("");
+      }
     });
   });
 }

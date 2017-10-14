@@ -280,6 +280,10 @@ function loadGame () {
   const file = this.$(".setting-import input")[0].files[0];
   _$.app.importSave(file, () => {
     this.fadeOut(this.transitionOut.bind(this, "title", { fullIntro: true }));
+  }).catch(() => {
+    this.$(".setting-import input")[0].val = "";
+    this.validateInput(this.$(".setting-import input"));
+    this.$(".userSettings_header-help").text("Invalid save data.");
   });
 }
 
@@ -287,7 +291,7 @@ function exportSaveFile () {
   if (!this.isValidated) {
     return;
   }
-  
+
   _$.app.track("set", {
     "dimension0" : "difficulty",
     "metric0"    : "albumSize",
@@ -534,9 +538,9 @@ function validateInput (input) {
   }  else if (input === this.$(".setting-confirmPassword input")[0]) {
     check = value === this.$(".setting-newPassword input").val().trim();
   }  else if (input === this.$(".setting-avatar input")[0]) {
-    check = !input.files.length || !!input.files[0].name.match(/\.jpg|\.jpeg|\.png|\.gif$/);
+    check = !input.files.length || !!input.files[0].name.match(/\.(jpe?g|png|gif)$/);
   } else if (input === this.$(".setting-import input")[0]) {
-    check = !input.files.length || input.files[0].name.endsWith("." + _$.app.saveExt);
+    check = !input.files.length || input.files[0].name.endsWith("." + _$.app.saveConfig.extension);
   }
 
   this.isValidated = check;
