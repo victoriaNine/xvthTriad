@@ -6,6 +6,11 @@
     z-index: 1;
 }
 
+.menu_wrapper {
+  display: flex;
+  flex: 1;
+}
+
 .menu_element {
     flex: 1;
     filter: saturate(0) brightness(0.1);
