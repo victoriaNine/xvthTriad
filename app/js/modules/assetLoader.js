@@ -45,11 +45,9 @@ class AssetLoader {
     } else {
       this.loaders = loaders;
       this.loading = true;
+      this.fileNb  = 0;
 
-      const promises = [];
-      this.loaders.forEach((loader) => {
-        promises.push(_loadFiles.call(this, loader));
-      });
+      const promises = this.loaders.map(_loadFiles.bind(this));
 
       Promise.all(promises).then((responses) => { // eslint-disable-line no-unused-vars
         this.completed = true;
@@ -64,11 +62,8 @@ class AssetLoader {
 }
 
 function _loadFiles (loader) {
-  const promises = [];
-  let promise;
-
-  loader.files.forEach((fileInfo) => {
-    let type      = fileInfo.type.split('.')[0];
+  const promises = loader.files.map((fileInfo) => {
+    let type = fileInfo.type.split('.')[0];
     if (type === "audio" && !fileInfo.name.match(".(ogg|mp3|wav)$")) {
       fileInfo.name += testAudioFormat("ogg") ? ".ogg" : testAudioFormat("mp3") ? ".mp3" : ".wav";
     }
@@ -77,17 +72,8 @@ function _loadFiles (loader) {
     let loadedModule = this.moduleLoaders[fileInfo.type](`./${fileInfo.name}`, true);
     let onLoad;
 
-    promise = new Promise((resolve, reject) => {
-      if (type === "img") {
-        const img = new Image();
-        img.onload = function () {
-          _onFileLoaded(img, fileInfo, loader.name);
-          resolve(img);
-        };
-        img.onprogress = progressHandler.bind(this, assetName);
-        img.onerror = reject;
-        img.src = loadedModule;
-      } else if (type === "data") {
+    let promise = new Promise((resolve, reject) => {
+      if (type === "data") {
         resolve(loadedModule);
       } else if (type === "text") {
         resolve(loadedModule);
@@ -95,6 +81,10 @@ function _loadFiles (loader) {
         const request = new XMLHttpRequest();
 
         switch (type) {
+          case "img":
+            request.responseType = "blob";
+            onLoad = _createImgNode.bind(null, loadedModule);
+            break;
           case "audio":
             request.responseType = "arraybuffer";
             onLoad = _decodeAudio.bind(null, fileInfo);
@@ -105,30 +95,38 @@ function _loadFiles (loader) {
             break;
         }
 
-        request.open("GET", loadedModule, true);
-        request.onload = function () {
-          new Promise((resolveSub, rejectSub) => { // eslint-disable-line no-unused-vars
-            return resolveSub(onLoad(request.response));
-          }).then((data) => {
+        request.onloadstart = () => { this.fileNb++; };
+        request.onload = () => {
+          onLoad(request.response).then((data) => {
             _onFileLoaded(data, fileInfo, loader.name);
             resolve(data);
           });
         };
 
-        request.onprogress = progressHandler.bind(this, assetName);
+        request.onprogress = _progressHandler.bind(this, loader.name, assetName);
         request.onerror = reject;
+        request.open("GET", loadedModule, true);
         request.send();
       }
     });
 
-    promises.push(promise);
+    return promise;
   });
 
-  function progressHandler (assetName, e) {
-    let total  = 0;
-    let loaded = 0;
+  return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
+    Promise.all(promises).then((responses) => { // eslint-disable-line no-unused-vars
+      _$.events.trigger(`loaderComplete:${loader.name}`);
+      resolve();
+    });
+  });
+}
 
-    this.loadProgress[loader.name + ":" + assetName] = e;
+function _progressHandler (loaderName, assetName, e) {
+  let total  = 0;
+  let loaded = 0;
+
+  this.loadProgress[`${loaderName}:${assetName}`] = e;
+  if (Object.keys(this.loadProgress).length === this.fileNb) {
     each(this.loadProgress, (progress) => {
       total  += progress.total;
       loaded += progress.loaded;
@@ -137,24 +135,25 @@ function _loadFiles (loader) {
     this.loaded = loaded;
     this.total  = total;
 
-    _$.events.trigger("loadProgress:" + loader.name + ":" + assetName, e.loaded, e.total);
+    _$.events.trigger(`loadProgress:${loaderName}:${assetName}`, e.loaded, e.total);
   }
-
-  return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
-    Promise.all(promises).then((responses) => { // eslint-disable-line no-unused-vars
-      _$.events.trigger("loaderComplete:" + loader.name);
-      resolve();
-    });
-  });
 }
 
 function _onFileLoaded (file, fileInfo, loaderName) {
-  const assetName = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
+  const assetName = fileInfo.name.split('.')[0];
   if (fileInfo.type !== "font") {
-    _$.assets.set(fileInfo.type + "." + assetName, file);
+    _$.assets.set(`${fileInfo.type}.${assetName}`, file);
   }
 
-  _$.events.trigger("fileLoaded:" + loaderName + ":" + assetName);
+  _$.events.trigger(`fileLoaded:${loaderName}:${assetName}`);
+}
+
+function _createImgNode (url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => resolve(img);
+  });
 }
 
 function _decodeAudio (fileInfo, data) {
@@ -168,14 +167,16 @@ function _decodeAudio (fileInfo, data) {
 }
 
 function _createSvgNode (fileInfo, data) {
-  const assetName         = fileInfo.name.slice(0, fileInfo.name.indexOf("."));
-  const htmlWrapper       = document.createElement("html");
-  htmlWrapper.innerHTML = data;
+  return new Promise((resolve) => {
+    const assetName       = fileInfo.name.split('.')[0];
+    const htmlWrapper     = document.createElement("html");
+    htmlWrapper.innerHTML = data;
 
-  const svgRoot = first(htmlWrapper.getElementsByTagName("svg"));
-  svgRoot.classList.add("svg-" + assetName);
+    const svgRoot = first(htmlWrapper.getElementsByTagName("svg"));
+    svgRoot.classList.add(`svg-${assetName}`);
 
-  return svgRoot;
+    resolve(svgRoot);
+  });
 }
 
 export default AssetLoader;
