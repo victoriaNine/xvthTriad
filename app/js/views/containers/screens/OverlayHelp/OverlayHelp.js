@@ -140,7 +140,7 @@ function showGuide (topicName) {
 
   let img;
   $(guide).find("figure").each((index, figure) => {
-    img = _$.assets.get("img.help." + topicName + (index + 1));
+    img = require(`Assets/img/help/${topicName + (index + 1)}.png`);
 
     if (img) {
       $(figure).prepend(img);

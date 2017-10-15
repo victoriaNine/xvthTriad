@@ -43,7 +43,7 @@ function validate (attributes, options) { // eslint-disable-line no-unused-vars
 }
 
 function setImagePath () {
-  const url = new URL(_$.assets.get("img.cards." + camelCase(this.get("name"))).src).pathname;
+  const url = require(`Assets/img/cards/${camelCase(this.get("name"))}.png`);
   this.set("image", "." + url);
 }
 

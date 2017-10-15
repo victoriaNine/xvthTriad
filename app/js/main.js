@@ -18,11 +18,6 @@ import Screen_Loading from 'Screens/Loading';
 import Screen_Title from 'Screens/Title';
 import Partial_Footer from 'Partials/Footer';
 
-import LoaderImgUI from 'Data/loaders/imgUI.json';
-import LoaderImgAvatars from 'Data/loaders/imgAvatars.json';
-import LoaderImgImgCards from 'Data/loaders/imgCards.json';
-import LoaderImgFlags from 'Data/loaders/imgFlags.json';
-import LoaderImgHelp from 'Data/loaders/imgHelp.json';
 import LoaderAudioBGM from 'Data/loaders/audioBGM.json';
 import LoaderAudioSFX from 'Data/loaders/audioSFX.json';
 
@@ -33,11 +28,6 @@ if (process.env.NODE_ENV==='production') {
 }
 
 const loaders = [
-  LoaderImgUI,
-  LoaderImgAvatars,
-  LoaderImgImgCards,
-  LoaderImgFlags,
-  LoaderImgHelp,
   LoaderAudioBGM,
   LoaderAudioSFX
 ];

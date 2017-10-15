@@ -6,6 +6,8 @@ import _$ from 'common';
 import Screen from 'Screens/Screen';
 import Templ_OverlayAbout from './template.ejs';
 
+import svgLogo from '!svg-inline-loader!Assets/svg/ui/logo.svg';
+
 export default Screen.extend({
   id       : "screen_overlayAbout",
   template : template(Templ_OverlayAbout),
@@ -83,7 +85,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   this.line = this.$(".about_line");
   this.logo = this.$(".about_logo");
 
-  this.logo.append($(_$.assets.get("svg.ui.logo")));
+  this.logo.append(svgLogo);
   if (!_$.audio.audioEngine.channels.master.volume) {
     this.$(".about_info-volume").addClass("is--disabled");
   }

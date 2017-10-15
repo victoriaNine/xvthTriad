@@ -8,6 +8,8 @@ import Screen from 'Screens/Screen';
 import Templ_Title from './template.ejs';
 import Templ_TitleAccount from './template_titleAccount.ejs';
 
+import svgLogo from '!svg-inline-loader!Assets/svg/ui/logo.svg';
+
 let self;
 
 export default Screen.extend({
@@ -110,7 +112,7 @@ function initialize (options = {}) {
   this.resetToken         = null;
 
   this.$el.html(this.template());
-  this.$(".title_logo").append($(_$.assets.get("svg.ui.logo")));
+  this.$(".title_logo").append(svgLogo);
 
   // If the flag for the initialization flow is on
   if (options.setup) {

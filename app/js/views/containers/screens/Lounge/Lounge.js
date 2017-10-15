@@ -6,6 +6,9 @@ import _$ from 'common';
 import Screen from 'Screens/Screen';
 import Templ_Lounge from './template.ejs';
 
+import svgLogo from '!svg-inline-loader!Assets/svg/ui/logo.svg';
+import avatarDefault from 'Assets/img/avatars/user_default.jpg';
+
 const URL_REGEXP = /((https?):\/\/)*([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/gi;
 
 export default Screen.extend({
@@ -149,13 +152,13 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   this.serviceMsgTempl   = this.$(".lounge_log-messages-message-info")[0].outerHTML;
   this.$(".lounge_userlist-element-user, .lounge_log-messages-message-user, .lounge_log-messages-message-info").remove();
 
-  this.$(".lounge_log-logo").append($(_$.assets.get("svg.ui.logo")));
+  this.$(".lounge_log-logo").append(svgLogo);
 
   this.writeWelcomeMessage();
   this.userlist._deletedUser = {
     userId : "_deletedUser",
     name   : "Deleted user",
-    avatar : _$.assets.get("img.avatars.user_default").src,
+    avatar : avatarDefault,
   };
 
   _$.comm.socketManager.emit("getLoungeUserlist", null, (data) => {

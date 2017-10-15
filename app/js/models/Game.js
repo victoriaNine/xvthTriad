@@ -6,6 +6,10 @@ import Model_Card from 'Models/Card';
 import Model_Player from 'Models/Player';
 import Model_AI from 'Models/AI';
 
+import avatarCarbuncle from 'Assets/img/avatars/computer_carbuncle.jpg';
+import avatarGentiana from 'Assets/img/avatars/computer_gentiana.jpg';
+import avatarBahamut from 'Assets/img/avatars/computer_bahamut.jpg';
+
 const BOARD_SIZE      = 9;
 const MAX_ELEMENTS    = 5;
 const ELEMENTS        = ["fire", "ice", "water", "thunder", "rock", "wind", "poison", "light", "dark"];
@@ -227,19 +231,19 @@ function setupComputer () {
   switch (this.get("difficulty")) {
     case "easy":
       config.name   = "Carbuncle";
-      config.avatar = _$.assets.get("img.avatars.computer_carbuncle").src;
+      config.avatar = avatarCarbuncle;
       cardMinLevel  = 1;
       cardMaxLevel  = 1;
       break;
     case "normal":
       config.name   = "Gentiana";
-      config.avatar = _$.assets.get("img.avatars.computer_gentiana").src;
+      config.avatar = avatarGentiana;
       cardMinLevel  = 1;
       cardMaxLevel  = 2;
       break;
     case "hard":
       config.name   = "Bahamut";
-      config.avatar = _$.assets.get("img.avatars.computer_bahamut").src;
+      config.avatar = avatarBahamut;
       cardMinLevel  = 1;
       cardMaxLevel  = 3;
       break;
@@ -719,7 +723,7 @@ function checkBasicFlip (cardA, cardB, side) {
 
     return false;
   }
-  
+
   return false;
 }
 

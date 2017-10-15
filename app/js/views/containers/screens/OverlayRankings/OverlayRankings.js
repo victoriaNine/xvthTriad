@@ -6,6 +6,9 @@ import _$ from 'common';
 import Screen from 'Screens/Screen';
 import Templ_OverlayRankings from './template.ejs';
 
+import svgLogo from '!svg-inline-loader!Assets/svg/ui/logo.svg';
+import avatarDefault from 'Assets/img/avatars/user_default.jpg';
+
 const RANKINGS = ["aceOfCards", "theCollector"];
 
 export default Screen.extend({
@@ -33,7 +36,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   Screen.prototype.initialize.call(this);
 
   this.$el.html(this.template());
-  this.$(".rankings_leaderboard-logo").append($(_$.assets.get("svg.ui.logo")));
+  this.$(".rankings_leaderboard-logo").append(svgLogo);
 
   this.defaultRanking = RANKINGS[0];
   this.currentRanking = null;
@@ -138,7 +141,7 @@ function close () {
 
 function setupRanking (rankingData) {
   const leader        = rankingData.ranks[0];
-  const defaultAvatar = _$.assets.get("img.avatars.user_default").src;
+  const defaultAvatar = avatarDefault;
 
   // We add the ranking to the list of rankings
   const rankingListDom = $(this.rankingListTmpl).addClass("ranking-" + rankingData.name);

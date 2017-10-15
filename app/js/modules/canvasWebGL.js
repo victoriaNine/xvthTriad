@@ -27,11 +27,11 @@ const noiseSettings    = { time: 1 };
 const vignetteSettings = { amount: 1 };
 const displaceSettings = { x: 0, y: 0 };
 
-let bgImg;
-let bgDepthMap;
+let bgImg = new Image();
+let bgDepthMap = new Image();
+let bgFlare = new Image();
+let bgPattern = new Image();
 let bgSettings;
-let bgFlare;
-let bgPattern;
 let seriously;
 let targetNode;
 let reformatNode;
@@ -63,10 +63,11 @@ class CanvasWebGL {
     }
 
     this.initialized = true;
-    bgImg        = _$.assets.get("img.ui.bg");
-    bgDepthMap   = _$.assets.get("img.ui.bgDepthMap");
-    bgFlare      = _$.assets.get("img.ui.bgFlare");
-    bgPattern    = ctx2d.createPattern(_$.assets.get("img.ui.bgPattern"), "repeat");
+    bgImg.src = require(`Assets/img/ui/bg.jpg`);
+    bgDepthMap.src = require(`Assets/img/ui/bgDepthMap.png`);
+    bgFlare.src = require(`Assets/img/ui/bgFlare.png`);
+    bgPattern.onload = () => { bgPattern = ctx2d.createPattern(bgPattern, "repeat"); };
+    bgPattern.src = require(`Assets/img/ui/bgPattern.png`);
     bgSettings   = {
       INITIAL_X1: 161,
       INITIAL_X2: 2321,

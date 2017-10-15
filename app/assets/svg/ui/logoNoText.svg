@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 425 330" enable-background="new 0 0 425 330" xml:space="preserve">
+<svg class="svg-logoNoText" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 425 330" enable-background="new 0 0 425 330" xml:space="preserve">
 	<g>
 		<path fill="none" d="M91.591,193.353c0.001,0,0.06,0.061,0.06,0.061v-0.084C91.63,193.337,91.613,193.345,91.591,193.353
 			L91.591,193.353z"/>
@@ -176,7 +176,7 @@
 		<path d="M109.707,52.505c-1.107-0.212-1.908-1.399-3.204-1.005C107.447,52.229,108.287,53.292,109.707,52.505z"/>
 		<path d="M151.354,34.573c-0.047-1.264,0.988-2.546-0.117-4.591c-0.662,2.011-1.094,3.322-1.526,4.632h0.001
 			C150.24,33.885,150.789,33.896,151.354,34.573z"/>
-		
+
 			<line fill="none" stroke="#000000" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" x1="54.588" y1="109.746" x2="54.589" y2="109.746"/>
 		<path d="M53.601,108.548c0.329,0.399,0.658,0.798,0.988,1.197c1.708-0.308,3.555-0.018,5.064-1.18
 			c-0.952,0.369-2.014,0.998-2.002-0.865L53.601,108.548z"/>
@@ -244,7 +244,7 @@
 			c-0.003-0.002-0.005-0.004-0.008-0.006c-0.002,0.004-0.003,0.008-0.006,0.012c0.005-0.002,0.009-0.006,0.013-0.006
 			C139.743,308.595,139.791,308.624,139.839,308.653z"/>
 		<polygon points="139.646,308.538 139.646,308.538 139.646,308.536 		"/>
-		
+
 			<line fill="none" stroke="#000000" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" x1="39.764" y1="96.588" x2="39.762" y2="96.589"/>
 		<path d="M419.254,162.547c-0.33,0.408-0.66,0.817-0.988,1.225c2.182,13.18-2.023,23.615-13.471,30.773
 			c-3.793,2.371-7.68,4.742-11.807,6.408c-13.713,5.541-27.641,5.707-41.635,0.885c3.945-1.018,7.934-1.611,11.893-2.357

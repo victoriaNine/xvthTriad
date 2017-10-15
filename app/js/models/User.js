@@ -4,6 +4,8 @@ import Backbone from 'backbone';
 import _$ from 'common';
 import Coll_Album from 'Collections/Album';
 
+import avatarDefault from 'Assets/img/avatars/user_default.jpg';
+
 export default Backbone.Model.extend({
   defaults : {
     userId         : null,
@@ -49,7 +51,7 @@ function initialize () {
 
   _$.events.once("userDataLoaded", () => {
     if (!this.get("avatar") && !this.avatarURL) {
-      const avatarUrl = _$.assets.get("img.avatars.user_default").src;
+      const avatarUrl = avatarDefault;
       this.setAvatarPath(avatarUrl);
     }
   });
@@ -58,7 +60,7 @@ function initialize () {
 function setup (options) { // eslint-disable-line no-unused-vars
   const name          = _$.utils.getRandomName();
   const characterName = name.match(/[^_\d]/g).join("");
-  const avatarUrl     = _$.assets.get("img.avatars.user_" + characterName.toLowerCase()).src;
+  const avatarUrl     = require(`Assets/img/avatars/user_${characterName.toLowerCase()}.jpg`);
 
   this.set({ name });
   this.resetAlbum();
@@ -70,7 +72,7 @@ function setup (options) { // eslint-disable-line no-unused-vars
 
 function setAvatarPath (url) {
   this.avatarURL = url;
-  
+
   return _$.utils.getBase64Image(url).then((base64URL) => {
     this.set({ avatar: base64URL });
 

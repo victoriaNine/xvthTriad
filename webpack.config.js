@@ -25,6 +25,8 @@ const config = {
 
   resolve: {
     alias: {
+      Assets: path.resolve(BASE_PATH, "assets/"),
+
       Collections: path.resolve(BASE_PATH, "js/collections/"),
       Data: path.resolve(BASE_PATH, "js/data/"),
       Models: path.resolve(BASE_PATH, "js/models/"),

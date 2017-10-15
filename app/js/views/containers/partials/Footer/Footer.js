@@ -10,6 +10,8 @@ import Screen_OverlayHelp from 'Screens/OverlayHelp';
 import Screen_OverlayAbout from 'Screens/OverlayAbout';
 import Templ_Footer from './template.ejs';
 
+import svgLogo from '!svg-inline-loader!Assets/svg/ui/logo.svg';
+
 export default Backbone.View.extend({
   tagName  : "footer",
   id       : "footer",
@@ -98,7 +100,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     text   : []
   };
 
-  this.logo.append($(_$.assets.get("svg.ui.logo")));
+  this.logo.append(svgLogo);
 }
 
 function toggleMainMenu (nextScreen, noTracking, toSection) {

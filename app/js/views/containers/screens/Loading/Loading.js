@@ -1,10 +1,12 @@
 import $ from 'jquery';
 import { template } from 'lodash';
-import { TweenMax, TimelineMax } from 'gsap';
+import { TimelineMax } from 'gsap';
 
 import _$ from 'common';
 import Screen from 'Screens/Screen';
 import Templ_Loading from './template.ejs';
+
+import svgLogoNoText from '!svg-inline-loader!Assets/svg/ui/logoNoText.svg';
 
 export default Screen.extend({
   id       : "screen_loading",
@@ -19,7 +21,6 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   this.loadPercentage = 0;
   this.canvasAssets   = 0;
   this.$el.html(this.template());
-  TweenMax.set([this.$(".loading_bg, .loading_wrapper")], { opacity: 0 });
 
   _$.events.on("loadProgress", () => {
     const percentage = _$.app.assetLoader.getPercentage();
@@ -28,26 +29,6 @@ function initialize (options) { // eslint-disable-line no-unused-vars
       this.loadPercentage = percentage;
       this.$(".loading_line").css({ transform: `scaleX(${this.loadPercentage / 100})` });
     }
-  });
-
-  _$.events.on("fileLoaded:imgUI", (event) => {
-    if (event.originEventName === "fileLoaded:imgUI:bg" ||
-      event.originEventName === "fileLoaded:imgUI:bgDepthMap" ||
-      event.originEventName === "fileLoaded:imgUI:bgPattern" ||
-      event.originEventName === "fileLoaded:imgUI:bgFlare"
-    ) {
-      this.canvasAssets++;
-      _checkCanvasAssets.call(this);
-    }
-  });
-
-  _$.events.once("fileLoaded:imgUI:bg", () => {
-    TweenMax.set(this.$(".loading_bg"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity", delay: 1 });
-  });
-
-  _$.events.once("fileLoaded:imgUI:logoNoText", () => {
-    this.$(".loading_logo").append($(_$.assets.get("svg.ui.logoNoText")));
-    TweenMax.set(this.$(".loading_wrapper"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity", delay: 0.5 });
   });
 
   _$.events.once("allLoadersComplete", () => {
@@ -76,21 +57,22 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     }
   });
 
-  TweenMax.set(_$.dom, { opacity: 1, clearProps: "opacity" });
+  this.$(".loading_logo").append(svgLogoNoText);
+
+  const tl = new TimelineMax();
+  tl.set([this.$(".loading_bg, .loading_wrapper")], { opacity: 0 });
+  tl.set(_$.dom, { opacity: 1, clearProps: "opacity" });
+  tl.set(this.$(".loading_wrapper"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity" }, 0.5);
+  tl.set(this.$(".loading_bg"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity" }, 1);
+
+  if (_$.app.env.deviceType !== "mobile") {
+    _$.ui.canvas.init();
+  }
+
   _preloadFonts.call(this);
   this.add();
 
   _$.app.assetLoader.load(options.loaders);
-}
-
-function _checkCanvasAssets () {
-  if (this.canvasAssets === 4) {
-    _$.events.off("fileLoaded:imgUI");
-
-    if (_$.app.env.deviceType !== "mobile") {
-      _$.ui.canvas.init();
-    }
-  }
 }
 
 function _preloadFonts () {

@@ -11,6 +11,8 @@ import Comp_EndGameCard from 'Components/EndGameCard';
 import Comp_Card from 'Components/Card';
 import Templ_Game from './template.ejs';
 
+import svgCardBG from '!svg-inline-loader!Assets/svg/ui/cardBG.svg';
+
 export default Screen.extend({
   id       : "screen_game",
   template : template(Templ_Game),
@@ -107,7 +109,7 @@ function initialize (options = {}) {
     else { _$.events.once("boardSet", this.setupElementBoard, this); }
   }
 
-  this.$(".game_deck-holder").append($(_$.assets.get("svg.ui.cardBG")));
+  this.$(".game_deck-holder").append(svgCardBG);
 
   concat(this.players.user.get("deck"), this.players.opponent.get("deck")).forEach((cardModel, index, deck) => {
     renderCard.call(this, cardModel, index % (deck.length / 2));

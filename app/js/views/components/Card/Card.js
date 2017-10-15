@@ -1,10 +1,11 @@
-import $ from 'jquery';
 import { template, isNil } from 'lodash';
 import Backbone from 'backbone';
 import { TimelineMax } from 'gsap';
 
 import _$ from 'common';
 import Templ_Card from './template.ejs';
+
+import svgCardBG from '!svg-inline-loader!Assets/svg/ui/cardBG.svg';
 
 export default Backbone.View.extend({
   tagName   : "div",
@@ -18,7 +19,7 @@ export default Backbone.View.extend({
 
 function initialize (attributes, options = {}) {
   this.$el.html(this.template(this.model.attributes));
-  this.$(".card-front").prepend($(_$.assets.get("svg.ui.cardBG")));
+  this.$(".card-front").prepend(svgCardBG);
 
   if (_$.state.user.isInGame) {
     this.deckIndex = isNil(attributes.deckIndex) ? -1 : attributes.deckIndex;

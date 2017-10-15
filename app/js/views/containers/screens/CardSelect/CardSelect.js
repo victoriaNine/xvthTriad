@@ -7,6 +7,8 @@ import Screen from 'Screens/Screen';
 import Comp_AlbumCard from 'Components/AlbumCard';
 import Templ_CardSelect from './template.ejs';
 
+import svgCardBG from '!svg-inline-loader!Assets/svg/ui/cardBG.svg';
+
 const CARDS_PER_LINE = 9;
 
 export default Screen.extend({
@@ -61,7 +63,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     uniqueCopiesCount : this.uniqueCopies.length
   }));
 
-  this.$(".cardSelect_header-deck-holder").append($(_$.assets.get("svg.ui.cardBG")));
+  this.$(".cardSelect_header-deck-holder").append(svgCardBG);
 
   this.createAlbumCardViews();
   _$.utils.addDomObserver(this.$el, this.transitionIn.bind(this), true);
