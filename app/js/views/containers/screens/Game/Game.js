@@ -24,7 +24,7 @@ export default Screen.extend({
       }
       TweenMax.set(e.currentTarget, { scale: "1.1" });
     },
-    "mouseleave #cardsContainer .card-blue"                  : function (e) { TweenMax.set(e.currentTarget, { scale: "1" }); },
+    "mouseleave #cardsContainer .card-blue" : function (e) { TweenMax.set(e.currentTarget, { scale: "1" }); },
     "click .game_overlay-endGame-confirmBtn" : function ()  {
       this.postGameAction();
       _$.audio.audioEngine.playSFX("uiConfirm");
@@ -290,6 +290,7 @@ function dragCardStart (e, cardView) {
 
   function dragCardStop (e) {
     $(window).off("mousemove touchmove", dragCard);
+    $(window).off("mouseup touchend", dragCardStop);
     that.isDraggingCard = false;
 
     const pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;

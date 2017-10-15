@@ -147,6 +147,7 @@ function dragCardStart (e, cardCopy) {
 
   function dragCardStop (e) {
     $(window).off("mousemove touchmove", dragCard);
+    $(window).off("mouseup touchend", dragCardStart);
     that.isDraggingCard = false;
 
     const pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
