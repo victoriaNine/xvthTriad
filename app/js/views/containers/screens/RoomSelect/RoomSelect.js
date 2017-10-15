@@ -268,7 +268,7 @@ function validateInput (input) {
 }
 
 function showHelp (msgName, asIs) {
-  const defaultMsg = "Give a name to the room you want to create, or enter the name of the room you want to join.";
+  const defaultMsg = "Give a name to the room you want to create, or enter the name of the room you want to join to play with a friend.";
   let text;
 
   if (!msgName) {
