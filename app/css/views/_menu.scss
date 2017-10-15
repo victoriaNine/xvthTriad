@@ -26,9 +26,13 @@
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 90%);
     }
 
-    &:not(.is--disabled):hover, &.is--active, &:not(.is--disabled).is--hover, html.isMobile &:not(.is--disabled) {
+    &:not(.is--disabled):hover, &.is--active, &:not(.is--disabled).is--hover {
         filter: saturate(1) brightness(1);
         cursor: pointer;
+    }
+
+    html.isMobile & {
+        filter: none;
     }
 
     &-bg {
