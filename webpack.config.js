@@ -99,6 +99,7 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: './favicon.ico', to: './' },
+      { from: './manifest.json', to: './' },
       { from: './robots.txt', to: './' },
       { from: './assets/img/icons/*', to: './' },
     ]),

@@ -2,7 +2,6 @@ import 'babel-polyfill';
 
 import $ from 'jquery';
 import Stats from 'stats.js';
-import { TweenMax } from 'gsap';
 import 'jquery-nearest';
 
 import _$ from 'common';
@@ -194,7 +193,6 @@ _$.debug.log("event triggered:", event.name, event);
 _$.events.once("launch", () => {
   _$.ui.footer = new Partial_Footer();
   _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
-  _$.events.trigger("addFX");
 
   $(window).on("beforeunload", (e) => {
     return _$.ui.screen.showSavePrompt(e);
@@ -234,7 +232,6 @@ _$.events.once("scalarUpdate", () => {
   _$.ui.screen               = new Screen_Loading({ loaders });
 });
 
-TweenMax.set(_$.dom, { opacity : 0 });
 setupScale();
 
 if (_$.debug.debugMode) {

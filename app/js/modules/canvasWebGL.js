@@ -51,6 +51,8 @@ class CanvasWebGL {
     this.dom         = canvas3d;
     this.initialized = false;
 
+    WIDTH            = document.body.offsetWidth;
+    HEIGHT           = document.body.offsetHeight;
     $(this.dom).attr({ width: WIDTH, height: HEIGHT });
   }
 

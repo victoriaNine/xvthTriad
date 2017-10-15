@@ -65,6 +65,10 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     _$.comm.socketManager.init();
 
     function proceed () {
+      if (_$.app.env.deviceType !== "mobile") {
+        _$.events.trigger("addFX");
+      }
+
       const tl = new TimelineMax();
       tl.call(() => { _$.events.trigger("launch"); }, [], null, this.transitionSettings.slides);
       tl.set(this.$el, { opacity: 0, scale: 1.25, transition: `opacity ${this.transitionSettings.slides * 2}s, transform ${this.transitionSettings.slides * 2}s` }, `+=${this.transitionSettings.slides}`);
@@ -72,7 +76,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     }
   });
 
-  TweenMax.set(_$.dom, { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity,transition" });
+  TweenMax.set(_$.dom, { opacity: 1, clearProps: "opacity" });
   _preloadFonts.call(this);
   this.add();
 
@@ -82,10 +86,9 @@ function initialize (options) { // eslint-disable-line no-unused-vars
 function _checkCanvasAssets () {
   if (this.canvasAssets === 4) {
     _$.events.off("fileLoaded:imgUI");
-    _$.ui.canvas.init();
 
-    if (_$.app.env.deviceType === "mobile") {
-      _$.state.FX_LEVEL = 2;
+    if (_$.app.env.deviceType !== "mobile") {
+      _$.ui.canvas.init();
     }
   }
 }
