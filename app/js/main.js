@@ -205,6 +205,13 @@ _$.events.once("launch", () => {
       _$.audio.audioEngine.channels.master.unmute(true);
     }
   });
+
+  // Prevent rubberband scrolling on touch devices
+  document.body.addEventListener("touchmove", (e) => {
+    if (e.targetTouches.length === 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
 });
 
 _$.events.on("gamepadOn",  () => { _$.controls.type = "gamepad"; });
