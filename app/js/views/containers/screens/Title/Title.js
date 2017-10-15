@@ -311,9 +311,8 @@ function playIntro () {
   });
 
   this.introTL = new TimelineMax();
-  const logoTl   = new TimelineMax();
+  const logoTl = new TimelineMax();
 
-  this.introTL.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });
   this.introTL.set(map(logoPaths, "path"), { attr: { fill: "rgba(255, 255, 255, 0)", stroke: "rgba(255, 255, 255, 0)", strokeWidth: 0 } }, 0);
   this.introTL.to(map(logoPaths, "path"), 2, { attr: { stroke: "rgba(255, 255, 255, 1)" } }, 1);
   this.introTL.call(() => { _$.audio.audioEngine.playSFX("titleLogo", { volume: 0.5 }); }, [], null, 0);

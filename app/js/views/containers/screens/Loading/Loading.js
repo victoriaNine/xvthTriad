@@ -19,37 +19,39 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   this.loadPercentage = 0;
   this.canvasAssets   = 0;
   this.$el.html(this.template());
-  TweenMax.set([this.$(".loading_bg, .loading_wrapper"), _$.ui.canvas.dom], { opacity: 0 });
+  TweenMax.set([this.$(".loading_bg, .loading_wrapper")], { opacity: 0 });
 
   _$.events.on("loadProgress", () => {
-    if (_$.app.assetLoader.getPercentage() > this.loadPercentage) {
-      this.loadPercentage = _$.app.assetLoader.getPercentage();
-      TweenMax.set(this.$(".loading_line"), { width: this.loadPercentage + "%" });
+    const percentage = _$.app.assetLoader.getPercentage();
+
+    if (percentage > this.loadPercentage) {
+      this.loadPercentage = percentage;
+      this.$(".loading_line").css({ transform: `scaleX(${this.loadPercentage / 100})` });
     }
   });
 
   _$.events.on("fileLoaded:imgUI", (event) => {
     if (event.originEventName === "fileLoaded:imgUI:bg" ||
-    event.originEventName === "fileLoaded:imgUI:bgDepthMap" ||
-    event.originEventName === "fileLoaded:imgUI:bgPattern" ||
-    event.originEventName === "fileLoaded:imgUI:bgFlare") {
+      event.originEventName === "fileLoaded:imgUI:bgDepthMap" ||
+      event.originEventName === "fileLoaded:imgUI:bgPattern" ||
+      event.originEventName === "fileLoaded:imgUI:bgFlare"
+    ) {
       this.canvasAssets++;
       _checkCanvasAssets.call(this);
     }
   });
 
   _$.events.once("fileLoaded:imgUI:bg", () => {
-    TweenMax.to(this.$(".loading_bg"), 1, { opacity: 1, clearProps: "opacity", delay: 1 });
+    TweenMax.set(this.$(".loading_bg"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity", delay: 1 });
   });
 
   _$.events.once("fileLoaded:imgUI:logoNoText", () => {
     this.$(".loading_logo").append($(_$.assets.get("svg.ui.logoNoText")));
-    TweenMax.to(this.$(".loading_wrapper"), 1, { opacity: 1, clearProps: "opacity" });
+    TweenMax.set(this.$(".loading_wrapper"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity", delay: 0.5 });
   });
 
   _$.events.once("allLoadersComplete", () => {
     _$.events.off("loadProgress");
-    $(".preloadFont").remove();
 
     _$.events.once("socketReady", (event, data) => {
       _$.comm.sessionManager.once("initialized", () => {
@@ -65,14 +67,16 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     function proceed () {
       const tl = new TimelineMax();
       tl.call(() => { _$.events.trigger("launch"); }, [], null, this.transitionSettings.slides);
-      tl.to(this.$el, this.transitionSettings.slides, { opacity: 0, scale: 1.25 }, `+=${this.transitionSettings.slides}`);
-      tl.call(() => { this.remove(); });
+      tl.set(this.$el, { opacity: 0, scale: 1.25, transition: `opacity ${this.transitionSettings.slides * 2}s, transform ${this.transitionSettings.slides * 2}s` }, `+=${this.transitionSettings.slides}`);
+      tl.call(() => { this.remove(); }, [], null, `+=${this.transitionSettings.slides * 2}`);
     }
   });
 
-  TweenMax.to(_$.dom, 2, { opacity : 1, clearProps: "opacity" });
-  _preloadFonts();
+  TweenMax.set(_$.dom, { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity,transition" });
+  _preloadFonts.call(this);
   this.add();
+
+  _$.app.assetLoader.load(options.loaders);
 }
 
 function _checkCanvasAssets () {
@@ -83,20 +87,18 @@ function _checkCanvasAssets () {
     if (_$.app.env.deviceType === "mobile") {
       _$.state.FX_LEVEL = 2;
     }
-
-    _$.events.trigger("addFX");
-    TweenMax.to(_$.ui.canvas.dom, 2, { opacity : 1, clearProps: "opacity", delay: 1 });
   }
 }
 
 function _preloadFonts () {
-  const fonts = [
-    { name: "AvantGarde LT", weights : [200, 500, 700] },
-    { name: "socicon", weights : ["normal"] }
-  ];
+  const glyphs = String.fromCharCode("0xf09a") + String.fromCharCode("0xf099") +
+    String.fromCharCode("0xf281") + String.fromCharCode("0xf173") +
+    String.fromCharCode("0xf028") + String.fromCharCode("0xf026");
 
-  const glyphs = String.fromCharCode("0xe041") + String.fromCharCode("0xe040") +
-    String.fromCharCode("0xe022") + String.fromCharCode("0xe059");
+  const fonts = [
+    { name: "AvantGarde LT", weights: [200, 500, 700], text: 'preLoad' },
+    { name: "FontAwesome", weights: ["normal"], text: glyphs }
+  ];
 
   fonts.forEach((font) => {
     font.weights.forEach((weight) => {
@@ -104,7 +106,7 @@ function _preloadFonts () {
         fontFamily: font.name,
         fontWeight: weight,
         opacity: 0
-      }).text(font.name === "socicon" ? glyphs : "preLoad").appendTo($("body"));
+      }).text(font.text).appendTo(this.$el);
     });
   });
 }

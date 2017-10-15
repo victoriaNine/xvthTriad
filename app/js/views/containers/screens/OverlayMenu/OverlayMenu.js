@@ -12,10 +12,10 @@ export default Screen.extend({
   events   : {
     /* eslint-disable object-shorthand */
     "mouseenter .menu_element" : function (e) {
-      TweenMax.to($(e.currentTarget).find(".menu_element-bg"), 0.2, { y: -50 });
+      TweenMax.set($(e.currentTarget).find(".menu_element-bg"), { y: -50 });
     },
     "mouseleave .menu_element" : function (e) {
-      TweenMax.to($(e.currentTarget).find(".menu_element-bg"), 0.2, { y: 0, clearProps: "all" });
+      TweenMax.set($(e.currentTarget).find(".menu_element-bg"), { clearProps: "transform" });
     },
     "mouseenter .menu_element:not(.is--disabled)" : function () {
       _$.audio.audioEngine.playSFX("menuHover");
@@ -64,6 +64,12 @@ function transitionIn () {
     this.transitionSettings.staggers,
     this.transitionSettings.slides * 2
   );
+  tl.to(
+    this.$(".menu_wrapper"),
+    this.transitionSettings.slides,
+    { backgroundColor: "rgba(0, 0, 0, 1)" },
+    `-=${this.transitionSettings.slides * 3}`
+  );
   tl.call(() => {
     _$.events.trigger("startUserEvents");
     _$.events.trigger("mainMenuOpen");
@@ -90,6 +96,12 @@ function transitionOut (nextScreen) {
     { opacity: 0 },
     -1 * this.transitionSettings.staggers,
     this.transitionSettings.slides * 2
+  );
+  tl.to(
+    this.$(".menu_wrapper"),
+    this.transitionSettings.slides,
+    { backgroundColor: "rgba(0, 0, 0, 0)" },
+    `-=${this.transitionSettings.slides * 2}`
   );
   tl.call(onTransitionComplete.bind(this));
 

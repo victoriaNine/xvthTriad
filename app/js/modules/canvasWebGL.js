@@ -50,6 +50,8 @@ class CanvasWebGL {
   constructor () {
     this.dom         = canvas3d;
     this.initialized = false;
+
+    $(this.dom).attr({ width: WIDTH, height: HEIGHT });
   }
 
   init () {
@@ -142,13 +144,13 @@ class CanvasWebGL {
           });
         }
       });
+
+      seriously.go();
+      rAF = requestAnimationFrame(draw);
     });
 
     _$.events.on("resize", onResize);
     onResize();
-
-    seriously.go();
-    rAF = requestAnimationFrame(draw);
   }
 }
 

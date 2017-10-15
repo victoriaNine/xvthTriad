@@ -2,9 +2,15 @@
 /* ANIMATIONS
 /*=======================*/
 @keyframes extendText {
-  0%   { opacity:0; letter-spacing: 0; }
-  10%, 20%  { opacity:1; }
-  75%, 100%  { opacity:0; letter-spacing: 0.75em; }
+  0% { opacity:0; letter-spacing: 0; }
+  10%, 20% { opacity:1; }
+  75%, 100% { opacity:0; letter-spacing: 0.75em; }
+}
+
+@keyframes opacityTween {
+  0% { opacity:0; }
+  10%, 20% { opacity:1; }
+  75%, 100% { opacity:0; }
 }
 
 @keyframes cursorMove {

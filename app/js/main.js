@@ -58,8 +58,8 @@ function setupScale () {
     screen.actualWidth  = window.screen.width * devicePixelRatio;
     screen.actualHeight = window.screen.height * devicePixelRatio;
 
-    const scalar           = 1 / devicePixelRatio;
-    const offset           = (devicePixelRatio * 100 - 100) / 2;
+    const scalar = 1 / devicePixelRatio;
+    const offset = (devicePixelRatio * 100 - 100) / 2;
 
     if (forceSize) {
       html.style.transformOrigin = "0 0";
@@ -74,7 +74,7 @@ function setupScale () {
       _$.state.appScalar = 1;
     }
 
-    body.style.transform = "scale(" + scalar + ") translate(-" + offset + "%, -" + offset + "%)";
+    body.style.transform = `scale(${scalar}) translate(-${offset}%, -${offset}%)`;
 
     function reScale () {
       const fullWidth  = window.innerWidth * devicePixelRatio;
@@ -93,7 +93,7 @@ function setupScale () {
         html.style.height = ORIGINAL_SIZE.height + "px";
       }
 
-      html.style.transform = "scale(" + scalar + ")";
+      html.style.transform = `scale(${scalar})`;
       _$.events.trigger("scalarUpdate", scalar);
     }
   }
@@ -183,28 +183,6 @@ if (location.pathname !== "/") {
   window.history.replaceState({}, "", "/");
 }
 
-TweenMax.set(_$.dom, { opacity : 0 });
-setupScale();
-
-if (_$.debug.debugMode) {
-  setupStats();
-}
-
-if (mobileCheck()) {
-  $("html").addClass("isMobile");
-  _$.app.env.deviceType = "mobile";
-}
-
-if (phoneCheck())  {
-  $("html").addClass("isPhone");
-  _$.app.env.mobileDeviceType = "mobile";
-}
-
-if (tabletCheck()) {
-  $("html").addClass("isTablet");
-  _$.app.env.mobileDeviceType = "tablet";
-}
-
 /*_$.events.on("all", function (event, ...data) {
 if (data.length) {
 _$.debug.log("event triggered:", event.name, event, data);
@@ -216,6 +194,7 @@ _$.debug.log("event triggered:", event.name, event);
 _$.events.once("launch", () => {
   _$.ui.footer = new Partial_Footer();
   _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
+  _$.events.trigger("addFX");
 
   $(window).on("beforeunload", (e) => {
     return _$.ui.screen.showSavePrompt(e);
@@ -243,14 +222,36 @@ _$.events.once("launch", () => {
 _$.events.on("gamepadOn",  () => { _$.controls.type = "gamepad"; });
 _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
 
-_$.controls.type           = "mouse";
-_$.controls.gamepadManager = new GamepadManager();
-_$.app.updateManager       = new UpdateManager();
-_$.app.assetLoader         = new AssetLoader();
-_$.audio.audioEngine       = new AudioEngine();
-_$.comm.socketManager      = new SocketManager();
-_$.comm.sessionManager     = new Superlogin(_$.app.sessionConfig, true);
-_$.ui.canvas               = new CanvasWebGL();
-_$.ui.screen               = new Screen_Loading();
+_$.events.once("scalarUpdate", () => {
+  _$.controls.type           = "mouse";
+  _$.controls.gamepadManager = new GamepadManager();
+  _$.app.updateManager       = new UpdateManager();
+  _$.app.assetLoader         = new AssetLoader();
+  _$.audio.audioEngine       = new AudioEngine();
+  _$.comm.socketManager      = new SocketManager();
+  _$.comm.sessionManager     = new Superlogin(_$.app.sessionConfig, true);
+  _$.ui.canvas               = new CanvasWebGL();
+  _$.ui.screen               = new Screen_Loading({ loaders });
+});
 
-_$.app.assetLoader.load(loaders);
+TweenMax.set(_$.dom, { opacity : 0 });
+setupScale();
+
+if (_$.debug.debugMode) {
+  setupStats();
+}
+
+if (mobileCheck()) {
+  $("html").addClass("isMobile");
+  _$.app.env.deviceType = "mobile";
+}
+
+if (phoneCheck())  {
+  $("html").addClass("isPhone");
+  _$.app.env.mobileDeviceType = "mobile";
+}
+
+if (tabletCheck()) {
+  $("html").addClass("isTablet");
+  _$.app.env.mobileDeviceType = "tablet";
+}

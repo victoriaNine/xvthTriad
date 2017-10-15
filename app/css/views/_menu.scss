@@ -36,6 +36,7 @@
         background: $color_lightGrey 50% 100% no-repeat;
         top:0;
         left:0;
+        transition: transform  0.2s;
     }
 
     &-title {
