@@ -9,7 +9,7 @@ import path from 'path';
 import packageConfig from './package.json';
 
 const ENV = process.env.NODE_ENV || 'development';
-const CSS_MAPS = ENV!=='production';
+const IS_DEV = ENV!=='production';
 const MAINTENANCE = process.argv.includes('maintenance=true');
 const BASE_PATH = path.resolve(__dirname, "app/");
 
@@ -56,12 +56,12 @@ const config = {
           use: [
             {
               loader: 'css-loader',
-              options: { modules: false, sourceMap: CSS_MAPS, importLoaders: 1 }
+              options: { modules: false, sourceMap: IS_DEV, importLoaders: 1, minimize: !IS_DEV }
             },
             {
               loader: `sass-loader`,
               options: {
-                sourceMap: CSS_MAPS
+                sourceMap: IS_DEV
               }
             }
           ]
@@ -92,7 +92,7 @@ const config = {
       __VERSION__: JSON.stringify(packageConfig.version),
       __VERSION_NAME__: JSON.stringify(packageConfig.versionName),
       __VERSION_FLAG__: JSON.stringify(packageConfig.versionFlag),
-      __IS_DEV__: ENV === 'development',
+      __IS_DEV__: IS_DEV,
     }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
@@ -105,7 +105,7 @@ const config = {
       { from: './robots.txt', to: './' },
       { from: './assets/img/icons/*', to: './' },
     ]),
-  ].concat(ENV==='production' ? [
+  ].concat(!IS_DEV ? [
     new webpack.optimize.UglifyJsPlugin({
       output: {
         comments: false
@@ -139,7 +139,7 @@ const config = {
     new CompressionPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',
-      test: /\.js$|\.css$|\.html$/,
+      test: /\.(js|css|html)$/,
       threshold: 10240,
       minRatio: 0.8
     }),

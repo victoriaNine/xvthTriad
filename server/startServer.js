@@ -74,9 +74,16 @@ export default function startServer () {
   // Mount SuperLogin's routes to our app
   app.use("/auth", superlogin.router);
 
-  app.use(webpackDevMiddleware(compiler, {
-    publicPath: webpackConfig.output.publicPath
-  }));
+  // Enable gzip compression
+  app.get("*.js", (req, res, next) => {
+    req.url = req.url + ".gz";
+    res.set("Content-Encoding", "gzip");
+
+    next();
+  });
+
+  // Add Webpack
+  app.use(webpackDevMiddleware(compiler));
 
   // Create node.js http server and listen on port
   const server = http.createServer(app);
