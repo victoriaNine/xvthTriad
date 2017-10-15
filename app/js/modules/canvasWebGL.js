@@ -169,7 +169,7 @@ function scaleBG () {
   bgSettings.width  = bgSettings.INITIAL_WIDTH * ratio;
   bgSettings.height = bgSettings.INITIAL_HEIGHT * ratio;
 
-  appRatio               = _$.utils.getAppSizeRatio() / _$.state.appScalar;
+  appRatio               = _$.utils.getAppSizeRatio();
   bgSettings.flareX      = bgSettings.FLARE_INITIAL_X * appRatio;
   bgSettings.flareY      = bgSettings.FLARE_INITIAL_Y * appRatio;
   bgSettings.flareWidth  = bgSettings.FLARE_INITIAL_WIDTH * appRatio;
