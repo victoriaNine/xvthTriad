@@ -11,7 +11,7 @@ import packageConfig from './package.json';
 const ENV = process.env.NODE_ENV || 'development';
 const IS_DEV = ENV!=='production';
 const MAINTENANCE = process.argv.includes('maintenance=true');
-const BASE_PATH = path.resolve(__dirname, "app/");
+const BASE_PATH = path.resolve(__dirname, "client/");
 
 const config = {
   context: BASE_PATH,

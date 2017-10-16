@@ -16,11 +16,8 @@ node_modules/couch-pwd/node_modules/*
 !/node_modules/jquery-nearest/
 node_modules/jquery-nearest/node_modules/*
 dist
-test/temp
 .sass-cache
-app/bower_components
 .tmp
-test/bower_components/
 _wip
 *.ppk
 *.nginxConfig

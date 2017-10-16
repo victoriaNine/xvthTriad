@@ -1,8 +1,8 @@
 import { camelCase, lowerCase } from 'lodash';
 import fs from 'fs';
 
-import cardList from './../app/js/data/cardList.json';
-import countryList from './../app/js/data/countryList.json';
+import cardList from './../client/js/data/cardList.json';
+import countryList from './../client/js/data/countryList.json';
 
 // Cards
 export function buildCardsImgLoader () {
@@ -18,7 +18,7 @@ export function buildCardsImgLoader () {
 
   const data = JSON.stringify(cardsImgLoader, null, '\t');
   return new Promise((resolve, reject) => {
-    fs.writeFile('app/js/data/loaders/imgCards.json', data, 'utf8', (err) => {
+    fs.writeFile('client/js/data/loaders/imgCards.json', data, 'utf8', (err) => {
       if (err) {
         reject(err);
       }
@@ -46,7 +46,7 @@ export function buildFlagsImgLoader () {
 
   const data = JSON.stringify(flagsImgLoader, null, '\t');
   return new Promise((resolve, reject) => {
-    fs.writeFile('app/js/data/loaders/imgFlags.json', data, 'utf8', (err) => {
+    fs.writeFile('client/js/data/loaders/imgFlags.json', data, 'utf8', (err) => {
       if (err) {
         reject(err);
       }
