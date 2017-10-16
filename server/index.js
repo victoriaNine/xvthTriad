@@ -1,7 +1,7 @@
 require('dotenv').config();
-import { buildCardsImgLoader, buildFlagsImgLoader } from './buildImgLoaders';
+import { buildCardList } from './buildCardList';
 
-Promise.all([ buildCardsImgLoader(), buildFlagsImgLoader() ]).then(() => {
+Promise.all([ buildCardList() ]).then(() => {
   require('./startServer').default();
 }).catch((err) => {
   console.error(err);

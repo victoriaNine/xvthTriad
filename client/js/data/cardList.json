@@ -1,328 +1,275 @@
 [
-    {
-        "cardId"  : 0,
-        "name"    : "Luche",
-        "level"   : 1,
-        "ranks"   : {
-            "top"    : 7,
-            "right"  : 5,
-            "bottom" : 5,
-            "left"   : 3
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 1,
-        "name"    : "Libertus",
-        "level"   : 1,
-        "ranks"   : {
-            "top"    : 3,
-            "right"  : 7,
-            "bottom" : 5,
-            "left"   : 5
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 2,
-        "name"    : "Crowe",
-        "level"   : 1,
-        "ranks"   : {
-            "top"    : 6,
-            "right"  : 7,
-            "bottom" : 2,
-            "left"   : 3
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 3,
-        "name"    : "Pelna",
-        "level"   : 1,
-        "ranks"   : {
-            "top"    : 6,
-            "right"  : 6,
-            "bottom" : 2,
-            "left"   : 6
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 4,
-        "name"    : "Tredd",
-        "level"   : 1,
-        "ranks"   : {
-            "top"    : 7,
-            "right"  : 7,
-            "bottom" : 2,
-            "left"   : 2
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 5,
-        "name"    : "Axis",
-        "level"   : 1,
-        "ranks"   : {
-            "top"    : 7,
-            "right"  : 3,
-            "bottom" : 2,
-            "left"   : 6
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 6,
-        "name"    : "Sonitus",
-        "level"   : 1,
-        "ranks"   : {
-            "top"    : 2,
-            "right"  : 3,
-            "bottom" : 3,
-            "left"   : 6
-        },
-        "element" : null
-    },
-
-    {
-        "cardId"  : 7,
-        "name"    : "Iedolas",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 4,
-            "right"  : 9,
-            "bottom" : 4,
-            "left"   : 8
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 8,
-        "name"    : "Glauca",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 5,
-            "right"  : 3,
-            "bottom" : 3,
-            "left"   : 7
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 9,
-        "name"    : "Drautos",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 3,
-            "right"  : 7,
-            "bottom" : 5,
-            "left"   : 3
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 10,
-        "name"    : "Cid",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 5,
-            "right"  : 9,
-            "bottom" : 9,
-            "left"   : 2
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 11,
-        "name"    : "Cindy",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 7,
-            "right"  : 8,
-            "bottom" : 1,
-            "left"   : 4
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 12,
-        "name"    : "Iris",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 9,
-            "right"  : 5,
-            "bottom" : 9,
-            "left"   : 6
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 13,
-        "name"    : "Cor",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 10,
-            "right"  : 7,
-            "bottom" : 2,
-            "left"   : 8
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 14,
-        "name"    : "Clarus",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 6,
-            "right"  : 7,
-            "bottom" : 10,
-            "left"   : 6
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 15,
-        "name"    : "Gentiana",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 10,
-            "right"  : 10,
-            "bottom" : 3,
-            "left"   : 3
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 16,
-        "name"    : "Ravus",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 6,
-            "right"  : 9,
-            "bottom" : 10,
-            "left"   : 4
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 17,
-        "name"    : "Aranea",
-        "level"   : 2,
-        "ranks"   : {
-            "top"    : 4,
-            "right"  : 10,
-            "bottom" : 2,
-            "left"   : 10
-        },
-        "element" : null
-    },
-
-    {
-        "cardId"  : 18,
-        "name"    : "Nyx",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 10,
-            "right"  : 4,
-            "bottom" : 6,
-            "left"   : 9
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 19,
-        "name"    : "Noctis",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 10,
-            "right"  : 5,
-            "bottom" : 9,
-            "left"   : 4
-        },
-        "element" : "light"
-    },
-    {
-        "cardId"  : 20,
-        "name"    : "Prompto",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 8,
-            "right"  : 5,
-            "bottom" : 10,
-            "left"   : 6
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 21,
-        "name"    : "Gladiolus",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 2,
-            "right"  : 6,
-            "bottom" : 9,
-            "left"   : 10
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 22,
-        "name"    : "Ignis",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 9,
-            "right"  : 6,
-            "bottom" : 10,
-            "left"   : 2
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 23,
-        "name"    : "Lunafreya",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 9,
-            "right"  : 4,
-            "bottom" : 10,
-            "left"   : 5
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 24,
-        "name"    : "Regis",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 5,
-            "right"  : 10,
-            "bottom" : 3,
-            "left"   : 9
-        },
-        "element" : null
-    },
-    {
-        "cardId"  : 25,
-        "name"    : "Older Noctis",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 5,
-            "right"  : 9,
-            "bottom" : 9,
-            "left"   : 2
-        },
-        "element" : "light"
-    },
-    {
-        "cardId"  : 26,
-        "name"    : "Ardyn",
-        "level"   : 3,
-        "ranks"   : {
-            "top"    : 8,
-            "right"  : 5,
-            "bottom" : 3,
-            "left"   : 10
-        },
-        "element" : null
-    }
+	{
+		"cardId": 173,
+		"name": "Luche",
+		"level": 7,
+		"ranks": {
+			"top": 5,
+			"right": 5,
+			"bottom": 5,
+			"left": 2
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 174,
+		"name": "Libertus",
+		"level": 7,
+		"ranks": {
+			"top": 6,
+			"right": 2,
+			"bottom": 3,
+			"left": 6
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 175,
+		"name": "Crowe",
+		"level": 7,
+		"ranks": {
+			"top": 7,
+			"right": 1,
+			"bottom": 1,
+			"left": 8
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 176,
+		"name": "Pelna",
+		"level": 7,
+		"ranks": {
+			"top": 7,
+			"right": 5,
+			"bottom": 1,
+			"left": 4
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 177,
+		"name": "Tredd",
+		"level": 7,
+		"ranks": {
+			"top": 2,
+			"right": 3,
+			"bottom": 8,
+			"left": 4
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 178,
+		"name": "Axis",
+		"level": 7,
+		"ranks": {
+			"top": 4,
+			"right": 3,
+			"bottom": 3,
+			"left": 7
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 179,
+		"name": "Sonitus",
+		"level": 7,
+		"ranks": {
+			"top": 6,
+			"right": 7,
+			"bottom": 3,
+			"left": 1
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 180,
+		"name": "Iedolas",
+		"level": 7,
+		"ranks": {
+			"top": 3,
+			"right": 6,
+			"bottom": 2,
+			"left": 6
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 181,
+		"name": "Glauca",
+		"level": 7,
+		"ranks": {
+			"top": 2,
+			"right": 3,
+			"bottom": 7,
+			"left": 5
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 182,
+		"name": "Drautos",
+		"level": 7,
+		"ranks": {
+			"top": 2,
+			"right": 7,
+			"bottom": 1,
+			"left": 7
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 190,
+		"name": "Clarus",
+		"level": 7,
+		"ranks": {
+			"top": 1,
+			"right": 7,
+			"bottom": 6,
+			"left": 3
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 192,
+		"name": "Ravus",
+		"level": 7,
+		"ranks": {
+			"top": 2,
+			"right": 6,
+			"bottom": 4,
+			"left": 5
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 232,
+		"name": "Nyx",
+		"level": 10,
+		"ranks": {
+			"top": 10,
+			"right": 4,
+			"bottom": 6,
+			"left": 9
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 233,
+		"name": "Prompto",
+		"level": 10,
+		"ranks": {
+			"top": 8,
+			"right": 5,
+			"bottom": 10,
+			"left": 6
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 234,
+		"name": "Gladiolus",
+		"level": 10,
+		"ranks": {
+			"top": 2,
+			"right": 6,
+			"bottom": 9,
+			"left": 10
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 235,
+		"name": "Ignis",
+		"level": 10,
+		"ranks": {
+			"top": 9,
+			"right": 6,
+			"bottom": 10,
+			"left": 2
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 236,
+		"name": "Lunafreya",
+		"level": 10,
+		"ranks": {
+			"top": 9,
+			"right": 4,
+			"bottom": 10,
+			"left": 5
+		},
+		"element": "light",
+		"bypass": false
+	},
+	{
+		"cardId": 237,
+		"name": "Regis",
+		"level": 10,
+		"ranks": {
+			"top": 5,
+			"right": 10,
+			"bottom": 3,
+			"left": 9
+		},
+		"element": "",
+		"bypass": false
+	},
+	{
+		"cardId": 238,
+		"name": "Ardyn",
+		"level": 10,
+		"ranks": {
+			"top": 8,
+			"right": 5,
+			"bottom": 3,
+			"left": 10
+		},
+		"element": "dark",
+		"bypass": false
+	},
+	{
+		"cardId": 239,
+		"name": "Noctis",
+		"level": 10,
+		"ranks": {
+			"top": 10,
+			"right": 5,
+			"bottom": 9,
+			"left": 4
+		},
+		"element": "light",
+		"bypass": false
+	},
+	{
+		"cardId": 240,
+		"name": "Older Noctis",
+		"level": 10,
+		"ranks": {
+			"top": 10,
+			"right": 6,
+			"bottom": 10,
+			"left": 5
+		},
+		"element": "light",
+		"bypass": false
+	}
 ]
