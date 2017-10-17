@@ -4,7 +4,7 @@ import $ from 'jquery';
 import Stats from 'stats.js';
 import 'jquery-nearest';
 
-import _$ from 'common';
+import _$ from 'utils';
 
 import AudioEngine from 'Modules/audioEngine';
 import CanvasWebGL from 'Modules/canvasWebGL';

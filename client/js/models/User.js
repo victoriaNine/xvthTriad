@@ -1,7 +1,7 @@
 import { concat } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Coll_Album from 'Collections/Album';
 
 import avatarDefault from 'Assets/img/avatars/user_default.jpg';

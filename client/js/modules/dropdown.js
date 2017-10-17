@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { camelCase, noop } from 'lodash';
 import { TweenMax } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 
 class Dropdown {
   constructor (options = {}) {

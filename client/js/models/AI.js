@@ -1,7 +1,7 @@
 import { clone, map, reject, omitBy, indexOf, max, sample, without } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'common';
+import _$ from 'utils';
 
 export default Backbone.Model.extend({
   defaults : {

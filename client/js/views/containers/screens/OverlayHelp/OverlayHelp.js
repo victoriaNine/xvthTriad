@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template } from 'lodash';
 import { TimelineMax } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Screen from 'Screens/Screen';
 import Templ_OverlayHelp from './template.ejs';
 import Templ_HelpBasicRules from './template_helpBasicRules.ejs';

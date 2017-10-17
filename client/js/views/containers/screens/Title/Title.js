@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template, map, omit, has } from 'lodash';
 import { TweenMax, TimelineMax } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Model_User from 'Models/User';
 import Screen from 'Screens/Screen';
 import Templ_Title from './template.ejs';

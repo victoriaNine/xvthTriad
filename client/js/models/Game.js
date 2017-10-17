@@ -1,7 +1,7 @@
 import { each, map, random, clone, filter, orderBy, concat } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Model_Card from 'Models/Card';
 import Model_Player from 'Models/Player';
 import Model_AI from 'Models/AI';

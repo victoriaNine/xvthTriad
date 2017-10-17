@@ -1,6 +1,6 @@
 import { first, each } from 'lodash';
 
-import _$ from 'common';
+import _$ from 'utils';
 
 function testAudioFormat (format) {
   const audio = document.createElement('audio');

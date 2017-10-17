@@ -3,7 +3,7 @@ import { template } from 'lodash';
 import Backbone from 'backbone';
 import { TimelineMax, Power3 } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Screen_OverlayMenu from 'Screens/OverlayMenu';
 import Screen_OverlayRankings from 'Screens/OverlayRankings';
 import Screen_OverlayHelp from 'Screens/OverlayHelp';

@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template, debounce } from 'lodash';
 import { TweenMax, TimelineMax } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Screen from 'Screens/Screen';
 import Templ_RoomSelect from './template.ejs';
 

@@ -2,7 +2,7 @@ import { template, isNil } from 'lodash';
 import Backbone from 'backbone';
 import { TimelineMax } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Templ_Card from './template.ejs';
 
 import svgCardBG from '!svg-inline-loader!Assets/svg/ui/cardBG.svg';

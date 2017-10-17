@@ -37,7 +37,7 @@ const config = {
 
       seriously$: path.resolve(BASE_PATH, "js/modules/seriouslyjs/seriously.js"),
       seriously: path.resolve(BASE_PATH, "js/modules/seriouslyjs/"),
-      common$: path.resolve(BASE_PATH, "js/common.js"),
+      utils$: path.resolve(BASE_PATH, "js/utils.js"),
     }
   },
 

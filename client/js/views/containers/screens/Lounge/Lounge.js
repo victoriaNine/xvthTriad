@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template, isNil, each, difference, compact, uniq, sortBy, upperFirst, find, lowerCase, isFunction, pick } from 'lodash';
 import { TweenMax, TimelineMax, Expo } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Screen from 'Screens/Screen';
 import Templ_Lounge from './template.ejs';
 

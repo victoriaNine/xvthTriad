@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { template, compact, uniqBy, take, each, without } from 'lodash';
 import { TweenMax, TimelineMax } from 'gsap';
 
-import _$ from 'common';
+import _$ from 'utils';
 import Screen from 'Screens/Screen';
 import Comp_AlbumCard from 'Components/AlbumCard';
 import Templ_CardSelect from './template.ejs';

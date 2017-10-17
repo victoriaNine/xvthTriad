@@ -2,7 +2,7 @@ import axios from 'axios';
 import EventEmitter2 from 'eventemitter2';
 import $ from 'jquery';
 import { debounce } from 'lodash';
-import _$ from 'common';
+import _$ from 'utils';
 
 const debug = {
   log: _$.debug.log.bind(null, 'superlogin:log'),

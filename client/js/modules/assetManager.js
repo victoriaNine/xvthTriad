@@ -1,5 +1,5 @@
 import { get, set } from 'lodash';
-import _$ from 'common';
+import _$ from 'utils';
 
 class AssetManager {
   constructor () {
