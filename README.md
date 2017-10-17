@@ -13,7 +13,7 @@ Features:
 - Gamepad support (with the Gamepad API)
 *Update: Dropped as it doesn't enhance the UX. Partial support is still available.*
 
-Todo:
+Possible improvements:
 - Migrate to Vue.js for performance
 - Use WebWorkers for AI calculations and asset loading
 

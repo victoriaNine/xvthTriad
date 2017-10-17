@@ -10,12 +10,12 @@ import packageConfig from './package.json';
 
 const ENV = process.env.NODE_ENV || 'development';
 const IS_DEV = ENV!=='production';
-const MAINTENANCE = process.argv.includes('maintenance=true');
+const IS_MAINTENANCE = process.argv.includes('maintenance=true');
 const BASE_PATH = path.resolve(__dirname, "client/");
 
 const config = {
   context: BASE_PATH,
-  entry: MAINTENANCE ? './js/maintenance.js' : './js/main.js',
+  entry: './js/index.js',
 
   output: {
     path: path.resolve(__dirname, "dist/"),
@@ -93,10 +93,11 @@ const config = {
       __VERSION_NAME__: JSON.stringify(packageConfig.versionName),
       __VERSION_FLAG__: JSON.stringify(packageConfig.versionFlag),
       __IS_DEV__: IS_DEV,
+      __IS_MAINTENANCE__: IS_MAINTENANCE,
     }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
-      template: MAINTENANCE ? './maintenance.ejs' : './index.ejs',
+      template: IS_MAINTENANCE ? './maintenance.ejs' : './index.ejs',
       minify: { collapseWhitespace: true }
     }),
     new CopyWebpackPlugin([

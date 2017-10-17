@@ -18,6 +18,7 @@
     "sleep": 1,
     "__APP_NAME__": true,
     "__IS_DEV__": true,
+    "__IS_MAINTENANCE__": true,
     "__VERSION__": true,
     "__VERSION_NAME__": true,
     "__VERSION_FLAG__": true

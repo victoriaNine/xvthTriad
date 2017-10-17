@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import $ from 'jquery';
 import Stats from 'stats.js';
 import 'jquery-nearest';
@@ -20,12 +18,6 @@ import Partial_Footer from 'Partials/Footer';
 
 import LoaderAudioBGM from 'Data/loaders/audioBGM.json';
 import LoaderAudioSFX from 'Data/loaders/audioSFX.json';
-
-import './../css/main.scss';
-
-if (process.env.NODE_ENV==='production') {
-  require('./pwa');
-}
 
 const loaders = [
   LoaderAudioBGM,
