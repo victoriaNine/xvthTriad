@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { template, concat, clone, each, map, startCase, filter, isArray, some, get, includes, remove as _remove, difference } from 'lodash';
+import { template, concat, clone, each, map, startCase, filter, some, get, includes, remove as _remove, difference } from 'lodash';
 import { TweenMax, TimelineMax } from 'gsap';
 
 import _$ from 'utils';
@@ -654,11 +654,11 @@ function showEndGameOverlay () {
 }
 
 function findCardViewsFromModels (cardViewList, modelList, customPath) {
-  if (!isArray(cardViewList)) {
+  if (!Array.isArray(cardViewList)) {
     cardViewList = [cardViewList];
   }
 
-  if (!isArray(modelList)) {
+  if (!Array.isArray(modelList)) {
     modelList = [modelList];
   }
 

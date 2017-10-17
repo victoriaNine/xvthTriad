@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Stats from 'stats.js';
 import 'jquery-nearest';
 
@@ -176,9 +175,11 @@ _$.events.once("launch", () => {
   _$.ui.footer = new Partial_Footer();
   _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
 
-  $(window).on("beforeunload", (e) => {
+  window.addEventListener("beforeunload", (e) => {
     return _$.ui.screen.showSavePrompt(e);
-  }).on("blur", () => {
+  });
+
+  window.addEventListener("blur", () => {
     if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
       return;
     } else if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {
@@ -187,7 +188,9 @@ _$.events.once("launch", () => {
     } else {
       _$.audio.audioEngine.channels.master.mute(true);
     }
-  }).on("focus", () => {
+  });
+
+  window.addEventListener("focus", () => {
     if (_$.state.user && _$.state.user.get("inactiveAudio") === "playAll") {
       return;
     } if (_$.state.user && _$.state.user.get("inactiveAudio") === "onlyNotifs") {

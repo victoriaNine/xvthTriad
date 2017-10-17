@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { max } from 'lodash';
 import Seriously from 'seriously';
 import { TweenMax, RoughEase, Power0, SteppedEase, TimelineMax } from 'gsap';
@@ -27,9 +26,9 @@ const noiseSettings    = { time: 1 };
 const vignetteSettings = { amount: 1 };
 const displaceSettings = { x: 0, y: 0 };
 
-let bgImg = new Image();
-let bgDepthMap = new Image();
-let bgFlare = new Image();
+const bgImg = new Image();
+const bgDepthMap = new Image();
+const bgFlare = new Image();
 let bgPattern = new Image();
 let bgSettings;
 let seriously;
@@ -53,7 +52,9 @@ class CanvasWebGL {
 
     WIDTH            = document.body.offsetWidth;
     HEIGHT           = document.body.offsetHeight;
-    $(this.dom).attr({ width: WIDTH, height: HEIGHT });
+
+    this.dom.width   = WIDTH;
+    this.dom.height  = HEIGHT;
   }
 
   init () {
@@ -270,7 +271,10 @@ function onResize () {
   targetNode.width  = reformatNode.width  = noiseNode.width  = vignetteNode.width  = WIDTH;
   targetNode.height = reformatNode.height = noiseNode.height = vignetteNode.height = HEIGHT;
 
-  $([canvas2d, canvas3d, canvas2dDepthMap]).attr({ width: WIDTH, height: HEIGHT });
+  [canvas2d, canvas3d, canvas2dDepthMap].forEach((canvas) => {
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+  });
 
   for (let i = 0, ii = fireflySettings.firefliesNb; i < ii; i++) {
     fireflySettings.fireflies[i].onResize({ drawAreaWidth: WIDTH, drawAreaHeight: HEIGHT });

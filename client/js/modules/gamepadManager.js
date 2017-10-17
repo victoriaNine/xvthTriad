@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { each, some, clone, map, pickBy, isArray, filter, get } from 'lodash';
+import { each, some, clone, map, pickBy, filter, get } from 'lodash';
 import { TweenMax } from 'gsap';
 
 import _$ from 'utils';
@@ -343,7 +343,7 @@ class GamepadManager {
   }
 
   activateGamepads (...indexes) {
-    if (isArray(indexes[0])) {
+    if (Array.isArray(indexes[0])) {
       indexes = indexes[0];
     }
 
@@ -353,7 +353,7 @@ class GamepadManager {
   }
 
   deactivateGamepads (...indexes) {
-    if (isArray(indexes[0])) {
+    if (Array.isArray(indexes[0])) {
       indexes = indexes[0];
     }
 
@@ -428,7 +428,7 @@ class GamepadManager {
       }
     });
   }
-  
+
   getButtonName (buttonLocation, gamepad) {
     let name = get(gamepad.map, buttonLocation);
 
