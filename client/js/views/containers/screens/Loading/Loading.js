@@ -46,7 +46,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     _$.comm.socketManager.init();
 
     function proceed () {
-      if (_$.app.env.deviceType !== "mobile") {
+      if (_$.app.env.deviceType !== "phone") {
         _$.events.trigger("addFX");
       }
 

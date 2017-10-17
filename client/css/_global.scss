@@ -175,10 +175,13 @@ button {
     position: absolute;
     top: 0;
     left: 0;
-    background: url(#{ $uiAssetsPath + "bg.jpg" }) 50% 50% no-repeat;
-    background-size: cover;
-    width: 100%;
-    height: 100%;
+
+    html.isPhone & {
+      background: url(#{ $uiAssetsPath + "bg.jpg" }) 50% 50% no-repeat;
+      background-size: cover;
+      width: 100%;
+      height: 100%;
+    }
 }
 
 #app {

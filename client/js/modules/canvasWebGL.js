@@ -131,11 +131,19 @@ class CanvasWebGL {
       flareSettings.tween.play();
       vignetteSettings.tween.play();
 
-      $(window).on("mousemove", (e) => {
+      _$.utils.addEventListeners(window, "mousemove touchmove", (e) => {
         if (FX_LEVEL >= 3) {
+          let pageX = e.pageX;
+          let pageY = e.pageY;
+
+          if (e.targetTouches && e.targetTouches.length === 1) {
+            pageX = e.targetTouches[0].pageX;
+            pageY = e.targetTouches[0].pageY;
+          }
+          
           const newMapScale = {
-            x: 0.01 * e.pageX / WIDTH,
-            y: -1 * (0.01 * e.pageY / HEIGHT)
+            x: 0.01 * pageX / WIDTH,
+            y: -1 * (0.01 * pageY / HEIGHT)
           };
 
           TweenMax.to(displaceSettings, 0.3, {

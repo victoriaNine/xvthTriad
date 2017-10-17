@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { clone, isNil, map, isFunction, isArray, each, isString, random, filter, find, isDate, omit } from 'lodash';
+import { clone, isNil, map, isFunction, each, isString, random, filter, find, isDate, omit } from 'lodash';
 import Backbone from 'backbone';
 import Elo from 'arpad';
 import { TimelineMax } from 'gsap';
@@ -26,8 +26,7 @@ const app       = Object.create(null, {
   decodeData    : { value: getDecodedData },
   track         : { value: sendGAevent },
   env           : { value: {
-    deviceType       : "browser",
-    mobileDeviceType : null
+    deviceType : "browser"
   }},
   sessionConfig: { value : {
     noDefaultEndpoint  : false,
@@ -71,6 +70,8 @@ const utils = {
   getUID,
   getUserData,
   addDomObserver,
+  addEventListeners,
+  removeEventListeners,
 
   fadeIn,
   fadeOut,
@@ -278,7 +279,7 @@ function getAbsoluteOffset (element) {
 
 /* DOM */
 function addDomObserver (elements, eventName, once = true, mutationType = "add") {
-  if (!isArray(elements)) {
+  if (Array.isArray(elements)) {
     elements = [elements];
   }
 
@@ -341,6 +342,27 @@ function getBase64Image (url, callback) {
   });
 }
 
+function addEventListeners (target, events, handler) {
+  if (!Array.isArray(events)) {
+    events = events.split(" ");
+  }
+
+  events.forEach((event) => {
+    target.addEventListener(event, handler);
+  });
+}
+
+function removeEventListeners (target, events, handler) {
+  if (!Array.isArray(events)) {
+    events = events.split(" ");
+  }
+
+  events.forEach((event) => {
+    target.removeEventListener(event, handler);
+  });
+}
+
+
 /* GAME */
 function getUserData () {
   const data     = omit(_$.state.user.attributes, "album");
@@ -351,7 +373,7 @@ function getUserData () {
 }
 
 function getUID (length = 16, usedList = {}, base = "") {
-  const chars      = "0123456789abcdefghijklmnopqrstuvwxyz_";
+  const chars    = "0123456789abcdefghijklmnopqrstuvwxyz_";
   let string     = "";
   const charsCount = chars.length;
 

@@ -228,16 +228,16 @@ if (_$.debug.debugMode) {
 }
 
 if (mobileCheck()) {
-  $("html").addClass("isMobile");
+  document.querySelector("html").classList.add("isMobile");
   _$.app.env.deviceType = "mobile";
 }
 
 if (phoneCheck())  {
-  $("html").addClass("isPhone");
-  _$.app.env.mobileDeviceType = "mobile";
+  document.querySelector("html").classList.add("isPhone");
+  _$.app.env.deviceType = "phone";
 }
 
 if (tabletCheck()) {
-  $("html").addClass("isTablet");
-  _$.app.env.mobileDeviceType = "tablet";
+  document.querySelector("html").classList.add("isTablet");
+  _$.app.env.deviceType = "tablet";
 }
