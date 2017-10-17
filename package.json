@@ -65,7 +65,7 @@
   "scripts": {
     "dev": "cross-env babel-node server/ --inspect --progress",
     "launch": "cross-env NODE_ENV=production babel-node server/ --progress",
-    "maintenance": "cross-env NODE_ENV=production maintenance=true babel-node server/ --progress",
+    "maintenance": "cross-env NODE_ENV=production MAINTENANCE=true babel-node server/ --progress",
     "start": "serve build -s -c 1",
     "prestart": "npm run build",
     "build": "cross-env NODE_ENV=production babel-node ./node_modules/webpack/bin/webpack --progress",

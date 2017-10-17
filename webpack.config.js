@@ -9,7 +9,7 @@ import packageConfig from './package.json';
 
 const ENV = process.env.NODE_ENV || 'development';
 const IS_DEV = ENV!=='production';
-const IS_MAINTENANCE = process.argv.includes('maintenance=true');
+const IS_MAINTENANCE = process.env.MAINTENANCE;
 const BASE_PATH = path.resolve(__dirname, "client/");
 
 const config = {
@@ -91,8 +91,8 @@ const config = {
       __VERSION__: JSON.stringify(packageConfig.version),
       __VERSION_NAME__: JSON.stringify(packageConfig.versionName),
       __VERSION_FLAG__: JSON.stringify(packageConfig.versionFlag),
-      __IS_DEV__: IS_DEV,
-      __IS_MAINTENANCE__: IS_MAINTENANCE,
+      __IS_DEV__: JSON.stringify(IS_DEV),
+      __IS_MAINTENANCE__: JSON.stringify(IS_MAINTENANCE),
     }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
