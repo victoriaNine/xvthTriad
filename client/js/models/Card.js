@@ -3,6 +3,7 @@ import Backbone from 'backbone';
 
 export default Backbone.Model.extend({
   defaults : {
+    cardId     : -1,
     name       : "",
     image      : "",
     level      : 1,

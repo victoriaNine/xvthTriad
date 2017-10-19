@@ -55,6 +55,8 @@ export default Screen.extend({
   findCardViewsFromModels,
   placeOpponentCard,
   getOpponentSelectedCards,
+  showCardTooltip,
+  hideCardTooltip,
 
   transitionIn,
   transitionOut
@@ -907,4 +909,14 @@ function getOpponentSelectedCards (event, response) {
       endGameCardView.cardView.flip();
     }, [], null, 0.15 * index);
   });
+}
+
+function showCardTooltip(info) {
+  this.$(".game_cardTooltip").text(info.name).css({
+    transform: `translateX(${info.x}px) translateY(${info.y}px)`
+  }).addClass(`is--visible${info.isOwned ? ' is--owned' : ''}`);
+}
+
+function hideCardTooltip() {
+  this.$(".game_cardTooltip").text("").removeClass("is--visible is--owned");
 }

@@ -290,6 +290,27 @@
     fill: rgba(0, 0, 0, 0.5);
 }
 
+/* CARD TOOLTIP --------------*/
+.game_cardTooltip {
+  opacity: 0;
+  position: fixed;
+  transition: opacity 0.2s ease, transform 0.2s ease-out, color 0.2s;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1em;
+  text-align: center;
+
+  &.is--visible {
+    opacity: 1;
+  }
+
+  &.is--owned {
+    color: $color_lightBlue;
+    font-weight: 500;
+  }
+}
+
+/* OVERLAYS --------------*/
 .game_overlay-endGame-confirmBtn {
     @extend %btn-rect;
 
