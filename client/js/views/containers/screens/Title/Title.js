@@ -195,10 +195,19 @@ function initialize (options = {}) {
         // Otherwise the user has no data to load, so we prepare a welcome overlay
         _$.events.once("initialized", () => {
           _$.audio.audioEngine.playSFX("gameGain");
-          this.info({
+          this.choice({
             titleBold : "Welcome!",
             msg       : "First timer? Feel free to check the tutorials in the Help section.",
-            btnMsg    : "Got it!"
+            btn1Msg   : "Yes please",
+            btn2Msg   : "No thanks",
+            action1   : () => {
+              this.promptOverlay.close(() => {
+                _$.ui.footer.toggleHelpPage();
+              });
+            },
+            action2   : () => {
+              this.promptOverlay.close();
+            }
           });
         });
       }
