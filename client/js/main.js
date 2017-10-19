@@ -1,5 +1,6 @@
 import Stats from 'stats.js';
 import $ from 'jquery';
+import TweenMax from 'gsap';
 
 import jqueryNearest from 'jquery-nearest';
 jqueryNearest($);
@@ -45,7 +46,7 @@ function setupScale () {
     const offset = (_$.ui.window.devicePixelRatio * 100 - 100) / 2;
 
     if (forceSize) {
-      html.style.transformOrigin = "0 0";
+      $(html).css({ transformOrigin: "0 0" });
       _$.events.on("scalarUpdate", (event, newScalar) => {
         _$.state.appScalar = newScalar;
       });
@@ -57,7 +58,7 @@ function setupScale () {
       _$.state.appScalar = 1;
     }
 
-    body.style.transform = `scale(${scalar}) translate(-${offset}%, -${offset}%)`;
+    $(body).css({ transform: `scale(${scalar}) translate(-${offset}%, -${offset}%)` });
 
     function reScale () {
       const fullWidth  = window.innerWidth * _$.ui.window.devicePixelRatio;
@@ -76,7 +77,8 @@ function setupScale () {
         html.style.height = ORIGINAL_SIZE.height + "px";
       }
 
-      html.style.transform = `scale(${scalar})`;
+      $(html).css({ transform: `scale(${scalar})` });
+      TweenMax.set(html, { transform: `scale(${scalar})` });
       _$.events.trigger("scalarUpdate", scalar);
     }
   }

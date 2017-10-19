@@ -32,14 +32,15 @@ html {
     font-family: "AvantGarde LT", sans-serif;
     font-weight: 200;
     text-transform: uppercase;
-    color:#FFF;
+    color: #FFF;
 }
 
 body {
+   -webkit-transform-origin: 50%;
     transform-origin: 50%;
     width: 100%;
     height: 100%;
-    cursor:default;
+    cursor: default;
 }
 
 a {

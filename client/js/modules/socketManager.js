@@ -115,8 +115,8 @@ class SocketManager {
       _$.audio.audioEngine.playSFX("menuOpen");
       _$.ui.screen.error({
         msg,
-        btnMsg : _$.state.user.isInLounge ? "Return to the lounge room" : null, // Will use the default value instead
-        action : _$.state.user.isInLounge ? "lounge" : null                     // Will use the defaul value instead
+        btnMsg : _$.state.user.isInLounge ? "Return to the lounge room" : null, // If null, btnMsg will use the default value instead
+        action : _$.state.user.isInLounge ? "lounge" : null                     // If null, action Will use the default value instead
       });
     });
 
