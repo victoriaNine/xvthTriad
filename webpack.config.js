@@ -110,6 +110,7 @@ const config = {
       output: {
         comments: false
       },
+      exclude: /seriouslyjs/,
       compress: {
         unsafe_comps: true,
         properties: true,

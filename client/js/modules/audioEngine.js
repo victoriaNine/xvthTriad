@@ -358,7 +358,7 @@ class SFX extends AudioInstance {
 //===============================
 class AudioEngine {
   constructor () {
-    this.audioCtx   = new window.AudioContext();
+    this.audioCtx   = this.getContext();
     this.BGMs       = {};
     this.SFXs       = {};
     this.channels   = {};
@@ -374,6 +374,18 @@ class AudioEngine {
     this.createChannel("bgm");
     this.createChannel("sfx", 0.5);
     this.createChannel("notif", 0.5);
+  }
+
+  getContext () {
+    if (typeof AudioContext !== "undefined") {
+      return new window.AudioContext();
+    } else if (typeof webkitAudioContext !== "undefined") {
+      return new window.webkitAudioContext();
+    } else if (typeof mozAudioContext !== "undefined") {
+      return new window.mozAudioContext();
+    }
+
+    _$.debug.error("No AudioContext available");
   }
 
   decode (arrayBuffer, onDecode, onError) {

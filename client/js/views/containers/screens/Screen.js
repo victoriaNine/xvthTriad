@@ -61,7 +61,7 @@ function updateControlsState () {
   const screenName = this.id.replace("screen_", "");
 
   if (screenName === "title") {
-    if (!_$.controls.gamepadManager.isGamepadActive(0)) {
+    if (_$.controls.gamepadManager && !_$.controls.gamepadManager.isGamepadActive(0)) {
       _$.controls.gamepadManager.activateGamepads(0);
     }
   }

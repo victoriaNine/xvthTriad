@@ -26,7 +26,7 @@ const app       = Object.create(null, {
   decodeData    : { value: getDecodedData },
   track         : { value: sendGAevent },
   env           : { value: {
-    deviceType : "browser"
+    deviceType : "desktop"
   }},
   sessionConfig: { value : {
     noDefaultEndpoint  : false,
@@ -208,11 +208,11 @@ function toggleMute (iconDOM) {
 
 /* DESIGN */
 function getAppSizeRatio () {
-  return document.body.scrollWidth / window.screen.actualWidth;
+  return document.body.scrollWidth / _$.ui.window.actualWidth;
 }
 
 function getDragSpeed () {
-  return window.devicePixelRatio / _$.state.appScalar;
+  return _$.ui.window.devicePixelRatio / _$.state.appScalar;
 }
 
 function fadeIn (elements, callback, duration = 0.5, delay = 0) {
@@ -260,7 +260,7 @@ function isVisibleByUser (element) {
 }
 
 function getTopElementAt (offsetX, offsetY) {
-  return document.elementFromPoint(offsetX / window.devicePixelRatio, offsetY / window.devicePixelRatio);
+  return document.elementFromPoint(offsetX / _$.ui.window.devicePixelRatio, offsetY / _$.ui.window.devicePixelRatio);
 }
 
 function getAbsoluteOffset (element) {

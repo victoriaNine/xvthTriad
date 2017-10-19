@@ -295,8 +295,8 @@ function dragCardStart (e, cardView) {
 
     const pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
     const pageY       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageY : e.pageY;
-    const scaledPageX = pageX * window.devicePixelRatio / _$.state.appScalar;
-    const scaledPageY = pageY * window.devicePixelRatio / _$.state.appScalar;
+    const scaledPageX = pageX * _$.ui.window.devicePixelRatio / _$.state.appScalar;
+    const scaledPageY = pageY * _$.ui.window.devicePixelRatio / _$.state.appScalar;
 
     const boardOffset   = _$.utils.getAbsoluteOffset($("#board"));
     const boardPosition = {

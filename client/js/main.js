@@ -32,14 +32,14 @@ function setupScale () {
   function pixelRatioAdjust (forceSize) {
     const html             = document.querySelector("html");
     const body             = document.body;
-    const devicePixelRatio = window.devicePixelRatio = window.devicePixelRatio || 1;
 
-    window.screen       = window.screen || {};
-    screen.actualWidth  = window.screen.width * devicePixelRatio;
-    screen.actualHeight = window.screen.height * devicePixelRatio;
+    _$.ui.window                  = window.screen || {};
+    _$.ui.window.devicePixelRatio = window.devicePixelRatio || 1;
+    _$.ui.window.actualWidth      = window.screen.width * devicePixelRatio;
+    _$.ui.window.actualHeight     = window.screen.height * devicePixelRatio;
 
-    const scalar = 1 / devicePixelRatio;
-    const offset = (devicePixelRatio * 100 - 100) / 2;
+    const scalar = 1 / _$.ui.window.devicePixelRatio;
+    const offset = (_$.ui.window.devicePixelRatio * 100 - 100) / 2;
 
     if (forceSize) {
       html.style.transformOrigin = "0 0";
@@ -49,16 +49,16 @@ function setupScale () {
       window.addEventListener("resize", reScale);
       reScale();
     } else {
-      html.style.width   = window.innerWidth * devicePixelRatio + "px";
-      html.style.height  = window.innerHeight * devicePixelRatio + "px";
+      html.style.width   = window.innerWidth * _$.ui.window.devicePixelRatio + "px";
+      html.style.height  = window.innerHeight * _$.ui.window.devicePixelRatio + "px";
       _$.state.appScalar = 1;
     }
 
     body.style.transform = `scale(${scalar}) translate(-${offset}%, -${offset}%)`;
 
     function reScale () {
-      const fullWidth  = window.innerWidth * devicePixelRatio;
-      const fullHeight = window.innerHeight * devicePixelRatio;
+      const fullWidth  = window.innerWidth * _$.ui.window.devicePixelRatio;
+      const fullHeight = window.innerHeight * _$.ui.window.devicePixelRatio;
       const scalarW = fullWidth / ORIGINAL_SIZE.width;
       const scalarH = fullHeight / ORIGINAL_SIZE.height;
       let scalar;
@@ -66,10 +66,10 @@ function setupScale () {
       if (scalarW < scalarH) {
         scalar = scalarW;
         html.style.width  = ORIGINAL_SIZE.width + "px";
-        html.style.height = ((window.innerHeight * devicePixelRatio) / scalar) + "px";
+        html.style.height = ((window.innerHeight * _$.ui.window.devicePixelRatio) / scalar) + "px";
       } else {
         scalar = scalarH;
-        html.style.width  = ((window.innerWidth * devicePixelRatio) / scalar) + "px";
+        html.style.width  = ((window.innerWidth * _$.ui.window.devicePixelRatio) / scalar) + "px";
         html.style.height = ORIGINAL_SIZE.height + "px";
       }
 
@@ -163,6 +163,25 @@ if (location.pathname !== "/") {
   window.history.replaceState({}, "", "/");
 }
 
+if (mobileCheck()) {
+  document.querySelector("html").classList.add("isMobile");
+  _$.app.env.deviceType = "mobile";
+}
+
+if (phoneCheck())  {
+  document.querySelector("html").classList.add("isPhone");
+  _$.app.env.deviceType = "phone";
+}
+
+if (tabletCheck()) {
+  document.querySelector("html").classList.add("isTablet");
+  _$.app.env.deviceType = "tablet";
+}
+
+if (_$.debug.debugMode) {
+  setupStats();
+}
+
 /*_$.events.on("all", function (event, ...data) {
 if (data.length) {
 _$.debug.log("event triggered:", event.name, event, data);
@@ -214,7 +233,11 @@ _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
 
 _$.events.once("scalarUpdate", () => {
   _$.controls.type           = "mouse";
-  _$.controls.gamepadManager = new GamepadManager();
+
+  if (_$.app.env.deviceType === "desktop") {
+    _$.controls.gamepadManager = new GamepadManager();
+  }
+
   _$.app.updateManager       = new UpdateManager();
   _$.app.assetLoader         = new AssetLoader();
   _$.audio.audioEngine       = new AudioEngine();
@@ -225,22 +248,3 @@ _$.events.once("scalarUpdate", () => {
 });
 
 setupScale();
-
-if (_$.debug.debugMode) {
-  setupStats();
-}
-
-if (mobileCheck()) {
-  document.querySelector("html").classList.add("isMobile");
-  _$.app.env.deviceType = "mobile";
-}
-
-if (phoneCheck())  {
-  document.querySelector("html").classList.add("isPhone");
-  _$.app.env.deviceType = "phone";
-}
-
-if (tabletCheck()) {
-  document.querySelector("html").classList.add("isTablet");
-  _$.app.env.deviceType = "tablet";
-}
