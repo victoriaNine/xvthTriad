@@ -22,6 +22,13 @@ const OPPOSING_SIDE   = {
   left   : "right"
 };
 
+const CARD_MIN_LEVEL_EASY = 1;
+const CARD_MAX_LEVEL_EASY = 1;
+const CARD_MIN_LEVEL_MEDIUM = 1;
+const CARD_MAX_LEVEL_MEDIUM = 1;
+const CARD_MIN_LEVEL_HARD = 1;
+const CARD_MAX_LEVEL_HARD = 1;
+
 export default Backbone.Model.extend({
   defaults : {
     type          : "solo",
@@ -232,20 +239,20 @@ function setupComputer () {
     case "easy":
       config.name   = "Carbuncle";
       config.avatar = avatarCarbuncle;
-      cardMinLevel  = 1;
-      cardMaxLevel  = 1;
+      cardMinLevel  = CARD_MIN_LEVEL_EASY;
+      cardMaxLevel  = CARD_MAX_LEVEL_EASY;
       break;
     case "normal":
       config.name   = "Gentiana";
       config.avatar = avatarGentiana;
-      cardMinLevel  = 1;
-      cardMaxLevel  = 2;
+      cardMinLevel  = CARD_MIN_LEVEL_MEDIUM;
+      cardMaxLevel  = CARD_MAX_LEVEL_MEDIUM;
       break;
     case "hard":
       config.name   = "Bahamut";
       config.avatar = avatarBahamut;
-      cardMinLevel  = 1;
-      cardMaxLevel  = 3;
+      cardMinLevel  = CARD_MIN_LEVEL_HARD;
+      cardMaxLevel  = CARD_MAX_LEVEL_HARD;
       break;
   }
 

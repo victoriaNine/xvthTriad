@@ -1,8 +1,6 @@
 import { isNil, isString, camelCase } from 'lodash';
 import Backbone from 'backbone';
 
-import _$ from 'utils';
-
 export default Backbone.Model.extend({
   defaults : {
     name       : "",
@@ -43,7 +41,7 @@ function validate (attributes, options) { // eslint-disable-line no-unused-vars
 }
 
 function setImagePath () {
-  const url = require(`Assets/img/cards/${camelCase(this.get("name"))}.png`);
+  const url = require(`Assets/img/cards/level${this.get("level")}/${camelCase(this.get("name"))}.png`);
   this.set("image", "." + url);
 }
 

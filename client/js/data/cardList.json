@@ -1,5 +1,265 @@
 [
 	{
+		"cardId": 0,
+		"name": "Reapertail",
+		"level": 1,
+		"ranks": {
+			"top": 6,
+			"right": 1,
+			"bottom": 2,
+			"left": 2
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 2,
+		"name": "Sabertusk",
+		"level": 1,
+		"ranks": {
+			"top": 3,
+			"right": 6,
+			"bottom": 1,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 3,
+		"name": "Anak Calf",
+		"level": 1,
+		"ranks": {
+			"top": 4,
+			"right": 2,
+			"bottom": 4,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 4,
+		"name": "Garulet",
+		"level": 1,
+		"ranks": {
+			"top": 5,
+			"right": 1,
+			"bottom": 1,
+			"left": 4
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 5,
+		"name": "Stoneshears",
+		"level": 1,
+		"ranks": {
+			"top": 4,
+			"right": 4,
+			"bottom": 2,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 6,
+		"name": "Mesmenir",
+		"level": 1,
+		"ranks": {
+			"top": 6,
+			"right": 3,
+			"bottom": 1,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 7,
+		"name": "Daggerquill",
+		"level": 1,
+		"ranks": {
+			"top": 1,
+			"right": 3,
+			"bottom": 1,
+			"left": 6
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 8,
+		"name": "Anak",
+		"level": 1,
+		"ranks": {
+			"top": 4,
+			"right": 1,
+			"bottom": 3,
+			"left": 3
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 9,
+		"name": "Garula",
+		"level": 1,
+		"ranks": {
+			"top": 3,
+			"right": 4,
+			"bottom": 1,
+			"left": 3
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 10,
+		"name": "Killer Bee",
+		"level": 1,
+		"ranks": {
+			"top": 5,
+			"right": 1,
+			"bottom": 3,
+			"left": 2
+		},
+		"element": "poison",
+		"bypass": false
+	},
+	{
+		"cardId": 11,
+		"name": "Dualhorn",
+		"level": 1,
+		"ranks": {
+			"top": 2,
+			"right": 6,
+			"bottom": 2,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 12,
+		"name": "Saberclaw",
+		"level": 1,
+		"ranks": {
+			"top": 6,
+			"right": 1,
+			"bottom": 2,
+			"left": 2
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 13,
+		"name": "Voretooth",
+		"level": 1,
+		"ranks": {
+			"top": 3,
+			"right": 6,
+			"bottom": 1,
+			"left": 1
+		},
+		"element": "poison",
+		"bypass": false
+	},
+	{
+		"cardId": 14,
+		"name": "Bulette",
+		"level": 1,
+		"ranks": {
+			"top": 3,
+			"right": 6,
+			"bottom": 1,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 15,
+		"name": "Chickatrice",
+		"level": 1,
+		"ranks": {
+			"top": 5,
+			"right": 3,
+			"bottom": 2,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 16,
+		"name": "Cactuar",
+		"level": 1,
+		"ranks": {
+			"top": 2,
+			"right": 1,
+			"bottom": 4,
+			"left": 4
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 17,
+		"name": "Slactuar",
+		"level": 1,
+		"ranks": {
+			"top": 2,
+			"right": 3,
+			"bottom": 3,
+			"left": 3
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 18,
+		"name": "Dynoaevis",
+		"level": 1,
+		"ranks": {
+			"top": 1,
+			"right": 3,
+			"bottom": 1,
+			"left": 6
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 19,
+		"name": "Sahagin",
+		"level": 1,
+		"ranks": {
+			"top": 3,
+			"right": 2,
+			"bottom": 1,
+			"left": 5
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
+		"cardId": 20,
+		"name": "Shieldshears",
+		"level": 1,
+		"ranks": {
+			"top": 2,
+			"right": 2,
+			"bottom": 6,
+			"left": 1
+		},
+		"element": null,
+		"bypass": false
+	},
+	{
 		"cardId": 173,
 		"name": "Luche",
 		"level": 7,
