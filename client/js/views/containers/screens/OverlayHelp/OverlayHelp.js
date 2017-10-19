@@ -143,7 +143,7 @@ function showGuide (topicName) {
     img = require(`Assets/img/help/${topicName + (index + 1)}.png`);
 
     if (img) {
-      $(figure).prepend(img);
+      $(figure).prepend(`<img src=${img} />`);
     }
   });
 
