@@ -3,7 +3,6 @@ import express from 'express';
 import http from 'http';
 import bodyParser from 'body-parser';
 import SuperLogin from 'superlogin';
-import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { CronJob } from 'cron';
 import moment from 'moment-timezone';
 import PouchDB from 'pouchdb';
@@ -67,9 +66,6 @@ export default function startServer () {
 
   // Initialize SuperLogin
   const superlogin = new SuperLogin(superloginConfig);
-  if (superlogin.config.getItem("providers.facebook.credentials.clientID")) {
-    superlogin.registerOAuth2("facebook", FacebookStrategy);
-  }
 
   // Mount SuperLogin's routes to our app
   app.use("/auth", superlogin.router);
