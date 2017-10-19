@@ -1,5 +1,8 @@
 import Stats from 'stats.js';
-import 'jquery-nearest';
+import $ from 'jquery';
+
+import jqueryNearest from 'jquery-nearest';
+jqueryNearest($);
 
 import _$ from 'utils';
 
