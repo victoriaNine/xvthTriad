@@ -299,6 +299,7 @@
   background: rgba(0, 0, 0, 0.5);
   padding: 1em;
   text-align: center;
+  z-index: 9998;
 
   &.is--visible {
     opacity: 1;

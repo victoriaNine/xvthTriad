@@ -16,7 +16,7 @@
     }
 
     &.is--played {
-        pointer-events: none;
+        cursor: default;
     }
 }
 

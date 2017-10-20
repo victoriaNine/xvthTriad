@@ -13,35 +13,17 @@ export default Backbone.View.extend({
   template  : template(Templ_Card),
   events    : {
     /* eslint-disable object-shorthand */
-    "mouseenter, touchstart": function (e) {
-      if (_$.state.user.isInGame) {
-        let pageX = e.pageX;
-        let pageY = e.pageY;
-
-        if (e.targetTouches && e.targetTouches.length === 1) {
-          pageX = e.targetTouches[0].pageX;
-          pageY = e.targetTouches[0].pageY;
-        }
-
-        pageX *=  _$.ui.window.devicePixelRatio / _$.state.appScalar;
-        pageY *=  _$.ui.window.devicePixelRatio / _$.state.appScalar;
-
-        _$.ui.screen.showCardTooltip({
-          x: pageX,
-          y: pageY,
-          name: this.model.get("name"),
-          isOwned: !!_$.state.user.get("album").models.find(card => card.attributes.cardId === this.model.get("cardId")),
-        });
-      }
-    },
-    "mouseleave, touchend": function () {
-      _$.ui.screen.hideCardTooltip();
-    }
+    "mouseenter": "showTooltip",
+    "touchstart": "showTooltip",
+    "mouseleave": "hideTooltip",
+    "touchend": "hideTooltip",
     /* eslint-enable */
   },
 
   initialize,
-  flip
+  flip,
+  showTooltip,
+  hideTooltip,
 });
 
 function initialize (attributes, options = {}) {
@@ -102,4 +84,30 @@ function flip (info = { fromSide: "right" }) {
   }
 
   return tl;
+}
+
+function showTooltip (e) {
+  if (_$.state.user.isInGame) {
+    let pageX = e.pageX;
+    let pageY = e.pageY;
+
+    if (e.targetTouches && e.targetTouches.length === 1) {
+      pageX = e.targetTouches[0].pageX;
+      pageY = e.targetTouches[0].pageY;
+    }
+
+    pageX *=  _$.ui.window.devicePixelRatio / _$.state.appScalar;
+    pageY *=  _$.ui.window.devicePixelRatio / _$.state.appScalar;
+
+    _$.ui.screen.showCardTooltip({
+      x: pageX,
+      y: pageY,
+      name: this.model.get("name"),
+      isOwned: !!_$.state.user.get("album").models.find(card => card.attributes.cardId === this.model.get("cardId")),
+    });
+  }
+}
+
+function hideTooltip () {
+  _$.ui.screen.hideCardTooltip();
 }
