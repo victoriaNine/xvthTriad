@@ -236,7 +236,7 @@ function initialize (options = {}) {
   }
 
   function proceed () {
-    if (options.setup) {
+    if (options.fullIntro) {
       _$.audio.audioEngine.channels.bgm.setVolume(_$.state.user.get("bgmVolume"));
       _$.audio.audioEngine.channels.sfx.setVolume(_$.state.user.get("sfxVolume"));
       _$.audio.audioEngine.setBGM("bgm.menus");
