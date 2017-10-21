@@ -7,8 +7,8 @@ import UAParser from 'ua-parser-js';
 
 import AssetManager from 'Modules/AssetManager';
 
-import cardList from './data/cardList.json';
-import countryList from './data/countryList.json';
+import cardList from 'Data/cardList.json';
+import countryList from 'Data/countryList.json';
 const uaParser = new UAParser();
 
 const startTime = Date.now();

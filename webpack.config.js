@@ -36,7 +36,7 @@ const config = {
 
       seriously$: path.resolve(BASE_PATH, "js/modules/seriouslyjs/seriously.js"),
       seriously: path.resolve(BASE_PATH, "js/modules/seriouslyjs/"),
-      utils$: path.resolve(BASE_PATH, "js/utils.js"),
+      utils$: path.resolve(BASE_PATH, "js/internal/utils.js"),
     }
   },
 
@@ -107,7 +107,7 @@ const config = {
     }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
-      template: IS_MAINTENANCE ? './maintenance.ejs' : './index.ejs',
+      template: './index.html',
       minify: { collapseWhitespace: true }
     }),
     new CopyWebpackPlugin([

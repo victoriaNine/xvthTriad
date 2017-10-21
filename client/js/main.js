@@ -1,6 +1,4 @@
-import Stats from 'stats.js';
 import $ from 'jquery';
-
 import jqueryNearest from 'jquery-nearest';
 jqueryNearest($);
 
@@ -21,100 +19,29 @@ import Partial_Footer from 'Partials/Footer';
 import LoaderAudioBGM from 'Data/loaders/audioBGM.json';
 import LoaderAudioSFX from 'Data/loaders/audioSFX.json';
 
+import setupScale from './internal/scale';
+
 const loaders = [
   LoaderAudioBGM,
   LoaderAudioSFX
 ];
 
-function setupScale () {
-  const ORIGINAL_SIZE = {
-    width  : 1920,
-    height : 950
-  };
-
-  const isSafariMobile = _$.app.env.device.model && _$.app.env.device.model.match(/iphone|ipad/i) && _$.app.env.browser.name.match(/safari/i);
-  const URL_BAR_HEIGHT = isSafariMobile ? 44 : 0;
-
-  const html = document.querySelector("html");
-  const body = document.body;
-
-  function getWindowWidth () { return document.documentElement.clientWidth; }
-  function getWindowHeight () { return document.documentElement.clientHeight - URL_BAR_HEIGHT; }
-
-  _$.ui.window = Object.create(null, {
-    devicePixelRatio: { get: () => window.devicePixelRatio },
-    width: { get: getWindowWidth },
-    height: { get: getWindowHeight },
-    actualWidth: { get: () => getWindowWidth() * window.devicePixelRatio },
-    actualHeight: { get: () => getWindowHeight() * window.devicePixelRatio },
-    screenWidth: { get: () => window.screen.width },
-    screenHeight: { get: () => window.screen.height },
-    actualScreenWidth: { get: () => window.screen.width * window.devicePixelRatio },
-    actualScreenHeight: { get: () => window.screen.height * window.devicePixelRatio },
-  });
-
-  _$.events.on("scalarUpdate", (event, newScalar) => {
-    _$.state.appScalar = newScalar;
-  });
-
-  window.addEventListener("resize", reScale);
-  reScale();
-
-  function reScale () {
-    const originalRatio = 1 / _$.ui.window.devicePixelRatio;
-
-    const actualWidth  = _$.ui.window.actualWidth;
-    const actualHeight = _$.ui.window.actualHeight;
-    const scalarW = actualWidth / ORIGINAL_SIZE.width;
-    const scalarH = actualHeight / ORIGINAL_SIZE.height;
-    let scalar;
-
-    if (scalarW < scalarH) {
-      scalar = scalarW;
-      html.style.width  = ORIGINAL_SIZE.width + "px";
-      html.style.height = (actualHeight / scalar) + "px";
-    } else {
-      scalar = scalarH;
-      html.style.width  = (actualWidth / scalar) + "px";
-      html.style.height = ORIGINAL_SIZE.height + "px";
-    }
-
-    $(html).css({ transform: `scale(${scalar})` });
-    $(body).css({ transform: `scale(${originalRatio})` });
-    _$.events.trigger("scalarUpdate", scalar);
-  }
+// Environment detection
+if (_$.app.env.device.type === "mobile") {
+  document.querySelector("html").classList.add("isMobile");
+} else if (_$.app.env.device.type === "tablet") {
+  document.querySelector("html").classList.add("isTablet");
+} else {
+  document.querySelector("html").classList.add("isDesktop");
 }
 
-function setupStats () {
-  const stats = new Stats();
-  stats.dom.style.left = "auto";
-  stats.dom.style.right = "0px";
-  stats.dom.style.width = "80px";
-  stats.showPanel(0);
-  document.body.appendChild(stats.dom);
-
-  requestAnimationFrame(function loop () {
-    stats.update();
-    requestAnimationFrame(loop);
-  });
+if ((_$.app.env.device.type && _$.app.env.device.type !== "desktop") || !_$.app.env.browser.name.match(/chrome/i)) {
+  document.querySelector("html").classList.add("noCanvas");
+} else {
+  _$.app.env.useCanvas = true;
 }
 
-/* eslint-disable semi */
-if (!_$.debug.debugMode) {
-  //===============================
-  // GOOGLE ANALYTICS
-  //===============================
-  (function(b,o,i,l,e,r){
-    b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src="//www.google-analytics.com/analytics.js";
-    r.parentNode.insertBefore(e,r);
-  }(window,document,"script","ga"));
-  window.ga("create","UA-89445990-1");
-  window.ga("send","pageview");
-}
-/* eslint-enable */
-
+// Setup actions for email links
 const location = window.location;
 if (location.pathname !== "/") {
   if (location.pathname === "/confirm-email" && location.search) {
@@ -140,32 +67,7 @@ if (location.pathname !== "/") {
   window.history.replaceState({}, "", "/");
 }
 
-if (_$.app.env.device.type === "mobile") {
-  document.querySelector("html").classList.add("isMobile");
-} else if (_$.app.env.device.type === "tablet") {
-  document.querySelector("html").classList.add("isTablet");
-} else {
-  document.querySelector("html").classList.add("isDesktop");
-}
-
-if ((_$.app.env.device.type && _$.app.env.device.type !== "desktop") || !_$.app.env.browser.name.match(/chrome/i)) {
-  document.querySelector("html").classList.add("noCanvas");
-} else {
-  _$.app.env.useCanvas = true;
-}
-
-if (_$.debug.debugMode) {
-  setupStats();
-
-  /*_$.events.on("all", (event, ...data) => {
-    if (data.length) {
-      _$.debug.log("event triggered:", event.name, event, data);
-    } else {
-      _$.debug.log("event triggered:", event.name, event);
-    }
-  });*/
-}
-
+// Setting up events
 _$.events.once("launch", () => {
   _$.ui.footer = new Partial_Footer();
   _$.ui.screen = new Screen_Title({ setup: true, fullIntro: true });
@@ -207,6 +109,7 @@ _$.events.once("launch", () => {
 _$.events.on("gamepadOn",  () => { _$.controls.type = "gamepad"; });
 _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
 
+// Add listener for when the scaling is completed
 _$.events.once("scalarUpdate", () => {
   _$.controls.type           = "mouse";
 
@@ -223,4 +126,18 @@ _$.events.once("scalarUpdate", () => {
   _$.ui.screen               = new Screen_Loading({ loaders });
 });
 
+// Debug tools
+if (_$.debug.debugMode) {
+  require('./internal/stats').default();
+
+  /*_$.events.on("all", (event, ...data) => {
+    if (data.length) {
+      _$.debug.log("event triggered:", event.name, event, data);
+    } else {
+      _$.debug.log("event triggered:", event.name, event);
+    }
+  });*/
+}
+
+// Setup scaling and launch
 setupScale();
