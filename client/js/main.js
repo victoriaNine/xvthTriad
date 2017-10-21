@@ -1,6 +1,5 @@
 import Stats from 'stats.js';
 import $ from 'jquery';
-import TweenMax from 'gsap';
 
 import jqueryNearest from 'jquery-nearest';
 jqueryNearest($);
@@ -33,57 +32,57 @@ function setupScale () {
     height : 950
   };
 
-  function pixelRatioAdjust (forceSize) {
-    const html             = document.querySelector("html");
-    const body             = document.body;
+  const isSafariMobile = _$.app.env.device.model && _$.app.env.device.model.match(/iphone|ipad/i) && _$.app.env.browser.name.match(/safari/i);
+  const URL_BAR_HEIGHT = isSafariMobile ? 44 : 0;
 
-    _$.ui.window                  = window.screen || {};
-    _$.ui.window.devicePixelRatio = window.devicePixelRatio || 1;
-    _$.ui.window.actualWidth      = window.screen.width * devicePixelRatio;
-    _$.ui.window.actualHeight     = window.screen.height * devicePixelRatio;
+  const html = document.querySelector("html");
+  const body = document.body;
 
-    const scalar = 1 / _$.ui.window.devicePixelRatio;
-    const offset = (_$.ui.window.devicePixelRatio * 100 - 100) / 2;
+  function getWindowWidth () { return document.documentElement.clientWidth; }
+  function getWindowHeight () { return document.documentElement.clientHeight - URL_BAR_HEIGHT; }
 
-    if (forceSize) {
-      $(html).css({ transformOrigin: "0 0" });
-      _$.events.on("scalarUpdate", (event, newScalar) => {
-        _$.state.appScalar = newScalar;
-      });
-      window.addEventListener("resize", reScale);
-      reScale();
+  _$.ui.window = Object.create(null, {
+    devicePixelRatio: { get: () => window.devicePixelRatio },
+    width: { get: getWindowWidth },
+    height: { get: getWindowHeight },
+    actualWidth: { get: () => getWindowWidth() * window.devicePixelRatio },
+    actualHeight: { get: () => getWindowHeight() * window.devicePixelRatio },
+    screenWidth: { get: () => window.screen.width },
+    screenHeight: { get: () => window.screen.height },
+    actualScreenWidth: { get: () => window.screen.width * window.devicePixelRatio },
+    actualScreenHeight: { get: () => window.screen.height * window.devicePixelRatio },
+  });
+
+  _$.events.on("scalarUpdate", (event, newScalar) => {
+    _$.state.appScalar = newScalar;
+  });
+
+  window.addEventListener("resize", reScale);
+  reScale();
+
+  function reScale () {
+    const originalRatio = 1 / _$.ui.window.devicePixelRatio;
+
+    const actualWidth  = _$.ui.window.actualWidth;
+    const actualHeight = _$.ui.window.actualHeight;
+    const scalarW = actualWidth / ORIGINAL_SIZE.width;
+    const scalarH = actualHeight / ORIGINAL_SIZE.height;
+    let scalar;
+
+    if (scalarW < scalarH) {
+      scalar = scalarW;
+      html.style.width  = ORIGINAL_SIZE.width + "px";
+      html.style.height = (actualHeight / scalar) + "px";
     } else {
-      html.style.width   = window.innerWidth * _$.ui.window.devicePixelRatio + "px";
-      html.style.height  = window.innerHeight * _$.ui.window.devicePixelRatio + "px";
-      _$.state.appScalar = 1;
+      scalar = scalarH;
+      html.style.width  = (actualWidth / scalar) + "px";
+      html.style.height = ORIGINAL_SIZE.height + "px";
     }
 
-    $(body).css({ transform: `scale(${scalar}) translate(-${offset}%, -${offset}%)` });
-
-    function reScale () {
-      const fullWidth  = window.innerWidth * _$.ui.window.devicePixelRatio;
-      const fullHeight = window.innerHeight * _$.ui.window.devicePixelRatio;
-      const scalarW = fullWidth / ORIGINAL_SIZE.width;
-      const scalarH = fullHeight / ORIGINAL_SIZE.height;
-      let scalar;
-
-      if (scalarW < scalarH) {
-        scalar = scalarW;
-        html.style.width  = ORIGINAL_SIZE.width + "px";
-        html.style.height = ((window.innerHeight * _$.ui.window.devicePixelRatio) / scalar) + "px";
-      } else {
-        scalar = scalarH;
-        html.style.width  = ((window.innerWidth * _$.ui.window.devicePixelRatio) / scalar) + "px";
-        html.style.height = ORIGINAL_SIZE.height + "px";
-      }
-
-      $(html).css({ transform: `scale(${scalar})` });
-      TweenMax.set(html, { transform: `scale(${scalar})` });
-      _$.events.trigger("scalarUpdate", scalar);
-    }
+    $(html).css({ transform: `scale(${scalar})` });
+    $(body).css({ transform: `scale(${originalRatio})` });
+    _$.events.trigger("scalarUpdate", scalar);
   }
-
-  pixelRatioAdjust(true);
 }
 
 function setupStats () {
