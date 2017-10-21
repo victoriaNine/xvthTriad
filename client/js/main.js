@@ -157,7 +157,6 @@ if ((_$.app.env.device.type && _$.app.env.device.type !== "desktop") || !_$.app.
 
 if (_$.debug.debugMode) {
   setupStats();
-}
 
   /*_$.events.on("all", (event, ...data) => {
     if (data.length) {
