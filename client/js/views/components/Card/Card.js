@@ -87,17 +87,19 @@ function flip (info = { fromSide: "right" }) {
 }
 
 function showTooltip (e) {
-  if (_$.state.user.isInGame) {
-    let pageX = e.pageX;
-    let pageY = e.pageY;
+  e.preventDefault();
 
-    if (e.targetTouches && e.targetTouches.length === 1) {
-      pageX = e.targetTouches[0].pageX;
-      pageY = e.targetTouches[0].pageY;
+  if (_$.state.user.isInGame) {
+    let pageX = e.originalEvent.pageX;
+    let pageY = e.originalEvent.pageY;
+
+    if (e.type === "touchstart" && e.targetTouches && e.targetTouches.length === 1) {
+      pageX = e.originalEvent.targetTouches[0].pageX;
+      pageY = e.originalEvent.targetTouches[0].pageY;
     }
 
-    pageX *=  _$.ui.window.devicePixelRatio / _$.state.appScalar;
-    pageY *=  _$.ui.window.devicePixelRatio / _$.state.appScalar;
+    pageX *= _$.ui.window.devicePixelRatio / _$.state.appScalar;
+    pageY *= _$.ui.window.devicePixelRatio / _$.state.appScalar;
 
     _$.ui.screen.showCardTooltip({
       x: pageX,

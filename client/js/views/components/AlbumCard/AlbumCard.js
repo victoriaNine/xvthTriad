@@ -83,8 +83,8 @@ function dragCardStart (e, cardCopy) {
   else if (!this.isDraggingCard) { this.isDraggingCard = true; }
 
   const that = this;
-  let prevX = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
-  let prevY = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
+  let prevX = (e.type === "touchstart") ? e.originalEvent.touches[0].pageX : e.pageX;
+  let prevY = (e.type === "touchstart") ? e.originalEvent.touches[0].pageY : e.pageY;
 
   if (!cardCopy.holder) {
     this.deckHolders.append(cardCopy.cardView);
@@ -131,8 +131,8 @@ function dragCardStart (e, cardCopy) {
   _$.audio.audioEngine.playSFX("cardGrab");
 
   function dragCard (e) {
-    const pageX  = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
-    const pageY  = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
+    const pageX  = (e.type === "touchmove") ? e.originalEvent.touches[0].pageX : e.pageX;
+    const pageY  = (e.type === "touchmove") ? e.originalEvent.touches[0].pageY : e.pageY;
     const deltaX = pageX - prevX;
     const deltaY = pageY - prevY;
 
@@ -150,8 +150,8 @@ function dragCardStart (e, cardCopy) {
     $(window).off("mouseup touchend", dragCardStart);
     that.isDraggingCard = false;
 
-    const pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
-    const pageY       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageY : e.pageY;
+    const pageX       = (e.type === "touchend") ? e.originalEvent.changedTouches[0].pageX : e.pageX;
+    const pageY       = (e.type === "touchend") ? e.originalEvent.changedTouches[0].pageY : e.pageY;
     const scaledPageX = pageX * _$.ui.window.devicePixelRatio / _$.state.appScalar;
     const scaledPageY = pageY * _$.ui.window.devicePixelRatio / _$.state.appScalar;
 

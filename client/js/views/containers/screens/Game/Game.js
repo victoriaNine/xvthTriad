@@ -254,8 +254,8 @@ function dragCardStart (e, cardView) {
   }
 
   const that  = this;
-  let prevX = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
-  let prevY = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
+  let prevX = (e.type === "touchstart") ? e.originalEvent.touches[0].pageX : e.pageX;
+  let prevY = (e.type === "touchstart") ? e.originalEvent.touches[0].pageY : e.pageY;
   const originalPosition = {
     left: cardView.$el[0]._gsTransform.x,
     top : cardView.$el[0]._gsTransform.y
@@ -276,8 +276,8 @@ function dragCardStart (e, cardView) {
   _$.audio.audioEngine.playSFX("cardGrab");
 
   function dragCard (e) {
-    const pageX  = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageX : e.pageX;
-    const pageY  = ("ontouchstart" in window) ? e.originalEvent.touches[0].pageY : e.pageY;
+    const pageX  = (e.type === "touchmove") ? e.originalEvent.touches[0].pageX : e.pageX;
+    const pageY  = (e.type === "touchmove") ? e.originalEvent.touches[0].pageY : e.pageY;
     const deltaX = pageX - prevX;
     const deltaY = pageY - prevY;
 
@@ -295,8 +295,8 @@ function dragCardStart (e, cardView) {
     $(window).off("mouseup touchend", dragCardStop);
     that.isDraggingCard = false;
 
-    const pageX       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
-    const pageY       = ("ontouchstart" in window) ? e.originalEvent.changedTouches[0].pageY : e.pageY;
+    const pageX       = (e.type === "touchend") ? e.originalEvent.changedTouches[0].pageX : e.pageX;
+    const pageY       = (e.type === "touchend") ? e.originalEvent.changedTouches[0].pageY : e.pageY;
     const scaledPageX = pageX * _$.ui.window.devicePixelRatio / _$.state.appScalar;
     const scaledPageY = pageY * _$.ui.window.devicePixelRatio / _$.state.appScalar;
 
