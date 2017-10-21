@@ -100,7 +100,7 @@ const shareSettings = {
   url      : $("meta[property='og:url']")[0].content,
   text     : $("meta[name='twitter:description']")[0].content,
   posttype : "link",
-  hashtags : "ff,ff15,ffxv,tripletriad",
+  hashtags : "ff15,ffxv,tripletriad,webgl,javascript",
   tags     : $("meta[name='keywords']")[0].content,
   title    : $("meta[property='og:title']")[0].content,
   content  : $("meta[property='og:url']")[0].content,
