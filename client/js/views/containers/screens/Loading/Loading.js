@@ -46,7 +46,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     _$.comm.socketManager.init();
 
     function proceed () {
-      if (_$.app.env.deviceType !== "phone") {
+      if (_$.app.env.useCanvas) {
         _$.events.trigger("addFX");
       }
 
@@ -65,7 +65,7 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   tl.set(this.$(".loading_wrapper"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity" }, 0.5);
   tl.set(this.$(".loading_bg"), { opacity: 1, transition: "opacity 1s ease", clearProps: "opacity" }, 1);
 
-  if (_$.app.env.deviceType !== "mobile") {
+  if (_$.app.env.useCanvas) {
     _$.ui.canvas.init();
   }
 

@@ -5,6 +5,7 @@
   "versionFlag": "beta",
   "private": true,
   "devDependencies": {
+    "autoprefixer": "^7.1.5",
     "axios": "^0.16.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -32,6 +33,7 @@
     "ncp": "^2.0.0",
     "node-sass": "^4.5.3",
     "offline-plugin": "^4.8.4",
+    "postcss-loader": "^2.0.8",
     "pouchdb": "^6.1.1",
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.6",
@@ -54,7 +56,8 @@
     "jquery": "2.1.4",
     "jquery-nearest": "1.4.0",
     "lodash": "^4.17.4",
-    "stats.js": "^0.17.0"
+    "stats.js": "^0.17.0",
+    "ua-parser-js": "^0.7.17"
   },
   "scripts": {
     "dev": "cross-env babel-node server/ --inspect --progress",

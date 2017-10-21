@@ -31,7 +31,7 @@
         cursor: pointer;
     }
 
-    html.isMobile & {
+    html:not(.isDesktop) & {
         filter: none;
     }
 
@@ -64,7 +64,7 @@
         transition: opacity .4s, transform .4s;
     }
 
-    &:hover &-title, &.is--active &-title, &.is--hover &-title, html.isMobile & &-title {
+    &:hover &-title, &.is--active &-title, &.is--hover &-title, html:not(.isDesktop) & &-title {
         span { opacity: 1; }
         span:nth-of-type(1) { transform: translateY(0); transition: opacity .4s, transform .4s; }
         span:nth-of-type(2) { transform: translateX(0); transition: opacity .4s .2s, transform .4s .2s; }

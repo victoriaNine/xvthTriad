@@ -2,34 +2,28 @@
 /* FONT FACES
 /*=======================*/
 @font-face {
-    font-family: "AvantGarde LT";
-    src: url(#{ $fontAssetsPath + "AvantGardeLT-Medium.eot" });
-    src: url(#{ $fontAssetsPath + "AvantGardeLT-Medium.eot?#iefix" }) format("embedded-opentype"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-Medium.woff2" }) format("woff2"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-Medium.woff" }) format("woff"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-Medium.ttf" }) format("truetype");
-    font-weight: 500;
-    font-style: normal;
+  font-family: "AvantGarde LT";
+  src: url(#{ $fontAssetsPath + "AvantGardeLT-Medium.woff2" }) format("woff2"),
+    url(#{ $fontAssetsPath + "AvantGardeLT-Medium.woff" }) format("woff"),
+    url(#{ $fontAssetsPath + "AvantGardeLT-Medium.ttf" }) format("truetype");
+  font-weight: 500;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "AvantGarde LT";
-    src: url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.eot" });
-    src: url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.eot?#iefix" }) format("embedded-opentype"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.woff2" }) format("woff2"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.woff" }) format("woff"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.ttf" }) format("truetype");
-    font-weight: 200;
-    font-style: normal;
+  font-family: "AvantGarde LT";
+  src: url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.woff2" }) format("woff2"),
+    url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.woff" }) format("woff"),
+    url(#{ $fontAssetsPath + "AvantGardeLT-ExtraLight.ttf" }) format("truetype");
+  font-weight: 200;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "AvantGarde LT";
-    src: url(#{ $fontAssetsPath + "AvantGardeLT-Bold.eot"});
-    src: url(#{ $fontAssetsPath + "AvantGardeLT-Bold.eot?#iefix"}) format("embedded-opentype"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-Bold.woff2"}) format("woff2"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-Bold.woff"}) format("woff"),
-        url(#{ $fontAssetsPath + "AvantGardeLT-Bold.ttf"}) format("truetype");
-    font-weight: 700;
-    font-style: normal;
+  font-family: "AvantGarde LT";
+  src: url(#{ $fontAssetsPath + "AvantGardeLT-Bold.woff2"}) format("woff2"),
+    url(#{ $fontAssetsPath + "AvantGardeLT-Bold.woff"}) format("woff"),
+    url(#{ $fontAssetsPath + "AvantGardeLT-Bold.ttf"}) format("truetype");
+  font-weight: 700;
+  font-style: normal;
 }

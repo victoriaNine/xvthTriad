@@ -55,7 +55,18 @@ const config = {
           use: [
             {
               loader: 'css-loader',
-              options: { modules: false, sourceMap: IS_DEV, importLoaders: 1, minimize: !IS_DEV }
+              options: {
+                modules: false,
+                sourceMap: IS_DEV,
+                importLoaders: 1,
+                minimize: !IS_DEV,
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                sourceMap: IS_DEV
+              }
             },
             {
               loader: `sass-loader`,
