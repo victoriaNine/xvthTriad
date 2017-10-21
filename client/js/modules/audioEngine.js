@@ -370,6 +370,10 @@ class AudioEngine {
       options : null
     };
 
+    if (!this.audioCtx) {
+      return;
+    }
+
     this.createChannel("master");
     this.createChannel("bgm");
     this.createChannel("sfx", 0.5);
