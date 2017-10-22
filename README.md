@@ -13,20 +13,21 @@ Features:
 - Gamepad support (with the Gamepad API)
 *Update: Dropped as it doesn't enhance the UX. Partial support is still available.*
 
-Possible improvements:
-- Migrate to Vue.js for performance
-- Use WebWorkers for AI calculations and asset loading
+Potential improvements:
+- Migrate to React
+- Use WebWorkers for AI calculations and XHR requests
 
 ## Technologies used
 ### Heavy-lifting
 - [Backbone](http://backbonejs.org)
 - [Webpack](https://webpack.js.org)
-- ~~[Grunt](https://gruntjs.com/)~~ Formerly
-- ~~[RequireJS](http://requirejs.org/)~~ Formerly
+- ~~[Grunt](https://gruntjs.com)~~ Formerly
+- ~~[RequireJS](http://requirejs.org)~~ Formerly
 
 ### Front-end
 - [GSAP](https://greensock.com/gsap)
-- [SASS](sass-lang.com)
+- [SASS](http://sass-lang.com)
+- [PostCSS](http://postcss.org)
 - [Seriously.JS](https://github.com/brianchirls/Seriously.js): WebGL real-time effect compositing
 - [Arpad](https://github.com/PhobosRising/node-arpad): Generates ELO scores for the leaderboards
 - [flag-icon](https://github.com/lipis/flag-icon-css): For user profile flags
