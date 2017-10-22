@@ -1,0 +1,22 @@
+/*=======================*/
+/* MAINTENANCE PAGE
+/*=======================*/
+.maintenance {
+    background: url(#{ $uiAssetsPath + "alt_bg.jpg"}) 50% 100% no-repeat;
+    background-size: cover;
+
+    &:before {
+        @include fullSizeAbs("");
+        background: rgba(0, 0, 0, 0.85);
+    }
+
+    &_img {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        left: 25%;
+        top: 25%;
+        background: url(#{ $uiAssetsPath + "maintenance.png"}) 50% 50% no-repeat;
+        background-size: contain;
+    }
+}

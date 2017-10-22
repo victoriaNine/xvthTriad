@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Chrome",
+    "version": ">= 50"
+  },
+  {
+    "name": "Firefox",
+    "version": ">= 50"
+  },
+  {
+    "name": "Opera",
+    "version": ">= 40"
+  },
+  {
+    "name": "Edge",
+    "version": ">= 16"
+  },
+  {
+    "name": "Safari",
+    "version": ">= 9"
+  }
+]

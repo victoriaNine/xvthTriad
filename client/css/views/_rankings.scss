@@ -1,0 +1,179 @@
+/*=======================*/
+/* RANKINGS SCREEN
+/*=======================*/
+#screen_overlayRankings {
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.rankings_main {
+    @include board;
+}
+
+.rankings_leaderboard {
+    @include boardContent();
+}
+
+.rankings_leaderboard-ranks, .rankings_rankinglist {
+    @include corners;
+}
+
+.rankings_leaderboard-ranks {
+    width: 100%;
+    height: 100%;
+    cursor: auto;
+
+    & * {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        user-select: text;
+    }
+
+    &-scroll {
+        @extend %lounge-list-scroll;
+        display: block;
+    }
+
+    &-rank {
+        @extend .row;
+
+        & .rank-number     { @extend .col_1; }
+        & .rank-avatar     { @extend .col_1; }
+        & .rank-rankerInfo { @extend .col_5; }
+        & .rank-flag       { @extend .col_h; }
+        & .rank-stats      { @extend .col_1h; }
+        & .rank-rate       { @extend .col_1; }
+        & .rank-points     { @extend .col_1; }
+        & .rank-insigna    { @extend .col_1; }
+
+        & .rank-flag, & .rank-stats, & .rank-rate, & .rank-points {
+            text-align: right;
+        }
+
+        & .rank-date {
+            flex: 1;
+            text-transform: none;
+            padding-left: 1em;
+            font-weight: 100;
+        }
+
+        &-info {
+            background: rgba(0, 0, 0, 0.5);
+            height: 50px;
+            line-height: 50px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        &-ranker {
+            height: calc(85px + 1em);
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background .2s;
+
+            &.firstPlace {
+                background: transparentize($color_blue, 0.8);
+
+                &:hover {
+                    background: transparentize($color_blue, 0.6);
+                }
+
+                & .rank-rankerInfo-name {
+                    color: $color_lightBlue;
+                }
+            }
+
+            &:not(.firstPlace):hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            &:hover &-avatar {
+                @extend %avatar-blue;
+            }
+
+            & .rank-number {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 2em;
+                font-weight: 500;
+            }
+
+            & .rank-avatar {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            & .rank-rankerInfo {
+                padding-left: 1rem;
+                padding-top: 1rem;
+
+                &-name {
+                    font-weight: 500;
+                    font-size: 1.25em;
+                }
+
+                &-title {
+                    margin-top: 0.75em;
+                }
+            }
+
+            & .rank-flag, & .rank-stats, & .rank-rate, & .rank-points {
+                line-height: 85px;
+            }
+
+            & .rank-stats, & .rank-rate, & .rank-points {
+                font-size: 1.25em;
+            }
+
+            & .rank-points {
+                font-weight: 700;
+                font-size: 1.5em;
+            }
+
+            & .rank-insigna {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-left: 1em;
+            }
+
+            &-avatar {
+                @extend %avatar;
+                position: relative;
+                width: 75px;
+                height: 75px;
+
+                &-img {
+                    @extend %lounge-list-element-user-avatar-img;
+                }
+            }
+        }
+    }
+}
+
+.rankings_rankinglist {
+    @include boardList();
+}
+
+.insigna {
+    width: 75px;
+    height: 75px;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    &.insigna-gold {
+        background-image: url(#{ $uiAssetsPath + "insigna_gold.png"});
+    }
+
+    &.insigna-silver {
+        background-image: url(#{ $uiAssetsPath + "insigna_silver.png"});
+    }
+
+    &.insigna-bronze {
+        background-image: url(#{ $uiAssetsPath + "insigna_bronze.png"});
+    }
+}

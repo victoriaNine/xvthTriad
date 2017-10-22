@@ -1,0 +1,78 @@
+/*=======================*/
+/* MENU SCREEN
+/*=======================*/
+#screen_overlayMenu {
+    display: flex;
+    z-index: 1;
+}
+
+.menu_wrapper {
+  display: flex;
+  flex: 1;
+}
+
+.menu_element {
+    flex: 1;
+    filter: saturate(0) brightness(0.1);
+    padding: $globalPadding;
+    position: relative;
+    background: #000;
+    transition: filter .2s;
+
+    &:after {
+        @include fullSizeAbs("");
+        left:0;
+        top:0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 90%);
+    }
+
+    &:not(.is--disabled):hover, &.is--active, &:not(.is--disabled).is--hover {
+        filter: saturate(1) brightness(1);
+        cursor: pointer;
+    }
+
+    html:not(.isDesktop) & {
+        filter: none;
+    }
+
+    &-bg {
+        @include fullSizeAbs();
+        background: $color_lightGrey 50% 100% no-repeat;
+        top:0;
+        left:0;
+        transition: transform  0.2s;
+    }
+
+    &-title {
+        color: rgba(0, 0, 0, .75);
+        font-size: $fontSize_title;
+    }
+
+    &-title span {
+        position: absolute;
+        opacity: 0;
+    }
+
+    &-title span:nth-of-type(1) {
+        font-weight: 700;
+        transform: translateY(-0.5em);
+        transition: opacity .4s .2s, transform .4s .2s;
+    }
+
+    &-title span:nth-of-type(2) {
+        transform: translateX(-0.5em);
+        transition: opacity .4s, transform .4s;
+    }
+
+    &:hover &-title, &.is--active &-title, &.is--hover &-title, html:not(.isDesktop) & &-title {
+        span { opacity: 1; }
+        span:nth-of-type(1) { transform: translateY(0); transition: opacity .4s, transform .4s; }
+        span:nth-of-type(2) { transform: translateX(0); transition: opacity .4s .2s, transform .4s .2s; }
+    }
+}
+
+.menu_soloMode     .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_noctis.jpg"}); }
+.menu_versusMode   .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_gladiolus.jpg"}); }
+.menu_loungeRoom   .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_prompto.jpg"}); }
+.menu_cardAlbum    .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_ignis.jpg"}); }
+.menu_userSettings .menu_element-bg { background-image: url(#{ $uiAssetsPath + "menu_luna.jpg"}); }

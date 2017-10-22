@@ -1,0 +1,206 @@
+<div class="userSettings_header" style="display:none;">
+    <div class="userSettings_header-leftCol">
+        <h1 class="userSettings_header-title">
+            <span class="weight-bold">User</span> profile
+        </h1>
+        <hr>
+        <div class="userSettings_header-countWon">
+            <div class="userSettings_header-countWon-label">Games won</div>
+            <div class="userSettings_header-countWon-count">
+                <%= wonRankedCount %> (ranked)
+                <span class="color-darkGrey"> / <%= wonCount %> (total)</span>
+            </div>
+        </div>
+        <div class="userSettings_header-countLost">
+            <div class="userSettings_header-countLost-label">Losses</div>
+            <div class="userSettings_header-countLost-count">
+                <%= lostRankedCount %> (ranked)
+                <span class="color-darkGrey"> / <%= lostCount %> (total)</span>
+            </div>
+        </div>
+        <div class="userSettings_header-countDraw">
+            <div class="userSettings_header-countDraw-label">Tie games</div>
+            <div class="userSettings_header-countDraw-count">
+                <%= drawRankedCount %> (ranked)
+                <span class="color-darkGrey"> / <%= drawCount %> (total)</span>
+            </div>
+        </div>
+        <% if (isLoggedIn) { %>
+        <div class="userSettings_header-rankPoints">
+            <div class="userSettings_header-rankPoints-label">Rank points</div>
+            <div class="userSettings_header-rankPoints-count"><%= rankPoints %></div>
+        </div>
+        <% } %>
+        <p class="userSettings_header-help"></p>
+    </div>
+    <div class="userSettings_header-rightCol">
+        <div class="userSettings_header-avatar">
+            <div class="userSettings_header-avatar-img" style="background-image: url('<%= avatarSrc %>');"></div>
+        </div>
+    </div>
+</div>
+<div class="userSettings_content">
+    <div class="userSettings_content-save" style="display:none;">
+        <ul class="userSettings_content-save-choice">
+            <li class="userSettings_content-save-choice-saveBtn userSettings_content-save-choice-element is--active">Save changes</li>
+            <li class="userSettings_content-save-choice-cancelBtn userSettings_content-save-choice-element">Cancel changes</li>
+            <% if (!isLoggedIn) { %>
+            <li class="userSettings_content-save-choice-exportBtn userSettings_content-save-choice-element">Export save file</li>
+            <% } %>
+            <li class="userSettings_content-save-choice-resetAlbumBtn userSettings_content-save-choice-element">Reset card album</li>
+            <li class="userSettings_content-save-choice-deleteAccountBtn userSettings_content-save-choice-element">Delete account</li>
+            <li class="userSettings_content-save-choice-backBtn userSettings_content-save-choice-element">Back</li>
+        </ul>
+    </div>
+    <div class="userSettings_content-confirm" style="display:none;">
+        <ul class="userSettings_content-confirm-choice">
+            <li class="userSettings_content-confirm-choice-confirmBtn userSettings_content-confirm-choice-element is--active">Confirm</li>
+            <li class="userSettings_content-confirm-choice-cancelBtn userSettings_content-confirm-choice-element">Cancel</li>
+        </ul>
+    </div>
+    <% if (!isLoggedIn) { %>
+    <div class="userSettings_content-load" style="display:none;">
+        <ul class="userSettings_content-load-choice">
+            <li class="userSettings_content-load-choice-loadBtn userSettings_content-load-choice-element is--active">Load file</li>
+            <li class="userSettings_content-load-choice-cancelBtn userSettings_content-load-choice-element">Cancel</li>
+        </ul>
+    </div>
+    <% } %>
+    <div class="userSettings_content-settings">
+        <div class="userSettings_content-settings-scroll">
+            <% if (isLoggedIn) { %>
+            <div class="col">
+                <div class="userSettings_content-settings-setting setting-name">
+                    <div class="userSettings_content-settings-setting-label">Name</div>
+                    <input class="userSettings_content-settings-setting-input" value="<%= userName %>"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-currentPassword">
+                    <div class="userSettings_content-settings-setting-label">Password</div>
+                    <input class="userSettings_content-settings-setting-input" type="password"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-email">
+                    <div class="userSettings_content-settings-setting-label">Email</div>
+                    <input class="userSettings_content-settings-setting-input" type="email" value="<%= email %>"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-difficulty">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="difficultySetting-easy">AI: Difficulty level -- Easy</li>
+                        <li class="difficultySetting-normal">AI: Difficulty level -- Normal</li>
+                        <li class="difficultySetting-hard">AI: Difficulty level -- Hard</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-placingMode">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="placingModeSetting-dragDrop">Cards: Placing mode -- Drag and drop</li>
+                        <li class="placingModeSetting-click">Cards: Placing mode -- Click</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-notifyMode">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="notifyModeSetting-always">Messages: Notification mode -- Always</li>
+                        <li class="notifyModeSetting-onlyMentions">Messages: Notification mode -- Only when I'm mentioned</li>
+                        <li class="notifyModeSetting-onlyInactive">Messages: Notification mode -- Only if the window is inactive</li>
+                        <li class="notifyModeSetting-never">Messages: Notification mode -- Never</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-country">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="countrySetting-unset">Country: Select in the list</li>
+                        <li class="countrySetting-COUNTRY_CODE">Country: COUNTRY_NAME</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="userSettings_content-settings-setting setting-avatar">
+                    <div class="userSettings_content-settings-setting-label">Upload an avatar</div>
+                    <input class="userSettings_content-settings-setting-input" type="file"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-newPassword">
+                    <div class="userSettings_content-settings-setting-label">New password</div>
+                    <input class="userSettings_content-settings-setting-input" type="password"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-confirmPassword">
+                    <div class="userSettings_content-settings-setting-label">Confirm new password</div>
+                    <input class="userSettings_content-settings-setting-input" type="password"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-bgm">
+                    <div class="userSettings_content-settings-setting-label">Music</div>
+                    <input id="bgmVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= bgmVolume %>" step="1"></input>
+                    <label for="bgmVolume"><%= bgmVolume %></label>
+                </div>
+                <div class="userSettings_content-settings-setting setting-sfx">
+                    <div class="userSettings_content-settings-setting-label">Sound effects</div>
+                    <input id="sfxVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= sfxVolume %>" step="1"></input>
+                    <label for="sfxVolume"><%= sfxVolume %></label>
+                </div>
+                <div class="userSettings_content-settings-setting setting-notif">
+                    <div class="userSettings_content-settings-setting-label">Notifications</div>
+                    <input id="notifVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= notifVolume %>" step="1"></input>
+                    <label for="notifVolume"><%= sfxVolume %></label>
+                </div>
+                <div class="userSettings_content-settings-setting setting-inactiveAudio">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="inactiveAudioSetting-muteAll">Inactive window: Audio -- Mute all sounds</li>
+                        <li class="inactiveAudioSetting-onlyNotifs">Inactive window: Audio -- Only play notifications</li>
+                        <li class="inactiveAudioSetting-playAll">Inactive window: Audio  -- Play all sounds</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+            </div>
+            <% } else { %>
+            <div class="col">
+                <div class="userSettings_content-settings-setting setting-name">
+                    <div class="userSettings_content-settings-setting-label">Name</div>
+                    <input class="userSettings_content-settings-setting-input" value="<%= userName %>"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-avatar">
+                    <div class="userSettings_content-settings-setting-label">Upload an avatar</div>
+                    <input class="userSettings_content-settings-setting-input" type="file"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-import">
+                    <div class="userSettings_content-settings-setting-label">Import a save file</div>
+                    <input class="userSettings_content-settings-setting-input" type="file"></input>
+                </div>
+                <div class="userSettings_content-settings-setting setting-difficulty">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="difficultySetting-easy">AI: Difficulty level -- Easy</li>
+                        <li class="difficultySetting-normal">AI: Difficulty level -- Normal</li>
+                        <li class="difficultySetting-hard">AI: Difficulty level -- Hard</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="userSettings_content-settings-setting setting-bgm">
+                    <div class="userSettings_content-settings-setting-label">Music</div>
+                    <input id="bgmVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= bgmVolume %>" step="1"></input>
+                    <label for="bgmVolume"><%= bgmVolume %></label>
+                </div>
+                <div class="userSettings_content-settings-setting setting-sfx">
+                    <div class="userSettings_content-settings-setting-label">Sound effects</div>
+                    <input id="sfxVolume" class="userSettings_content-settings-setting-input" type="range" min="0" max="100" value="<%= sfxVolume %>" step="1"></input>
+                    <label for="sfxVolume"><%= sfxVolume %></label>
+                </div>
+                <div class="userSettings_content-settings-setting setting-placingMode">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="placingModeSetting-dragDrop">Cards: Placing mode -- Drag and drop</li>
+                        <li class="placingModeSetting-click">Cards: Placing mode -- Click</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+                <div class="userSettings_content-settings-setting setting-inactiveAudio">
+                    <ul class="userSettings_content-settings-setting-select">
+                        <li class="inactiveAudioSetting-muteAll">Inactive window: Audio -- Mute all sounds</li>
+                        <li class="inactiveAudioSetting-playAll">Inactive window: Audio  -- Play all sounds</li>
+                    </ul>
+                    <div class="userSettings_content-settings-setting-toggle"></div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>

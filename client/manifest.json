@@ -1,0 +1,19 @@
+{
+  "name": "The Fifteenth Triad",
+  "short_name": "15th Triad",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0D1412",
+  "theme_color": "#0D1412",
+  "icons": [{
+    "src": "./assets/img/icons/icon_192x192.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  },
+  {
+    "src": "./assets/img/icons/icon_512x512.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  }]
+}

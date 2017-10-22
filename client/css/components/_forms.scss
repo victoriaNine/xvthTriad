@@ -1,0 +1,160 @@
+/*=======================*/
+/* COMPONENTS
+/*=======================*/
+/* OPTIONS PANEL --------------*/
+%options {
+    @extend %content-inner;
+    display: flex;
+
+    & .col {
+        width: 50%;
+        margin-right: 1em;
+    }
+
+    & .col:last-child {
+        margin-right: 0;
+    }
+}
+
+%options-option {
+    display: flex;
+    height: $globalPadding;
+    line-height: $globalPadding;
+    margin-bottom: 1em;
+    height: 50px;
+
+    &:not(.is--disabled):not(.is--readOnly).is--on,
+    &:not(.is--disabled):not(.is--readOnly).is--off,
+    &:not(.is--readOnly) &-select li:not(.is--disabled) {
+        cursor:pointer;
+    }
+
+    &.is--disabled {
+        color: $color_darkGrey;
+
+        & %options-option-label {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    }
+}
+
+%options-option-label {
+    text-transform: none;
+    flex: 1;
+    text-indent: 1em;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    transition: background .2s;
+}
+
+%options-option-toggle {
+    position: relative;
+    width: $globalPadding;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    transition: background .2s;
+
+    %options-option.is--on & {
+        background: transparentize($color_blue, 0.5);
+    }
+
+    %options-option.is--off & {
+        background: transparentize($color_red, 0.5);
+    }
+}
+
+%options-option-select {
+    text-transform: none;
+    flex: 1;
+    text-indent: 1em;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+
+    transition: height .2s .2s;
+
+    & li {
+        height: 50px;
+        position: relative;
+        background: rgba(255, 255, 255, 0.1);
+        transition: background .2s;
+
+        &.is--disabled { color: #000; }
+
+        %options-option.is--active &:hover:not(.is--disabled) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    }
+}
+
+%options-option-list {
+    position: relative;
+
+    &.is--active {
+        z-index: 1000;
+
+        & %options-option-toggle {
+            width: 0;
+            opacity: 0;
+            transition: width .2s .2s, opacity .2s .2s;
+
+            &:after {
+                transform: rotate(90deg);
+                transition: transform .2s;
+            }
+        }
+
+        & %options-option-select {
+            overflow-y: scroll;
+            height: 100px;
+        }
+
+        & + %options-option {
+            opacity: 0;
+            transition: opacity .2s;
+        }
+    }
+
+    & %options-option-toggle {
+        cursor: pointer;
+        transition: width .2s, opacity .2s;
+
+        &:after {
+            content: "";
+            position: absolute;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #FFF;
+            left:calc(50% - 4.5px);
+            top:calc(50% - 4.5px);
+
+            transition: transform .2s .2s;
+        }
+    }
+
+    & + %options-option:not([style*=opacity]) {
+        transition: opacity .2s .4s;
+    }
+}
+
+%options-option-input {
+    border:none;
+    outline:none;
+    padding: 1em;
+    color:#FFF;
+    font-family:inherit;
+    font-size:inherit;
+    font-weight: inherit;
+    cursor:auto;
+    width: 75%;
+    background: rgba(0, 0, 0, 0.5);
+    transition: background .2s;
+
+    &:focus {
+        background: transparentize($color_blue, 0.5);
+    }
+
+    &.is--invalid {
+        background: transparentize($color_red, 0.5);
+    }
+}

@@ -1,0 +1,281 @@
+/*=======================*/
+/* LOUNGE SCREEN
+/*=======================*/
+%lounge-list {
+    &-scroll {
+        @extend %scrollable;
+        display: block;
+        flex-direction: column;
+        padding: 25px;
+    }
+
+    &-element {
+        &-user {
+            display: flex;
+            position: relative;
+
+            &-avatar {
+                @extend %avatar;
+                position: relative;
+                width: 50px;
+                height: 50px;
+
+                &-img {
+                    @extend %avatar-img;
+                }
+            }
+        }
+    }
+}
+
+.lounge_main {
+    @include board;
+}
+
+.lounge_log {
+    @include boardContent(true);
+
+    &-chatbar {
+        display: flex;
+        border:1px solid rgba(255, 255, 255, 0.25);
+
+        &-label {
+            @extend %options-option-label;
+            background: transparentize($color_blue, 0.25);
+            line-height: 70px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all .2s;
+
+            &:hover {
+                background: transparentize($color_red, 0.25);
+            }
+
+            &:active {
+                background: #FFF;
+                color: #000;
+            }
+        }
+
+        &-input {
+            @extend %options-option-input;
+            width: 95%;
+            resize: none;
+        }
+    }
+}
+
+.lounge_log-messages, .lounge_userlist {
+    @include corners;
+}
+
+.lounge_log-messages {
+    width: 100%;
+    height: calc(100% - 80px);
+    cursor: auto;
+
+    & * {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        user-select: text;
+    }
+
+    &-scroll {
+        @extend %lounge-list-scroll;
+    }
+
+    &-message {
+        &:not(:first-of-type) {
+            padding-top: 1em;
+            margin-top: 1em;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        & a {
+            position: relative;
+            color: $color_lightBlue;
+            z-index: 0;
+            transition: color .4s;
+
+            &:before {
+                content    : "";
+                position   : absolute;
+                width      : 0;
+                height     : 1px;
+                background : currentColor;
+                top        : 1.25em;
+                z-index    : -1;
+                opacity    : 0.5;
+
+                transition: width .2s .2s;
+            }
+
+            &:hover, &.is--hover {
+                color: $color_red;
+
+                &:before { width: 100%; }
+            }
+        }
+
+        &-user {
+            @extend %lounge-list-element-user;
+
+            &-avatar {
+                @extend %lounge-list-element-user-avatar;
+
+                &-img {
+                    @extend %lounge-list-element-user-avatar-img;
+                }
+            }
+
+            &-content {
+                flex: 1;
+                padding-left: 1em;
+                width: calc(100% - 50px);
+                justify-content: center;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+
+                &-name { font-weight:500; }
+                &-date {
+                    @extend .fontsize-small;
+                    color: $color_darkGrey;
+                    margin: 0 0 0 1em;
+                    text-transform: uppercase;
+                }
+
+                &-text {
+                    color: $color_midGrey;
+                    margin: 0.5em 0 0;
+                    line-height: 1.25em;
+                }
+            }
+
+            &.is--currentUser &-content-name {
+                color: $color_lightBlue;
+            }
+
+            &.is--deletedUser &-content-name {
+                color: $color_darkGrey
+            }
+        }
+    }
+}
+
+.lounge_userlist {
+    @include boardList(true);
+}
+
+.lounge_userlist-userCard {
+    position: fixed;
+    width: 225px;
+    display: flex;
+    flex-direction: column;
+    border:1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 18px 4px rgba(0, 0, 0, 0.25);
+    z-index: 1;
+    transform: translateX(-95%);
+    top: 0;
+    margin-top: -15px;
+
+    &-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 1;
+        flex-direction: column;
+        text-transform: none;
+        line-height: 1.25em;
+        padding: 1.5em 0;
+        position: relative;
+
+        &:before {
+            @include fullSizeAbs("");
+            top: 0;
+            left: 0;
+            background: url(#{ $uiAssetsPath + "headerPattern.jpg" });
+            opacity: .25;
+            z-index: -1;
+        }
+
+        &-avatar {
+            @extend %avatar, %avatar-blue;
+            position: relative;
+            width: 150px;
+            height: 150px;
+
+            &-img {
+                @extend %avatar-img;
+            }
+        }
+
+        &-info {
+            margin-top: 1.5em;
+            width: 150px;
+            display: flex;
+
+            &:not(.has--flag) { text-align: center; }
+            &-name { font-weight: 500; }
+            &-userId { color: $color_darkGrey; }
+        }
+
+        &-infoWrapper {
+            flex:1;
+        }
+    }
+
+    &-content {
+        padding: .5em;
+        background: rgba(0, 0, 0, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, .25);
+        flex: 1;
+
+        &-menu {
+            text-align: center;
+
+            &-element {
+                @extend %btn-rect;
+                position: relative;
+
+                &:not(:last-of-type) {
+                    margin-bottom: .5em;
+                }
+            }
+        }
+    }
+}
+
+.lounge_notLoggedIn {
+    &-message {
+        text-transform: none;
+        margin-top: 2em;
+        text-align: center;
+        line-height: 1.25em;
+    }
+
+    &-confirmBtn {
+        @extend %btn-rect;
+        position: relative;
+        margin-top: 50px;
+    }
+}
+
+.lounge_challenge {
+    &-message {
+        text-transform: none;
+        margin-top: 1em;
+    }
+
+    &-acceptBtn, &-declineBtn {
+        @extend %btn-rect;
+        position: relative;
+        margin-top: 50px;
+        display: inline-block;
+    }
+
+    &-declineBtn {
+        margin-left: 1em;
+    }
+}

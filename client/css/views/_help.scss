@@ -1,0 +1,129 @@
+/*=======================*/
+/* HELP SCREEN
+/*=======================*/
+#screen_overlayHelp {
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER --------------*/
+.help_header {
+    @extend %header;
+
+    &-leftCol {
+        @extend %header-leftCol;
+    }
+
+    &-rightCol {
+        @extend %header-rightCol;
+    }
+
+    &-help {
+        @extend %header-help;
+    }
+}
+
+/* CONTENT --------------*/
+.help_content {
+    @extend %content;
+}
+
+.help_content-confirm, .help_content-screenNav {
+    @extend %content-promptChoice;
+
+    &-choice {
+        @extend %content-promptChoice-choice;
+
+        &-element {
+            @extend %content-promptChoice-choice-element;
+        }
+    }
+}
+
+.help_content-confirm {
+    background: transparentize($color_blue, 0.5);
+}
+
+.help_content-topics {
+    @extend %options;
+}
+
+.help_content-topics-topic {
+    @extend %options-option;
+
+    &:not(.is--disabled) {
+        cursor: pointer;
+    }
+}
+
+.help_content-topics-topic-label {
+    @extend %options-option-label;
+}
+
+.help_content-guide {
+    @extend %content-inner;
+    height: calc(100% - #{ $globalPadding / 2 });
+    top: $globalPadding * 2;
+}
+
+.help_content-guide-scroll {
+    @extend %scrollable;
+
+    & > div {
+        flex: 1;
+    }
+
+    & figure {
+        display: flex;
+
+        &:not(:last-of-type) {
+            margin-bottom: 2em;
+        }
+
+        & figcaption {
+            vertical-align: top;
+            padding: 2em;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.15);
+            line-height: 1.5em;
+
+            padding-left: 4em;
+            text-indent: -2em;
+
+            & span.weight-bold {
+                margin-right: 0.9em;
+            }
+        }
+
+        & img {
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            align-self: flex-start;
+            margin-right: 2em;
+        }
+    }
+}
+
+.help_advancedRules {
+    &-elements {
+        position: relative;
+        margin-top: 2em;
+        display: flex;
+
+        &-element {
+            height: 1.5em;
+            position: relative;
+            text-indent: 2.5em;
+            margin-right: 2em;
+            line-height: 1.5em;
+
+            &:before {
+                @include fullSizeAbs("");
+                left:0;
+                top:0;
+                background-repeat: no-repeat;
+                background-position: 0 50%;
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+/*=======================*/
+/* PROMPT OVERLAY
+/*=======================*/
+.prompt_overlay {
+    z-index: 10000;
+
+    &-message {
+        text-transform: none;
+        margin-top: 1em;
+    }
+
+    &-confirmBtn, &-confirm2Btn {
+        @extend %btn-rect;
+
+        position: relative;
+        margin-top: 50px;
+        display: inline-block;
+    }
+
+    &-confirm2Btn {
+        margin-left: 1em;
+    }
+}

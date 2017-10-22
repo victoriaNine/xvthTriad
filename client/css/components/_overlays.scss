@@ -1,0 +1,44 @@
+/*=======================*/
+/* COMPONENTS
+/*=======================*/
+/* OVERLAYS --------------*/
+.overlay {
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    pointer-events:none;
+    opacity: 0;
+    flex-direction: column;
+
+    transform: scale(1.2);
+    transition: all .2s .2s ease-out;
+
+    & h1 {
+        text-align: center;
+        font-size: $fontSize_overlay;
+        letter-spacing: 0.5em;
+        opacity: 0;
+        text-shadow: 0 0 15px $color_darkGrey;
+        transition: letter-spacing .6s, opacity .4s;
+    }
+
+    &.is--user h1     { text-shadow: 0 0 15px $color_midBlue; }
+    &.is--opponent h1 { text-shadow: 0 0 15px $color_red; }
+
+    &.is--active {
+        pointer-events:auto;
+        opacity: 1;
+
+        transform: scale(1);
+        transition: all .4s ease-out;
+
+        & h1 {
+            opacity: 1;
+            letter-spacing: 0;
+            transition: letter-spacing .4s .2s, opacity .2s .2s;
+        }
+    }
+}

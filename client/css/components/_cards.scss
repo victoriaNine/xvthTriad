@@ -1,0 +1,129 @@
+/*=======================*/
+/* COMPONENTS
+/*=======================*/
+/* CARDS --------------*/
+.card {
+    cursor: pointer;
+    width: $cardWidth;
+    height: $cardHeight;
+    position: fixed;
+    left:0;
+    top:0;
+    transform-style: preserve-3d;
+
+    &:hover, &.is--hover {
+        transform: scale(1.1);
+    }
+
+    &.is--played {
+        cursor: default;
+    }
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    z-index: 1;
+}
+
+.card .svg-cardBG {
+    margin-left: 2px;
+    margin-top: 2px;
+    position: absolute;
+    z-index: 0;
+    transition: fill .2s;
+}
+
+.card-blue .svg-cardBG, .card-black:hover .svg-cardBG, .card-black.is--hover .svg-cardBG  { fill: transparentize($color_blue, 0.5); }
+.card-red .svg-cardBG   { fill: transparentize($color_red, 0.5); }
+.card-black .svg-cardBG { fill: rgba(0, 0, 0, 0.5); }
+
+.card-front-img {
+    position: relative;
+    width: auto;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.card-back {
+    background: url(#{ $uiAssetsPath + "card_back.png" }) no-repeat;
+    z-index: 2;
+    transform: rotateX(180deg);
+}
+
+/* ALBUMS --------------*/
+%album-card {
+    width: $albumCardWidth;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, .25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &-visual {
+        @include remainingSpace();
+
+        & .card {
+            position: relative;
+            left: calc(50% - #{ $cardWidth / 2 + 2px });
+            top: calc(50% - #{ $cardHeight / 2 - 0px });
+        }
+
+        &:hover {
+            & + %album-card-label %album-card-name {
+                width: 100%;
+
+                & + %album-card-copiesCount {
+                    opacity: 0;
+                    width: 0;
+                }
+            }
+        }
+    }
+
+    &-label {
+        height: 50px;
+        background: rgba(0, 0, 0, 0.5);
+        line-height: 50px;
+        padding: 0 15px;
+        display: flex;
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        text-transform: none;
+    }
+
+    &-name {
+        @extend .col_9;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        transition: width .2s;
+    }
+
+    &-copiesCount {
+        @extend .col_3, .weight-medium;
+        text-align: right;
+        transition: opacity .2s, width .2s;
+    }
+}
+
+%album-cardWrapper {
+    width: #{ 100% / $albumCardsPerLine };
+    height: $contentHeight;
+    margin-bottom: 1.05em;
+
+    &:nth-last-child(-n + #{ $albumCardsPerLine }) {
+        margin-bottom: 0;
+    }
+
+
+}
+
+%album-scroll {
+    @extend %scrollable;
+    flex-wrap: wrap;
+}
