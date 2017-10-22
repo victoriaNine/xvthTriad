@@ -3,6 +3,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import OfflinePlugin from 'offline-plugin';
+import ImageminPlugin from 'imagemin-webpack-plugin';
 import path from 'path';
 
 import packageConfig from './package.json';
@@ -121,6 +122,11 @@ const config = {
       { from: './assets/img/icons/*', to: './' },
     ]),
   ].concat(!IS_DEV ? [
+    new ImageminPlugin({
+      minFileSize: 300000,
+      test: /\.(jpe?g|png|gif|svg)$/i
+    }),
+
     new webpack.optimize.UglifyJsPlugin({
       output: {
         comments: false
