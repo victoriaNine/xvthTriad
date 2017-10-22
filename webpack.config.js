@@ -126,7 +126,6 @@ const config = {
     }),
 
     new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
       uglifyOptions: {
         output: {
           comments: false
