@@ -152,8 +152,7 @@ function dragCardStart (e, cardCopy) {
 
     const pageX       = (e.type === "touchend") ? e.originalEvent.changedTouches[0].pageX : e.pageX;
     const pageY       = (e.type === "touchend") ? e.originalEvent.changedTouches[0].pageY : e.pageY;
-    const scaledPageX = pageX * _$.ui.window.devicePixelRatio / _$.state.appScalar;
-    const scaledPageY = pageY * _$.ui.window.devicePixelRatio / _$.state.appScalar;
+    const { x: scaledPageX, y: scaledPageY } = _$.utils.getScaledPosition({ x: pageX, y: pageY });
 
     const deckOffset   = _$.utils.getAbsoluteOffset($(".cardSelect_header-deck"));
     const deckPosition = {

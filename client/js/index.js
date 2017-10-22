@@ -2,13 +2,13 @@ import 'isomorphic-fetch';
 import 'babel-polyfill';
 import { template, some } from 'lodash';
 
-import env from './internal/env';
-import supportedBrowsers from './data/supportedBrowsers.json';
-import appTemplate from './pages/app.ejs';
-import maintenanceTemplate from './pages/maintenance.ejs';
-import browserNoSupportTemplate from './pages/browserNoSupport.ejs';
+import env from 'env';
+import supportedBrowsers from 'Data/supportedBrowsers.json';
+import appTemplate from 'Pages/app.ejs';
+import maintenanceTemplate from 'Pages/maintenance.ejs';
+import browserNoSupportTemplate from 'Pages/browserNoSupport.ejs';
 
-import './../css/main.scss';
+import 'CSS/main.scss';
 
 const isBrowserNotSupported = !some(supportedBrowsers.map((browser) => {
   let browserRegex = new RegExp(browser.name, "i");
@@ -70,12 +70,12 @@ if (env.browser.name.match(/safari/i) && parseInt(env.browser.major, 10) >= 11) 
 }
 
 if (!__IS_DEV__) {
-  require('./internal/ga');
+  require('Internal/ga');
 }
 
 if (!__IS_MAINTENANCE__ && !isBrowserNotSupported) {
   if (!__IS_DEV__) {
-    require('./internal/pwa');
+    require('Internal/pwa');
   }
   require('./main');
 }

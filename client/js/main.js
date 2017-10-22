@@ -19,7 +19,7 @@ import Partial_Footer from 'Partials/Footer';
 import LoaderAudioBGM from 'Data/loaders/audioBGM.json';
 import LoaderAudioSFX from 'Data/loaders/audioSFX.json';
 
-import setupScale from './internal/scale';
+import setupScale from 'Internal/scale';
 
 const loaders = [
   LoaderAudioBGM,
@@ -140,7 +140,7 @@ _$.events.once("scalarUpdate", () => {
 
 // Debug tools
 if (_$.debug.debugMode) {
-  require('./internal/stats').default();
+  require('Internal/stats').default();
 
   /*_$.events.on("all", (event, ...data) => {
     if (data.length) {

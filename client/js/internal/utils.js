@@ -8,7 +8,8 @@ import AssetManager from 'Modules/assetManager';
 
 import cardList from 'Data/cardList.json';
 import countryList from 'Data/countryList.json';
-import env from './env';
+import env from 'env';
+import { URL_BAR_HEIGHT, isSafariMobile } from 'Internal/scale';
 
 const startTime = Date.now();
 const app       = Object.create(null, {
@@ -64,6 +65,7 @@ const utils = {
   getRandomCards,
   getAbsoluteOffset,
   getDestinationCoord,
+  getScaledPosition,
   getPositionFromCaseName,
   getCaseNameFromPosition,
   getFormattedNumber,
@@ -196,7 +198,7 @@ function toggleMute (iconDOM) {
   }
 }
 
-/* DESIGN */
+/* UI */
 function getAppSizeRatio () {
   return document.body.scrollWidth / _$.ui.window.actualWidth;
 }
@@ -265,6 +267,19 @@ function getAbsoluteOffset (element) {
   }
 
   return { left, top };
+}
+
+function getScaledPosition (position) {
+  const scaled = {
+    x: (position.x || 0) * _$.ui.window.devicePixelRatio / _$.state.appScalar,
+    y: (position.y || 0) * _$.ui.window.devicePixelRatio / _$.state.appScalar
+  };
+
+  if (isSafariMobile) {
+    scaled.y -= URL_BAR_HEIGHT;
+  }
+
+  return scaled;
 }
 
 /* DOM */

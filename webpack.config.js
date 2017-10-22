@@ -25,11 +25,14 @@ const config = {
   resolve: {
     alias: {
       Assets: path.resolve(BASE_PATH, "assets/"),
+      CSS: path.resolve(BASE_PATH, "css/"),
 
       Collections: path.resolve(BASE_PATH, "js/collections/"),
       Data: path.resolve(BASE_PATH, "js/data/"),
+      Internal: path.resolve(BASE_PATH, "js/internal/"),
       Models: path.resolve(BASE_PATH, "js/models/"),
       Modules: path.resolve(BASE_PATH, "js/modules/"),
+      Pages: path.resolve(BASE_PATH, "js/pages/"),
       Components: path.resolve(BASE_PATH, "js/views/components/"),
       Partials: path.resolve(BASE_PATH, "js/views/containers/partials/"),
       Screens: path.resolve(BASE_PATH, "js/views/containers/screens/"),
@@ -37,6 +40,7 @@ const config = {
       seriously$: path.resolve(BASE_PATH, "js/modules/seriouslyjs/seriously.js"),
       seriously: path.resolve(BASE_PATH, "js/modules/seriouslyjs/"),
       utils$: path.resolve(BASE_PATH, "js/internal/utils.js"),
+      env$: path.resolve(BASE_PATH, "js/internal/env.js"),
     }
   },
 

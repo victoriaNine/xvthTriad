@@ -87,15 +87,15 @@ function flip (info = { fromSide: "right" }) {
 }
 
 function showTooltip (e) {
-  e.preventDefault();
-
   if (_$.state.user.isInGame) {
-    let pageX = e.originalEvent.pageX;
-    let pageY = e.originalEvent.pageY;
+    e = e.originalEvent;
+
+    let pageX = e.pageX;
+    let pageY = e.pageY;
 
     if (e.type === "touchstart" && e.targetTouches && e.targetTouches.length === 1) {
-      pageX = e.originalEvent.targetTouches[0].pageX;
-      pageY = e.originalEvent.targetTouches[0].pageY;
+      pageX = e.targetTouches[0].pageX;
+      pageY = e.targetTouches[0].pageY;
     }
 
     pageX *= _$.ui.window.devicePixelRatio / _$.state.appScalar;
@@ -111,5 +111,7 @@ function showTooltip (e) {
 }
 
 function hideTooltip () {
-  _$.ui.screen.hideCardTooltip();
+  if (_$.state.user.isInGame) {
+    _$.ui.screen.hideCardTooltip();
+  }
 }
