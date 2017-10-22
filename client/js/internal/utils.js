@@ -41,7 +41,7 @@ const app       = Object.create(null, {
     extension     : "xvtsave"
   }}
 });
-const dom       = document.querySelector("#app");
+const dom       = $("#app");
 const assets    = new AssetManager();
 const events    = clone(Backbone.Events);
 const state     = { DECK_SIZE: 5 };
