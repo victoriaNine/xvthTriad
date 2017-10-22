@@ -98,6 +98,18 @@ _$.events.once("launch", () => {
     }
   });
 
+  window.addEventListener("resize", () => {
+    if (Number.isInteger(window.resizeTimeout)) {
+      _$.events.trigger("resizeStart");
+    }
+
+    clearTimeout(window.resizeTimeout);
+    window.resizeTimeout = setTimeout(() => {
+      window.resizeTimeout = null;
+      _$.events.trigger("resize");
+    }, 500);
+  });
+
   // Prevent rubberband scrolling on touch devices
   document.body.addEventListener("touchmove", (e) => {
     if (e.targetTouches.length === 1) {

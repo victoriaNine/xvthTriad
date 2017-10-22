@@ -121,18 +121,6 @@ const _$ = {
   comm
 };
 
-$(window).resize(() => {
-  if (isNil(window.resizeTiemout)) {
-    _$.events.trigger("resizeStart");
-  }
-
-  clearTimeout(window.resizeTiemout);
-  window.resizeTiemout = setTimeout(() => {
-    window.resizeTiemout = null;
-    _$.events.trigger("resize");
-  }, 500);
-});
-
 if (_$.debug.debugMode) {
   window._$ = _$;
 }
@@ -364,7 +352,6 @@ function removeEventListeners (target, events, handler) {
   });
 }
 
-
 /* GAME */
 function getUserData () {
   const data     = omit(_$.state.user.attributes, "album");
@@ -397,7 +384,7 @@ function getRandomName () {
 
 function getRandomCards (options) {
   let i       = 0;
-  const cards   = [];
+  const cards = [];
   let matches = [];
   let card;
   let level;
