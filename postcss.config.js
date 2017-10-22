@@ -1,5 +1,5 @@
 module.exports = {
   plugins: {
-    'autoprefixer': { browsers: ['last 2 versions', 'Safari >= 8'] },
+    'autoprefixer': { browsers: ['last 2 versions', 'Safari >= 9'] },
   },
 };

@@ -1,18 +1,45 @@
 import 'isomorphic-fetch';
 import 'babel-polyfill';
-import { template } from 'lodash';
+import { template, some } from 'lodash';
 
+import env from './internal/env';
+import supportedBrowsers from './data/supportedBrowsers.json';
 import appTemplate from './pages/app.ejs';
 import maintenanceTemplate from './pages/maintenance.ejs';
 import browserNoSupportTemplate from './pages/browserNoSupport.ejs';
 
 import './../css/main.scss';
 
-const isBrowserNotSupported = false;
+const isBrowserNotSupported = !some(supportedBrowsers.map((browser) => {
+  let browserRegex = new RegExp(browser.name, "i");
+  let nameCheck    = !!(env.browser.name.match(browserRegex));
+  let versionCheck = browser.version ? checkVersion(browser.version) : true;
 
-if (!__IS_DEV__) {
-  require('./internal/ga');
-  require('./internal/pwa');
+  return nameCheck && versionCheck;
+}));
+
+function checkVersion (query) {
+  let checkSymbol = query.match(/[^\d\s]*/);
+  checkSymbol = checkSymbol && checkSymbol[0];
+
+  let version = parseInt(query.match(/\d+/), 10);
+  let targetVersion = parseInt(env.browser.major, 10);
+
+  switch (checkSymbol) {
+    case ">":
+      return targetVersion > version;
+    case "<":
+      return targetVersion < version;
+    case ">=":
+      return targetVersion >= version;
+    case "<=":
+      return targetVersion <= version;
+    case "!=":
+      return targetVersion !== version;
+    case "==":
+    default:
+      return targetVersion === version;
+  }
 }
 
 let title = document.title;
@@ -37,6 +64,13 @@ document.title = title;
 bodyClasses && document.body.classList.add(bodyClasses);
 document.body.innerHTML = contents;
 
+if (!__IS_DEV__) {
+  require('./internal/ga');
+}
+
 if (!__IS_MAINTENANCE__ && !isBrowserNotSupported) {
+  if (!__IS_DEV__) {
+    require('./internal/pwa');
+  }
   require('./main');
 }

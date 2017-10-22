@@ -3,13 +3,12 @@ import { clone, isNil, map, isFunction, each, isString, random, filter, find, is
 import Backbone from 'backbone';
 import Elo from 'arpad';
 import { TimelineMax } from 'gsap';
-import UAParser from 'ua-parser-js';
 
 import AssetManager from 'Modules/AssetManager';
 
 import cardList from 'Data/cardList.json';
 import countryList from 'Data/countryList.json';
-const uaParser = new UAParser();
+import env from './env';
 
 const startTime = Date.now();
 const app       = Object.create(null, {
@@ -28,7 +27,7 @@ const app       = Object.create(null, {
   decodeData    : { value: getDecodedData },
   track         : { value: sendGAevent },
   env           : { value: {
-    ...uaParser.getResult(),
+    ...env,
     useCanvas   : false,
   }},
   sessionConfig: { value : {
