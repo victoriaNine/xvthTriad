@@ -4,7 +4,7 @@ import Backbone from 'backbone';
 import Elo from 'arpad';
 import { TimelineMax } from 'gsap';
 
-import AssetManager from 'Modules/AssetManager';
+import AssetManager from 'Modules/assetManager';
 
 import cardList from 'Data/cardList.json';
 import countryList from 'Data/countryList.json';

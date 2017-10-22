@@ -4,7 +4,7 @@ import { TweenMax, TimelineMax } from 'gsap';
 
 import _$ from 'utils';
 import Comp_PromptOverlay from 'Components/PromptOverlay';
-import Dropdown from 'Modules/Dropdown';
+import Dropdown from 'Modules/dropdown';
 
 export default Backbone.View.extend({
   tagName   : "section",
