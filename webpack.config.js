@@ -159,20 +159,27 @@ const config = {
     }),
 
     new OfflinePlugin({
-      relativePaths: false,
+      safeToUseOptionalCaches: true,
+      caches: {
+        main: [
+          'bundle.js',
+          'style.css',
+          'index.html'
+        ],
+        additional: [
+          '*.jpg',
+          '*.png',
+          '*.svg',
+          '*.gif'
+        ],
+        optional: [
+          ':rest:'
+        ]
+      },
       AppCache: false,
-      excludes: ['_redirects'],
       ServiceWorker: {
         events: true
-      },
-      cacheMaps: [
-        {
-          match: /.*/,
-          to: '/',
-          requestTypes: ['navigate']
-        }
-      ],
-      publicPath: '/'
+      }
     })
   ] : []),
 
