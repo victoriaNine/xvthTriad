@@ -64,6 +64,11 @@ document.title = title;
 bodyClasses && document.body.classList.add(bodyClasses);
 document.body.innerHTML = contents;
 
+// iPhone X hack
+if (env.browser.name.match(/safari/i) && parseInt(env.browser.major, 10) >= 11) {
+  document.querySelector("meta[name=viewport]").content += ',viewport-fit=cover';
+}
+
 if (!__IS_DEV__) {
   require('./internal/ga');
 }
