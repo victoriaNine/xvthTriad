@@ -62,7 +62,7 @@ if (__IS_MAINTENANCE__) {
 contents = template(currentTemplate)();
 document.title = title;
 bodyClasses && document.body.classList.add(bodyClasses);
-document.body.innerHTML = contents;
+document.body.innerHTML = contents + document.body.innerHTML;
 
 // iPhone X hack
 if (env.browser.name.match(/safari/i) && parseInt(env.browser.major, 10) >= 11) {
