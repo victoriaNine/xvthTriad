@@ -25,3 +25,4 @@ wip.txt
 *.sh
 *.env
 *.htaccess
+.DS_Store
