@@ -41,7 +41,7 @@ const app       = Object.create(null, {
     extension     : "xvtsave"
   }}
 });
-const dom       = $("#app");
+const dom       = document.querySelector("#app");
 const assets    = new AssetManager();
 const events    = clone(Backbone.Events);
 const state     = { DECK_SIZE: 5 };
@@ -96,14 +96,14 @@ const debug = {
 };
 
 const shareSettings = {
-  url      : $("meta[property='og:url']")[0].content,
-  text     : $("meta[name='twitter:description']")[0].content,
+  url      : document.querySelector("meta[property='og:url']").content,
+  text     : document.querySelector("meta[name='twitter:description']").content,
   posttype : "link",
   hashtags : "ff15,ffxv,tripletriad,webgl,javascript",
-  tags     : $("meta[name='keywords']")[0].content,
-  title    : $("meta[property='og:title']")[0].content,
-  content  : $("meta[property='og:url']")[0].content,
-  caption  : $("meta[property='og:description']")[0].content,
+  tags     : document.querySelector("meta[name='keywords']").content,
+  title    : document.querySelector("meta[property='og:title']").content,
+  content  : document.querySelector("meta[property='og:url']").content,
+  caption  : document.querySelector("meta[property='og:description']").content,
   showVia  : ""
 };
 
