@@ -38,8 +38,6 @@ const config = {
       Partials: path.resolve(BASE_PATH, "js/views/containers/partials/"),
       Screens: path.resolve(BASE_PATH, "js/views/containers/screens/"),
 
-      seriously$: path.resolve(BASE_PATH, "js/modules/seriouslyjs/seriously.js"),
-      seriously: path.resolve(BASE_PATH, "js/modules/seriouslyjs/"),
       utils$: path.resolve(BASE_PATH, "js/internal/utils.js"),
       env$: path.resolve(BASE_PATH, "js/internal/env.js"),
     }
@@ -128,33 +126,35 @@ const config = {
     }),
 
     new webpack.optimize.UglifyJsPlugin({
-      output: {
-        comments: false
-      },
-      exclude: /seriouslyjs/,
-      compress: {
-        unsafe_comps: true,
-        properties: true,
-        keep_fargs: false,
-        pure_getters: false,
-        collapse_vars: true,
-        unsafe: true,
-        warnings: false,
-        screw_ie8: true,
-        sequences: true,
-        dead_code: true,
-        drop_debugger: true,
-        comparisons: true,
-        conditionals: true,
-        evaluate: true,
-        booleans: true,
-        loops: true,
-        unused: true,
-        hoist_funs: true,
-        if_return: true,
-        join_vars: true,
-        cascade: true,
-        drop_console: true
+      sourceMap: true,
+      uglifyOptions: {
+        output: {
+          comments: false
+        },
+        compress: {
+          unsafe_comps: true,
+          properties: true,
+          keep_fargs: false,
+          pure_getters: false,
+          collapse_vars: true,
+          unsafe: true,
+          warnings: false,
+          screw_ie8: true,
+          sequences: true,
+          dead_code: true,
+          drop_debugger: true,
+          comparisons: true,
+          conditionals: true,
+          evaluate: true,
+          booleans: true,
+          loops: true,
+          unused: true,
+          hoist_funs: true,
+          if_return: true,
+          join_vars: true,
+          cascade: true,
+          drop_console: true
+        }
       }
     }),
 
