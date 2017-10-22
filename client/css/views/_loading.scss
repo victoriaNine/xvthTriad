@@ -55,3 +55,9 @@
     transform: scaleX(0);
     transition: transform 1s ease-out;
 }
+
+.loading_disclaimer {
+    font-size: 16px;
+    position: absolute;
+    bottom: $globalPadding;
+}
