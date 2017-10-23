@@ -11,9 +11,9 @@ import webpackConfig from './../webpack.config.js';
 import setupCronJobs, { cronJobs } from './setupCronJobs';
 import setupSockets from './setupSockets';
 
-const IS_PROD = process.env.NODE_ENV === "production";
-const protocol = IS_PROD ? "https://" : "http://";
-const db = new PouchDB(protocol + process.env.DB_USER + ":" + process.env.DB_PASS + "@" + process.env.DB_HOST + "/users");
+const IS_PROD  = process.env.NODE_ENV === "production";
+const protocol = "http://";
+const db       = new PouchDB(`${protocol}${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/users`);
 
 export default function startServer () {
   const PORT     = 9000;
@@ -55,12 +55,12 @@ export default function startServer () {
       }
     },
     mailer: {
-      fromEmail: process.env.MAILER_NAME + " <" + process.env.MAILER_EMAIL + ">",
-      options: "smtps://" + encodeURIComponent(process.env.MAILER_EMAIL) + ":" + process.env.MAILER_PASSWORD + "@" + process.env.MAILER_SMTP
+      fromEmail: `${process.env.MAILER_NAME} <${process.env.MAILER_EMAIL}>`,
+      options: `smtps://${encodeURIComponent(process.env.MAILER_EMAIL)}:${process.env.MAILER_PASSWORD}@${process.env.MAILER_SMTP}`
     },
     security: {
       maxFailedLogins: 3,
-      lockoutTime: 600,
+      lockoutTime: 10 * 60,
       tokenLife: 24 * 60 * 60,
       sessionLife: 30 * 60,
       loginOnRegistration: false

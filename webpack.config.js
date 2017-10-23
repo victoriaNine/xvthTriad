@@ -123,8 +123,7 @@ const config = {
     ]),
   ].concat(!IS_DEV ? [
     new ImageminPlugin({
-      minFileSize: 300000,
-      test: /\.(jpe?g|png|gif|svg)$/i
+      test: /\.(jpe?g|png|gif|svg)$/i,
     }),
 
     new webpack.optimize.UglifyJsPlugin({
