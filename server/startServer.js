@@ -22,6 +22,14 @@ export default function startServer () {
 
   app.set("port", PORT);
 
+  app.use((req, res, next) => {
+    if (IS_PROD) {
+      res.header('Cache-Control', `public, max-age=${7 * 24 * 60 * 60}`); // 1 week;
+    }
+
+    next();
+  });
+
   if (IS_PROD) {
     app.use(compression());
   }
