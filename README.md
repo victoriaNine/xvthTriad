@@ -9,6 +9,7 @@ Features:
 - Versus mode (vs player)
 - Multiplayer mode (online network)
 - Persistence layers: the player can load and export their data in the LocalStorage from a generated encrypted save file or a database
+- PWA features: Add to homepage, offline support
 - A nice UI
 - Gamepad support (with the Gamepad API)
 *Update: Dropped as it doesn't enhance the UX. Partial support is still available.*
@@ -32,7 +33,8 @@ Potential improvements:
 - [Arpad](https://github.com/PhobosRising/node-arpad): Generates ELO scores for the leaderboards
 - [flag-icon](https://github.com/lipis/flag-icon-css): For user profile flags
 - [FontAwesome](http://fontawesome.io/)
-- Localstorage: Persistence layer for the user's data (non-registered player)
+- Localstorage API: Persistence layer for the user's data (non-registered player)
+- Service Worker API: Enable asset caching and offline access
 - Canvas API: Background visuals compositing
 - WebAudio API: Used with a simple, custom audio engine with separate channels for music, sound effects and notifications
 - Gamepad API: Allows control of the UI with a PlayStation or XBox USB controller
