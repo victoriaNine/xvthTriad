@@ -4,6 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import OfflinePlugin from 'offline-plugin';
 import ImageminPlugin from 'imagemin-webpack-plugin';
+import ResourceHintWebpackPlugin from 'resource-hints-webpack-plugin';
 import path from 'path';
 
 import packageConfig from './package.json';
@@ -113,6 +114,7 @@ const config = {
       template: './index.html',
       minify: { collapseWhitespace: true }
     }),
+    new ResourceHintWebpackPlugin(),
     new CopyWebpackPlugin([
       { from: './favicon.ico', to: './' },
       { from: './manifest.json', to: './' },
