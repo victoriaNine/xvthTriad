@@ -1,5 +1,6 @@
 import express from 'express';
 import http from 'http';
+import compression from 'compression';
 import bodyParser from 'body-parser';
 import SuperLogin from 'superlogin';
 import PouchDB from 'pouchdb';
@@ -10,7 +11,8 @@ import webpackConfig from './../webpack.config.js';
 import setupCronJobs, { cronJobs } from './setupCronJobs';
 import setupSockets from './setupSockets';
 
-const protocol = process.env.NODE_ENV === "prod" ? "https://" : "http://";
+const IS_PROD = process.env.NODE_ENV === "production";
+const protocol = IS_PROD ? "https://" : "http://";
 const db = new PouchDB(protocol + process.env.DB_USER + ":" + process.env.DB_PASS + "@" + process.env.DB_HOST + "/users");
 
 export default function startServer () {
@@ -19,6 +21,10 @@ export default function startServer () {
   const compiler = webpack(webpackConfig);
 
   app.set("port", PORT);
+
+  if (IS_PROD) {
+    app.use(compression());
+  }
 
   // Setup SuperLogin
   app.use(bodyParser.json());
