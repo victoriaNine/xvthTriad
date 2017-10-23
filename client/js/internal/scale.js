@@ -1,21 +1,17 @@
 import $ from 'jquery';
 
 import _$ from 'utils';
-import env from 'env';
 
 export const ORIGINAL_SIZE = {
   width  : 1920,
   height : 950
 };
 
-export const isSafariMobile = env.device.model && !!env.device.model.match(/iphone|ipad/i) && !!env.browser.name.match(/safari/i);
-export const URL_BAR_HEIGHT = isSafariMobile ? 44 : 0;
-
 const html = document.querySelector("html");
 const body = document.body;
 
-function getWindowWidth () { return document.documentElement.clientWidth; }
-function getWindowHeight () { return document.documentElement.clientHeight - URL_BAR_HEIGHT; }
+function getWindowWidth () { return window.innerWidth; }
+function getWindowHeight () { return window.innerHeight; }
 
 function reScale () {
   const originalRatio = 1 / _$.ui.window.devicePixelRatio;

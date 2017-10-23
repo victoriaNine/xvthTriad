@@ -9,7 +9,6 @@ import AssetManager from 'Modules/assetManager';
 import cardList from 'Data/cardList.json';
 import countryList from 'Data/countryList.json';
 import env from 'env';
-import { URL_BAR_HEIGHT, isSafariMobile } from 'Internal/scale';
 
 const startTime = Date.now();
 const app       = Object.create(null, {
@@ -274,10 +273,6 @@ function getScaledPosition (position) {
     x: (position.x || 0) * _$.ui.window.devicePixelRatio / _$.state.appScalar,
     y: (position.y || 0) * _$.ui.window.devicePixelRatio / _$.state.appScalar
   };
-
-  if (isSafariMobile) {
-    scaled.y -= URL_BAR_HEIGHT;
-  }
 
   return scaled;
 }
