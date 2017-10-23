@@ -30,6 +30,14 @@ const app       = Object.create(null, {
     ...env,
     useCanvas   : false,
   }},
+  sw            : { value: {
+    isSetup     : false,
+    isInstalled : false,
+    isUpdating  : false,
+    isReady     : false,
+    isUpdated   : false,
+    hasFailed   : false,
+  }},
   sessionConfig: { value : {
     noDefaultEndpoint  : false,
     providers          : ["local"],

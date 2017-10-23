@@ -21,6 +21,21 @@ function initialize (options) { // eslint-disable-line no-unused-vars
   this.loadPercentage = 0;
   this.canvasAssets   = 0;
   this.$el.html(this.template());
+  let waitForSW = false;
+
+  if (_$.app.sw.isSetup) {
+    if (_$.app.sw.isUpdating && !_$.app.sw.isReady) {
+      waitForSW = true;
+    }
+
+    _$.events.once("swUpdating", () => {
+      waitForSW = true;
+    });
+
+    _$.events.once("swReady", () => {
+      waitForSW = false;
+    });
+  }
 
   _$.events.on("loadProgress", () => {
     const percentage = _$.app.assetLoader.getPercentage();
@@ -36,7 +51,15 @@ function initialize (options) { // eslint-disable-line no-unused-vars
 
     _$.events.once("socketReady", (event, data) => {
       _$.comm.sessionManager.once("initialized", () => {
-        proceed.call(this);
+        if (!waitForSW) {
+          proceed.call(this);
+        } else {
+          /* eslint-disable max-nested-callbacks */
+          _$.events.once("swReady", () => {
+            proceed.call(this);
+          });
+          /* eslint-enable */
+        }
       });
 
       _$.app.playersCount = data.msg;
@@ -48,6 +71,11 @@ function initialize (options) { // eslint-disable-line no-unused-vars
     function proceed () {
       if (_$.app.env.useCanvas) {
         _$.events.trigger("addFX");
+      }
+
+      if (_$.app.sw.isSetup) {
+        _$.events.off("swUpdating");
+        _$.events.off("swReady");
       }
 
       const tl = new TimelineMax();
