@@ -25,6 +25,7 @@ const config = {
   },
 
   resolve: {
+    extensions: ['.js', '.json', '.jpg', '.jpeg', '.png', '.gif', '.svg'],
     alias: {
       Assets: path.resolve(BASE_PATH, "assets/"),
       CSS: path.resolve(BASE_PATH, "css/"),
