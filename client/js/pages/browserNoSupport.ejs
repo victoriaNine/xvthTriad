@@ -1,1 +1,11 @@
-<div class="browserNoSupport_img"></div>
+<div class="browserNoSupport_img"><a class="browserNoSupport_redirectLink"></a></div>
+<script type="text/javascript">
+  var redirectLink  = document.querySelector(".browserNoSupport_redirectLink");
+  redirectLink.href = "https://www.google.fr/chrome/browser/desktop";
+  redirectLink.addEventListener("click", function () {
+      ga("send", "event", {
+          eventCategory: "browserNoSupportEvent",
+          eventAction: "clickRedirect"
+      });
+  });
+</script>
