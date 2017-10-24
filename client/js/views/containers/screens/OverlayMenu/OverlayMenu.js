@@ -51,6 +51,7 @@ function transitionIn () {
   _$.events.trigger("stopUserEvents");
 
   const tl = new TimelineMax();
+  tl.set(this.$(".menu_element-bg"), { transition: "none" });
   tl.staggerFrom(
     this.$(".menu_element"),
     this.transitionSettings.slides,
@@ -67,7 +68,7 @@ function transitionIn () {
   tl.to(
     this.$(".menu_wrapper"),
     this.transitionSettings.slides,
-    { backgroundColor: "rgba(0, 0, 0, 1)" },
+    { opacity: 1 },
     `-=${this.transitionSettings.slides * 3}`
   );
   tl.call(() => {
@@ -84,10 +85,11 @@ function transitionOut (nextScreen) {
 
   const tl = new TimelineMax();
   tl.set(this.$(".menu_element"), { pointerEvents: "none" });
+  tl.set(this.$(".menu_element-bg"), { transition: "none" });
   tl.staggerTo(
     this.$(".menu_element-bg"),
     this.transitionSettings.slides,
-    { opacity: 0, y: 50 },
+    { opacity: 0, y: 50, clearProps: "transition" },
     -1 * this.transitionSettings.staggers
   );
   tl.staggerTo(
@@ -100,7 +102,7 @@ function transitionOut (nextScreen) {
   tl.to(
     this.$(".menu_wrapper"),
     this.transitionSettings.slides,
-    { backgroundColor: "rgba(0, 0, 0, 0)" },
+    { opacity: 0 },
     `-=${this.transitionSettings.slides * 2}`
   );
   tl.call(onTransitionComplete.bind(this));

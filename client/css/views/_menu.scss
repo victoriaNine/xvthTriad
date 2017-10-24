@@ -9,6 +9,8 @@
 .menu_wrapper {
   display: flex;
   flex: 1;
+  opacity: 0;
+  background: rgba(0, 0, 0, 1);
 }
 
 .menu_element {
@@ -18,6 +20,7 @@
     position: relative;
     background: #000;
     transition: filter .2s;
+    will-change: filter;
 
     &:after {
         @include fullSizeAbs("");
@@ -40,7 +43,8 @@
         background: $color_lightGrey 50% 100% no-repeat;
         top:0;
         left:0;
-        transition: transform  0.2s;
+        transition: transform 0.2s;
+        will-change: transform;
     }
 
     &-title {
