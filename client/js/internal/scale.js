@@ -48,6 +48,8 @@ export default function setupScale () {
     screenHeight: { get: () => window.screen.height },
     actualScreenWidth: { get: () => window.screen.width * window.devicePixelRatio },
     actualScreenHeight: { get: () => window.screen.height * window.devicePixelRatio },
+    contentsWidth: { get: () => html.offsetWidth },
+    contentsHeight: { get: () => html.offsetHeight },
   });
 
   _$.events.on("scalarUpdate", (event, newScalar) => {

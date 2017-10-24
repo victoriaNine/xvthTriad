@@ -64,7 +64,6 @@ const controls  = {};
 const audio     = {};
 const comm      = {};
 const utils = {
-  getAppSizeRatio,
   getDragSpeed,
   getCardList,
   getCountryList,
@@ -206,10 +205,6 @@ function toggleMute (iconDOM) {
 }
 
 /* UI */
-function getAppSizeRatio () {
-  return document.body.scrollWidth / _$.ui.window.actualWidth;
-}
-
 function getDragSpeed () {
   return _$.ui.window.devicePixelRatio / _$.state.appScalar;
 }
