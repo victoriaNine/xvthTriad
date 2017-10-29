@@ -106,6 +106,8 @@ function showTooltip (e) {
       y: pageY,
       name: this.model.get("name"),
       isOwned: !!_$.state.user.get("album").models.find(card => card.attributes.cardId === this.model.get("cardId")),
+      isUserCard: this.model.get("owner") === _$.state.game.get("players").user,
+      isPlayed: !!this.model.get("position")
     });
   }
 }

@@ -911,9 +911,11 @@ function getOpponentSelectedCards (event, response) {
 }
 
 function showCardTooltip(info) {
-  this.$(".game_cardTooltip").text(info.name).css({
-    transform: `translateX(${info.x}px) translateY(${info.y}px)`
-  }).addClass(`is--visible${info.isOwned ? ' is--owned' : ''}`);
+  if (_$.state.game.get("rules").open || info.isUserCard || info.isPlayed) {
+    this.$(".game_cardTooltip").text(info.name).css({
+      transform: `translateX(${info.x}px) translateY(${info.y}px)`
+    }).addClass(`is--visible${info.isOwned ? ' is--owned' : ''}`);
+  }
 }
 
 function hideCardTooltip() {
