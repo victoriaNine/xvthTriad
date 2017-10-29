@@ -40,6 +40,8 @@ export default Backbone.Model.extend({
   setAvatarPath,
   setAlbum,
   resetAlbum,
+  addCardsToAlbum,
+  removeCardsFromAlbum,
   getPlayerInfo
 });
 
@@ -89,11 +91,6 @@ function setAvatarPath (url) {
 
 function setAlbum (cards) {
   this.set("album", new Coll_Album(cards));
-  this.get("album").on("add", (event, newCard) => {
-    if (this.get("knownCards").indexOf(newCard.get("cardId")) === -1) {
-      this.set("knownCards", concat(this.get("knownCards"), newCard.get("cardId")));
-    }
-  });
 
   // We initialize the array of known cards
   this.get("album").models.forEach((card) => {
@@ -106,6 +103,29 @@ function setAlbum (cards) {
 function resetAlbum () {
   this.set("knownCards", []);
   this.setAlbum();
+}
+
+function addCardsToAlbum (cards) {
+  if (!Array.isArray(cards)) {
+    cards = [cards];
+  }
+
+  this.get("album").add(cards);
+
+  // We update the array of known cards
+  cards.forEach((newCard) => {
+    if (this.get("knownCards").indexOf(newCard.get("cardId")) === -1) {
+      this.set("knownCards", concat(this.get("knownCards"), newCard.get("cardId")));
+    }
+  });
+}
+
+function removeCardsFromAlbum (cards) {
+  if (!Array.isArray(cards)) {
+    cards = [cards];
+  }
+
+  this.get("album").remove(cards);
 }
 
 function getPlayerInfo () {

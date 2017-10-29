@@ -675,8 +675,8 @@ function updateUserAlbum (gainedLost) {
   // We reset the cards' attributes
   this.resetCardAttributes();
 
-  if (gainedLost.gained.length) { _$.state.user.get("album").add(gainedLost.gained); }
-  if (gainedLost.lost.length)   { _$.state.user.get("album").remove(gainedLost.lost); }
+  if (gainedLost.gained.length) { _$.state.user.addCardsToAlbum(gainedLost.gained); }
+  if (gainedLost.lost.length)   { _$.state.user.removeCardsFromAlbum(gainedLost.lost); }
 }
 
 function getAdjacentCards (card, playedCards) {
