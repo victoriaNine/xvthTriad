@@ -338,6 +338,11 @@
     margin-right: 1.5em;
     border: none;
 
+    &.is--owned {
+        color: $color_lightBlue;
+        font-weight: 500;
+    }
+
     &-visual { @extend %album-card-visual; }
     &-label  { @extend %album-card-label; }
     &-name   { @extend %album-card-name; }

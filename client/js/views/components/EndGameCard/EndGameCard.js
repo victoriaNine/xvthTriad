@@ -34,11 +34,19 @@ function initialize (options) {
     name: this.cardView.model.get("name")
   }));
 
+  const isOwned = !!_$.state.user.get("album").models.find(card => card.attributes.cardId === this.cardView.model.get("cardId"));
+  const isUserCard = this.cardView.model.get("owner") === _$.state.game.get("players").user;
+  if (isOwned && !isUserCard) {
+    this.$el.addClass("is--owned");
+  }
+
   this.$(".game_overlay-endGame-album-card-visual").append(this.cardView.$el);
 
-  if (!_$.state.game.get("cardsToPickCount") ||
-  _$.state.game.get("winner") !== _$.state.game.get("players").user ||
-  this.cardView.model.get("owner") !== _$.state.game.get("players").opponent) {
+  if (
+    !_$.state.game.get("cardsToPickCount") ||
+    _$.state.game.get("winner") !== _$.state.game.get("players").user ||
+    isUserCard
+  ) {
     this.events = {};
     TweenMax.set(this.$el, { pointerEvents: "none" });
     this.undelegateEvents();
