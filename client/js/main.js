@@ -39,6 +39,7 @@ if ((_$.app.env.device.type && _$.app.env.device.type !== "desktop") || !_$.app.
   document.querySelector("html").classList.add("noCanvas");
 } else {
   _$.app.env.useCanvas = true;
+  _$.app.env.useTouch = false;
 }
 
 // Setup actions for email links

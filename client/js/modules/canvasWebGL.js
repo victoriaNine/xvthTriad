@@ -136,7 +136,7 @@ class CanvasWebGL {
       flareSettings.tween.play();
       vignetteSettings.tween.play();
 
-      _$.utils.addEventListeners(window, "mousemove touchmove", (e) => {
+      _$.utils.addEventListeners(window, _$.app.env.eventNames().move, (e) => {
         if (this.FX_LEVEL >= 3) {
           let pageX = e.pageX;
           let pageY = e.pageY;

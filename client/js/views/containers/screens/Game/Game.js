@@ -263,13 +263,13 @@ function dragCardStart (e, cardView) {
 
   TweenMax.set(cardView.$el, { zIndex: 1000 });
 
-  $(window).on("mousemove touchmove", dragCard);
+  $(window).on(_$.app.env.eventNames().move, dragCard);
 
   if (_$.state.user.get("placingMode") === "dragDrop") {
-    $(window).one("mouseup touchend", dragCardStop);
+    $(window).one(_$.app.env.eventNames().up, dragCardStop);
   } else {
-    $(window).one("mouseup touchend", () => {
-      $(window).one("mouseup touchend", dragCardStop);
+    $(window).one(_$.app.env.eventNames().up, () => {
+      $(window).one(_$.app.env.eventNames().up, dragCardStop);
     });
   }
 
@@ -291,8 +291,8 @@ function dragCardStart (e, cardView) {
   }
 
   function dragCardStop (e) {
-    $(window).off("mousemove touchmove", dragCard);
-    $(window).off("mouseup touchend", dragCardStop);
+    $(window).off(_$.app.env.eventNames().move, dragCard);
+    $(window).off(_$.app.env.eventNames().up, dragCardStop);
     that.isDraggingCard = false;
 
     const pageX       = (e.type === "touchend") ? e.originalEvent.changedTouches[0].pageX : e.pageX;

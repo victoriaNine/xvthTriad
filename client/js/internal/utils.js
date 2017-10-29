@@ -29,6 +29,8 @@ const app       = Object.create(null, {
   env           : { value: {
     ...env,
     useCanvas   : false,
+    useTouch    : true,
+    eventNames  : getEventNames,
   }},
   sw            : { value: {
     isSetup     : false,
@@ -82,6 +84,7 @@ const utils = {
   addDomObserver,
   addEventListeners,
   removeEventListeners,
+  getEventNames,
 
   fadeIn,
   fadeOut,
@@ -363,6 +366,14 @@ function removeEventListeners (target, events, handler) {
   events.forEach((event) => {
     target.removeEventListener(event, handler);
   });
+}
+
+function getEventNames() {
+  return {
+    down: _$.app.env.useTouch ? 'touchstart' : 'mousedown',
+    move: _$.app.env.useTouch ? 'touchmove' : 'mousemove',
+    up: _$.app.env.useTouch ? 'touchend' : 'mouseup',
+  };
 }
 
 /* GAME */
