@@ -126,7 +126,7 @@ _$.events.on("gamepadOff", () => { _$.controls.type = "mouse"; });
 _$.events.once("scalarUpdate", () => {
   _$.controls.type           = "mouse";
 
-  if (_$.app.env.deviceType === "desktop") {
+  if (_$.app.env.device.type && _$.app.env.device.type !== "desktop") {
     _$.controls.gamepadManager = new GamepadManager();
   }
 
