@@ -127,6 +127,30 @@ const config = {
       test: /\.(jpe?g|png|gif|svg)$/i,
     }),
 
+    new OfflinePlugin({
+      safeToUseOptionalCaches: true,
+      caches: {
+        main: [
+          'bundle.js',
+          'style.css',
+          'index.html'
+        ],
+        additional: [
+          '*.jpg',
+          '*.png',
+          '*.svg',
+          '*.gif'
+        ],
+        optional: [
+          ':rest:'
+        ]
+      },
+      AppCache: false,
+      ServiceWorker: {
+        events: true
+      }
+    }),
+
     new webpack.optimize.UglifyJsPlugin({
       uglifyOptions: {
         output: {
@@ -156,30 +180,6 @@ const config = {
           cascade: true,
           drop_console: true
         }
-      }
-    }),
-
-    new OfflinePlugin({
-      safeToUseOptionalCaches: true,
-      caches: {
-        main: [
-          'bundle.js',
-          'style.css',
-          'index.html'
-        ],
-        additional: [
-          '*.jpg',
-          '*.png',
-          '*.svg',
-          '*.gif'
-        ],
-        optional: [
-          ':rest:'
-        ]
-      },
-      AppCache: false,
-      ServiceWorker: {
-        events: true
       }
     })
   ] : []),
